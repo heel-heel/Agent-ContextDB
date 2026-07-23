@@ -1,0 +1,14 @@
+{
+  "event_id": "evt_f4489d1f6c34",
+  "trajectory_id": "traj_d01ace6ae024",
+  "branch_id": "main",
+  "event_type": "user_message",
+  "payload": {
+    "text": "Set up a project."
+  },
+  "parent_event_ids": [],
+  "actor": "user",
+  "timestamp": "2026-07-23T09:24:23.282665+00:00",
+  "refs": {},
+  "metadata": {}
+}

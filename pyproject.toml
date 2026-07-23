@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "agent-contextdb"
+version = "0.1.0"
+description = "A minimal Agent Context Database demo with trajectory DAG, views, and Git-like versioning."
+requires-python = ">=3.9"
+
+[project.scripts]
+contextdb = "contextdb.cli:main"
+
+[tool.setuptools]
+packages = ["contextdb"]

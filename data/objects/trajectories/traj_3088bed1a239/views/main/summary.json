@@ -1,0 +1,17 @@
+{
+  "view_name": "summary",
+  "trajectory_id": "traj_3088bed1a239",
+  "branch_id": "main",
+  "content": "- user_message:Configure OpenViking in an isolated environment.\n- tool_call:check python and conda\n- tool_result:{'status': 'ok', 'preview': 'openviking_env exists'}\n- memory_update:{'fact': 'Prefer existing conda envs before creating new environments.'}\n- tool_result:{'status': 'failed', 'preview': 'gcc 9.4 rejected by aws-lc-sys memcmp bug'}\n- assistant_message:Use clang in native conda branch.\n- tool_result:{'status': 'ok', 'preview': 'server healthy on port 1933'}",
+  "source_events": [
+    "evt_27180be50c07",
+    "evt_03865c987d3e",
+    "evt_98b6cbf6ae41",
+    "evt_eea80fd178e6",
+    "evt_87fc50f763ff",
+    "evt_8495ace6187d",
+    "evt_05aadd573dfa"
+  ],
+  "created_at": "2026-07-23T09:24:22.017908+00:00",
+  "metadata": {}
+}

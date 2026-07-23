@@ -1,0 +1,11 @@
+{
+  "title": "Sample Codex task",
+  "agent_id": "codex",
+  "source_id": "sample-json",
+  "events": [
+    {"event_type": "user_message", "actor": "user", "payload": {"text": "Set up a project."}},
+    {"event_type": "tool_call", "actor": "agent", "payload": {"tool_name": "shell", "command": "python --version"}},
+    {"event_type": "tool_result", "actor": "tool", "payload": {"status": "ok", "preview": "Python 3.12"}},
+    {"event_type": "summary_update", "actor": "agent", "payload": {"summary": "Environment inspection succeeded."}}
+  ]
+}

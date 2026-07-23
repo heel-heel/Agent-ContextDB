@@ -1,0 +1,16 @@
+{
+  "event_id": "evt_8495ace6187d",
+  "trajectory_id": "traj_3088bed1a239",
+  "branch_id": "main",
+  "event_type": "assistant_message",
+  "payload": {
+    "text": "Use clang in native conda branch."
+  },
+  "parent_event_ids": [
+    "evt_87fc50f763ff"
+  ],
+  "actor": "agent",
+  "timestamp": "2026-07-23T09:24:21.988855+00:00",
+  "refs": {},
+  "metadata": {}
+}

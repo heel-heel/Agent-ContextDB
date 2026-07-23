@@ -1,0 +1,11 @@
+{
+  "trajectory_id": "traj_3088bed1a239",
+  "title": "Configure OpenViking",
+  "agent_id": "codex",
+  "source_id": "vmware-ubuntu",
+  "default_branch": "main",
+  "head_event_id": "evt_05aadd573dfa",
+  "created_at": "2026-07-23T09:24:21.896624+00:00",
+  "updated_at": "2026-07-23T09:24:22.012048+00:00",
+  "metadata": {}
+}

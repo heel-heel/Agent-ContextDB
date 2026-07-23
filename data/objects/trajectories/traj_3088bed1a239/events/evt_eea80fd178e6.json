@@ -1,0 +1,16 @@
+{
+  "event_id": "evt_eea80fd178e6",
+  "trajectory_id": "traj_3088bed1a239",
+  "branch_id": "main",
+  "event_type": "memory_update",
+  "payload": {
+    "fact": "Prefer existing conda envs before creating new environments."
+  },
+  "parent_event_ids": [
+    "evt_98b6cbf6ae41"
+  ],
+  "actor": "agent",
+  "timestamp": "2026-07-23T09:24:21.946579+00:00",
+  "refs": {},
+  "metadata": {}
+}

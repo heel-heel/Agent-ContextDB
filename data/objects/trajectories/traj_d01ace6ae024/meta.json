@@ -1,0 +1,11 @@
+{
+  "trajectory_id": "traj_d01ace6ae024",
+  "title": "Sample Codex task",
+  "agent_id": "codex",
+  "source_id": "sample-json",
+  "default_branch": "main",
+  "head_event_id": "evt_18c1fe47d80b",
+  "created_at": "2026-07-23T09:24:23.271859+00:00",
+  "updated_at": "2026-07-23T09:24:23.329436+00:00",
+  "metadata": {}
+}
