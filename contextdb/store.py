@@ -5,6 +5,7 @@ import shutil
 import sqlite3
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional, Protocol
+import threading
 
 
 class ContextStore(Protocol):
@@ -27,7 +28,9 @@ class SQLiteStore:
         self.snapshots_dir = self.root / "snapshots"
         self.snapshots_dir.mkdir(parents=True, exist_ok=True)
         self.db_path = self.root / "contextdb.sqlite3"
-        self.conn = sqlite3.connect(self.db_path)
+        #self.conn = sqlite3.connect(self.db_path)
+        self._lock = threading.RLock()
+        self.conn = sqlite3.connect(self.db_path, check_same_thread=False)
         self.conn.row_factory = sqlite3.Row
         self._init_schema()
 
