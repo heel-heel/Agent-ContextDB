@@ -1,0 +1,143 @@
+{
+  "view_name": "rl_dataset",
+  "trajectory_id": "traj_9d84b219f654",
+  "branch_id": "clang-attempt",
+  "content": [
+    {
+      "state_events": [
+        {
+          "event_id": "evt_9bf9acc5b404",
+          "trajectory_id": "traj_9d84b219f654",
+          "branch_id": "main",
+          "event_type": "tool_call",
+          "payload": {
+            "tool_name": "shell",
+            "command": "python --version && cargo --version"
+          },
+          "parent_event_ids": [
+            "evt_ee26932cb85e"
+          ],
+          "actor": "agent",
+          "timestamp": "2026-07-28T07:59:08.632317+00:00",
+          "refs": {},
+          "metadata": {}
+        },
+        {
+          "event_id": "evt_83b26331fab5",
+          "trajectory_id": "traj_9d84b219f654",
+          "branch_id": "main",
+          "event_type": "tool_result",
+          "payload": {
+            "status": "ok",
+            "preview": "Python and Rust toolchains found"
+          },
+          "parent_event_ids": [
+            "evt_9bf9acc5b404"
+          ],
+          "actor": "tool",
+          "timestamp": "2026-07-28T07:59:08.643354+00:00",
+          "refs": {},
+          "metadata": {}
+        },
+        {
+          "event_id": "evt_7f62a6322806",
+          "trajectory_id": "traj_9d84b219f654",
+          "branch_id": "main",
+          "event_type": "memory_update",
+          "payload": {
+            "fact": "Prefer existing conda environments before creating new ones."
+          },
+          "parent_event_ids": [
+            "evt_83b26331fab5"
+          ],
+          "actor": "agent",
+          "timestamp": "2026-07-28T07:59:08.652530+00:00",
+          "refs": {},
+          "metadata": {}
+        }
+      ],
+      "action": {
+        "text": "Try the native build path first."
+      },
+      "event_id": "evt_5190fceaa8a2",
+      "branch_id": "clang-attempt",
+      "reward_hint": -1.0
+    },
+    {
+      "state_events": [
+        {
+          "event_id": "evt_5190fceaa8a2",
+          "trajectory_id": "traj_9d84b219f654",
+          "branch_id": "main",
+          "event_type": "assistant_message",
+          "payload": {
+            "text": "Try the native build path first."
+          },
+          "parent_event_ids": [
+            "evt_7f62a6322806"
+          ],
+          "actor": "agent",
+          "timestamp": "2026-07-28T07:59:08.683737+00:00",
+          "refs": {},
+          "metadata": {}
+        },
+        {
+          "event_id": "evt_de16706981e6",
+          "trajectory_id": "traj_9d84b219f654",
+          "branch_id": "main",
+          "event_type": "tool_call",
+          "payload": {
+            "tool_name": "shell",
+            "command": "cargo build --release"
+          },
+          "parent_event_ids": [
+            "evt_5190fceaa8a2"
+          ],
+          "actor": "agent",
+          "timestamp": "2026-07-28T07:59:08.696481+00:00",
+          "refs": {},
+          "metadata": {}
+        },
+        {
+          "event_id": "evt_aa173cc69596",
+          "trajectory_id": "traj_9d84b219f654",
+          "branch_id": "main",
+          "event_type": "tool_result",
+          "payload": {
+            "status": "failed",
+            "preview": "gcc 9.4 rejected aws-lc-sys generated memcmp code"
+          },
+          "parent_event_ids": [
+            "evt_de16706981e6"
+          ],
+          "actor": "tool",
+          "timestamp": "2026-07-28T07:59:08.705933+00:00",
+          "refs": {},
+          "metadata": {}
+        }
+      ],
+      "action": {
+        "text": "Retry native build with CC=clang to bypass gcc 9.4."
+      },
+      "event_id": "evt_bcdee1ceb933",
+      "branch_id": "clang-attempt",
+      "reward_hint": 1.0
+    }
+  ],
+  "source_events": [
+    "evt_ee26932cb85e",
+    "evt_9bf9acc5b404",
+    "evt_83b26331fab5",
+    "evt_7f62a6322806",
+    "evt_5190fceaa8a2",
+    "evt_de16706981e6",
+    "evt_aa173cc69596",
+    "evt_bcdee1ceb933",
+    "evt_7accbc382eb4",
+    "evt_d0c6363469c9"
+  ],
+  "created_at": "2026-07-28T07:59:35.764096+00:00",
+  "metadata": {
+    "event_count": 10
+  }
+}

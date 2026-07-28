@@ -14,22 +14,53 @@ def emit(obj):
 
 def run_demo(root: str):
     db = ContextDB(root)
-    traj = db.create_trajectory("Configure OpenViking", agent_id="codex", source_id="vmware-ubuntu")
+    traj = db.create_trajectory(
+        "Agent ContextDB trajectory demo",
+        agent_id="codex",
+        source_id="user-demo",
+        metadata={"demo": "agent trajectory as versioned database state"},
+    )
     tid = traj["trajectory_id"]
-    db.append_event(tid, "user_message", {"text": "Configure OpenViking in an isolated environment."}, actor="user")
-    db.append_event(tid, "tool_call", {"tool_name": "ssh", "command": "check python and conda"})
-    db.append_event(tid, "tool_result", {"status": "ok", "preview": "openviking_env exists"})
-    db.append_event(tid, "memory_update", {"fact": "Prefer existing conda envs before creating new environments."})
-    before = db.snapshot(tid, message="before native binding strategy")
-    db.append_event(tid, "tool_result", {"status": "failed", "preview": "gcc 9.4 rejected by aws-lc-sys memcmp bug"})
-    db.create_branch(tid, "docker-attempt")
-    db.append_event(tid, "assistant_message", {"text": "Use clang in native conda branch."})
-    db.append_event(tid, "tool_result", {"status": "ok", "preview": "server healthy on port 1933"})
-    summary = db.query_view(tid, "summary")
-    failures = db.query_view(tid, "failures")
-    prompt = db.stream_context(tid, token_budget=2000)
-    rl = db.export_rl_dataset(tid)
-    emit({"trajectory_id": tid, "snapshot": before, "summary_view": summary, "failure_count": len(failures["content"]), "current_prompt_events": len(prompt["content"]["recent_events"]), "rl_rows": len(rl)})
+    db.append_event(tid, "user_message", {"text": "Set up an agent context service and expose a stable ContextDB API."}, actor="user")
+    db.append_event(tid, "tool_call", {"tool_name": "shell", "command": "python --version && cargo --version"})
+    db.append_event(tid, "tool_result", {"status": "ok", "preview": "Python and Rust toolchains found"}, actor="tool")
+    db.append_event(tid, "memory_update", {"fact": "Prefer existing conda environments before creating new ones."})
+    snap = db.snapshot(tid, message="clean environment inspected")
+
+    db.append_event(tid, "assistant_message", {"text": "Try the native build path first."})
+    db.append_event(tid, "tool_call", {"tool_name": "shell", "command": "cargo build --release"})
+    db.append_event(tid, "tool_result", {"status": "failed", "preview": "gcc 9.4 rejected aws-lc-sys generated memcmp code"}, actor="tool")
+    native_head = db.get_branch(tid, "main")["head_event_id"]
+
+    db.create_branch(tid, "docker-attempt", base_event_id=snap["event_id"])
+    db.append_event(tid, "assistant_message", {"text": "Use Docker to isolate compiler and dependency versions."}, branch_id="docker-attempt")
+    db.append_event(tid, "tool_call", {"tool_name": "docker", "command": "docker compose up context-service"}, branch_id="docker-attempt")
+    db.append_event(tid, "tool_result", {"status": "ok", "preview": "Context service healthy on port 1933"}, branch_id="docker-attempt", actor="tool")
+    db.append_event(tid, "memory_update", {"fact": "Docker branch avoids host compiler drift for native dependency builds."}, branch_id="docker-attempt")
+
+    db.create_branch(tid, "clang-attempt", base_event_id=native_head)
+    db.append_event(tid, "assistant_message", {"text": "Retry native build with CC=clang to bypass gcc 9.4."}, branch_id="clang-attempt")
+    db.append_event(tid, "tool_call", {"tool_name": "shell", "command": "CC=clang cargo build --release"}, branch_id="clang-attempt")
+    db.append_event(tid, "tool_result", {"status": "ok", "preview": "Native server healthy on port 1933"}, branch_id="clang-attempt", actor="tool")
+
+    summary = db.query_view(tid, "summary", "clang-attempt")
+    failures = db.query_view(tid, "failures", "clang-attempt")
+    prompt = db.stream_context(tid, "clang-attempt", token_budget=2000)
+    diff = db.diff(tid, "docker-attempt", "clang-attempt")
+    graph = db.graph(tid)
+    rl = db.export_rl_dataset(tid, "clang-attempt")
+    emit({
+        "trajectory_id": tid,
+        "snapshot_id": snap["snapshot_id"],
+        "branches": [b["branch_id"] for b in graph["branches"]],
+        "event_nodes": len(graph["nodes"]),
+        "summary_view": summary["content"],
+        "failure_count": len(failures["content"]),
+        "estimated_saved_tokens": prompt["content"]["estimated_saved_tokens"],
+        "diff_only_right": len(diff["only_right"]),
+        "rl_rows": len(rl),
+        "dashboard": "run: contextdb serve --host 0.0.0.0 --port 8765, then open /demo?trajectory_id=" + tid,
+    })
 
 
 def import_transcript(path: str, root: str):
@@ -61,9 +92,17 @@ def main():
     p_view = sub.add_parser("query-view")
     p_view.add_argument("trajectory_id")
     p_view.add_argument("view_name")
+    p_view.add_argument("--branch", default="main")
     p_snapshot = sub.add_parser("snapshot")
     p_snapshot.add_argument("trajectory_id")
+    p_snapshot.add_argument("--branch", default="main")
     p_snapshot.add_argument("--message", default="")
+    p_graph = sub.add_parser("graph")
+    p_graph.add_argument("trajectory_id")
+    p_diff = sub.add_parser("diff")
+    p_diff.add_argument("trajectory_id")
+    p_diff.add_argument("left_branch")
+    p_diff.add_argument("right_branch")
     p_import = sub.add_parser("import-transcript")
     p_import.add_argument("path")
     args = parser.parse_args()
@@ -86,9 +125,13 @@ def main():
     elif args.cmd == "query":
         emit(db.query(json.loads(args.filters_json)))
     elif args.cmd == "query-view":
-        emit(db.query_view(args.trajectory_id, args.view_name))
+        emit(db.query_view(args.trajectory_id, args.view_name, args.branch))
     elif args.cmd == "snapshot":
-        emit(db.snapshot(args.trajectory_id, message=args.message))
+        emit(db.snapshot(args.trajectory_id, branch_id=args.branch, message=args.message))
+    elif args.cmd == "graph":
+        emit(db.graph(args.trajectory_id))
+    elif args.cmd == "diff":
+        emit(db.diff(args.trajectory_id, args.left_branch, args.right_branch))
 
 
 if __name__ == "__main__":

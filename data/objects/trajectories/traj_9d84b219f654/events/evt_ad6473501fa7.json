@@ -1,0 +1,16 @@
+{
+  "event_id": "evt_ad6473501fa7",
+  "trajectory_id": "traj_9d84b219f654",
+  "branch_id": "docker-attempt",
+  "event_type": "memory_update",
+  "payload": {
+    "fact": "Docker branch avoids host compiler drift for native dependency builds."
+  },
+  "parent_event_ids": [
+    "evt_f673ce8ee29c"
+  ],
+  "actor": "agent",
+  "timestamp": "2026-07-28T07:59:08.753190+00:00",
+  "refs": {},
+  "metadata": {}
+}

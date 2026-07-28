@@ -3,17 +3,26 @@ from __future__ import annotations
 import argparse
 import json
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
 from .service import ContextDB
 
 
+STATIC_DIR = Path(__file__).resolve().parent.parent / "static"
+
+
 def make_handler(db: ContextDB):
     class Handler(BaseHTTPRequestHandler):
-        def _send(self, status: int, payload):
-            data = json.dumps(payload, ensure_ascii=False, indent=2).encode("utf-8")
+        def _send(self, status: int, payload, content_type: str = "application/json; charset=utf-8"):
+            if isinstance(payload, (dict, list)):
+                data = json.dumps(payload, ensure_ascii=False, indent=2).encode("utf-8")
+            elif isinstance(payload, str):
+                data = payload.encode("utf-8")
+            else:
+                data = payload
             self.send_response(status)
-            self.send_header("Content-Type", "application/json; charset=utf-8")
+            self.send_header("Content-Type", content_type)
             self.send_header("Content-Length", str(len(data)))
             self.end_headers()
             self.wfile.write(data)
@@ -28,7 +37,10 @@ def make_handler(db: ContextDB):
             parsed = urlparse(self.path)
             q = parse_qs(parsed.query)
             try:
-                if parsed.path == "/health":
+                if parsed.path == "/" or parsed.path == "/demo":
+                    html = (STATIC_DIR / "dashboard.html").read_text(encoding="utf-8")
+                    self._send(200, html, "text/html; charset=utf-8")
+                elif parsed.path == "/health":
                     self._send(200, {"status": "ok", "service": "contextdb"})
                 elif parsed.path == "/api/v1/trajectory":
                     self._send(200, db.get_trajectory(q["trajectory_id"][0]))
@@ -36,6 +48,8 @@ def make_handler(db: ContextDB):
                     self._send(200, db.get_event(q["trajectory_id"][0], q["event_id"][0]))
                 elif parsed.path == "/api/v1/log":
                     self._send(200, db.log(q["trajectory_id"][0]))
+                elif parsed.path == "/api/v1/graph":
+                    self._send(200, db.graph(q["trajectory_id"][0]))
                 else:
                     self._send(404, {"error": "not found"})
             except Exception as exc:
@@ -59,6 +73,8 @@ def make_handler(db: ContextDB):
                     self._send(200, db.snapshot(**body))
                 elif parsed.path == "/api/v1/rollback":
                     self._send(200, db.rollback(**body))
+                elif parsed.path == "/api/v1/diff":
+                    self._send(200, db.diff(**body))
                 elif parsed.path == "/api/v1/stream_context":
                     self._send(200, db.stream_context(**body))
                 elif parsed.path == "/api/v1/export_rl_dataset":
@@ -75,6 +91,7 @@ def serve(root="data", host="127.0.0.1", port=8765):
     db = ContextDB(root)
     httpd = ThreadingHTTPServer((host, port), make_handler(db))
     print(f"ContextDB HTTP server running on http://{host}:{port}")
+    print(f"Demo dashboard: http://{host}:{port}/demo")
     httpd.serve_forever()
 
 

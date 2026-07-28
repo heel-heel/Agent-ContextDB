@@ -1,0 +1,13 @@
+{
+  "trajectory_id": "traj_9d84b219f654",
+  "title": "Agent ContextDB trajectory demo",
+  "agent_id": "codex",
+  "source_id": "user-demo",
+  "default_branch": "main",
+  "head_event_id": "evt_aa173cc69596",
+  "created_at": "2026-07-28T07:59:08.580691+00:00",
+  "updated_at": "2026-07-28T07:59:08.794843+00:00",
+  "metadata": {
+    "demo": "agent trajectory as versioned database state"
+  }
+}

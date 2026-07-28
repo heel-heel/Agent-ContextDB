@@ -1,0 +1,22 @@
+{
+  "view_name": "summary",
+  "trajectory_id": "traj_9d84b219f654",
+  "branch_id": "clang-attempt",
+  "content": "- user_message:Set up an agent context service and expose a stable ContextDB API.\n- tool_call:python --version && cargo --version\n- tool_result:Python and Rust toolchains found\n- memory_update:{'fact': 'Prefer existing conda environments before creating new ones.'}\n- assistant_message:Try the native build path first.\n- tool_call:cargo build --release\n- tool_result:gcc 9.4 rejected aws-lc-sys generated memcmp code\n- assistant_message:Retry native build with CC=clang to bypass gcc 9.4.\n- tool_call:CC=clang cargo build --release\n- tool_result:Native server healthy on port 1933",
+  "source_events": [
+    "evt_ee26932cb85e",
+    "evt_9bf9acc5b404",
+    "evt_83b26331fab5",
+    "evt_7f62a6322806",
+    "evt_5190fceaa8a2",
+    "evt_de16706981e6",
+    "evt_aa173cc69596",
+    "evt_bcdee1ceb933",
+    "evt_7accbc382eb4",
+    "evt_d0c6363469c9"
+  ],
+  "created_at": "2026-07-28T08:19:07.732060+00:00",
+  "metadata": {
+    "event_count": 10
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "view_name": "failures",
+  "trajectory_id": "traj_9d84b219f654",
+  "branch_id": "clang-attempt",
+  "content": [
+    {
+      "event_id": "evt_aa173cc69596",
+      "trajectory_id": "traj_9d84b219f654",
+      "branch_id": "main",
+      "event_type": "tool_result",
+      "payload": {
+        "status": "failed",
+        "preview": "gcc 9.4 rejected aws-lc-sys generated memcmp code"
+      },
+      "parent_event_ids": [
+        "evt_de16706981e6"
+      ],
+      "actor": "tool",
+      "timestamp": "2026-07-28T07:59:08.705933+00:00",
+      "refs": {},
+      "metadata": {}
+    }
+  ],
+  "source_events": [
+    "evt_ee26932cb85e",
+    "evt_9bf9acc5b404",
+    "evt_83b26331fab5",
+    "evt_7f62a6322806",
+    "evt_5190fceaa8a2",
+    "evt_de16706981e6",
+    "evt_aa173cc69596",
+    "evt_bcdee1ceb933",
+    "evt_7accbc382eb4",
+    "evt_d0c6363469c9"
+  ],
+  "created_at": "2026-07-28T07:59:34.783453+00:00",
+  "metadata": {
+    "event_count": 10
+  }
+}

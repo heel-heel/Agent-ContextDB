@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Agent ContextDB Demo</title>
+  <style>
+    :root { color-scheme: light; --ink:#17202a; --muted:#607080; --line:#d9e0e6; --bg:#f7f8fa; --panel:#ffffff; --blue:#2364aa; --green:#2f855a; --red:#b83232; --gold:#9a6b16; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: var(--bg); color: var(--ink); }
+    header { height: 64px; display:flex; align-items:center; justify-content:space-between; padding:0 20px; border-bottom:1px solid var(--line); background:#fff; }
+    h1 { font-size: 20px; margin: 0; letter-spacing:0; }
+    .controls { display:flex; gap:8px; align-items:center; }
+    input, select, button { height: 36px; border:1px solid var(--line); border-radius:6px; background:#fff; color:var(--ink); padding:0 10px; font:inherit; }
+    input { min-width: 360px; }
+    button { cursor:pointer; background:#17324d; color:#fff; border-color:#17324d; }
+    button.secondary { background:#fff; color:#17324d; }
+    main { display:grid; grid-template-columns: 1.25fr 1fr; gap:16px; padding:16px; min-height: calc(100vh - 64px); }
+    section { background:var(--panel); border:1px solid var(--line); border-radius:8px; min-width:0; }
+    .panel-head { display:flex; justify-content:space-between; align-items:center; padding:12px 14px; border-bottom:1px solid var(--line); }
+    .panel-head h2 { font-size:14px; margin:0; }
+    .content { padding:14px; }
+    .graph { position:relative; min-height:520px; overflow:auto; background:linear-gradient(#fff, #f9fbfc); }
+    .node { position:absolute; width:210px; min-height:58px; border:1px solid var(--line); border-left:5px solid var(--blue); border-radius:8px; background:#fff; padding:8px 10px; box-shadow:0 1px 3px rgba(0,0,0,.06); }
+    .node.tool_result.failed { border-left-color:var(--red); }
+    .node.tool_result.ok { border-left-color:var(--green); }
+    .node.memory_update { border-left-color:var(--gold); }
+    .node .type { font-size:12px; color:var(--muted); }
+    .node .label { font-size:13px; margin-top:4px; line-height:1.3; word-break:break-word; }
+    .badge { display:inline-block; font-size:11px; padding:2px 6px; border-radius:999px; background:#edf2f7; color:#314256; margin-left:4px; }
+    svg.edges { position:absolute; inset:0; pointer-events:none; overflow:visible; }
+    .tabs { display:flex; gap:6px; padding:10px 14px 0; }
+    .tabs button { background:#fff; color:#17324d; border-color:var(--line); }
+    .tabs button.active { background:#17324d; color:#fff; }
+    pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height:1.45; background:#f3f5f7; border-radius:6px; padding:12px; max-height:520px; }
+    .metrics { display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:8px; margin-bottom:12px; }
+    .metric { border:1px solid var(--line); border-radius:8px; padding:10px; background:#fff; }
+    .metric b { display:block; font-size:18px; }
+    .metric span { color:var(--muted); font-size:12px; }
+    @media (max-width: 900px) { main { grid-template-columns:1fr; } input { min-width: 160px; width:100%; } header { height:auto; gap:10px; align-items:flex-start; flex-direction:column; padding:12px; } .controls { width:100%; flex-wrap:wrap; } }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Agent ContextDB: Trajectory DAG + Views</h1>
+    <div class="controls">
+      <input id="tid" placeholder="trajectory_id, or click Seed demo">
+      <select id="branch"><option>main</option></select>
+      <button id="load">Load</button>
+      <button id="seed" class="secondary">Seed demo</button>
+    </div>
+  </header>
+  <main>
+    <section>
+      <div class="panel-head"><h2>Versioned Trajectory Graph</h2><span id="graphMeta" class="badge">idle</span></div>
+      <div id="graph" class="graph"><svg id="edges" class="edges"></svg></div>
+    </section>
+    <section>
+      <div class="panel-head"><h2>Database Views</h2><span id="viewMeta" class="badge">current_prompt</span></div>
+      <div class="tabs">
+        <button class="active" data-view="current_prompt">Prompt View</button>
+        <button data-view="summary">Summary</button>
+        <button data-view="failures">Failures</button>
+        <button data-view="rl_dataset">RL Rows</button>
+        <button data-view="diff">Diff</button>
+      </div>
+      <div class="content">
+        <div id="metrics" class="metrics"></div>
+        <pre id="out">Run `contextdb demo`, paste its trajectory_id, then load. Or click Seed demo to create a browser-side sample through the HTTP API.</pre>
+      </div>
+    </section>
+  </main>
+<script>
+const $ = id => document.getElementById(id);
+let currentView = 'current_prompt';
+let graphData = null;
+async function api(path, body) {
+  const opts = body ? {method:'POST', body:JSON.stringify(body)} : {};
+  const res = await fetch(path, opts);
+  const data = await res.json();
+  if (!res.ok || data.error) throw new Error(data.error || res.statusText);
+  return data;
+}
+function getTid() { return $('tid').value.trim() || new URLSearchParams(location.search).get('trajectory_id') || ''; }
+function statusFrom(n) { return (n.label || '').includes('failed') ? 'failed' : ((n.label || '').includes('ok') ? 'ok' : ''); }
+function drawGraph(data) {
+  graphData = data;
+  const graph = $('graph');
+  graph.querySelectorAll('.node').forEach(n => n.remove());
+  const edges = $('edges'); edges.innerHTML = '';
+  const levels = new Map();
+  data.nodes.forEach((n, i) => levels.set(n.id, i));
+  const byId = new Map();
+  data.nodes.forEach((n, i) => {
+    const x = 32 + (i % 3) * 260;
+    const y = 32 + Math.floor(i / 3) * 118;
+    byId.set(n.id, {x, y});
+    const el = document.createElement('div');
+    el.className = `node ${n.event_type} ${statusFrom(n)}`;
+    el.style.left = x + 'px'; el.style.top = y + 'px';
+    el.innerHTML = `<div class="type">${n.event_type}<span class="badge">${n.branch_id}</span>${n.branch_head ? `<span class="badge">HEAD:${n.branch_head}</span>` : ''}${n.snapshots.length ? '<span class="badge">snapshot</span>' : ''}</div><div class="label"></div>`;
+    el.querySelector('.label').textContent = n.label;
+    graph.appendChild(el);
+  });
+  const rows = Math.ceil(data.nodes.length / 3);
+  graph.style.minHeight = Math.max(520, rows * 118 + 80) + 'px';
+  edges.setAttribute('width', Math.max(860, 32 + 3 * 260));
+  edges.setAttribute('height', Math.max(520, rows * 118 + 80));
+  data.edges.forEach(e => {
+    if (!byId.has(e.source) || !byId.has(e.target)) return;
+    const a = byId.get(e.source), b = byId.get(e.target);
+    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    line.setAttribute('x1', a.x + 210); line.setAttribute('y1', a.y + 29);
+    line.setAttribute('x2', b.x); line.setAttribute('y2', b.y + 29);
+    line.setAttribute('stroke', e.kind === 'branch' ? '#9a6b16' : '#9aa7b2');
+    line.setAttribute('stroke-width', e.kind === 'branch' ? '2' : '1.5');
+    edges.appendChild(line);
+  });
+  $('graphMeta').textContent = `${data.nodes.length} events, ${data.branches.length} branches`;
+  $('branch').innerHTML = data.branches.map(b => `<option>${b.branch_id}</option>`).join('');
+}
+function renderMetrics(content) {
+  const m = $('metrics'); m.innerHTML = '';
+  if (!content || !content.estimated_full_history_tokens) return;
+  const cells = [
+    ['Full tokens', content.estimated_full_history_tokens], ['Loaded', content.estimated_loaded_tokens],
+    ['Saved', content.estimated_saved_tokens], ['Recent events', content.recent_events.length]
+  ];
+  m.innerHTML = cells.map(([k,v]) => `<div class="metric"><b>${v}</b><span>${k}</span></div>`).join('');
+}
+async function loadView() {
+  const tid = getTid(); if (!tid) return;
+  const branch = $('branch').value || 'main';
+  $('viewMeta').textContent = currentView;
+  let data;
+  if (currentView === 'diff') {
+    const right = branch === 'docker-attempt' ? 'clang-attempt' : 'docker-attempt';
+    data = await api('/api/v1/diff', {trajectory_id:tid, left_branch:branch, right_branch:right});
+    renderMetrics(null);
+  } else {
+    data = await api('/api/v1/query_view', {trajectory_id:tid, branch_id:branch, view_name:currentView, token_budget:2000});
+    renderMetrics(data.content);
+  }
+  $('out').textContent = JSON.stringify(data, null, 2);
+}
+async function loadAll() {
+  const tid = getTid(); if (!tid) return;
+  const data = await api('/api/v1/graph?trajectory_id=' + encodeURIComponent(tid));
+  drawGraph(data);
+  await loadView();
+}
+async function seedDemo() {
+  const traj = await api('/api/v1/trajectories', {title:'Browser seeded demo', agent_id:'codex', source_id:'dashboard'});
+  const tid = traj.trajectory_id; $('tid').value = tid;
+  await api('/api/v1/events', {trajectory_id:tid, event_type:'user_message', actor:'user', payload:{text:'Build a context service for a long-running agent.'}});
+  await api('/api/v1/events', {trajectory_id:tid, event_type:'tool_result', actor:'tool', payload:{status:'ok', preview:'environment inspected'}});
+  const snap = await api('/api/v1/snapshots', {trajectory_id:tid, message:'before risky build'});
+  await api('/api/v1/events', {trajectory_id:tid, event_type:'assistant_message', payload:{text:'Try native build.'}});
+  await api('/api/v1/events', {trajectory_id:tid, event_type:'tool_result', actor:'tool', payload:{status:'failed', preview:'compiler mismatch'}});
+  await api('/api/v1/branches', {trajectory_id:tid, branch_id:'docker-attempt', base_event_id:snap.event_id});
+  await api('/api/v1/events', {trajectory_id:tid, branch_id:'docker-attempt', event_type:'assistant_message', payload:{text:'Try isolated Docker build.'}});
+  await api('/api/v1/events', {trajectory_id:tid, branch_id:'docker-attempt', event_type:'tool_result', actor:'tool', payload:{status:'ok', preview:'service healthy'}});
+  await loadAll();
+}
+document.querySelectorAll('.tabs button').forEach(btn => btn.onclick = () => { document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active')); btn.classList.add('active'); currentView = btn.dataset.view; loadView().catch(err => $('out').textContent = err.message); });
+$('load').onclick = () => loadAll().catch(err => $('out').textContent = err.message);
+$('seed').onclick = () => seedDemo().catch(err => $('out').textContent = err.message);
+$('branch').onchange = () => loadView().catch(err => $('out').textContent = err.message);
+if (getTid()) { $('tid').value = getTid(); loadAll().catch(err => $('out').textContent = err.message); }
+</script>
+</body>
+</html>

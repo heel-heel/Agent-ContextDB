@@ -1,0 +1,169 @@
+{
+  "view_name": "current_prompt",
+  "trajectory_id": "traj_9d84b219f654",
+  "branch_id": "clang-attempt",
+  "content": {
+    "summary": "Earlier trajectory context:\n- user_message:Set up an agent context service and expose a stable ContextDB API.\n- tool_call:python --version && cargo --version",
+    "recent_events": [
+      {
+        "event_id": "evt_83b26331fab5",
+        "trajectory_id": "traj_9d84b219f654",
+        "branch_id": "main",
+        "event_type": "tool_result",
+        "payload": {
+          "status": "ok",
+          "preview": "Python and Rust toolchains found"
+        },
+        "parent_event_ids": [
+          "evt_9bf9acc5b404"
+        ],
+        "actor": "tool",
+        "timestamp": "2026-07-28T07:59:08.643354+00:00",
+        "refs": {},
+        "metadata": {}
+      },
+      {
+        "event_id": "evt_7f62a6322806",
+        "trajectory_id": "traj_9d84b219f654",
+        "branch_id": "main",
+        "event_type": "memory_update",
+        "payload": {
+          "fact": "Prefer existing conda environments before creating new ones."
+        },
+        "parent_event_ids": [
+          "evt_83b26331fab5"
+        ],
+        "actor": "agent",
+        "timestamp": "2026-07-28T07:59:08.652530+00:00",
+        "refs": {},
+        "metadata": {}
+      },
+      {
+        "event_id": "evt_5190fceaa8a2",
+        "trajectory_id": "traj_9d84b219f654",
+        "branch_id": "main",
+        "event_type": "assistant_message",
+        "payload": {
+          "text": "Try the native build path first."
+        },
+        "parent_event_ids": [
+          "evt_7f62a6322806"
+        ],
+        "actor": "agent",
+        "timestamp": "2026-07-28T07:59:08.683737+00:00",
+        "refs": {},
+        "metadata": {}
+      },
+      {
+        "event_id": "evt_de16706981e6",
+        "trajectory_id": "traj_9d84b219f654",
+        "branch_id": "main",
+        "event_type": "tool_call",
+        "payload": {
+          "tool_name": "shell",
+          "command": "cargo build --release"
+        },
+        "parent_event_ids": [
+          "evt_5190fceaa8a2"
+        ],
+        "actor": "agent",
+        "timestamp": "2026-07-28T07:59:08.696481+00:00",
+        "refs": {},
+        "metadata": {}
+      },
+      {
+        "event_id": "evt_aa173cc69596",
+        "trajectory_id": "traj_9d84b219f654",
+        "branch_id": "main",
+        "event_type": "tool_result",
+        "payload": {
+          "status": "failed",
+          "preview": "gcc 9.4 rejected aws-lc-sys generated memcmp code"
+        },
+        "parent_event_ids": [
+          "evt_de16706981e6"
+        ],
+        "actor": "tool",
+        "timestamp": "2026-07-28T07:59:08.705933+00:00",
+        "refs": {},
+        "metadata": {}
+      },
+      {
+        "event_id": "evt_bcdee1ceb933",
+        "trajectory_id": "traj_9d84b219f654",
+        "branch_id": "clang-attempt",
+        "event_type": "assistant_message",
+        "payload": {
+          "text": "Retry native build with CC=clang to bypass gcc 9.4."
+        },
+        "parent_event_ids": [
+          "evt_aa173cc69596"
+        ],
+        "actor": "agent",
+        "timestamp": "2026-07-28T07:59:08.768106+00:00",
+        "refs": {},
+        "metadata": {}
+      },
+      {
+        "event_id": "evt_7accbc382eb4",
+        "trajectory_id": "traj_9d84b219f654",
+        "branch_id": "clang-attempt",
+        "event_type": "tool_call",
+        "payload": {
+          "tool_name": "shell",
+          "command": "CC=clang cargo build --release"
+        },
+        "parent_event_ids": [
+          "evt_bcdee1ceb933"
+        ],
+        "actor": "agent",
+        "timestamp": "2026-07-28T07:59:08.777871+00:00",
+        "refs": {},
+        "metadata": {}
+      },
+      {
+        "event_id": "evt_d0c6363469c9",
+        "trajectory_id": "traj_9d84b219f654",
+        "branch_id": "clang-attempt",
+        "event_type": "tool_result",
+        "payload": {
+          "status": "ok",
+          "preview": "Native server healthy on port 1933"
+        },
+        "parent_event_ids": [
+          "evt_7accbc382eb4"
+        ],
+        "actor": "tool",
+        "timestamp": "2026-07-28T07:59:08.788388+00:00",
+        "refs": {},
+        "metadata": {}
+      }
+    ],
+    "relevant_memory": [
+      {
+        "fact": "Prefer existing conda environments before creating new ones."
+      }
+    ],
+    "token_budget": 2000,
+    "estimated_full_history_tokens": 850,
+    "estimated_loaded_tokens": 738,
+    "estimated_saved_tokens": 112,
+    "loading_policy": "summary + recent_events + relevant_memory"
+  },
+  "source_events": [
+    "evt_ee26932cb85e",
+    "evt_9bf9acc5b404",
+    "evt_83b26331fab5",
+    "evt_7f62a6322806",
+    "evt_5190fceaa8a2",
+    "evt_de16706981e6",
+    "evt_aa173cc69596",
+    "evt_bcdee1ceb933",
+    "evt_7accbc382eb4",
+    "evt_d0c6363469c9"
+  ],
+  "created_at": "2026-07-28T08:00:42.667131+00:00",
+  "metadata": {
+    "event_count": 10
+  }
+}
