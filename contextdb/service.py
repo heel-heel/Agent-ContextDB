@@ -183,9 +183,18 @@ class ContextDB:
         snap = self.store.get_object(uris.snapshot_key(trajectory_id, snapshot_id))
         if snap is None:
             raise KeyError(f"snapshot not found: {snapshot_id}")
-        key_prefix = f"trajectories/{trajectory_id}"
-        self.store.restore_snapshot_files(snapshot_id, key_prefix)
-        branch = Branch(branch_id=target_branch_id, trajectory_id=trajectory_id, base_event_id=snap.get("event_id"), head_event_id=snap.get("event_id"), snapshot_id=snapshot_id, metadata={"rollback_from": snapshot_id})
+        if self.store.get_object(uris.branch_key(trajectory_id, target_branch_id)) is not None:
+            raise ValueError(f"branch already exists: {target_branch_id}")
+        # Preserve the failed branch as analyzable history, and create a new branch whose
+        # head points at the snapshot event. This matches database time-travel semantics.
+        branch = Branch(
+            branch_id=target_branch_id,
+            trajectory_id=trajectory_id,
+            base_event_id=snap.get("event_id"),
+            head_event_id=snap.get("event_id"),
+            snapshot_id=snapshot_id,
+            metadata={"rollback_from": snapshot_id, "rollback_mode": "branch_from_snapshot"},
+        )
         self.store.put_object(uris.branch_key(trajectory_id, target_branch_id), to_dict(branch))
         return to_dict(branch)
 
@@ -215,7 +224,10 @@ class ContextDB:
         branches = list(self.store.scan_prefix(f"trajectories/{trajectory_id}/branches"))
         snapshots = list(self.store.scan_prefix(f"trajectories/{trajectory_id}/snapshots"))
         views = list(self.store.scan_prefix(f"trajectories/{trajectory_id}/views"))
-        branch_heads = {b.get("head_event_id"): b.get("branch_id") for b in branches if b.get("head_event_id")}
+        branch_heads: Dict[str, List[str]] = {}
+        for b in branches:
+            if b.get("head_event_id"):
+                branch_heads.setdefault(b["head_event_id"], []).append(b.get("branch_id"))
         snapshot_events: Dict[str, List[str]] = {}
         for s in snapshots:
             snapshot_events.setdefault(s.get("event_id"), []).append(s.get("snapshot_id"))
@@ -232,7 +244,8 @@ class ContextDB:
                 "timestamp": e.get("timestamp"),
                 "label": self._event_line(e),
                 "is_branch_head": eid in branch_heads,
-                "branch_head": branch_heads.get(eid),
+                "branch_heads": branch_heads.get(eid, []),
+                "branch_head": ",".join(branch_heads.get(eid, [])),
                 "snapshots": snapshot_events.get(eid, []),
             })
             for parent in e.get("parent_event_ids") or []:

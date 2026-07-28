@@ -1,0 +1,17 @@
+{
+  "event_id": "evt_da8a6fac5ae3",
+  "trajectory_id": "traj_67945e73beb2",
+  "branch_id": "main",
+  "event_type": "tool_call",
+  "payload": {
+    "tool_name": "shell",
+    "command": "python --version && cargo --version"
+  },
+  "parent_event_ids": [
+    "evt_18d6d0f782b9"
+  ],
+  "actor": "agent",
+  "timestamp": "2026-07-28T08:50:43.365524+00:00",
+  "refs": {},
+  "metadata": {}
+}

@@ -30,21 +30,29 @@ def run_demo(root: str):
     db.append_event(tid, "assistant_message", {"text": "Try the native build path first."})
     db.append_event(tid, "tool_call", {"tool_name": "shell", "command": "cargo build --release"})
     db.append_event(tid, "tool_result", {"status": "failed", "preview": "gcc 9.4 rejected aws-lc-sys generated memcmp code"}, actor="tool")
-    native_head = db.get_branch(tid, "main")["head_event_id"]
 
-    db.create_branch(tid, "docker-attempt", base_event_id=snap["event_id"])
+    rollback = db.rollback(tid, snap["snapshot_id"], target_branch_id="rollback-clean")
+    rollback_event = db.append_event(
+        tid,
+        "assistant_message",
+        {"text": "Rollback to the clean environment snapshot before trying safer repair strategies."},
+        branch_id="rollback-clean",
+        metadata={"operation": "rollback", "snapshot_id": snap["snapshot_id"]},
+    )
+
+    db.create_branch(tid, "docker-attempt", base_event_id=rollback_event["event_id"], from_branch="rollback-clean")
     db.append_event(tid, "assistant_message", {"text": "Use Docker to isolate compiler and dependency versions."}, branch_id="docker-attempt")
     db.append_event(tid, "tool_call", {"tool_name": "docker", "command": "docker compose up context-service"}, branch_id="docker-attempt")
     db.append_event(tid, "tool_result", {"status": "ok", "preview": "Context service healthy on port 1933"}, branch_id="docker-attempt", actor="tool")
     db.append_event(tid, "memory_update", {"fact": "Docker branch avoids host compiler drift for native dependency builds."}, branch_id="docker-attempt")
 
-    db.create_branch(tid, "clang-attempt", base_event_id=native_head)
+    db.create_branch(tid, "clang-attempt", base_event_id=rollback_event["event_id"], from_branch="rollback-clean")
     db.append_event(tid, "assistant_message", {"text": "Retry native build with CC=clang to bypass gcc 9.4."}, branch_id="clang-attempt")
     db.append_event(tid, "tool_call", {"tool_name": "shell", "command": "CC=clang cargo build --release"}, branch_id="clang-attempt")
     db.append_event(tid, "tool_result", {"status": "ok", "preview": "Native server healthy on port 1933"}, branch_id="clang-attempt", actor="tool")
 
     summary = db.query_view(tid, "summary", "clang-attempt")
-    failures = db.query_view(tid, "failures", "clang-attempt")
+    failures = db.query_view(tid, "failures", "main")
     prompt = db.stream_context(tid, "clang-attempt", token_budget=2000)
     diff = db.diff(tid, "docker-attempt", "clang-attempt")
     graph = db.graph(tid)
@@ -52,13 +60,15 @@ def run_demo(root: str):
     emit({
         "trajectory_id": tid,
         "snapshot_id": snap["snapshot_id"],
+        "rollback_branch": rollback["branch_id"],
         "branches": [b["branch_id"] for b in graph["branches"]],
         "event_nodes": len(graph["nodes"]),
         "summary_view": summary["content"],
-        "failure_count": len(failures["content"]),
+        "main_failure_count": len(failures["content"]),
         "estimated_saved_tokens": prompt["content"]["estimated_saved_tokens"],
         "diff_only_right": len(diff["only_right"]),
         "rl_rows": len(rl),
+        "demo_flow": "main fails -> rollback-clean restores snapshot context -> docker-attempt/clang-attempt branch from rollback-clean",
         "dashboard": "run: contextdb serve --host 0.0.0.0 --port 8765, then open /demo?trajectory_id=" + tid,
     })
 

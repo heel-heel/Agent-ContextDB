@@ -93,7 +93,7 @@ function drawGraph(data) {
   const byId = new Map();
   data.nodes.forEach((n, i) => {
     const x = 32 + (i % 3) * 260;
-    const y = 32 + Math.floor(i / 3) * 118;
+    const y = 32 + Math.floor(i / 3) * 156;
     byId.set(n.id, {x, y});
     const el = document.createElement('div');
     el.className = `node ${n.event_type} ${statusFrom(n)}`;
@@ -103,9 +103,9 @@ function drawGraph(data) {
     graph.appendChild(el);
   });
   const rows = Math.ceil(data.nodes.length / 3);
-  graph.style.minHeight = Math.max(520, rows * 118 + 80) + 'px';
+  graph.style.minHeight = Math.max(520, rows * 156 + 96) + 'px';
   edges.setAttribute('width', Math.max(860, 32 + 3 * 260));
-  edges.setAttribute('height', Math.max(520, rows * 118 + 80));
+  edges.setAttribute('height', Math.max(520, rows * 156 + 96));
   data.edges.forEach(e => {
     if (!byId.has(e.source) || !byId.has(e.target)) return;
     const a = byId.get(e.source), b = byId.get(e.target);
@@ -150,16 +150,21 @@ async function loadAll() {
   await loadView();
 }
 async function seedDemo() {
-  const traj = await api('/api/v1/trajectories', {title:'Browser seeded demo', agent_id:'codex', source_id:'dashboard'});
+  const traj = await api('/api/v1/trajectories', {title:'Browser seeded rollback demo', agent_id:'codex', source_id:'dashboard'});
   const tid = traj.trajectory_id; $('tid').value = tid;
-  await api('/api/v1/events', {trajectory_id:tid, event_type:'user_message', actor:'user', payload:{text:'Build a context service for a long-running agent.'}});
+  await api('/api/v1/events', {trajectory_id:tid, event_type:'user_message', actor:'user', payload:{text:'Build a versioned agent context service.'}});
   await api('/api/v1/events', {trajectory_id:tid, event_type:'tool_result', actor:'tool', payload:{status:'ok', preview:'environment inspected'}});
-  const snap = await api('/api/v1/snapshots', {trajectory_id:tid, message:'before risky build'});
-  await api('/api/v1/events', {trajectory_id:tid, event_type:'assistant_message', payload:{text:'Try native build.'}});
+  const snap = await api('/api/v1/snapshots', {trajectory_id:tid, message:'clean environment snapshot'});
+  await api('/api/v1/events', {trajectory_id:tid, event_type:'assistant_message', payload:{text:'Try native build first.'}});
   await api('/api/v1/events', {trajectory_id:tid, event_type:'tool_result', actor:'tool', payload:{status:'failed', preview:'compiler mismatch'}});
-  await api('/api/v1/branches', {trajectory_id:tid, branch_id:'docker-attempt', base_event_id:snap.event_id});
+  await api('/api/v1/rollback', {trajectory_id:tid, snapshot_id:snap.snapshot_id, target_branch_id:'rollback-clean'});
+  const rollbackEvent = await api('/api/v1/events', {trajectory_id:tid, branch_id:'rollback-clean', event_type:'assistant_message', payload:{text:'Rollback to clean snapshot before safer repair.'}, metadata:{operation:'rollback', snapshot_id:snap.snapshot_id}});
+  await api('/api/v1/branches', {trajectory_id:tid, branch_id:'docker-attempt', base_event_id:rollbackEvent.event_id, from_branch:'rollback-clean'});
   await api('/api/v1/events', {trajectory_id:tid, branch_id:'docker-attempt', event_type:'assistant_message', payload:{text:'Try isolated Docker build.'}});
   await api('/api/v1/events', {trajectory_id:tid, branch_id:'docker-attempt', event_type:'tool_result', actor:'tool', payload:{status:'ok', preview:'service healthy'}});
+  await api('/api/v1/branches', {trajectory_id:tid, branch_id:'clang-attempt', base_event_id:rollbackEvent.event_id, from_branch:'rollback-clean'});
+  await api('/api/v1/events', {trajectory_id:tid, branch_id:'clang-attempt', event_type:'assistant_message', payload:{text:'Retry native build with clang.'}});
+  await api('/api/v1/events', {trajectory_id:tid, branch_id:'clang-attempt', event_type:'tool_result', actor:'tool', payload:{status:'ok', preview:'native service healthy'}});
   await loadAll();
 }
 document.querySelectorAll('.tabs button').forEach(btn => btn.onclick = () => { document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active')); btn.classList.add('active'); currentView = btn.dataset.view; loadView().catch(err => $('out').textContent = err.message); });

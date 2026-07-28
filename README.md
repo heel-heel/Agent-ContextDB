@@ -68,7 +68,7 @@ curl -s -X POST http://127.0.0.1:8765/api/v1/diff \
 ## ICDE demo script
 
 1. Run `contextdb demo` to seed a realistic agent setup trajectory.
-2. Show `/demo` graph: the main branch fails on native build, while `docker-attempt` and `clang-attempt` branch from earlier states.
+2. Show `/demo` graph: `main` fails on native build, `rollback-clean` time-travels back to the clean snapshot, and `docker-attempt` / `clang-attempt` branch from that rollback point.
 3. Switch views: `current_prompt` shows streamed loading and token savings, `failures` mines failed tool results, `rl_dataset` turns assistant actions into training rows.
-4. Run `contextdb diff` to compare successful repair strategies.
+4. Run `contextdb diff` to compare successful repair strategies after rollback.
 5. Explain the key claim: context is no longer only prompt text; it is a first-class, persistent, queryable, versioned database object.
