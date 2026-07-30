@@ -1,0 +1,25 @@
+{
+  "view_name": "summary",
+  "trajectory_id": "traj_4f932e52a6f3",
+  "branch_id": "direct-fix-from-failure",
+  "content": "- tool_call:python --version && cargo --version\n- tool_result:Python and Rust toolchains found\n- memory_update:{'fact': 'Prefer existing conda environments before creating new ones.'}\n- assistant_message:Try the native build path first.\n- tool_call:cargo build --release\n- tool_result:gcc 9.4 rejected aws-lc-sys generated memcmp code\n- assistant_message:Branch directly from the failed build event and try a locked clang build.\n- tool_call:CC=clang cargo build --release --locked\n- tool_result:Direct branch locked clang build succeeded\n- assistant_message:Run regression tests after the direct repair; this later success should not become another direct repair link.\n- tool_call:python -m pytest tests/test_contextdb.py -q\n- tool_result:Direct branch regression tests passed after repair",
+  "source_events": [
+    "evt_19d4d5ac56e9",
+    "evt_5238dae9d498",
+    "evt_d149149de545",
+    "evt_bc68719388af",
+    "evt_b239eadfb546",
+    "evt_2fb494d9913c",
+    "evt_4f659d30f159",
+    "evt_753153554676",
+    "evt_0d962df46318",
+    "evt_dc897272d948",
+    "evt_d2855f878175",
+    "evt_f99f02ee666b",
+    "evt_00aef98c14a0"
+  ],
+  "created_at": "2026-07-30T04:58:38.143436+00:00",
+  "metadata": {
+    "event_count": 13
+  }
+}

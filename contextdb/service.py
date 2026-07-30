@@ -141,6 +141,12 @@ class ContextDB:
             content = "\n".join(f"- {x}" for x in facts)
         elif view_name == "failures":
             content = [e for e in events if e.get("event_type") == "tool_result" and e.get("payload", {}).get("status") in FAILURE_STATUSES]
+        elif view_name == "failure_patterns":
+            content = self.failure_patterns(trajectory_id, branch_id)
+        elif view_name == "success_patterns":
+            content = self.success_patterns(trajectory_id)
+        elif view_name == "repair_strategies":
+            content = self.repair_strategies(trajectory_id)
         elif view_name == "current_prompt":
             recent = events[-8:]
             memory = [e["payload"] for e in events if e.get("event_type") == "memory_update"][-5:]
@@ -254,6 +260,231 @@ class ContextDB:
             if b.get("base_event_id") and b.get("head_event_id") and b.get("base_event_id") != b.get("head_event_id"):
                 edges.append({"source": b["base_event_id"], "target": b["head_event_id"], "kind": "branch", "branch_id": b.get("branch_id")})
         return {"trajectory": self.get_trajectory(trajectory_id), "nodes": nodes, "edges": edges, "branches": branches, "snapshots": snapshots, "views": views}
+
+    def failure_patterns(self, trajectory_id: str, branch_id: str = "main") -> List[Dict[str, Any]]:
+        events = self.list_events(trajectory_id, branch_id)
+        patterns = []
+        for i, event in enumerate(events):
+            if not self._is_failed_tool_result(event):
+                continue
+            tool_call = self._previous_event(events, i, "tool_call")
+            assistant = self._previous_event(events, i, "assistant_message")
+            repair_events = self._following_repair_events(events, i)
+            signature = self._result_signature(event)
+            patterns.append({
+                "pattern_id": f"fp_{event['event_id'].split('_')[-1]}",
+                "failure_event_id": event["event_id"],
+                "branch_id": event.get("branch_id"),
+                "failed_tool": self._tool_name(tool_call),
+                "failed_command": self._command_text(tool_call),
+                "error_signature": signature,
+                "preceding_action": self._payload_text(assistant),
+                "likely_cause": self._infer_likely_cause(signature),
+                "repair_events_after_failure": repair_events,
+            })
+        return patterns
+
+    def success_patterns(self, trajectory_id: str) -> List[Dict[str, Any]]:
+        events_by_branch = self._events_by_branch(trajectory_id)
+        patterns = []
+        for branch_id, events in events_by_branch.items():
+            for i, event in enumerate(events):
+                if not self._is_success_tool_result(event):
+                    continue
+                tool_call = self._previous_event(events, i, "tool_call")
+                assistant = self._previous_event(events, i, "assistant_message")
+                patterns.append({
+                    "pattern_id": f"sp_{event['event_id'].split('_')[-1]}",
+                    "success_event_id": event["event_id"],
+                    "branch_id": branch_id,
+                    "successful_tool": self._tool_name(tool_call),
+                    "successful_command": self._command_text(tool_call),
+                    "strategy": self._payload_text(assistant),
+                    "outcome": event.get("payload", {}).get("status"),
+                    "result_preview": event.get("payload", {}).get("preview", ""),
+                })
+        return patterns
+
+    def repair_strategies(self, trajectory_id: str) -> List[Dict[str, Any]]:
+        failures = []
+        for branch in self._branches(trajectory_id):
+            failures.extend(self.failure_patterns(trajectory_id, branch["branch_id"]))
+        successes = self.success_patterns(trajectory_id)
+        events = self._event_map(trajectory_id)
+        branches = {b["branch_id"]: b for b in self._branches(trajectory_id)}
+        snapshots = {s["snapshot_id"]: s for s in self._snapshots(trajectory_id)}
+        strategies = []
+        seen = set()
+        for failure in failures:
+            failure_event = events.get(failure["failure_event_id"])
+            if not failure_event:
+                continue
+            repairs = []
+            for success in successes:
+                success_event = events.get(success["success_event_id"])
+                if not success_event:
+                    continue
+                evidence = self._repair_link_evidence(failure_event, success_event, branches, snapshots, trajectory_id)
+                structural_evidence = [item for item in evidence if item.get("strength") == "structural"]
+                if not structural_evidence:
+                    continue
+                key = (failure["failure_event_id"], success["success_event_id"])
+                if key in seen:
+                    continue
+                seen.add(key)
+                repairs.append({
+                    "branch_id": success["branch_id"],
+                    "success_event_id": success["success_event_id"],
+                    "strategy": success.get("strategy"),
+                    "tool": success.get("successful_tool"),
+                    "command": success.get("successful_command"),
+                    "outcome": success.get("outcome"),
+                    "link_type": evidence[0]["rule"],
+                    "evidence": evidence,
+                })
+            if repairs:
+                strategies.append({
+                    "failure": {
+                        "failure_event_id": failure["failure_event_id"],
+                        "branch_id": failure["branch_id"],
+                        "command": failure.get("failed_command"),
+                        "tool": failure.get("failed_tool"),
+                        "error_signature": failure.get("error_signature"),
+                        "preceding_action": failure.get("preceding_action"),
+                        "likely_cause": failure.get("likely_cause"),
+                    },
+                    "repairs": repairs,
+                })
+        return strategies
+
+    def _repair_link_evidence(self, failure_event: Dict[str, Any], success_event: Dict[str, Any], branches: Dict[str, Dict[str, Any]], snapshots: Dict[str, Dict[str, Any]], trajectory_id: str) -> List[Dict[str, Any]]:
+        evidence = []
+        failure_id = failure_event["event_id"]
+        success_id = success_event["event_id"]
+        failure_branch = failure_event.get("branch_id")
+        success_branch = success_event.get("branch_id")
+        if failure_branch == success_branch:
+            branch_events = self.list_events(trajectory_id, failure_branch)
+            failure_index = self._index_in_branch(trajectory_id, failure_branch, failure_id)
+            success_index = self._index_in_branch(trajectory_id, success_branch, success_id)
+            first_success_after_failure = None
+            if failure_index >= 0 and success_index > failure_index:
+                for event in branch_events[failure_index + 1:]:
+                    if self._is_success_tool_result(event):
+                        first_success_after_failure = event
+                        break
+            if first_success_after_failure and first_success_after_failure.get("event_id") == success_id:
+                evidence.append({
+                    "rule": "same_branch_first_success_after_failure",
+                    "strength": "structural",
+                    "branch_id": failure_branch,
+                    "failure_event_id": failure_id,
+                    "success_event_id": success_id,
+                })
+        success_branch_obj = branches.get(success_branch, {})
+        success_is_first_on_branch = self._is_first_success_on_branch(trajectory_id, success_branch, success_id) if success_branch else False
+        if success_branch_obj.get("base_event_id") == failure_id and success_is_first_on_branch:
+            evidence.append({"rule": "branch_from_failure_first_success", "strength": "structural", "repair_branch": success_branch, "base_event_id": failure_id, "success_event_id": success_id})
+        failure_ancestors = self._reachable_event_ids(trajectory_id, failure_id)
+        base_event_id = success_branch_obj.get("base_event_id")
+        if base_event_id and base_event_id in failure_ancestors and base_event_id != failure_id and success_is_first_on_branch:
+            evidence.append({"rule": "branch_from_failure_ancestor_first_success", "strength": "structural", "repair_branch": success_branch, "base_event_id": base_event_id, "failure_event_id": failure_id, "success_event_id": success_id})
+        from_branch = success_branch_obj.get("metadata", {}).get("from_branch")
+        rollback_branch = branches.get(from_branch or "", {})
+        rollback_snapshot_id = rollback_branch.get("metadata", {}).get("rollback_from")
+        rollback_snapshot = snapshots.get(rollback_snapshot_id or "")
+        if from_branch and rollback_snapshot_id and rollback_snapshot and rollback_snapshot.get("event_id") in failure_ancestors and success_is_first_on_branch:
+            evidence.append({
+                "rule": "rollback_then_repair_first_success",
+                "strength": "structural",
+                "rollback_branch": from_branch,
+                "repair_branch": success_branch,
+                "snapshot_id": rollback_snapshot_id,
+                "snapshot_event_id": rollback_snapshot.get("event_id"),
+                "failure_event_id": failure_id,
+            })
+        failed_call = self._previous_event(self.list_events(trajectory_id, failure_branch), self._index_in_branch(trajectory_id, failure_branch, failure_id), "tool_call") if failure_branch else None
+        success_call = self._previous_event(self.list_events(trajectory_id, success_branch), self._index_in_branch(trajectory_id, success_branch, success_id), "tool_call") if success_branch else None
+        if failed_call and success_call and self._tool_name(failed_call) == self._tool_name(success_call) and self._commands_overlap(self._command_text(failed_call), self._command_text(success_call)):
+            evidence.append({"rule": "same_tool_command_variant", "strength": "supporting", "failed_command": self._command_text(failed_call), "successful_command": self._command_text(success_call)})
+        return evidence
+
+    def _events_by_branch(self, trajectory_id: str) -> Dict[str, List[Dict[str, Any]]]:
+        return {b["branch_id"]: self.list_events(trajectory_id, b["branch_id"]) for b in self._branches(trajectory_id)}
+
+    def _branches(self, trajectory_id: str) -> List[Dict[str, Any]]:
+        return list(self.store.scan_prefix(f"trajectories/{trajectory_id}/branches"))
+
+    def _snapshots(self, trajectory_id: str) -> List[Dict[str, Any]]:
+        return list(self.store.scan_prefix(f"trajectories/{trajectory_id}/snapshots"))
+
+    def _previous_event(self, events: List[Dict[str, Any]], index: int, event_type: str) -> Optional[Dict[str, Any]]:
+        for event in reversed(events[:index]):
+            if event.get("event_type") == event_type:
+                return event
+        return None
+
+    def _following_repair_events(self, events: List[Dict[str, Any]], index: int, limit: int = 4) -> List[Dict[str, Any]]:
+        repairs = []
+        for event in events[index + 1:]:
+            if event.get("event_type") in {"assistant_message", "tool_call", "tool_result", "file_edit"}:
+                repairs.append({"event_id": event["event_id"], "event_type": event.get("event_type"), "summary": self._event_line(event)})
+            if len(repairs) >= limit:
+                break
+        return repairs
+
+    def _is_first_success_on_branch(self, trajectory_id: str, branch_id: str, success_event_id: str) -> bool:
+        for event in self.list_events(trajectory_id, branch_id):
+            if event.get("branch_id") != branch_id:
+                continue
+            if self._is_success_tool_result(event):
+                return event.get("event_id") == success_event_id
+        return False
+
+    def _index_in_branch(self, trajectory_id: str, branch_id: str, event_id: str) -> int:
+        for i, event in enumerate(self.list_events(trajectory_id, branch_id)):
+            if event.get("event_id") == event_id:
+                return i
+        return -1
+
+    def _is_failed_tool_result(self, event: Dict[str, Any]) -> bool:
+        return event.get("event_type") == "tool_result" and event.get("payload", {}).get("status") in FAILURE_STATUSES
+
+    def _is_success_tool_result(self, event: Dict[str, Any]) -> bool:
+        return event.get("event_type") == "tool_result" and event.get("payload", {}).get("status") == "ok"
+
+    def _payload_text(self, event: Optional[Dict[str, Any]]) -> str:
+        if not event:
+            return ""
+        payload = event.get("payload", {})
+        return str(payload.get("text") or payload.get("summary") or payload.get("preview") or payload.get("command") or "")
+
+    def _tool_name(self, event: Optional[Dict[str, Any]]) -> str:
+        return str((event or {}).get("payload", {}).get("tool_name") or "")
+
+    def _command_text(self, event: Optional[Dict[str, Any]]) -> str:
+        return str((event or {}).get("payload", {}).get("command") or "")
+
+    def _result_signature(self, event: Dict[str, Any]) -> str:
+        payload = event.get("payload", {})
+        return str(payload.get("preview") or payload.get("stderr") or payload.get("output") or payload.get("message") or "")[:500]
+
+    def _infer_likely_cause(self, signature: str) -> str:
+        text = signature.lower()
+        if "gcc" in text or "compiler" in text or "clang" in text:
+            return "compiler or native dependency incompatibility"
+        if "timeout" in text:
+            return "timeout or long-running tool execution"
+        if "permission" in text or "denied" in text:
+            return "permission or sandbox restriction"
+        if "assert" in text or "test" in text:
+            return "test assertion or behavior mismatch"
+        return "unknown; inspect error signature and preceding tool call"
+
+    def _commands_overlap(self, left: str, right: str) -> bool:
+        left_tokens = {x for x in left.replace("=", " ").replace("/", " ").split() if len(x) > 2}
+        right_tokens = {x for x in right.replace("=", " ").replace("/", " ").split() if len(x) > 2}
+        return bool(left_tokens & right_tokens)
 
     def stream_context(self, trajectory_id: str, branch_id: str = "main", token_budget: int = 4000) -> Dict[str, Any]:
         return self.query_view(trajectory_id, "current_prompt", branch_id, token_budget)

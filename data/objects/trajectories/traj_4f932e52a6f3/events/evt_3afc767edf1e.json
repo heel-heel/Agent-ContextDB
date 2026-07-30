@@ -1,0 +1,19 @@
+{
+  "event_id": "evt_3afc767edf1e",
+  "trajectory_id": "traj_4f932e52a6f3",
+  "branch_id": "clang-attempt",
+  "event_type": "tool_call",
+  "payload": {
+    "tool_name": "shell",
+    "command": "curl -fsS http://127.0.0.1:1933/health"
+  },
+  "parent_event_ids": [
+    "evt_035ef93c1f7a"
+  ],
+  "actor": "agent",
+  "timestamp": "2026-07-29T08:56:48.683557+00:00",
+  "refs": {
+    "source_line": 34
+  },
+  "metadata": {}
+}

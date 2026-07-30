@@ -1,0 +1,11 @@
+{
+  "branch_id": "direct-fix-from-failure",
+  "trajectory_id": "traj_4f932e52a6f3",
+  "base_event_id": "evt_4f659d30f159",
+  "head_event_id": "evt_00aef98c14a0",
+  "snapshot_id": null,
+  "created_at": "2026-07-29T08:56:48.507069+00:00",
+  "metadata": {
+    "from_branch": "main"
+  }
+}

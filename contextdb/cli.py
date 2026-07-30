@@ -4,6 +4,8 @@ import argparse
 import json
 from pathlib import Path
 
+from .agent_import import import_trace, replay_trace
+from .client import ContextDBClient
 from .service import ContextDB
 from .server import serve
 
@@ -12,55 +14,29 @@ def emit(obj):
     print(json.dumps(obj, ensure_ascii=False, indent=2))
 
 
-def run_demo(root: str):
-    db = ContextDB(root)
-    traj = db.create_trajectory(
-        "Agent ContextDB trajectory demo",
+def run_demo(root: str, trace_path: str = "examples/demo_trace.jsonl"):
+    result = replay_trace(
+        trace_path,
+        root=root,
+        source="generic-jsonl",
+        title="Agent ContextDB trajectory demo",
         agent_id="codex",
-        source_id="user-demo",
-        metadata={"demo": "agent trajectory as versioned database state"},
+        branch_id="main",
     )
-    tid = traj["trajectory_id"]
-    db.append_event(tid, "user_message", {"text": "Set up an agent context service and expose a stable ContextDB API."}, actor="user")
-    db.append_event(tid, "tool_call", {"tool_name": "shell", "command": "python --version && cargo --version"})
-    db.append_event(tid, "tool_result", {"status": "ok", "preview": "Python and Rust toolchains found"}, actor="tool")
-    db.append_event(tid, "memory_update", {"fact": "Prefer existing conda environments before creating new ones."})
-    snap = db.snapshot(tid, message="clean environment inspected")
-
-    db.append_event(tid, "assistant_message", {"text": "Try the native build path first."})
-    db.append_event(tid, "tool_call", {"tool_name": "shell", "command": "cargo build --release"})
-    db.append_event(tid, "tool_result", {"status": "failed", "preview": "gcc 9.4 rejected aws-lc-sys generated memcmp code"}, actor="tool")
-
-    rollback = db.rollback(tid, snap["snapshot_id"], target_branch_id="rollback-clean")
-    rollback_event = db.append_event(
-        tid,
-        "assistant_message",
-        {"text": "Rollback to the clean environment snapshot before trying safer repair strategies."},
-        branch_id="rollback-clean",
-        metadata={"operation": "rollback", "snapshot_id": snap["snapshot_id"]},
-    )
-
-    db.create_branch(tid, "docker-attempt", base_event_id=rollback_event["event_id"], from_branch="rollback-clean")
-    db.append_event(tid, "assistant_message", {"text": "Use Docker to isolate compiler and dependency versions."}, branch_id="docker-attempt")
-    db.append_event(tid, "tool_call", {"tool_name": "docker", "command": "docker compose up context-service"}, branch_id="docker-attempt")
-    db.append_event(tid, "tool_result", {"status": "ok", "preview": "Context service healthy on port 1933"}, branch_id="docker-attempt", actor="tool")
-    db.append_event(tid, "memory_update", {"fact": "Docker branch avoids host compiler drift for native dependency builds."}, branch_id="docker-attempt")
-
-    db.create_branch(tid, "clang-attempt", base_event_id=rollback_event["event_id"], from_branch="rollback-clean")
-    db.append_event(tid, "assistant_message", {"text": "Retry native build with CC=clang to bypass gcc 9.4."}, branch_id="clang-attempt")
-    db.append_event(tid, "tool_call", {"tool_name": "shell", "command": "CC=clang cargo build --release"}, branch_id="clang-attempt")
-    db.append_event(tid, "tool_result", {"status": "ok", "preview": "Native server healthy on port 1933"}, branch_id="clang-attempt", actor="tool")
-
+    db = ContextDB(root)
+    tid = result["trajectory_id"]
     summary = db.query_view(tid, "summary", "clang-attempt")
     failures = db.query_view(tid, "failures", "main")
     prompt = db.stream_context(tid, "clang-attempt", token_budget=2000)
     diff = db.diff(tid, "docker-attempt", "clang-attempt")
     graph = db.graph(tid)
     rl = db.export_rl_dataset(tid, "clang-attempt")
+    rollback_branch = "rollback-clean" if "rollback-clean" in result["branches"] else None
     emit({
         "trajectory_id": tid,
-        "snapshot_id": snap["snapshot_id"],
-        "rollback_branch": rollback["branch_id"],
+        "trace_path": trace_path,
+        "snapshot_id": result["snapshots"][0] if result["snapshots"] else None,
+        "rollback_branch": rollback_branch,
         "branches": [b["branch_id"] for b in graph["branches"]],
         "event_nodes": len(graph["nodes"]),
         "summary_view": summary["content"],
@@ -68,7 +44,7 @@ def run_demo(root: str):
         "estimated_saved_tokens": prompt["content"]["estimated_saved_tokens"],
         "diff_only_right": len(diff["only_right"]),
         "rl_rows": len(rl),
-        "demo_flow": "main fails -> rollback-clean restores snapshot context -> docker-attempt/clang-attempt branch from rollback-clean",
+        "demo_flow": "demo is replayed from examples/demo_trace.jsonl: main fails -> rollback-clean restores snapshot context -> docker-attempt/clang-attempt branch from rollback-clean",
         "dashboard": "run: contextdb serve --host 0.0.0.0 --port 8765, then open /demo?trajectory_id=" + tid,
     })
 
@@ -83,11 +59,24 @@ def import_transcript(path: str, root: str):
     emit(db.log(tid))
 
 
+def run_client_demo(base_url: str):
+    client = ContextDBClient(base_url)
+    traj = client.create_trajectory("Live Agent client demo", agent_id="sample-live-agent", source_id="contextdb-client")
+    tid = traj["trajectory_id"]
+    client.log_user(tid, "Run a quick health check and report the result.")
+    client.log_assistant(tid, "I will call the shell health check tool.")
+    client.log_tool_call(tid, "shell", "curl -s http://127.0.0.1:8765/health")
+    client.log_tool_result(tid, "ok", "{\"status\":\"ok\",\"service\":\"contextdb\"}")
+    view = client.query_view(tid, "current_prompt")
+    emit({"trajectory_id": tid, "events_written": 4, "current_prompt_events": len(view["content"]["recent_events"])})
+
+
 def main():
     parser = argparse.ArgumentParser(prog="contextdb")
     parser.add_argument("--root", default="data")
     sub = parser.add_subparsers(dest="cmd", required=True)
-    sub.add_parser("demo")
+    p_demo = sub.add_parser("demo")
+    p_demo.add_argument("--trace", default="examples/demo_trace.jsonl")
     p_serve = sub.add_parser("serve")
     p_serve.add_argument("--host", default="127.0.0.1")
     p_serve.add_argument("--port", type=int, default=8765)
@@ -115,16 +104,30 @@ def main():
     p_diff.add_argument("right_branch")
     p_import = sub.add_parser("import-transcript")
     p_import.add_argument("path")
+    p_trace = sub.add_parser("import-trace")
+    p_trace.add_argument("path")
+    p_trace.add_argument("--source", default="generic-jsonl", choices=["generic-jsonl", "jsonl", "generic"])
+    p_trace.add_argument("--title", default=None)
+    p_trace.add_argument("--agent-id", default="external-agent")
+    p_trace.add_argument("--branch", default="main")
+    p_client = sub.add_parser("client-demo")
+    p_client.add_argument("--base-url", default="http://127.0.0.1:8765")
     args = parser.parse_args()
 
     if args.cmd == "serve":
         serve(args.root, args.host, args.port)
         return
     if args.cmd == "demo":
-        run_demo(args.root)
+        run_demo(args.root, args.trace)
         return
     if args.cmd == "import-transcript":
         import_transcript(args.path, args.root)
+        return
+    if args.cmd == "import-trace":
+        emit(import_trace(args.path, root=args.root, source=args.source, title=args.title, agent_id=args.agent_id, branch_id=args.branch))
+        return
+    if args.cmd == "client-demo":
+        run_client_demo(args.base_url)
         return
 
     db = ContextDB(args.root)

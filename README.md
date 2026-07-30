@@ -14,7 +14,7 @@ OpenViking focuses on a context database and virtual filesystem for organizing a
 - Trajectory DAG: branch-local events now include reachable ancestor events through `parent_event_ids`.
 - Versioning: snapshot, branch, rollback, branch-aware log, and semantic diff.
 - Query/View/Index: filters by trajectory, branch, type, actor, status, timestamp, and text containment.
-- Materialized views: memory, summary, failures, current_prompt, and rl_dataset.
+- Materialized views: memory, summary, failures, current_prompt, rl_dataset, failure_patterns, success_patterns, and repair_strategies.
 - Streamed context loading: `current_prompt` returns summary + recent events + memory plus estimated token savings.
 - Graph API: `/api/v1/graph` returns nodes, parent edges, branches, snapshots, and materialized views.
 - Diff API: `/api/v1/diff` compares branches by event set, failure count, and summary view changes.
@@ -25,7 +25,7 @@ OpenViking focuses on a context database and virtual filesystem for organizing a
 ```bash
 source /home/benjamin/miniconda3/envs/contextdb_env/bin/activate
 cd /home/benjamin/windows/contextdb
-contextdb demo
+contextdb demo  # replays examples/demo_trace.jsonl
 contextdb serve --host 0.0.0.0 --port 8765
 ```
 
@@ -47,12 +47,74 @@ If you ran `contextdb demo`, paste the printed `trajectory_id` into the dashboar
 http://127.0.0.1:8765/demo\?trajectory_id\=\<trajectory_id\>
 ```
 
+
+## Real Agent integration
+
+ContextDB supports two integration paths for real agents.
+
+### Offline trace import
+
+Use `import-trace` for real Codex/Claude/Cursor/LangGraph style logs after converting them to a framework-neutral JSONL format:
+
+```bash
+contextdb import-trace examples/agent_trace.jsonl --source generic-jsonl --agent-id codex-like
+```
+
+Each JSONL line can be compact:
+
+```json
+{"type":"tool_call","tool":"shell","command":"pytest tests/"}
+{"type":"tool_result","status":"failed","exit_code":1,"output":"AssertionError..."}
+```
+
+or ContextDB-native:
+
+```json
+{"event_type":"assistant_message","actor":"agent","payload":{"text":"I will inspect the error."}}
+```
+
+The adapter normalizes these records into `ContextEvent` objects and creates a trajectory with materialized `summary`, `failures`, and `current_prompt` views.
+
+### Experience mining views
+
+`failure_patterns` extracts failed/error/timeout tool results with the preceding assistant action, preceding tool call, error signature, inferred likely cause, and nearby repair events.
+
+`success_patterns` extracts successful tool results from every branch with the command and preceding strategy.
+
+`repair_strategies` links failures to successes using deterministic structural rules such as same-branch-first-success-after-failure, branch-from-failure-first-success, branch-from-failure-ancestor-first-success, rollback-then-repair-first-success, and same-tool-command-variant. The output includes explicit evidence instead of an opaque similarity score; command variants are supporting evidence and do not create repair links by themselves.
+
+### Live agent client
+
+Agents can also write events while they run through the HTTP API using the standard-library client:
+
+```python
+from contextdb.client import ContextDBClient
+
+ctx = ContextDBClient("http://127.0.0.1:8765")
+traj = ctx.create_trajectory("Live task", agent_id="my-agent", source_id="runtime")
+tid = traj["trajectory_id"]
+ctx.log_user(tid, "Fix failing tests")
+ctx.log_tool_call(tid, "shell", "pytest -q")
+ctx.log_tool_result(tid, "failed", "AssertionError...")
+```
+
+For a quick end-to-end check, start the server and run:
+
+```bash
+contextdb serve --host 127.0.0.1 --port 8765
+contextdb client-demo --base-url http://127.0.0.1:8765
+```
+
 ## Useful CLI commands
 
 ```bash
 contextdb demo
+contextdb demo --trace examples/demo_trace.jsonl
 contextdb graph <trajectory_id>
 contextdb query-view <trajectory_id> current_prompt --branch clang-attempt
+contextdb query-view <trajectory_id> failure_patterns --branch main
+contextdb query-view <trajectory_id> success_patterns
+contextdb query-view <trajectory_id> repair_strategies
 contextdb diff <trajectory_id> docker-attempt clang-attempt
 contextdb snapshot <trajectory_id> --branch main --message "before risky action"
 ```
@@ -67,8 +129,8 @@ curl -s -X POST http://127.0.0.1:8765/api/v1/diff \
 
 ## ICDE demo script
 
-1. Run `contextdb demo` to seed a realistic agent setup trajectory.
+1. Run `contextdb demo` to replay `examples/demo_trace.jsonl` into a realistic agent setup trajectory.
 2. Show `/demo` graph: `main` fails on native build, `rollback-clean` time-travels back to the clean snapshot, and `docker-attempt` / `clang-attempt` branch from that rollback point.
-3. Switch views: `current_prompt` shows streamed loading and token savings, `failures` mines failed tool results, `rl_dataset` turns assistant actions into training rows.
-4. Run `contextdb diff` to compare successful repair strategies after rollback.
+3. Switch views: `current_prompt` shows context loading and token savings, `failure_patterns` extracts failed tool calls with preceding agent actions, `success_patterns` extracts successful strategies across branches, and `repair_strategies` links failures to later successful repairs with deterministic structural evidence. The bundled demo includes same-branch and repair-branch cases where only the first successful tool result after a failure is linked as the direct repair; later smoke-test successes are intentionally not linked.
+4. Run `contextdb diff` to compare successful repair branches, then show `rl_dataset` as training-data export for SFT/RL/distillation.
 5. Explain the key claim: context is no longer only prompt text; it is a first-class, persistent, queryable, versioned database object.

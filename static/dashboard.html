@@ -29,7 +29,7 @@
     .node .label { font-size:13px; margin-top:4px; line-height:1.3; word-break:break-word; }
     .badge { display:inline-block; font-size:11px; padding:2px 6px; border-radius:999px; background:#edf2f7; color:#314256; margin-left:4px; }
     svg.edges { position:absolute; inset:0; pointer-events:none; overflow:visible; }
-    .tabs { display:flex; gap:6px; padding:10px 14px 0; }
+    .tabs { display:flex; flex-wrap:wrap; gap:6px; padding:10px 14px 0; }
     .tabs button { background:#fff; color:#17324d; border-color:var(--line); }
     .tabs button.active { background:#17324d; color:#fff; }
     pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height:1.45; background:#f3f5f7; border-radius:6px; padding:12px; max-height:520px; }
@@ -61,6 +61,9 @@
         <button class="active" data-view="current_prompt">Prompt View</button>
         <button data-view="summary">Summary</button>
         <button data-view="failures">Failures</button>
+        <button data-view="failure_patterns">Failure Patterns</button>
+        <button data-view="success_patterns">Success Patterns</button>
+        <button data-view="repair_strategies">Repair Links</button>
         <button data-view="rl_dataset">RL Rows</button>
         <button data-view="diff">Diff</button>
       </div>

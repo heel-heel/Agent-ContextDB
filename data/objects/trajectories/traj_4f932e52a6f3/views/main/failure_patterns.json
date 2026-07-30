@@ -1,0 +1,58 @@
+{
+  "view_name": "failure_patterns",
+  "trajectory_id": "traj_4f932e52a6f3",
+  "branch_id": "main",
+  "content": [
+    {
+      "pattern_id": "fp_4f659d30f159",
+      "failure_event_id": "evt_4f659d30f159",
+      "branch_id": "main",
+      "failed_tool": "shell",
+      "failed_command": "cargo build --release",
+      "error_signature": "gcc 9.4 rejected aws-lc-sys generated memcmp code",
+      "preceding_action": "Try the native build path first.",
+      "likely_cause": "compiler or native dependency incompatibility",
+      "repair_events_after_failure": [
+        {
+          "event_id": "evt_991fe816ac7e",
+          "event_type": "assistant_message",
+          "summary": "assistant_message:Continue on main once to verify the same-branch repair rule: retry the build with clang first."
+        },
+        {
+          "event_id": "evt_206757c5c061",
+          "event_type": "tool_call",
+          "summary": "tool_call:CC=clang cargo build --release"
+        },
+        {
+          "event_id": "evt_280ead5d6103",
+          "event_type": "tool_result",
+          "summary": "tool_result:Main branch build succeeds with clang"
+        },
+        {
+          "event_id": "evt_4f55e8da345d",
+          "event_type": "assistant_message",
+          "summary": "assistant_message:Run a follow-up smoke test after the build; this is a later success and should not be linked as the direct repair for the build failure."
+        }
+      ]
+    }
+  ],
+  "source_events": [
+    "evt_19d4d5ac56e9",
+    "evt_5238dae9d498",
+    "evt_d149149de545",
+    "evt_bc68719388af",
+    "evt_b239eadfb546",
+    "evt_2fb494d9913c",
+    "evt_4f659d30f159",
+    "evt_991fe816ac7e",
+    "evt_206757c5c061",
+    "evt_280ead5d6103",
+    "evt_4f55e8da345d",
+    "evt_b472fccd3373",
+    "evt_c5281b4377dd"
+  ],
+  "created_at": "2026-07-29T11:02:03.450311+00:00",
+  "metadata": {
+    "event_count": 13
+  }
+}

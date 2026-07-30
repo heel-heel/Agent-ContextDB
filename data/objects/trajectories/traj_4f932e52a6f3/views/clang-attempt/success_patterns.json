@@ -1,0 +1,144 @@
+{
+  "view_name": "success_patterns",
+  "trajectory_id": "traj_4f932e52a6f3",
+  "branch_id": "clang-attempt",
+  "content": [
+    {
+      "pattern_id": "sp_d149149de545",
+      "success_event_id": "evt_d149149de545",
+      "branch_id": "clang-attempt",
+      "successful_tool": "shell",
+      "successful_command": "python --version && cargo --version",
+      "strategy": "",
+      "outcome": "ok",
+      "result_preview": "Python and Rust toolchains found"
+    },
+    {
+      "pattern_id": "sp_00cb48d604bc",
+      "success_event_id": "evt_00cb48d604bc",
+      "branch_id": "clang-attempt",
+      "successful_tool": "shell",
+      "successful_command": "CC=clang cargo build --release",
+      "strategy": "Retry native build with CC=clang to bypass gcc 9.4.",
+      "outcome": "ok",
+      "result_preview": "Native server healthy on port 1933"
+    },
+    {
+      "pattern_id": "sp_05a60c1a5198",
+      "success_event_id": "evt_05a60c1a5198",
+      "branch_id": "clang-attempt",
+      "successful_tool": "shell",
+      "successful_command": "curl -fsS http://127.0.0.1:1933/health",
+      "strategy": "Run a follow-up smoke test on the clang branch; this later success should remain supporting history, not the direct repair link.",
+      "outcome": "ok",
+      "result_preview": "Clang branch smoke test passed after native repair"
+    },
+    {
+      "pattern_id": "sp_d149149de545",
+      "success_event_id": "evt_d149149de545",
+      "branch_id": "direct-fix-from-failure",
+      "successful_tool": "shell",
+      "successful_command": "python --version && cargo --version",
+      "strategy": "",
+      "outcome": "ok",
+      "result_preview": "Python and Rust toolchains found"
+    },
+    {
+      "pattern_id": "sp_dc897272d948",
+      "success_event_id": "evt_dc897272d948",
+      "branch_id": "direct-fix-from-failure",
+      "successful_tool": "shell",
+      "successful_command": "CC=clang cargo build --release --locked",
+      "strategy": "Branch directly from the failed build event and try a locked clang build.",
+      "outcome": "ok",
+      "result_preview": "Direct branch locked clang build succeeded"
+    },
+    {
+      "pattern_id": "sp_00aef98c14a0",
+      "success_event_id": "evt_00aef98c14a0",
+      "branch_id": "direct-fix-from-failure",
+      "successful_tool": "shell",
+      "successful_command": "python -m pytest tests/test_contextdb.py -q",
+      "strategy": "Run regression tests after the direct repair; this later success should not become another direct repair link.",
+      "outcome": "ok",
+      "result_preview": "Direct branch regression tests passed after repair"
+    },
+    {
+      "pattern_id": "sp_d149149de545",
+      "success_event_id": "evt_d149149de545",
+      "branch_id": "docker-attempt",
+      "successful_tool": "shell",
+      "successful_command": "python --version && cargo --version",
+      "strategy": "",
+      "outcome": "ok",
+      "result_preview": "Python and Rust toolchains found"
+    },
+    {
+      "pattern_id": "sp_6b49a359de6f",
+      "success_event_id": "evt_6b49a359de6f",
+      "branch_id": "docker-attempt",
+      "successful_tool": "docker",
+      "successful_command": "docker compose up context-service",
+      "strategy": "Use Docker to isolate compiler and dependency versions.",
+      "outcome": "ok",
+      "result_preview": "Context service healthy on port 1933"
+    },
+    {
+      "pattern_id": "sp_d149149de545",
+      "success_event_id": "evt_d149149de545",
+      "branch_id": "main",
+      "successful_tool": "shell",
+      "successful_command": "python --version && cargo --version",
+      "strategy": "",
+      "outcome": "ok",
+      "result_preview": "Python and Rust toolchains found"
+    },
+    {
+      "pattern_id": "sp_280ead5d6103",
+      "success_event_id": "evt_280ead5d6103",
+      "branch_id": "main",
+      "successful_tool": "shell",
+      "successful_command": "CC=clang cargo build --release",
+      "strategy": "Continue on main once to verify the same-branch repair rule: retry the build with clang first.",
+      "outcome": "ok",
+      "result_preview": "Main branch build succeeds with clang"
+    },
+    {
+      "pattern_id": "sp_c5281b4377dd",
+      "success_event_id": "evt_c5281b4377dd",
+      "branch_id": "main",
+      "successful_tool": "shell",
+      "successful_command": "curl -fsS http://127.0.0.1:1933/health",
+      "strategy": "Run a follow-up smoke test after the build; this is a later success and should not be linked as the direct repair for the build failure.",
+      "outcome": "ok",
+      "result_preview": "Smoke test passed after the build repair"
+    },
+    {
+      "pattern_id": "sp_d149149de545",
+      "success_event_id": "evt_d149149de545",
+      "branch_id": "rollback-clean",
+      "successful_tool": "shell",
+      "successful_command": "python --version && cargo --version",
+      "strategy": "",
+      "outcome": "ok",
+      "result_preview": "Python and Rust toolchains found"
+    }
+  ],
+  "source_events": [
+    "evt_19d4d5ac56e9",
+    "evt_5238dae9d498",
+    "evt_d149149de545",
+    "evt_bc68719388af",
+    "evt_458e05e861aa",
+    "evt_d9f9799afa30",
+    "evt_da48c7dc4607",
+    "evt_00cb48d604bc",
+    "evt_035ef93c1f7a",
+    "evt_3afc767edf1e",
+    "evt_05a60c1a5198"
+  ],
+  "created_at": "2026-07-29T08:57:46.638752+00:00",
+  "metadata": {
+    "event_count": 11
+  }
+}

@@ -1,0 +1,10 @@
+{"type":"user","text":"Fix the failing parser test and keep the patch minimal.","source":"codex-like","session_id":"sess_realistic_001"}
+{"type":"assistant","text":"I will inspect the failing test output first.","source":"codex-like","session_id":"sess_realistic_001"}
+{"type":"tool_call","tool":"shell","command":"pytest tests/test_parser.py -q","source":"codex-like","session_id":"sess_realistic_001"}
+{"type":"tool_result","status":"failed","exit_code":1,"output":"AssertionError: expected 3 parsed items, got 2","source":"codex-like","session_id":"sess_realistic_001"}
+{"type":"file_read","path":"contextdb/parser.py","summary":"Parser stops one token early in the final segment.","source":"codex-like","session_id":"sess_realistic_001"}
+{"type":"assistant","text":"The failure appears to be an off-by-one bug in the final segment boundary.","source":"codex-like","session_id":"sess_realistic_001"}
+{"type":"file_edit","path":"contextdb/parser.py","summary":"Include the final token when closing the segment.","diff":"- end = i - 1\n+ end = i","source":"codex-like","session_id":"sess_realistic_001"}
+{"type":"tool_call","tool":"shell","command":"pytest tests/test_parser.py -q","source":"codex-like","session_id":"sess_realistic_001"}
+{"type":"tool_result","status":"ok","exit_code":0,"output":"3 passed","source":"codex-like","session_id":"sess_realistic_001"}
+{"type":"memory","fact":"Parser boundary bugs should be checked with final-token fixtures.","source":"codex-like","session_id":"sess_realistic_001"}

@@ -1,0 +1,15 @@
+{
+  "trajectory_id": "traj_4f932e52a6f3",
+  "title": "Agent ContextDB trajectory demo",
+  "agent_id": "codex",
+  "source_id": "generic-jsonl",
+  "default_branch": "main",
+  "head_event_id": "evt_bc68719388af",
+  "created_at": "2026-07-29T08:56:48.431854+00:00",
+  "updated_at": "2026-07-29T08:56:48.474307+00:00",
+  "metadata": {
+    "import_path": "examples/demo_trace.jsonl",
+    "adapter": "generic-jsonl",
+    "replay": true
+  }
+}
