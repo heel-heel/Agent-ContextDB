@@ -1,0 +1,20 @@
+{
+  "event_id": "evt_689f6e56c57f",
+  "trajectory_id": "traj_c42b2c7c8db3",
+  "branch_id": "main",
+  "event_type": "tool_result",
+  "payload": {
+    "status": "ok",
+    "exit_code": null,
+    "preview": "Smoke test passed after the build repair"
+  },
+  "parent_event_ids": [
+    "evt_1274729f03db"
+  ],
+  "actor": "tool",
+  "timestamp": "2026-07-30T08:13:19.823970+00:00",
+  "refs": {
+    "source_line": 21
+  },
+  "metadata": {}
+}

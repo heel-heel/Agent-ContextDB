@@ -1,0 +1,220 @@
+{
+  "view_name": "success_patterns",
+  "trajectory_id": "traj_c42b2c7c8db3",
+  "branch_id": "docker-attempt",
+  "content": [
+    {
+      "schema_version": "experience_mining.v1",
+      "pattern_id": "sp_0fa4ba282802",
+      "success_event_id": "evt_0fa4ba282802",
+      "branch_id": "clang-attempt",
+      "successful_tool": "shell",
+      "successful_command": "CC=clang cargo build --release",
+      "strategy": "Retry native build with CC=clang to bypass gcc 9.4.",
+      "outcome": "ok",
+      "result_preview": "Native server healthy on port 1933",
+      "is_first_success_on_branch": true,
+      "source_event_ids": [
+        "evt_a912b3b24a1a",
+        "evt_5603bc94a603",
+        "evt_0fa4ba282802"
+      ],
+      "evidence_event_ids": [
+        "evt_a912b3b24a1a",
+        "evt_5603bc94a603",
+        "evt_0fa4ba282802"
+      ],
+      "highlight_event_ids": [
+        "evt_0fa4ba282802"
+      ]
+    },
+    {
+      "schema_version": "experience_mining.v1",
+      "pattern_id": "sp_3973474a787f",
+      "success_event_id": "evt_3973474a787f",
+      "branch_id": "clang-attempt",
+      "successful_tool": "shell",
+      "successful_command": "curl -fsS http://127.0.0.1:1933/health",
+      "strategy": "Run a follow-up smoke test on the clang branch; this later success should remain supporting history, not the direct repair link.",
+      "outcome": "ok",
+      "result_preview": "Clang branch smoke test passed after native repair",
+      "is_first_success_on_branch": false,
+      "source_event_ids": [
+        "evt_f97be4ae46ee",
+        "evt_136c62471d0f",
+        "evt_3973474a787f"
+      ],
+      "evidence_event_ids": [
+        "evt_f97be4ae46ee",
+        "evt_136c62471d0f",
+        "evt_3973474a787f"
+      ],
+      "highlight_event_ids": [
+        "evt_3973474a787f"
+      ]
+    },
+    {
+      "schema_version": "experience_mining.v1",
+      "pattern_id": "sp_1b5e31703221",
+      "success_event_id": "evt_1b5e31703221",
+      "branch_id": "direct-fix-from-failure",
+      "successful_tool": "shell",
+      "successful_command": "CC=clang cargo build --release --locked",
+      "strategy": "Branch directly from the failed build event and try a locked clang build.",
+      "outcome": "ok",
+      "result_preview": "Direct branch locked clang build succeeded",
+      "is_first_success_on_branch": true,
+      "source_event_ids": [
+        "evt_34f0439d8c35",
+        "evt_69c0b3e3d66f",
+        "evt_1b5e31703221"
+      ],
+      "evidence_event_ids": [
+        "evt_34f0439d8c35",
+        "evt_69c0b3e3d66f",
+        "evt_1b5e31703221"
+      ],
+      "highlight_event_ids": [
+        "evt_1b5e31703221"
+      ]
+    },
+    {
+      "schema_version": "experience_mining.v1",
+      "pattern_id": "sp_7255e15008cb",
+      "success_event_id": "evt_7255e15008cb",
+      "branch_id": "direct-fix-from-failure",
+      "successful_tool": "shell",
+      "successful_command": "python -m pytest tests/test_contextdb.py -q",
+      "strategy": "Run regression tests after the direct repair; this later success should not become another direct repair link.",
+      "outcome": "ok",
+      "result_preview": "Direct branch regression tests passed after repair",
+      "is_first_success_on_branch": false,
+      "source_event_ids": [
+        "evt_da4666b2de05",
+        "evt_9c1590332f4e",
+        "evt_7255e15008cb"
+      ],
+      "evidence_event_ids": [
+        "evt_da4666b2de05",
+        "evt_9c1590332f4e",
+        "evt_7255e15008cb"
+      ],
+      "highlight_event_ids": [
+        "evt_7255e15008cb"
+      ]
+    },
+    {
+      "schema_version": "experience_mining.v1",
+      "pattern_id": "sp_221a49e4d0e9",
+      "success_event_id": "evt_221a49e4d0e9",
+      "branch_id": "docker-attempt",
+      "successful_tool": "docker",
+      "successful_command": "docker compose up context-service",
+      "strategy": "Use Docker to isolate compiler and dependency versions.",
+      "outcome": "ok",
+      "result_preview": "Context service healthy on port 1933",
+      "is_first_success_on_branch": true,
+      "source_event_ids": [
+        "evt_c7c8afee2c39",
+        "evt_f54dbc5cf186",
+        "evt_221a49e4d0e9"
+      ],
+      "evidence_event_ids": [
+        "evt_c7c8afee2c39",
+        "evt_f54dbc5cf186",
+        "evt_221a49e4d0e9"
+      ],
+      "highlight_event_ids": [
+        "evt_221a49e4d0e9"
+      ]
+    },
+    {
+      "schema_version": "experience_mining.v1",
+      "pattern_id": "sp_a3b04b771c89",
+      "success_event_id": "evt_a3b04b771c89",
+      "branch_id": "main",
+      "successful_tool": "shell",
+      "successful_command": "python --version && cargo --version",
+      "strategy": "",
+      "outcome": "ok",
+      "result_preview": "Python and Rust toolchains found",
+      "is_first_success_on_branch": true,
+      "source_event_ids": [
+        "evt_d657e31d123e",
+        "evt_a3b04b771c89"
+      ],
+      "evidence_event_ids": [
+        "evt_d657e31d123e",
+        "evt_a3b04b771c89"
+      ],
+      "highlight_event_ids": [
+        "evt_a3b04b771c89"
+      ]
+    },
+    {
+      "schema_version": "experience_mining.v1",
+      "pattern_id": "sp_4d72894d3131",
+      "success_event_id": "evt_4d72894d3131",
+      "branch_id": "main",
+      "successful_tool": "shell",
+      "successful_command": "CC=clang cargo build --release",
+      "strategy": "Continue on main once to verify the same-branch repair rule: retry the build with clang first.",
+      "outcome": "ok",
+      "result_preview": "Main branch build succeeds with clang",
+      "is_first_success_on_branch": false,
+      "source_event_ids": [
+        "evt_d3938ed4ae43",
+        "evt_a913209baf37",
+        "evt_4d72894d3131"
+      ],
+      "evidence_event_ids": [
+        "evt_d3938ed4ae43",
+        "evt_a913209baf37",
+        "evt_4d72894d3131"
+      ],
+      "highlight_event_ids": [
+        "evt_4d72894d3131"
+      ]
+    },
+    {
+      "schema_version": "experience_mining.v1",
+      "pattern_id": "sp_689f6e56c57f",
+      "success_event_id": "evt_689f6e56c57f",
+      "branch_id": "main",
+      "successful_tool": "shell",
+      "successful_command": "curl -fsS http://127.0.0.1:1933/health",
+      "strategy": "Run a follow-up smoke test after the build; this is a later success and should not be linked as the direct repair for the build failure.",
+      "outcome": "ok",
+      "result_preview": "Smoke test passed after the build repair",
+      "is_first_success_on_branch": false,
+      "source_event_ids": [
+        "evt_c6a650958bb0",
+        "evt_1274729f03db",
+        "evt_689f6e56c57f"
+      ],
+      "evidence_event_ids": [
+        "evt_c6a650958bb0",
+        "evt_1274729f03db",
+        "evt_689f6e56c57f"
+      ],
+      "highlight_event_ids": [
+        "evt_689f6e56c57f"
+      ]
+    }
+  ],
+  "source_events": [
+    "evt_ae2dda6a4a79",
+    "evt_d657e31d123e",
+    "evt_a3b04b771c89",
+    "evt_faf5615bd247",
+    "evt_56d9e1995e6b",
+    "evt_c7c8afee2c39",
+    "evt_f54dbc5cf186",
+    "evt_221a49e4d0e9",
+    "evt_b64e8ba257b6"
+  ],
+  "created_at": "2026-07-30T10:49:40.015835+00:00",
+  "metadata": {
+    "event_count": 9
+  }
+}

@@ -1,0 +1,99 @@
+{
+  "view_name": "learned_skills",
+  "trajectory_id": "traj_c42b2c7c8db3",
+  "branch_id": "clang-attempt",
+  "content": [
+    {
+      "schema_version": "learned_skill.v1",
+      "skill_id": "skill_compiler_native_dependency_incompatibility_gcc_rejected_aws-lc-sys_generated",
+      "name": "Repair compiler or native dependency incompatibility",
+      "trigger": {
+        "failed_tool": "shell",
+        "failed_command_pattern": "cargo build --release",
+        "normalized_signature": "gcc rejected aws-lc-sys generated memcmp code",
+        "error_signature": "gcc 9.4 rejected aws-lc-sys generated memcmp code",
+        "likely_cause": "compiler or native dependency incompatibility"
+      },
+      "recommended_actions": [
+        {
+          "tool": "shell",
+          "command_template": "CC=clang cargo build --release",
+          "strategy": "Retry native build with CC=clang to bypass gcc 9.4.",
+          "outcome": "ok",
+          "primary_rule": "rollback_then_repair_first_success",
+          "judgment_label": "likely_repair",
+          "confidence": 0.9,
+          "reason": "The failure was caused by gcc 9.4 rejecting aws-lc-sys generated memcmp code. The repair candidate explicitly switches the compiler to clang (CC=clang) to bypass gcc 9.4, and the build succeeds. This directly addresses the compiler incompatibility cause."
+        }
+      ],
+      "avoid_actions": [
+        {
+          "command": "curl -fsS http://127.0.0.1:1933/health",
+          "tool": "shell",
+          "reason": "not_first_success_on_branch"
+        }
+      ],
+      "evidence_refs": [
+        {
+          "trajectory_id": "traj_c42b2c7c8db3",
+          "failure_event_id": "evt_c53ef13f2dd2",
+          "success_event_id": "evt_0fa4ba282802",
+          "primary_rule": "rollback_then_repair_first_success",
+          "judgment_label": "likely_repair"
+        },
+        {
+          "trajectory_id": "traj_c42b2c7c8db3",
+          "failure_event_id": "evt_c53ef13f2dd2",
+          "success_event_id": "evt_1b5e31703221",
+          "primary_rule": "branch_from_failure_first_success",
+          "judgment_label": "likely_repair"
+        },
+        {
+          "trajectory_id": "traj_c42b2c7c8db3",
+          "failure_event_id": "evt_c53ef13f2dd2",
+          "success_event_id": "evt_221a49e4d0e9",
+          "primary_rule": "rollback_then_repair_first_success",
+          "judgment_label": "likely_repair"
+        },
+        {
+          "trajectory_id": "traj_c42b2c7c8db3",
+          "failure_event_id": "evt_c53ef13f2dd2",
+          "success_event_id": "evt_4d72894d3131",
+          "primary_rule": "same_branch_first_success_after_failure",
+          "judgment_label": "likely_repair"
+        }
+      ],
+      "confidence": {
+        "support_count": 4,
+        "max_llm_confidence": 0.9,
+        "evidence_levels": [
+          "structural"
+        ]
+      },
+      "highlight_event_ids": [
+        "evt_c53ef13f2dd2",
+        "evt_0fa4ba282802",
+        "evt_1b5e31703221",
+        "evt_221a49e4d0e9",
+        "evt_4d72894d3131"
+      ]
+    }
+  ],
+  "source_events": [
+    "evt_ae2dda6a4a79",
+    "evt_d657e31d123e",
+    "evt_a3b04b771c89",
+    "evt_faf5615bd247",
+    "evt_56d9e1995e6b",
+    "evt_a912b3b24a1a",
+    "evt_5603bc94a603",
+    "evt_0fa4ba282802",
+    "evt_f97be4ae46ee",
+    "evt_136c62471d0f",
+    "evt_3973474a787f"
+  ],
+  "created_at": "2026-08-03T07:08:27.842961+00:00",
+  "metadata": {
+    "event_count": 11
+  }
+}

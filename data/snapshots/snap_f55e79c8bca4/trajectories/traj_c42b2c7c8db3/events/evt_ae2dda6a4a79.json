@@ -1,0 +1,16 @@
+{
+  "event_id": "evt_ae2dda6a4a79",
+  "trajectory_id": "traj_c42b2c7c8db3",
+  "branch_id": "main",
+  "event_type": "user_message",
+  "payload": {
+    "text": "Set up an agent context service and expose a stable ContextDB API."
+  },
+  "parent_event_ids": [],
+  "actor": "user",
+  "timestamp": "2026-07-30T08:13:19.710300+00:00",
+  "refs": {
+    "source_line": 1
+  },
+  "metadata": {}
+}

@@ -1,0 +1,20 @@
+{
+  "event_id": "evt_a3b04b771c89",
+  "trajectory_id": "traj_c42b2c7c8db3",
+  "branch_id": "main",
+  "event_type": "tool_result",
+  "payload": {
+    "status": "ok",
+    "exit_code": null,
+    "preview": "Python and Rust toolchains found"
+  },
+  "parent_event_ids": [
+    "evt_d657e31d123e"
+  ],
+  "actor": "tool",
+  "timestamp": "2026-07-30T08:13:19.719342+00:00",
+  "refs": {
+    "source_line": 3
+  },
+  "metadata": {}
+}

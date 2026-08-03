@@ -1,0 +1,74 @@
+{
+  "view_name": "failure_patterns",
+  "trajectory_id": "traj_c42b2c7c8db3",
+  "branch_id": "main",
+  "content": [
+    {
+      "schema_version": "experience_mining.v1",
+      "pattern_id": "fp_c53ef13f2dd2",
+      "failure_event_id": "evt_c53ef13f2dd2",
+      "branch_id": "main",
+      "failed_tool": "shell",
+      "failed_command": "cargo build --release",
+      "error_signature": "gcc 9.4 rejected aws-lc-sys generated memcmp code",
+      "normalized_signature": "gcc rejected aws-lc-sys generated memcmp code",
+      "preceding_action": "Try the native build path first.",
+      "likely_cause": "compiler or native dependency incompatibility",
+      "repair_status": "not_evaluated",
+      "repair_events_after_failure": [
+        {
+          "event_id": "evt_d3938ed4ae43",
+          "event_type": "assistant_message",
+          "summary": "assistant_message:Continue on main once to verify the same-branch repair rule: retry the build with clang first."
+        },
+        {
+          "event_id": "evt_a913209baf37",
+          "event_type": "tool_call",
+          "summary": "tool_call:CC=clang cargo build --release"
+        },
+        {
+          "event_id": "evt_4d72894d3131",
+          "event_type": "tool_result",
+          "summary": "tool_result:Main branch build succeeds with clang"
+        },
+        {
+          "event_id": "evt_c6a650958bb0",
+          "event_type": "assistant_message",
+          "summary": "assistant_message:Run a follow-up smoke test after the build; this is a later success and should not be linked as the direct repair for the build failure."
+        }
+      ],
+      "source_event_ids": [
+        "evt_8f7b2fbb1f6a",
+        "evt_de40ca30fa29",
+        "evt_c53ef13f2dd2"
+      ],
+      "evidence_event_ids": [
+        "evt_8f7b2fbb1f6a",
+        "evt_de40ca30fa29",
+        "evt_c53ef13f2dd2"
+      ],
+      "highlight_event_ids": [
+        "evt_c53ef13f2dd2"
+      ]
+    }
+  ],
+  "source_events": [
+    "evt_ae2dda6a4a79",
+    "evt_d657e31d123e",
+    "evt_a3b04b771c89",
+    "evt_faf5615bd247",
+    "evt_8f7b2fbb1f6a",
+    "evt_de40ca30fa29",
+    "evt_c53ef13f2dd2",
+    "evt_d3938ed4ae43",
+    "evt_a913209baf37",
+    "evt_4d72894d3131",
+    "evt_c6a650958bb0",
+    "evt_1274729f03db",
+    "evt_689f6e56c57f"
+  ],
+  "created_at": "2026-07-30T11:33:11.735647+00:00",
+  "metadata": {
+    "event_count": 13
+  }
+}

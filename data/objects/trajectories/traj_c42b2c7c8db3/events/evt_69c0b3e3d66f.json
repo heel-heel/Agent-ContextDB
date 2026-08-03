@@ -1,0 +1,19 @@
+{
+  "event_id": "evt_69c0b3e3d66f",
+  "trajectory_id": "traj_c42b2c7c8db3",
+  "branch_id": "direct-fix-from-failure",
+  "event_type": "tool_call",
+  "payload": {
+    "tool_name": "shell",
+    "command": "CC=clang cargo build --release --locked"
+  },
+  "parent_event_ids": [
+    "evt_34f0439d8c35"
+  ],
+  "actor": "agent",
+  "timestamp": "2026-07-30T08:13:19.768090+00:00",
+  "refs": {
+    "source_line": 11
+  },
+  "metadata": {}
+}

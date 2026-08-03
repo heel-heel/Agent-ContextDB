@@ -14,7 +14,7 @@ OpenViking focuses on a context database and virtual filesystem for organizing a
 - Trajectory DAG: branch-local events now include reachable ancestor events through `parent_event_ids`.
 - Versioning: snapshot, branch, rollback, branch-aware log, and semantic diff.
 - Query/View/Index: filters by trajectory, branch, type, actor, status, timestamp, and text containment.
-- Materialized views: memory, summary, failures, current_prompt, rl_dataset, failure_patterns, success_patterns, and repair_strategies.
+- Materialized views: memory, summary, failures, current_prompt, rl_dataset, failure_patterns, success_patterns, repair_strategies, semantic_repair_judgments, and learned_skills.
 - Streamed context loading: `current_prompt` returns summary + recent events + memory plus estimated token savings.
 - Graph API: `/api/v1/graph` returns nodes, parent edges, branches, snapshots, and materialized views.
 - Diff API: `/api/v1/diff` compares branches by event set, failure count, and summary view changes.
@@ -83,6 +83,12 @@ The adapter normalizes these records into `ContextEvent` objects and creates a t
 
 `repair_strategies` links failures to successes using deterministic structural rules such as same-branch-first-success-after-failure, branch-from-failure-first-success, branch-from-failure-ancestor-first-success, rollback-then-repair-first-success, and same-tool-command-variant. The output includes explicit evidence instead of an opaque similarity score; command variants are supporting evidence and do not create repair links by themselves.
 
+The experience-mining views use the stable `experience_mining.v1` schema for the UI layer. `failure_patterns` includes `normalized_signature`, `source_event_ids`, `evidence_event_ids`, and core `highlight_event_ids`. `success_patterns` includes `is_first_success_on_branch` and highlight metadata. `repair_strategies` keeps the old `repairs` field for compatibility and also exposes `repair_candidates`, `repair_status`, `candidate_count`, `excluded_successes`, `why_linked`, `highlight_event_ids`, `highlight_branch_ids`, and a placeholder `semantic_judge` object for optional future LLM judging.
+
+`semantic_repair_judgments` optionally calls a real LLM to judge whether each structural repair candidate is semantically a likely repair, partial repair, validation-only action, unrelated success, or insufficient-context case. By default it is disabled for reproducible offline demos. To use Alibaba Cloud Bailian/Qwen through the OpenAI-compatible API, set `CONTEXTDB_LLM_PROVIDER=qwen`, `DASHSCOPE_API_KEY=<key>`, `CONTEXTDB_LLM_MODEL=qwen3.7-max`, and `CONTEXTDB_LLM_BASE_URL=https://ws-5jkepnkdq4vt4m5c.cn-beijing.maas.aliyuncs.com/compatible-mode/v1`. For offline UI testing, set `CONTEXTDB_LLM_PROVIDER=mock`.
+
+`learned_skills` materializes reusable agent skills from repair candidates that pass the semantic judgment layer. Each skill contains a trigger, recommended actions, avoid/validation-only actions, confidence metadata, and evidence references back to the trajectory.
+
 ### Live agent client
 
 Agents can also write events while they run through the HTTP API using the standard-library client:
@@ -115,6 +121,8 @@ contextdb query-view <trajectory_id> current_prompt --branch clang-attempt
 contextdb query-view <trajectory_id> failure_patterns --branch main
 contextdb query-view <trajectory_id> success_patterns
 contextdb query-view <trajectory_id> repair_strategies
+contextdb query-view <trajectory_id> semantic_repair_judgments
+contextdb query-view <trajectory_id> learned_skills
 contextdb diff <trajectory_id> docker-attempt clang-attempt
 contextdb snapshot <trajectory_id> --branch main --message "before risky action"
 ```

@@ -1,0 +1,23 @@
+{
+  "view_name": "failures",
+  "trajectory_id": "traj_c42b2c7c8db3",
+  "branch_id": "clang-attempt",
+  "content": [],
+  "source_events": [
+    "evt_ae2dda6a4a79",
+    "evt_d657e31d123e",
+    "evt_a3b04b771c89",
+    "evt_faf5615bd247",
+    "evt_56d9e1995e6b",
+    "evt_a912b3b24a1a",
+    "evt_5603bc94a603",
+    "evt_0fa4ba282802",
+    "evt_f97be4ae46ee",
+    "evt_136c62471d0f",
+    "evt_3973474a787f"
+  ],
+  "created_at": "2026-08-03T07:15:05.788706+00:00",
+  "metadata": {
+    "event_count": 11
+  }
+}

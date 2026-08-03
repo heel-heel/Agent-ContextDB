@@ -1,0 +1,18 @@
+{
+  "event_id": "evt_34f0439d8c35",
+  "trajectory_id": "traj_c42b2c7c8db3",
+  "branch_id": "direct-fix-from-failure",
+  "event_type": "assistant_message",
+  "payload": {
+    "text": "Branch directly from the failed build event and try a locked clang build."
+  },
+  "parent_event_ids": [
+    "evt_c53ef13f2dd2"
+  ],
+  "actor": "agent",
+  "timestamp": "2026-07-30T08:13:19.762401+00:00",
+  "refs": {
+    "source_line": 10
+  },
+  "metadata": {}
+}

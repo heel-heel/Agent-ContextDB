@@ -1,0 +1,20 @@
+{
+  "event_id": "evt_3973474a787f",
+  "trajectory_id": "traj_c42b2c7c8db3",
+  "branch_id": "clang-attempt",
+  "event_type": "tool_result",
+  "payload": {
+    "status": "ok",
+    "exit_code": null,
+    "preview": "Clang branch smoke test passed after native repair"
+  },
+  "parent_event_ids": [
+    "evt_136c62471d0f"
+  ],
+  "actor": "tool",
+  "timestamp": "2026-07-30T08:13:19.882648+00:00",
+  "refs": {
+    "source_line": 35
+  },
+  "metadata": {}
+}

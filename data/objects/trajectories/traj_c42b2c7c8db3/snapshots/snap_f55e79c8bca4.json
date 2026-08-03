@@ -1,0 +1,18 @@
+{
+  "snapshot_id": "snap_f55e79c8bca4",
+  "trajectory_id": "traj_c42b2c7c8db3",
+  "branch_id": "main",
+  "event_id": "evt_faf5615bd247",
+  "message": "clean environment inspected",
+  "object_keys": [
+    "trajectories/traj_c42b2c7c8db3/branches/main",
+    "trajectories/traj_c42b2c7c8db3/events/evt_a3b04b771c89",
+    "trajectories/traj_c42b2c7c8db3/events/evt_ae2dda6a4a79",
+    "trajectories/traj_c42b2c7c8db3/events/evt_d657e31d123e",
+    "trajectories/traj_c42b2c7c8db3/events/evt_faf5615bd247",
+    "trajectories/traj_c42b2c7c8db3/meta",
+    "trajectories/traj_c42b2c7c8db3/snapshots/snap_f55e79c8bca4"
+  ],
+  "created_at": "2026-07-30T08:13:19.730063+00:00",
+  "metadata": {}
+}

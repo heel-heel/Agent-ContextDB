@@ -1,0 +1,18 @@
+{
+  "event_id": "evt_da4666b2de05",
+  "trajectory_id": "traj_c42b2c7c8db3",
+  "branch_id": "direct-fix-from-failure",
+  "event_type": "assistant_message",
+  "payload": {
+    "text": "Run regression tests after the direct repair; this later success should not become another direct repair link."
+  },
+  "parent_event_ids": [
+    "evt_1b5e31703221"
+  ],
+  "actor": "agent",
+  "timestamp": "2026-07-30T08:13:19.778051+00:00",
+  "refs": {
+    "source_line": 13
+  },
+  "metadata": {}
+}

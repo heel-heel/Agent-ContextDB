@@ -7,6 +7,7 @@ from typing import Any, Dict, List, Optional, Set, Tuple
 from .models import Branch, ContextEvent, Snapshot, Trajectory, View, new_id, to_dict, utc_now
 from .store import SQLiteStore
 from . import uris
+from .llm_judge import SemanticRepairJudge
 
 
 FAILURE_STATUSES = {"failed", "error", "timeout"}
@@ -147,6 +148,10 @@ class ContextDB:
             content = self.success_patterns(trajectory_id)
         elif view_name == "repair_strategies":
             content = self.repair_strategies(trajectory_id)
+        elif view_name == "semantic_repair_judgments":
+            content = self.semantic_repair_judgments(trajectory_id)
+        elif view_name == "learned_skills":
+            content = self.learned_skills(trajectory_id)
         elif view_name == "current_prompt":
             recent = events[-8:]
             memory = [e["payload"] for e in events if e.get("event_type") == "memory_update"][-5:]
@@ -271,17 +276,25 @@ class ContextDB:
             assistant = self._previous_event(events, i, "assistant_message")
             repair_events = self._following_repair_events(events, i)
             signature = self._result_signature(event)
-            patterns.append({
+            normalized_signature = self._normalize_signature(signature)
+            pattern = {
+                "schema_version": "experience_mining.v1",
                 "pattern_id": f"fp_{event['event_id'].split('_')[-1]}",
                 "failure_event_id": event["event_id"],
                 "branch_id": event.get("branch_id"),
                 "failed_tool": self._tool_name(tool_call),
                 "failed_command": self._command_text(tool_call),
                 "error_signature": signature,
+                "normalized_signature": normalized_signature,
                 "preceding_action": self._payload_text(assistant),
                 "likely_cause": self._infer_likely_cause(signature),
+                "repair_status": "not_evaluated",
                 "repair_events_after_failure": repair_events,
-            })
+                "source_event_ids": self._compact_ids([assistant, tool_call, event]),
+                "evidence_event_ids": self._compact_ids([assistant, tool_call, event]),
+                "highlight_event_ids": self._compact_ids([event]),
+            }
+            patterns.append(pattern)
         return patterns
 
     def success_patterns(self, trajectory_id: str) -> List[Dict[str, Any]]:
@@ -289,11 +302,15 @@ class ContextDB:
         patterns = []
         for branch_id, events in events_by_branch.items():
             for i, event in enumerate(events):
+                if event.get("branch_id") != branch_id:
+                    continue
                 if not self._is_success_tool_result(event):
                     continue
                 tool_call = self._previous_event(events, i, "tool_call")
                 assistant = self._previous_event(events, i, "assistant_message")
+                is_first = self._is_first_success_on_branch(trajectory_id, branch_id, event["event_id"])
                 patterns.append({
+                    "schema_version": "experience_mining.v1",
                     "pattern_id": f"sp_{event['event_id'].split('_')[-1]}",
                     "success_event_id": event["event_id"],
                     "branch_id": branch_id,
@@ -302,6 +319,10 @@ class ContextDB:
                     "strategy": self._payload_text(assistant),
                     "outcome": event.get("payload", {}).get("status"),
                     "result_preview": event.get("payload", {}).get("preview", ""),
+                    "is_first_success_on_branch": is_first,
+                    "source_event_ids": self._compact_ids([assistant, tool_call, event]),
+                    "evidence_event_ids": self._compact_ids([assistant, tool_call, event]),
+                    "highlight_event_ids": self._compact_ids([event]),
                 })
         return patterns
 
@@ -315,47 +336,182 @@ class ContextDB:
         snapshots = {s["snapshot_id"]: s for s in self._snapshots(trajectory_id)}
         strategies = []
         seen = set()
+        seen_failures = set()
         for failure in failures:
+            if failure["failure_event_id"] in seen_failures:
+                continue
+            seen_failures.add(failure["failure_event_id"])
             failure_event = events.get(failure["failure_event_id"])
             if not failure_event:
                 continue
-            repairs = []
+            repair_candidates = []
+            excluded_successes = []
             for success in successes:
                 success_event = events.get(success["success_event_id"])
                 if not success_event:
                     continue
                 evidence = self._repair_link_evidence(failure_event, success_event, branches, snapshots, trajectory_id)
-                structural_evidence = [item for item in evidence if item.get("strength") == "structural"]
-                if not structural_evidence:
-                    continue
+                primary_evidence = self._primary_repair_evidence(evidence)
                 key = (failure["failure_event_id"], success["success_event_id"])
-                if key in seen:
+                if primary_evidence and key not in seen:
+                    seen.add(key)
+                    candidate = {
+                        "schema_version": "experience_mining.v1",
+                        "branch_id": success["branch_id"],
+                        "success_event_id": success["success_event_id"],
+                        "strategy": success.get("strategy"),
+                        "tool": success.get("successful_tool"),
+                        "command": success.get("successful_command"),
+                        "outcome": success.get("outcome"),
+                        "primary_rule": primary_evidence.get("rule"),
+                        "link_type": primary_evidence.get("rule"),
+                        "strength": primary_evidence.get("strength"),
+                        "why_linked": self._why_linked(primary_evidence),
+                        "evidence": evidence,
+                        "evidence_event_ids": self._highlight_event_ids(failure_event, success_event, evidence),
+                        "highlight_event_ids": self._compact_ids([failure_event, success_event]),
+                        "highlight_branch_ids": [],
+                    }
+                    repair_candidates.append(candidate)
                     continue
-                seen.add(key)
-                repairs.append({
-                    "branch_id": success["branch_id"],
-                    "success_event_id": success["success_event_id"],
-                    "strategy": success.get("strategy"),
-                    "tool": success.get("successful_tool"),
-                    "command": success.get("successful_command"),
-                    "outcome": success.get("outcome"),
-                    "link_type": evidence[0]["rule"],
-                    "evidence": evidence,
-                })
-            if repairs:
-                strategies.append({
-                    "failure": {
-                        "failure_event_id": failure["failure_event_id"],
-                        "branch_id": failure["branch_id"],
-                        "command": failure.get("failed_command"),
-                        "tool": failure.get("failed_tool"),
-                        "error_signature": failure.get("error_signature"),
-                        "preceding_action": failure.get("preceding_action"),
-                        "likely_cause": failure.get("likely_cause"),
-                    },
-                    "repairs": repairs,
-                })
+                exclusion = self._excluded_success(failure_event, success_event, success, evidence, trajectory_id)
+                if exclusion:
+                    excluded_successes.append(exclusion)
+            failure_summary = {
+                "failure_event_id": failure["failure_event_id"],
+                "branch_id": failure["branch_id"],
+                "command": failure.get("failed_command"),
+                "tool": failure.get("failed_tool"),
+                "error_signature": failure.get("error_signature"),
+                "normalized_signature": failure.get("normalized_signature"),
+                "preceding_action": failure.get("preceding_action"),
+                "likely_cause": failure.get("likely_cause"),
+                "evidence_event_ids": failure.get("evidence_event_ids", failure.get("source_event_ids", [])),
+                "highlight_event_ids": failure.get("highlight_event_ids", []),
+            }
+            status = "resolved_candidate" if repair_candidates else "unresolved"
+            strategies.append({
+                "schema_version": "experience_mining.v1",
+                "failure": failure_summary,
+                "repair_status": status,
+                "candidate_count": len(repair_candidates),
+                "repair_candidates": repair_candidates,
+                "repairs": repair_candidates,
+                "excluded_successes": excluded_successes[:20],
+                "highlight_event_ids": self._dedupe_ids(
+                    failure_summary.get("highlight_event_ids", [])
+                    + [event_id for candidate in repair_candidates for event_id in candidate.get("highlight_event_ids", [])]
+                ),
+                "highlight_branch_ids": self._dedupe_ids(
+                    [failure.get("branch_id")]
+                    + [branch_id for candidate in repair_candidates for branch_id in candidate.get("highlight_branch_ids", [])]
+                ),
+                "semantic_judge": {"enabled": False, "label": "not_evaluated"},
+            })
         return strategies
+
+    def semantic_repair_judgments(self, trajectory_id: str) -> List[Dict[str, Any]]:
+        judge = SemanticRepairJudge()
+        rows = []
+        for group in self.repair_strategies(trajectory_id):
+            failure = group.get("failure", {})
+            for candidate in group.get("repair_candidates", group.get("repairs", [])):
+                judgment = judge.judge(failure, candidate)
+                rows.append({
+                    "schema_version": "semantic_repair_judgment.v1",
+                    "trajectory_id": trajectory_id,
+                    "failure_event_id": failure.get("failure_event_id"),
+                    "success_event_id": candidate.get("success_event_id"),
+                    "failure": failure,
+                    "repair_candidate": candidate,
+                    "structural_rule": candidate.get("primary_rule") or candidate.get("link_type"),
+                    "judgment": judgment,
+                    "highlight_event_ids": self._dedupe_ids([failure.get("failure_event_id"), candidate.get("success_event_id")]),
+                })
+        return rows
+
+    def learned_skills(self, trajectory_id: str) -> List[Dict[str, Any]]:
+        judgments = self.semantic_repair_judgments(trajectory_id)
+        grouped: Dict[str, Dict[str, Any]] = {}
+        for row in judgments:
+            failure = row.get("failure", {})
+            candidate = row.get("repair_candidate", {})
+            judgment = row.get("judgment", {})
+            if not self._judgment_recommends_skill(judgment):
+                continue
+            key = self._skill_key(failure)
+            skill = grouped.setdefault(key, {
+                "schema_version": "learned_skill.v1",
+                "skill_id": key,
+                "name": self._skill_name(failure),
+                "trigger": {
+                    "failed_tool": failure.get("tool"),
+                    "failed_command_pattern": failure.get("command"),
+                    "normalized_signature": failure.get("normalized_signature"),
+                    "error_signature": failure.get("error_signature"),
+                    "likely_cause": failure.get("likely_cause"),
+                },
+                "recommended_actions": [],
+                "avoid_actions": [],
+                "evidence_refs": [],
+                "confidence": {"support_count": 0, "max_llm_confidence": 0.0, "evidence_levels": []},
+                "highlight_event_ids": [],
+            })
+            action = {
+                "tool": candidate.get("tool"),
+                "command_template": candidate.get("command"),
+                "strategy": candidate.get("strategy"),
+                "outcome": candidate.get("outcome"),
+                "primary_rule": candidate.get("primary_rule") or candidate.get("link_type"),
+                "judgment_label": judgment.get("label"),
+                "confidence": judgment.get("confidence", 0.0),
+                "reason": judgment.get("reason"),
+            }
+            if not self._has_action(skill["recommended_actions"], action):
+                skill["recommended_actions"].append(action)
+            skill["evidence_refs"].append({
+                "trajectory_id": trajectory_id,
+                "failure_event_id": row.get("failure_event_id"),
+                "success_event_id": row.get("success_event_id"),
+                "primary_rule": candidate.get("primary_rule") or candidate.get("link_type"),
+                "judgment_label": judgment.get("label"),
+            })
+            skill["confidence"]["support_count"] += 1
+            skill["confidence"]["max_llm_confidence"] = max(skill["confidence"].get("max_llm_confidence", 0.0), float(judgment.get("confidence", 0.0) or 0.0))
+            level = candidate.get("strength") or "unknown"
+            if level not in skill["confidence"]["evidence_levels"]:
+                skill["confidence"]["evidence_levels"].append(level)
+            skill["highlight_event_ids"] = self._dedupe_ids(skill["highlight_event_ids"] + row.get("highlight_event_ids", []))
+            for excluded in self._excluded_for_failure(trajectory_id, failure.get("failure_event_id")):
+                avoid = {"command": excluded.get("command"), "tool": excluded.get("tool"), "reason": excluded.get("reason")}
+                if avoid.get("command") and not self._has_action(skill["avoid_actions"], avoid):
+                    skill["avoid_actions"].append(avoid)
+        return list(grouped.values())
+
+    def _judgment_recommends_skill(self, judgment: Dict[str, Any]) -> bool:
+        if judgment.get("enabled"):
+            return judgment.get("label") in {"likely_repair", "partial_repair"} and bool(judgment.get("recommended_for_skill"))
+        return True
+
+    def _skill_key(self, failure: Dict[str, Any]) -> str:
+        base = " ".join(str(x or "") for x in [failure.get("likely_cause"), failure.get("normalized_signature"), failure.get("command")]).lower()
+        tokens = [part.strip("-_") for part in base.replace("/", " ").replace("=", " ").split() if len(part.strip("-_")) > 2]
+        return "skill_" + "_".join(tokens[:8] or ["agent_repair"])
+
+    def _skill_name(self, failure: Dict[str, Any]) -> str:
+        cause = failure.get("likely_cause") or "agent task failure"
+        return "Repair " + str(cause)
+
+    def _has_action(self, actions: List[Dict[str, Any]], action: Dict[str, Any]) -> bool:
+        return any(existing.get("command_template") == action.get("command_template") or existing.get("command") == action.get("command") for existing in actions)
+
+    def _excluded_for_failure(self, trajectory_id: str, failure_event_id: Optional[str]) -> List[Dict[str, Any]]:
+        if not failure_event_id:
+            return []
+        for group in self.repair_strategies(trajectory_id):
+            if group.get("failure", {}).get("failure_event_id") == failure_event_id:
+                return group.get("excluded_successes", [])
+        return []
 
     def _repair_link_evidence(self, failure_event: Dict[str, Any], success_event: Dict[str, Any], branches: Dict[str, Dict[str, Any]], snapshots: Dict[str, Dict[str, Any]], trajectory_id: str) -> List[Dict[str, Any]]:
         evidence = []
@@ -377,6 +533,7 @@ class ContextDB:
                 evidence.append({
                     "rule": "same_branch_first_success_after_failure",
                     "strength": "structural",
+                    "evidence_level": "primary_structural",
                     "branch_id": failure_branch,
                     "failure_event_id": failure_id,
                     "success_event_id": success_id,
@@ -384,11 +541,26 @@ class ContextDB:
         success_branch_obj = branches.get(success_branch, {})
         success_is_first_on_branch = self._is_first_success_on_branch(trajectory_id, success_branch, success_id) if success_branch else False
         if success_branch_obj.get("base_event_id") == failure_id and success_is_first_on_branch:
-            evidence.append({"rule": "branch_from_failure_first_success", "strength": "structural", "repair_branch": success_branch, "base_event_id": failure_id, "success_event_id": success_id})
+            evidence.append({
+                "rule": "branch_from_failure_first_success",
+                "strength": "structural",
+                "evidence_level": "primary_structural",
+                "repair_branch": success_branch,
+                "base_event_id": failure_id,
+                "success_event_id": success_id,
+            })
         failure_ancestors = self._reachable_event_ids(trajectory_id, failure_id)
         base_event_id = success_branch_obj.get("base_event_id")
         if base_event_id and base_event_id in failure_ancestors and base_event_id != failure_id and success_is_first_on_branch:
-            evidence.append({"rule": "branch_from_failure_ancestor_first_success", "strength": "structural", "repair_branch": success_branch, "base_event_id": base_event_id, "failure_event_id": failure_id, "success_event_id": success_id})
+            evidence.append({
+                "rule": "branch_from_failure_ancestor_first_success",
+                "strength": "structural",
+                "evidence_level": "weak_structural",
+                "repair_branch": success_branch,
+                "base_event_id": base_event_id,
+                "failure_event_id": failure_id,
+                "success_event_id": success_id,
+            })
         from_branch = success_branch_obj.get("metadata", {}).get("from_branch")
         rollback_branch = branches.get(from_branch or "", {})
         rollback_snapshot_id = rollback_branch.get("metadata", {}).get("rollback_from")
@@ -397,17 +569,112 @@ class ContextDB:
             evidence.append({
                 "rule": "rollback_then_repair_first_success",
                 "strength": "structural",
+                "evidence_level": "primary_structural",
                 "rollback_branch": from_branch,
                 "repair_branch": success_branch,
                 "snapshot_id": rollback_snapshot_id,
                 "snapshot_event_id": rollback_snapshot.get("event_id"),
                 "failure_event_id": failure_id,
+                "success_event_id": success_id,
             })
         failed_call = self._previous_event(self.list_events(trajectory_id, failure_branch), self._index_in_branch(trajectory_id, failure_branch, failure_id), "tool_call") if failure_branch else None
         success_call = self._previous_event(self.list_events(trajectory_id, success_branch), self._index_in_branch(trajectory_id, success_branch, success_id), "tool_call") if success_branch else None
         if failed_call and success_call and self._tool_name(failed_call) == self._tool_name(success_call) and self._commands_overlap(self._command_text(failed_call), self._command_text(success_call)):
-            evidence.append({"rule": "same_tool_command_variant", "strength": "supporting", "failed_command": self._command_text(failed_call), "successful_command": self._command_text(success_call)})
+            evidence.append({
+                "rule": "same_tool_command_variant",
+                "strength": "supporting",
+                "evidence_level": "supporting",
+                "failed_command": self._command_text(failed_call),
+                "successful_command": self._command_text(success_call),
+            })
         return evidence
+
+    def _primary_repair_evidence(self, evidence: List[Dict[str, Any]]) -> Optional[Dict[str, Any]]:
+        priority = {
+            "rollback_then_repair_first_success": 0,
+            "branch_from_failure_first_success": 1,
+            "same_branch_first_success_after_failure": 2,
+            "branch_from_failure_ancestor_first_success": 3,
+        }
+        structural = [item for item in evidence if item.get("strength") == "structural"]
+        if not structural:
+            return None
+        return sorted(structural, key=lambda item: priority.get(item.get("rule", ""), 99))[0]
+
+    def _why_linked(self, evidence: Dict[str, Any]) -> str:
+        rule = evidence.get("rule")
+        if rule == "same_branch_first_success_after_failure":
+            return "The success is the first successful tool result after the failure on the same branch."
+        if rule == "branch_from_failure_first_success":
+            return "The repair branch was created directly from the failed event, and this is the first success on that branch."
+        if rule == "branch_from_failure_ancestor_first_success":
+            return "The repair branch was created from an ancestor of the failed event, and this is the first success on that branch."
+        if rule == "rollback_then_repair_first_success":
+            return "The repair branch comes from a rollback branch whose snapshot is on the failed event ancestry, and this is the first success on the repair branch."
+        return "The candidate has deterministic trajectory evidence."
+
+    def _excluded_success(self, failure_event: Dict[str, Any], success_event: Dict[str, Any], success: Dict[str, Any], evidence: List[Dict[str, Any]], trajectory_id: str) -> Optional[Dict[str, Any]]:
+        if success_event.get("timestamp", "") <= failure_event.get("timestamp", ""):
+            return None
+        branch_id = success.get("branch_id")
+        success_event_id = success.get("success_event_id")
+        is_first = self._is_first_success_on_branch(trajectory_id, branch_id, success_event_id) if branch_id and success_event_id else False
+        if any(item.get("strength") == "supporting" for item in evidence):
+            reason = "supporting_only"
+        elif not is_first:
+            reason = "not_first_success_on_branch"
+        else:
+            reason = "no_structural_evidence"
+        if reason == "no_structural_evidence" and not evidence:
+            return None
+        return {
+            "success_event_id": success_event_id,
+            "branch_id": branch_id,
+            "command": success.get("successful_command"),
+            "tool": success.get("successful_tool"),
+            "outcome": success.get("outcome"),
+            "reason": reason,
+            "evidence": evidence,
+        }
+
+    def _highlight_event_ids(self, failure_event: Dict[str, Any], success_event: Dict[str, Any], evidence: List[Dict[str, Any]]) -> List[str]:
+        ids = [failure_event.get("event_id"), success_event.get("event_id")]
+        for item in evidence:
+            ids.extend([
+                item.get("failure_event_id"),
+                item.get("success_event_id"),
+                item.get("base_event_id"),
+                item.get("snapshot_event_id"),
+            ])
+        return self._dedupe_ids(ids)
+
+    def _highlight_branch_ids(self, failure_event: Dict[str, Any], success_event: Dict[str, Any], evidence: List[Dict[str, Any]]) -> List[str]:
+        ids = [failure_event.get("branch_id"), success_event.get("branch_id")]
+        for item in evidence:
+            ids.extend([item.get("branch_id"), item.get("rollback_branch"), item.get("repair_branch")])
+        return self._dedupe_ids(ids)
+
+    def _compact_ids(self, events: List[Optional[Dict[str, Any]]]) -> List[str]:
+        return self._dedupe_ids([event.get("event_id") for event in events if event])
+
+    def _dedupe_ids(self, values: List[Optional[str]]) -> List[str]:
+        seen = set()
+        result = []
+        for value in values:
+            if not value or value in seen:
+                continue
+            seen.add(value)
+            result.append(value)
+        return result
+
+    def _normalize_signature(self, signature: str) -> str:
+        lowered = signature.lower()
+        cleaned = []
+        for token in lowered.replace("/", " ").replace("\\", " ").replace(":", " ").split():
+            if any(ch.isdigit() for ch in token) and not token.startswith("gcc"):
+                continue
+            cleaned.append(token.strip(".,;()[]{}"))
+        return " ".join(cleaned[:24])
 
     def _events_by_branch(self, trajectory_id: str) -> Dict[str, List[Dict[str, Any]]]:
         return {b["branch_id"]: self.list_events(trajectory_id, b["branch_id"]) for b in self._branches(trajectory_id)}

@@ -1,0 +1,21 @@
+{
+  "view_name": "failure_patterns",
+  "trajectory_id": "traj_c42b2c7c8db3",
+  "branch_id": "docker-attempt",
+  "content": [],
+  "source_events": [
+    "evt_ae2dda6a4a79",
+    "evt_d657e31d123e",
+    "evt_a3b04b771c89",
+    "evt_faf5615bd247",
+    "evt_56d9e1995e6b",
+    "evt_c7c8afee2c39",
+    "evt_f54dbc5cf186",
+    "evt_221a49e4d0e9",
+    "evt_b64e8ba257b6"
+  ],
+  "created_at": "2026-07-30T09:24:41.534869+00:00",
+  "metadata": {
+    "event_count": 9
+  }
+}
