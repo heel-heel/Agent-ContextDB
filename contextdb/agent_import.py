@@ -1,16 +1,25 @@
 from __future__ import annotations
 
+import json
 from pathlib import Path
 from typing import Any, Dict
 
-from .adapters import GenericJSONLAdapter, TraceAdapter
+from .adapters import CodexJSONLAdapter, GenericJSONLAdapter, SWEAgentLLMAnnotatedTrajectoryAdapter, SWEAgentTrajectoryAdapter, TraceAdapter
 from .service import ContextDB
 
 
 ADAPTERS = {
+    "codex-jsonl": CodexJSONLAdapter,
+    "codex": CodexJSONLAdapter,
     "generic-jsonl": GenericJSONLAdapter,
     "jsonl": GenericJSONLAdapter,
     "generic": GenericJSONLAdapter,
+    "swe-agent-traj": SWEAgentTrajectoryAdapter,
+    "swe-agent": SWEAgentTrajectoryAdapter,
+    "swe": SWEAgentTrajectoryAdapter,
+    "swe-agent-traj-llm": SWEAgentLLMAnnotatedTrajectoryAdapter,
+    "swe-agent-llm": SWEAgentLLMAnnotatedTrajectoryAdapter,
+    "swe-llm": SWEAgentLLMAnnotatedTrajectoryAdapter,
 }
 
 
@@ -20,6 +29,57 @@ def get_adapter(source: str) -> TraceAdapter:
     except KeyError as exc:
         available = ", ".join(sorted(ADAPTERS))
         raise ValueError(f"unknown trace source '{source}'. available: {available}") from exc
+
+
+def normalize_trace_to_jsonl(path: str | Path, out_path: str | Path, source: str = "generic-jsonl", branch_id: str = "main", agent_id: str = "external-agent") -> Dict[str, Any]:
+    """Normalize a framework trace into ContextDB generic JSONL without importing it.
+
+    The output can be consumed by GenericJSONLAdapter, so downstream commands can
+    use `import-trace --source generic-jsonl` or `demo --trace` without touching
+    the original framework-specific format again.
+    """
+    adapter = get_adapter(source)
+    raw_trace = adapter.load(path)
+    output = Path(out_path)
+    output.parent.mkdir(parents=True, exist_ok=True)
+    count = 0
+    first_type = None
+    last_type = None
+    with output.open("w", encoding="utf-8") as fh:
+        for index, event in enumerate(adapter.iter_events(raw_trace), start=1):
+            record = {
+                "event_type": event.event_type,
+                "payload": event.payload,
+                "actor": event.actor,
+                "branch_id": event.branch_id if event.branch_id != "main" or branch_id == "main" else branch_id,
+                "refs": event.refs,
+                "metadata": {
+                    **event.metadata,
+                    "normalized_from": str(path),
+                    "normalizer_source": adapter.source_name,
+                    "normalizer_event_index": index,
+                    "agent_id": agent_id,
+                },
+            }
+            if event.parent_event_ids:
+                record["parent_event_ids"] = event.parent_event_ids
+            if event.timestamp:
+                record["timestamp"] = event.timestamp
+            fh.write(json.dumps(record, ensure_ascii=False) + "\n")
+            count += 1
+            first_type = first_type or event.event_type
+            last_type = event.event_type
+    return {
+        "source_path": str(path),
+        "out_path": str(output),
+        "source": adapter.source_name,
+        "output_source": "generic-jsonl",
+        "agent_id": agent_id,
+        "branch_id": branch_id,
+        "event_count": count,
+        "first_event_type": first_type,
+        "last_event_type": last_type,
+    }
 
 
 def import_trace(path: str | Path, root: str = "data", source: str = "generic-jsonl", title: str | None = None, agent_id: str = "external-agent", branch_id: str = "main") -> Dict[str, Any]:
@@ -50,7 +110,7 @@ def import_trace(path: str | Path, root: str = "data", source: str = "generic-js
         )
         imported.append(event)
     db.query_view(tid, "summary", branch_id)
-    db.query_view(tid, "failures", branch_id)
+    #db.query_view(tid, "failures", branch_id)
     db.query_view(tid, "current_prompt", branch_id)
     return {
         "trajectory_id": tid,
@@ -125,6 +185,21 @@ def replay_trace(path: str | Path, root: str = "data", source: str = "generic-js
             base_event_id = record.get("base_event_id") or last_event_by_branch.get(from_branch)
             branch = db.create_branch(tid, new_branch, base_event_id=base_event_id, from_branch=from_branch)
             operations.append({"op": "branch", "branch_id": branch["branch_id"], "from_branch": from_branch})
+        elif op == "materialize_skills":
+            view_branch = record.get("branch_id", branch_id)
+            view = db.query_view(tid, "learned_skills", view_branch)
+            operations.append({"op": "materialize_skills", "branch_id": view_branch, "skill_count": len(view.get("content", []))})
+        elif op == "apply_skill":
+            failure = record.get("failure") or {}
+            target_branch = record.get("branch_id", branch_id)
+            result = db.apply_skill(
+                tid,
+                failure,
+                branch_id=target_branch,
+                top_k=int(record.get("top_k", 1)),
+                outcome_status=record.get("outcome_status", "ok"),
+            )
+            operations.append({"op": "apply_skill", "branch_id": target_branch, "match_event_id": result.get("match_event_id"), "result_event_id": result.get("result_event_id")})
         else:
             raise ValueError(f"unknown trace operation: {op}")
 

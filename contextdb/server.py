@@ -67,6 +67,10 @@ def make_handler(db: ContextDB):
                     self._send(200, db.query(body))
                 elif parsed.path == "/api/v1/query_view":
                     self._send(200, db.query_view(**body))
+                elif parsed.path == "/api/v1/sql":
+                    self._send(200, db.query_sql(**body))
+                elif parsed.path == "/api/v1/nl_sql":
+                    self._send(200, db.translate_natural_language_sql(**body))
                 elif parsed.path == "/api/v1/branches":
                     self._send(200, db.create_branch(**body))
                 elif parsed.path == "/api/v1/snapshots":
@@ -79,6 +83,12 @@ def make_handler(db: ContextDB):
                     self._send(200, db.stream_context(**body))
                 elif parsed.path == "/api/v1/export_rl_dataset":
                     self._send(200, db.export_rl_dataset(**body))
+                elif parsed.path == "/api/v1/match_skill":
+                    self._send(200, db.match_skill(**body))
+                elif parsed.path == "/api/v1/apply_skill":
+                    self._send(200, db.apply_skill(**body))
+                elif parsed.path == "/api/v1/retrieve_for_failure":
+                    self._send(200, db.retrieve_for_failure(**body))
                 else:
                     self._send(404, {"error": "not found"})
             except Exception as exc:

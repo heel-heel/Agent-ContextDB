@@ -33,6 +33,9 @@ class ContextDBClient:
     def log_tool_result(self, trajectory_id: str, status: str, preview: str = "", exit_code: Optional[int] = None, branch_id: str = "main") -> Dict[str, Any]:
         return self.append_event(trajectory_id, "tool_result", {"status": status, "preview": preview, "exit_code": exit_code}, branch_id=branch_id, actor="tool")
 
+    def retrieve_for_failure(self, trajectory_id: str, failure: Dict[str, Any], branch_id: str = "main", source_event_id: Optional[str] = None) -> Dict[str, Any]:
+        return self._post("/api/v1/retrieve_for_failure", {"trajectory_id": trajectory_id, "failure": failure, "branch_id": branch_id, "source_event_id": source_event_id})
+
     def query_view(self, trajectory_id: str, view_name: str, branch_id: str = "main", token_budget: int = 4000) -> Dict[str, Any]:
         return self._post("/api/v1/query_view", {"trajectory_id": trajectory_id, "view_name": view_name, "branch_id": branch_id, "token_budget": token_budget})
 
