@@ -1,0 +1,21 @@
+{
+  "view_name": "summary",
+  "trajectory_id": "traj_eed26b4d3304",
+  "branch_id": "docker-attempt",
+  "content": "- user_message:Set up an agent context service and expose a stable ContextDB API.\n- tool_call:python --version && cargo --version\n- tool_result:Python and Rust toolchains found\n- memory_update:{'fact': 'Prefer existing conda environments before creating new ones.'}\n- assistant_message:Rollback to the clean environment snapshot before trying safer repair strategies.\n- assistant_message:Use Docker to isolate compiler and dependency versions.\n- tool_call:docker compose up context-service\n- tool_result:Context service healthy on port 1933\n- memory_update:{'fact': 'Docker branch avoids host compiler drift for native dependency builds.'}",
+  "source_events": [
+    "evt_0961e774db54",
+    "evt_e7a851850281",
+    "evt_be8bde64ff6f",
+    "evt_b7da94bd7805",
+    "evt_3f183e0237bd",
+    "evt_aca48aa1e3ff",
+    "evt_8403fb55c2d4",
+    "evt_b9ff0eb433db",
+    "evt_2976845d4274"
+  ],
+  "created_at": "2026-08-29T07:37:45.815901+00:00",
+  "metadata": {
+    "event_count": 9
+  }
+}

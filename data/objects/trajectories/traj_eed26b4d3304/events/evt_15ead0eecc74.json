@@ -1,0 +1,19 @@
+{
+  "event_id": "evt_15ead0eecc74",
+  "trajectory_id": "traj_eed26b4d3304",
+  "branch_id": "main",
+  "event_type": "tool_call",
+  "payload": {
+    "tool_name": "shell",
+    "command": "pip install pandas pyarrow"
+  },
+  "parent_event_ids": [
+    "evt_0c08abbc9425"
+  ],
+  "actor": "agent",
+  "timestamp": "2026-08-29T07:37:45.702886+00:00",
+  "refs": {
+    "source_line": 37
+  },
+  "metadata": {}
+}

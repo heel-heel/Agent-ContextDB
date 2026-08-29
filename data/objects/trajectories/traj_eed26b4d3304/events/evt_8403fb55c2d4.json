@@ -1,0 +1,19 @@
+{
+  "event_id": "evt_8403fb55c2d4",
+  "trajectory_id": "traj_eed26b4d3304",
+  "branch_id": "docker-attempt",
+  "event_type": "tool_call",
+  "payload": {
+    "tool_name": "docker",
+    "command": "docker compose up context-service"
+  },
+  "parent_event_ids": [
+    "evt_aca48aa1e3ff"
+  ],
+  "actor": "agent",
+  "timestamp": "2026-08-29T07:37:45.676348+00:00",
+  "refs": {
+    "source_line": 26
+  },
+  "metadata": {}
+}

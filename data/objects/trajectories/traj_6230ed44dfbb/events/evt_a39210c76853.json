@@ -1,0 +1,30 @@
+{
+  "event_id": "evt_a39210c76853",
+  "trajectory_id": "traj_6230ed44dfbb",
+  "branch_id": "main",
+  "event_type": "tool_call",
+  "payload": {
+    "tool_name": "swe-agent-editor",
+    "command": "find_file \"fields.py\" src"
+  },
+  "parent_event_ids": [
+    "evt_e1e2dff4b2e7"
+  ],
+  "actor": "agent",
+  "timestamp": "2026-08-29T07:39:22.921600+00:00",
+  "refs": {
+    "swe_step": 8,
+    "source_line": 25
+  },
+  "metadata": {
+    "action_kind": "navigation",
+    "swe_state": {
+      "open_file": "/marshmallow-code__marshmallow/reproduce.py",
+      "working_dir": "/marshmallow-code__marshmallow"
+    },
+    "normalized_from": "D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB\\examples\\swe_agent\\marshmallow-code__marshmallow-1867.traj",
+    "normalizer_source": "swe-agent-traj-llm",
+    "normalizer_event_index": 25,
+    "agent_id": "swe-agent"
+  }
+}

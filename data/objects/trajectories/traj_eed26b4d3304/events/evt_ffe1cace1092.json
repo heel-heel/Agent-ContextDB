@@ -1,0 +1,20 @@
+{
+  "event_id": "evt_ffe1cace1092",
+  "trajectory_id": "traj_eed26b4d3304",
+  "branch_id": "binary-wheel-attempt",
+  "event_type": "tool_result",
+  "payload": {
+    "status": "ok",
+    "exit_code": null,
+    "preview": "Dependencies installed from prebuilt wheels"
+  },
+  "parent_event_ids": [
+    "evt_619701d2dcbc"
+  ],
+  "actor": "tool",
+  "timestamp": "2026-08-29T07:37:45.714782+00:00",
+  "refs": {
+    "source_line": 42
+  },
+  "metadata": {}
+}

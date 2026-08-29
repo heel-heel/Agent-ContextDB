@@ -189,7 +189,7 @@ class ContextDB:
         """Execute one read-only ContextQL statement over logical trajectory relations."""
         return ContextQLExecutor(self).execute(trajectory_id, sql, branch_id)
 
-    def translate_natural_language_sql(self, trajectory_id: str, question: str, branch_id: str = "main", provider: str = "qwen", model: Optional[str] = None) -> Dict[str, Any]:
+    def translate_natural_language_sql(self, trajectory_id: str, question: str, branch_id: str = "main", profile_id: Optional[str] = None, provider: Optional[str] = None, model: Optional[str] = None) -> Dict[str, Any]:
         """Translate one question into ContextQL SQL without executing it."""
         if not str(question or "").strip():
             raise ValueError("natural-language question is empty")
@@ -209,7 +209,7 @@ class ContextDB:
             {"name": "learned_skills", "columns": ["skill_id", "trajectory_id", "name", "status", "trigger_json", "recommended_actions_json", "confidence_json", "highlight_event_ids"]},
             {"name": "skill_application_trace", "columns": ["trajectory_id", "event_id", "branch_id", "event_type", "actor", "timestamp", "payload_json", "refs_json"]},
         ]
-        translation = SemanticRepairJudge(provider=provider, model=model).translate_contextql(question, relations)
+        translation = SemanticRepairJudge(provider=provider, model=model, profile_id=profile_id).translate_contextql(question, relations)
         sql = str(translation.get("sql") or "").strip()
         if not translation.get("enabled") or not sql:
             raise ValueError(translation.get("error") or translation.get("reason") or "LLM did not return SQL")
@@ -218,9 +218,9 @@ class ContextDB:
         translation["sql"] = validated_sql
         return {"schema_version": "contextql_nl_translation.v1", "trajectory_id": trajectory_id, "branch_id": branch_id, "question": question, "translation": translation}
 
-    def natural_language_query(self, trajectory_id: str, question: str, branch_id: str = "main", provider: str = "qwen", model: Optional[str] = None) -> Dict[str, Any]:
+    def natural_language_query(self, trajectory_id: str, question: str, branch_id: str = "main", profile_id: Optional[str] = None, provider: Optional[str] = None, model: Optional[str] = None) -> Dict[str, Any]:
         """Compatibility helper: translate then execute a natural-language ContextQL request."""
-        translated = self.translate_natural_language_sql(trajectory_id, question, branch_id, provider, model)
+        translated = self.translate_natural_language_sql(trajectory_id, question, branch_id, profile_id, provider, model)
         result = self.query_sql(trajectory_id, translated["translation"]["sql"], branch_id)
         return {"schema_version": "contextql_nl_result.v1", "question": question, "translation": translated["translation"], "result": result}
 
@@ -747,14 +747,32 @@ class ContextDB:
             return 0.0
 
     def skill_application_trace(self, trajectory_id: str) -> List[Dict[str, Any]]:
-        rows = []
-        for event in self._all_events(trajectory_id):
+        events = self._all_events(trajectory_id)
+        linked_event_ids: Set[str] = set()
+        for event in events:
             refs = event.get("refs", {}) or {}
             metadata = event.get("metadata", {}) or {}
-            if event.get("event_type") in {"skill_match", "tool_call", "tool_result", "assistant_message"} and (
-                metadata.get("operation") == "skill_retrieval"
+            if event.get("event_type") == "skill_match" and metadata.get("operation") in {"skill_retrieval", "online_skill_retrieval"}:
+                failure_id = refs.get("failure_event_id")
+                if failure_id:
+                    linked_event_ids.add(failure_id)
+        event_by_id = {event.get("event_id"): event for event in events}
+        for event_id in list(linked_event_ids):
+            linked_call_id = (event_by_id.get(event_id, {}).get("refs", {}) or {}).get("tool_call_event_id")
+            if linked_call_id:
+                linked_event_ids.add(linked_call_id)
+        rows = []
+        for event in events:
+            refs = event.get("refs", {}) or {}
+            metadata = event.get("metadata", {}) or {}
+            if event.get("event_type") in {"skill_match", "skill_recommendation", "skill_decision", "tool_call", "tool_result", "assistant_message"} and (
+                metadata.get("operation") in {
+                    "skill_retrieval", "online_skill_retrieval", "skill_recommendation_delivery",
+                    "skill_decision", "skill_application",
+                }
                 or refs.get("skill_match_event_id")
                 or refs.get("skill_id")
+                or event.get("event_id") in linked_event_ids
             ):
                 rows.append(event)
         return rows

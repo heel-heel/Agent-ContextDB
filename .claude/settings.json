@@ -1,0 +1,71 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "shell": "powershell",
+            "command": "& 'D:\\software\\Anaconda\\ProgramFile\\envs\\contextdb_env\\python.exe' \"$env:CLAUDE_PROJECT_DIR\\tools\\claude_code_hook.py\" --event SessionStart",
+            "timeout": 20,
+            "statusMessage": "Connecting Claude Code to ContextDB"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "shell": "powershell",
+            "command": "& 'D:\\software\\Anaconda\\ProgramFile\\envs\\contextdb_env\\python.exe' \"$env:CLAUDE_PROJECT_DIR\\tools\\claude_code_hook.py\" --event UserPromptSubmit",
+            "timeout": 20
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "shell": "powershell",
+            "command": "& 'D:\\software\\Anaconda\\ProgramFile\\envs\\contextdb_env\\python.exe' \"$env:CLAUDE_PROJECT_DIR\\tools\\claude_code_hook.py\" --event PreToolUse",
+            "timeout": 20
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "shell": "powershell",
+            "command": "& 'D:\\software\\Anaconda\\ProgramFile\\envs\\contextdb_env\\python.exe' \"$env:CLAUDE_PROJECT_DIR\\tools\\claude_code_hook.py\" --event PostToolUse",
+            "timeout": 20
+          }
+        ]
+      }
+    ],
+    "PostToolUseFailure": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "shell": "powershell",
+            "command": "& 'D:\\software\\Anaconda\\ProgramFile\\envs\\contextdb_env\\python.exe' \"$env:CLAUDE_PROJECT_DIR\\tools\\claude_code_hook.py\" --event PostToolUseFailure",
+            "timeout": 20,
+            "statusMessage": "Retrieving a ContextDB repair recommendation"
+          }
+        ]
+      }
+    ]
+  }
+}

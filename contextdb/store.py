@@ -32,6 +32,11 @@ class SQLiteStore:
         self._lock = threading.RLock()
         self.conn = sqlite3.connect(self.db_path, check_same_thread=False)
         self.conn.row_factory = sqlite3.Row
+        # Dashboard, MCP, and a hook watcher can be separate local processes.
+        # WAL plus a bounded wait avoids transient write-lock failures in that
+        # normal live-integration setup.
+        self.conn.execute("PRAGMA journal_mode=WAL")
+        self.conn.execute("PRAGMA busy_timeout=5000")
         self._init_schema()
 
     def _init_schema(self) -> None:

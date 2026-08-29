@@ -7,6 +7,8 @@ from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
 from .service import ContextDB
+from .llm_profiles import public_profiles
+from .hooks import HookSessionBridge
 
 
 STATIC_DIR = Path(__file__).resolve().parent.parent / "static"
@@ -50,6 +52,10 @@ def make_handler(db: ContextDB):
                     self._send(200, db.log(q["trajectory_id"][0]))
                 elif parsed.path == "/api/v1/graph":
                     self._send(200, db.graph(q["trajectory_id"][0]))
+                elif parsed.path == "/api/v1/llm_profiles":
+                    self._send(200, public_profiles())
+                elif parsed.path == "/api/v1/hook_session":
+                    self._send(200, HookSessionBridge(db).status(q["source"][0], q["session_id"][0]))
                 else:
                     self._send(404, {"error": "not found"})
             except Exception as exc:
@@ -89,6 +95,25 @@ def make_handler(db: ContextDB):
                     self._send(200, db.apply_skill(**body))
                 elif parsed.path == "/api/v1/retrieve_for_failure":
                     self._send(200, db.retrieve_for_failure(**body))
+                elif parsed.path == "/api/v1/hooks/events":
+                    self._send(200, HookSessionBridge(db).ingest(body))
+                elif parsed.path == "/api/v1/hooks/context":
+                    self._send(200, HookSessionBridge(db).prepare_context(
+                        body["source"], body["session_id"],
+                        int(body.get("token_budget", 1200)),
+                        str(body.get("delivery_channel", "http-hook")),
+                    ))
+                elif parsed.path == "/api/v1/hooks/skill_decision":
+                    self._send(200, HookSessionBridge(db).record_skill_decision(
+                        body["source"], body["session_id"], body["decision"], body.get("reason", ""),
+                        body.get("skill_match_event_id"), body.get("skill_id"), body.get("action_id"),
+                    ))
+                elif parsed.path == "/api/v1/hooks/skill_application":
+                    self._send(200, HookSessionBridge(db).record_skill_application(
+                        body["source"], body["session_id"], body["tool_name"], body["command"], body["status"],
+                        body.get("preview", ""), body.get("exit_code"), body.get("skill_match_event_id"),
+                        body.get("skill_id"), body.get("action_id"),
+                    ))
                 else:
                     self._send(404, {"error": "not found"})
             except Exception as exc:

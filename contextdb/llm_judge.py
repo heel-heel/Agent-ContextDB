@@ -6,6 +6,8 @@ import re
 from typing import Any, Dict, List
 from urllib import error, request
 
+from .llm_profiles import resolve_profile
+
 
 LABELS = {"likely_repair", "partial_repair", "validation_only", "unrelated_success", "insufficient_context", "not_evaluated"}
 STRUCTURAL_REPAIR_RULES = {
@@ -23,17 +25,43 @@ class SemanticRepairJudge:
     Set CONTEXTDB_LLM_PROVIDER=mock for an offline deterministic approximation.
     """
 
-    def __init__(self, provider: str | None = None, model: str | None = None) -> None:
-        configured_provider = provider if provider is not None else os.environ.get("CONTEXTDB_LLM_PROVIDER")
-        has_api_key = bool(
-            os.environ.get("CONTEXTDB_LLM_API_KEY")
-            or os.environ.get("DASHSCOPE_API_KEY")
-            or os.environ.get("ALIYUN_API_KEY")
-            or os.environ.get("OPENAI_API_KEY")
-        )
-        # Explicit configuration wins; a configured compatible API key enables Qwen by default.
-        self.provider = (configured_provider if configured_provider is not None else ("qwen" if has_api_key else "disabled")).strip().lower()
-        self.model = (model or os.environ.get("CONTEXTDB_LLM_MODEL", "qwen3.7-max")).strip()
+    def __init__(self, provider: str | None = None, model: str | None = None, profile_id: str | None = None) -> None:
+        self.profile_id = profile_id or os.environ.get("CONTEXTDB_LLM_PROFILE") or ""
+        self._api_key = ""
+        self._base_url = ""
+        self._profile_error = ""
+        self.supports_json_response_format = True
+        # Reuse the configured default profile for every LLM task when its credentials are ready.
+        if not self.profile_id and provider is None and model is None and not os.environ.get("CONTEXTDB_LLM_PROVIDER"):
+            try:
+                default_profile = resolve_profile()
+                if default_profile["api_key"] and default_profile["base_url"]:
+                    self.profile_id = default_profile["profile_id"]
+            except ValueError:
+                pass
+        if self.profile_id:
+            try:
+                profile = resolve_profile(self.profile_id)
+                self.profile_id = profile["profile_id"]
+                self.provider = profile["provider"]
+                self.model = (model or profile["model"]).strip()
+                self._api_key = profile["api_key"]
+                self._base_url = profile["base_url"]
+                self.supports_json_response_format = profile["supports_json_response_format"]
+            except ValueError as exc:
+                self.provider = "disabled"
+                self.model = model or ""
+                self._profile_error = str(exc)
+        else:
+            configured_provider = provider if provider is not None else os.environ.get("CONTEXTDB_LLM_PROVIDER")
+            has_api_key = bool(
+                os.environ.get("CONTEXTDB_LLM_API_KEY")
+                or os.environ.get("DASHSCOPE_API_KEY")
+                or os.environ.get("ALIYUN_API_KEY")
+                or os.environ.get("OPENAI_API_KEY")
+            )
+            self.provider = (configured_provider if configured_provider is not None else ("qwen" if has_api_key else "disabled")).strip().lower()
+            self.model = (model or os.environ.get("CONTEXTDB_LLM_MODEL", "qwen3.7-max")).strip()
         self.timeout = float(os.environ.get("CONTEXTDB_LLM_TIMEOUT", "60"))
 
     def enabled(self) -> bool:
@@ -90,7 +118,7 @@ class SemanticRepairJudge:
             result = {"enabled": False, "provider": self.provider or "disabled", "model": self.model, "sql": "", "reason": "LLM SQL translation is disabled."}
             return result
         if self.provider == "mock":
-            return {"enabled": True, "provider": "mock", "model": "deterministic-mock", "sql": "SELECT event_id, branch_id, event_type, status, preview FROM events WHERE trajectory_id = :trajectory_id ORDER BY timestamp;", "reason": "Mock translator returned the default event query."}
+            return {"enabled": True, "provider": "mock", "model": "deterministic-mock", "profile_id": self.profile_id or None, "sql": "SELECT event_id, branch_id, event_type, status, preview FROM events WHERE trajectory_id = :trajectory_id ORDER BY timestamp;", "reason": "Mock translator returned the default event query.", "execution": {"profile_id": self.profile_id or None, "provider": "mock", "requested_model": self.model, "response_model": "deterministic-mock", "response_id": None, "verified": self.model == "deterministic-mock"}}
         if self.provider in {"qwen", "bailian", "openai-compatible"}:
             result = self._openai_json_call(
                 "You translate natural-language questions into one safe read-only ContextQL SQL statement. Return strict JSON only.",
@@ -101,7 +129,8 @@ class SemanticRepairJudge:
             if result.get("error"):
                 return result
             sql = str(result.get("sql") or "").strip()
-            return {"enabled": True, "provider": self.provider, "model": self.model, "sql": sql, "reason": str(result.get("reason") or "")[:800]}
+            execution = result.get("_contextdb_execution", {})
+            return {"enabled": True, "provider": self.provider, "model": self.model, "profile_id": self.profile_id or None, "sql": sql, "reason": str(result.get("reason") or "")[:800], "execution": execution}
         return {"enabled": False, "provider": self.provider, "model": self.model, "sql": "", "reason": "Unsupported LLM provider.", "error": f"unsupported provider: {self.provider}"}
 
     def classify_likely_cause(self, failure: Dict[str, Any]) -> Dict[str, Any]:
@@ -356,80 +385,30 @@ class SemanticRepairJudge:
         return {"enabled": True, "provider": "mock", "model": "deterministic-mock", "matches": rows[:top_k], "reason": "Mock LLM skill matching completed."}
 
     def _openai_compatible_result(self, failure: Dict[str, Any], candidate: Dict[str, Any]) -> Dict[str, Any]:
-        api_key = (
-            os.environ.get("CONTEXTDB_LLM_API_KEY")
-            or os.environ.get("DASHSCOPE_API_KEY")
-            or os.environ.get("ALIYUN_API_KEY")
-            or os.environ.get("OPENAI_API_KEY")
+        result = self._openai_json_call(
+            "You judge whether a successful agent action semantically repaired a previous failure. Return strict JSON only.",
+            self._prompt(failure, candidate),
+            self._disabled_result(),
+            "OpenAI-compatible LLM API call failed.",
         )
-        if not api_key:
-            result = self._disabled_result()
-            result.update({"provider": self.provider, "error": "CONTEXTDB_LLM_API_KEY or DASHSCOPE_API_KEY is not set"})
+        if result.get("error"):
             return result
-        base_url = os.environ.get("CONTEXTDB_LLM_BASE_URL", "https://ws-5jkepnkdq4vt4m5c.cn-beijing.maas.aliyuncs.com/compatible-mode/v1").rstrip("/")
-        payload = {
-            "model": self.model,
-            "messages": [
-                {"role": "system", "content": "You judge whether a successful agent action semantically repaired a previous failure. Return strict JSON only."},
-                {"role": "user", "content": self._prompt(failure, candidate)},
-            ],
-            "temperature": 0,
-            "response_format": {"type": "json_object"},
-        }
-        req = request.Request(
-            base_url + "/chat/completions",
-            data=json.dumps(payload).encode("utf-8"),
-            headers={"Content-Type": "application/json", "Authorization": f"Bearer {api_key}"},
-            method="POST",
-        )
-        try:
-            with request.urlopen(req, timeout=self.timeout) as resp:
-                data = json.loads(resp.read().decode("utf-8"))
-            text = data["choices"][0]["message"]["content"]
-            parsed = _parse_json_object(text)
-            return self._normalize_result(parsed, provider=self.provider)
-        except (error.HTTPError, error.URLError, TimeoutError, KeyError, IndexError, json.JSONDecodeError) as exc:
-            result = self._disabled_result()
-            result.update({"enabled": True, "provider": self.provider, "error": str(exc), "reason": "OpenAI-compatible LLM API call failed."})
-            return result
+        normalized = self._normalize_result(result, provider=self.provider)
+        normalized["execution"] = result.get("_contextdb_execution", {})
+        return normalized
 
     def _openai_compatible_group_result(self, trigger: Dict[str, Any], support_events: List[Dict[str, Any]]) -> Dict[str, Any]:
-        api_key = (
-            os.environ.get("CONTEXTDB_LLM_API_KEY")
-            or os.environ.get("DASHSCOPE_API_KEY")
-            or os.environ.get("ALIYUN_API_KEY")
-            or os.environ.get("OPENAI_API_KEY")
+        result = self._openai_json_call(
+            "You cluster successful agent repair events into reusable recommended actions. Return strict JSON only.",
+            self._group_prompt(trigger, support_events),
+            self._disabled_group_result(support_events),
+            "OpenAI-compatible LLM action grouping failed.",
         )
-        if not api_key:
-            result = self._disabled_group_result(support_events)
-            result.update({"provider": self.provider, "error": "CONTEXTDB_LLM_API_KEY or DASHSCOPE_API_KEY is not set"})
+        if result.get("error"):
             return result
-        base_url = os.environ.get("CONTEXTDB_LLM_BASE_URL", "https://ws-5jkepnkdq4vt4m5c.cn-beijing.maas.aliyuncs.com/compatible-mode/v1").rstrip("/")
-        payload = {
-            "model": self.model,
-            "messages": [
-                {"role": "system", "content": "You cluster successful agent repair events into reusable recommended actions. Return strict JSON only."},
-                {"role": "user", "content": self._group_prompt(trigger, support_events)},
-            ],
-            "temperature": 0,
-            "response_format": {"type": "json_object"},
-        }
-        req = request.Request(
-            base_url + "/chat/completions",
-            data=json.dumps(payload).encode("utf-8"),
-            headers={"Content-Type": "application/json", "Authorization": f"Bearer {api_key}"},
-            method="POST",
-        )
-        try:
-            with request.urlopen(req, timeout=self.timeout) as resp:
-                data = json.loads(resp.read().decode("utf-8"))
-            text = data["choices"][0]["message"]["content"]
-            parsed = _parse_json_object(text)
-            return self._normalize_group_result(parsed, support_events, provider=self.provider)
-        except (error.HTTPError, error.URLError, TimeoutError, KeyError, IndexError, json.JSONDecodeError) as exc:
-            result = self._disabled_group_result(support_events)
-            result.update({"enabled": True, "provider": self.provider, "error": str(exc), "reason": "OpenAI-compatible LLM action grouping failed."})
-            return result
+        normalized = self._normalize_group_result(result, support_events, provider=self.provider)
+        normalized["execution"] = result.get("_contextdb_execution", {})
+        return normalized
 
     def _openai_compatible_failure_group_result(self, failures: List[Dict[str, Any]]) -> Dict[str, Any]:
         result = self._openai_json_call("You group agent failure patterns into reusable skill triggers. Return strict JSON only.", self._failure_group_prompt(failures), self._disabled_failure_group_result(failures), "OpenAI-compatible LLM failure grouping failed.")
@@ -444,23 +423,38 @@ class SemanticRepairJudge:
         return self._normalize_skill_match_result(result, skills, top_k)
 
     def _openai_json_call(self, system: str, prompt: str, disabled_result: Dict[str, Any], failure_reason: str) -> Dict[str, Any]:
-        api_key = (os.environ.get("CONTEXTDB_LLM_API_KEY") or os.environ.get("DASHSCOPE_API_KEY") or os.environ.get("ALIYUN_API_KEY") or os.environ.get("OPENAI_API_KEY"))
+        if self._profile_error:
+            result = dict(disabled_result)
+            result.update({"enabled": False, "provider": self.provider, "model": self.model, "error": self._profile_error})
+            return result
+        api_key = self._api_key or (os.environ.get("CONTEXTDB_LLM_API_KEY") or os.environ.get("DASHSCOPE_API_KEY") or os.environ.get("ALIYUN_API_KEY") or os.environ.get("OPENAI_API_KEY"))
         if not api_key:
             result = dict(disabled_result)
-            result.update({"provider": self.provider, "error": "CONTEXTDB_LLM_API_KEY or DASHSCOPE_API_KEY is not set"})
+            result.update({"provider": self.provider, "model": self.model, "error": "No API key is configured for the selected LLM profile"})
             return result
-        base_url = os.environ.get("CONTEXTDB_LLM_BASE_URL", "https://ws-5jkepnkdq4vt4m5c.cn-beijing.maas.aliyuncs.com/compatible-mode/v1").rstrip("/")
-        payload = {"model": self.model, "messages": [{"role": "system", "content": system}, {"role": "user", "content": prompt}], "temperature": 0, "response_format": {"type": "json_object"}}
+        base_url = (self._base_url or os.environ.get("CONTEXTDB_LLM_BASE_URL", "https://dashscope.aliyuncs.com/compatible-mode/v1")).rstrip("/")
+        payload = {"model": self.model, "messages": [{"role": "system", "content": system}, {"role": "user", "content": prompt}], "temperature": 0}
+        if self.supports_json_response_format:
+            payload["response_format"] = {"type": "json_object"}
         req = request.Request(base_url + "/chat/completions", data=json.dumps(payload).encode("utf-8"), headers={"Content-Type": "application/json", "Authorization": f"Bearer {api_key}"}, method="POST")
         try:
             with request.urlopen(req, timeout=self.timeout) as resp:
                 data = json.loads(resp.read().decode("utf-8"))
-            return _parse_json_object(data["choices"][0]["message"]["content"])
+            parsed = _parse_json_object(data["choices"][0]["message"]["content"])
+            response_model = str(data.get("model") or "").strip()
+            parsed["_contextdb_execution"] = {
+                "profile_id": self.profile_id or None,
+                "provider": self.provider,
+                "requested_model": self.model,
+                "response_model": response_model or None,
+                "response_id": str(data.get("id") or "") or None,
+                "verified": bool(response_model and response_model == self.model),
+            }
+            return parsed
         except (error.HTTPError, error.URLError, TimeoutError, KeyError, IndexError, json.JSONDecodeError) as exc:
             result = dict(disabled_result)
-            result.update({"enabled": True, "provider": self.provider, "error": str(exc), "reason": failure_reason})
+            result.update({"enabled": True, "provider": self.provider, "model": self.model, "error": str(exc), "reason": failure_reason, "_contextdb_execution": {"profile_id": self.profile_id or None, "provider": self.provider, "requested_model": self.model, "response_model": None, "response_id": None, "verified": False}})
             return result
-
 
     def _contextql_translation_prompt(self, question: str, relations: List[Dict[str, Any]]) -> str:
         compact = {
@@ -470,6 +464,7 @@ class SemanticRepairJudge:
                 "Return exactly one SELECT, WITH ... SELECT, or EXPLAIN SELECT statement.",
                 "Never use INSERT, UPDATE, DELETE, CREATE, DROP, ALTER, PRAGMA, ATTACH, or multiple statements.",
                 "Use :trajectory_id to scope trajectory data unless querying only the trajectories relation.",
+                "For events.status use only: ok, failed, error, timeout, warning, unknown.",
                 "Return strict JSON only.",
             ],
             "output_schema": {"sql": "one valid ContextQL statement", "reason": "brief explanation"},

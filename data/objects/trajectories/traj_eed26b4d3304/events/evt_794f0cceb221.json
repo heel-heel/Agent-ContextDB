@@ -1,0 +1,20 @@
+{
+  "event_id": "evt_794f0cceb221",
+  "trajectory_id": "traj_eed26b4d3304",
+  "branch_id": "main",
+  "event_type": "tool_result",
+  "payload": {
+    "status": "failed",
+    "exit_code": null,
+    "preview": "gcc 9.4 rejected aws-lc-sys generated memcmp code"
+  },
+  "parent_event_ids": [
+    "evt_15c1eb598fa5"
+  ],
+  "actor": "tool",
+  "timestamp": "2026-08-29T07:37:45.635367+00:00",
+  "refs": {
+    "source_line": 8
+  },
+  "metadata": {}
+}

@@ -1,0 +1,44 @@
+{
+  "event_id": "evt_e880fc6a6461",
+  "trajectory_id": "traj_7cc5f5848ac4",
+  "branch_id": "main",
+  "event_type": "tool_result",
+  "payload": {
+    "status": "failed",
+    "preview": "Get-Content : Cannot find path '.\\examples\\live\\\\\\_path\\\\\\_demo\\assets\\settings.json' because it does not exist.\nAt line:1 char:1\n+ Get-Content -Raw -LiteralPath '.\\examples\\live\\\\\\_path\\\\\\_demo\\assets ...\n+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n    + CategoryInfo          : ObjectNotFound: (.\\examples\\live...s\\settings.json:String) [Get-Content], ItemNotFoundEx \n   ception\n    + FullyQualifiedErrorId : PathNotFound,Microsoft.PowerShell.Commands.GetContentCommand\n \n",
+    "exit_code": 1
+  },
+  "parent_event_ids": [
+    "evt_7f146308c5cf"
+  ],
+  "actor": "tool",
+  "timestamp": "2026-08-29T07:11:14.510158+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "codex",
+    "hook_adapter": "generic",
+    "hook_session_id": "path-skill-demo",
+    "tool_call_event_id": "evt_7f146308c5cf"
+  },
+  "metadata": {
+    "agent_id": "codex",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-08-29T07:11:14.509982+00:00",
+    "adapter": "generic-hook",
+    "likely_cause_judgment": {
+      "enabled": true,
+      "provider": "qwen",
+      "model": "qwen3.7-max",
+      "likely_cause": "incorrect file path with escaped backslashes",
+      "confidence": 0.95,
+      "reason": "The path contains literal escaped backslashes (\\\\\\_path\\\\\\_demo) instead of actual directory separators, causing PowerShell to search for a non-existent path.",
+      "input": {
+        "failed_tool": "shell",
+        "failed_command": "powershell -NoProfile -Command \"Get-Content -Raw -LiteralPath '.\\examples\\live\\\\\\_path\\\\\\_demo\\assets\\settings.json'\"",
+        "error_signature": "Get-Content : Cannot find path '.\\examples\\live\\\\\\_path\\\\\\_demo\\assets\\settings.json' because it does not exist.\nAt line:1 char:1\n+ Get-Content -Raw -LiteralPath '.\\examples\\live\\\\\\_path\\\\\\_demo\\assets ...\n+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n    + CategoryInfo          : ObjectNotFound: (.\\examples\\live...s\\settings.json:String) [Get-Content], ItemNotFoundEx \n   ception\n    + FullyQualifiedErrorId : PathNotFound,Microsoft.PowerShell.Commands.GetContentCommand\n",
+        "preceding_action": ""
+      }
+    }
+  }
+}

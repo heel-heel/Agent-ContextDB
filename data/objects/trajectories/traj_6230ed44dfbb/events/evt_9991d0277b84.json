@@ -1,0 +1,27 @@
+{
+  "event_id": "evt_9991d0277b84",
+  "trajectory_id": "traj_6230ed44dfbb",
+  "branch_id": "main",
+  "event_type": "artifact",
+  "payload": {
+    "path": "submission.patch",
+    "summary": "SWE-agent submitted patch",
+    "diff": "diff --git a/src/marshmallow/fields.py b/src/marshmallow/fields.py\nindex ad388c7..20da768 100644\n--- a/src/marshmallow/fields.py\n+++ b/src/marshmallow/fields.py\n@@ -1472,7 +1472,7 @@ class TimeDelta(Field):\n         if value is None:\n             return None\n         base_unit = dt.timedelta(**{self.precision: 1})\n-        return int(value.total_seconds() / base_unit.total_seconds())\n+        return int(round(value.total_seconds() / base_unit.total_seconds()))  # round to nearest int\n \n     def _deserialize(self, value, attr, data, **kwargs):\n         try:"
+  },
+  "parent_event_ids": [
+    "evt_04720243d1d2"
+  ],
+  "actor": "agent",
+  "timestamp": "2026-08-29T07:39:22.977727+00:00",
+  "refs": {
+    "swe_info": "submission",
+    "source_line": 45
+  },
+  "metadata": {
+    "exit_status": "submitted",
+    "normalized_from": "D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB\\examples\\swe_agent\\marshmallow-code__marshmallow-1867.traj",
+    "normalizer_source": "swe-agent-traj-llm",
+    "normalizer_event_index": 45,
+    "agent_id": "swe-agent"
+  }
+}

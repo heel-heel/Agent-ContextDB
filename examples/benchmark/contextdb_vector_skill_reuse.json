@@ -1,0 +1,9 @@
+{
+  "name": "contextdb-vector-skill-reuse",
+  "history": [
+    {"path": "history_trace.jsonl", "source": "generic-jsonl", "agent_id": "codex"}
+  ],
+  "evaluation": [
+    {"path": "heldout_trace.jsonl", "source": "generic-jsonl", "agent_id": "codex"}
+  ]
+}

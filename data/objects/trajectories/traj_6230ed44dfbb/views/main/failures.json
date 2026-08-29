@@ -1,0 +1,104 @@
+{
+  "view_name": "failures",
+  "trajectory_id": "traj_6230ed44dfbb",
+  "branch_id": "main",
+  "content": [
+    {
+      "event_id": "evt_1da4003413b1",
+      "trajectory_id": "traj_6230ed44dfbb",
+      "branch_id": "main",
+      "event_type": "tool_result",
+      "payload": {
+        "status": "failed",
+        "exit_code": null,
+        "preview": "Your proposed edit has introduced new syntax error(s). Please understand the fixes and retry your edit commmand.\n\nERRORS:\n- E999 IndentationError: unexpected indent\n\nThis is how your edit would have looked if applied\n-------------------------------------------------\n[File: /marshmallow-code__marshmallow/src/marshmallow/fields.py (1997 lines total)]\n(1468 more lines above)\n1469:        super().__init__(**kwargs)\n1470:\n1471:    def _serialize(self, value, attr, obj, **kwargs):\n1472:        if valu",
+        "raw_preview_truncated": true,
+        "error_signature": "IndentationError: unexpected indent"
+      },
+      "parent_event_ids": [
+        "evt_99fb55bd1407"
+      ],
+      "actor": "tool",
+      "timestamp": "2026-08-29T07:39:22.940731+00:00",
+      "refs": {
+        "swe_step": 10,
+        "source_line": 32
+      },
+      "metadata": {
+        "observation_chars": 1872,
+        "adapter_status": "failed",
+        "swe_state": {
+          "open_file": "/marshmallow-code__marshmallow/src/marshmallow/fields.py",
+          "working_dir": "/marshmallow-code__marshmallow"
+        },
+        "llm_trace_annotation": {
+          "enabled": true,
+          "provider": "qwen",
+          "model": "qwen3.7-max",
+          "status": "failed",
+          "confidence": 1.0,
+          "error_signature": "IndentationError: unexpected indent",
+          "reason": "The edit introduced a syntax error (IndentationError) and was not applied.",
+          "evidence": "Your proposed edit has introduced new syntax error(s). ... ERRORS: - E999 IndentationError: unexpected indent ... Your changes have NOT been applied."
+        },
+        "status_resolution": "adapter_confirmed_or_low_confidence",
+        "normalized_from": "D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB\\examples\\swe_agent\\marshmallow-code__marshmallow-1867.traj",
+        "normalizer_source": "swe-agent-traj-llm",
+        "normalizer_event_index": 32,
+        "agent_id": "swe-agent"
+      }
+    }
+  ],
+  "source_events": [
+    "evt_5d2d56fded39",
+    "evt_3ea242c7b722",
+    "evt_41beaccd4cab",
+    "evt_4bc7298c6461",
+    "evt_367366f7ef55",
+    "evt_efbf6ee62ef5",
+    "evt_a18ee6d277e3",
+    "evt_1abe57b6a78a",
+    "evt_8be19ece4fd3",
+    "evt_9faa44bdc595",
+    "evt_280e3750bb83",
+    "evt_dba701a47f8d",
+    "evt_79b22c9a4386",
+    "evt_475b6f68b41c",
+    "evt_81258cba9143",
+    "evt_95cfebac1582",
+    "evt_2e3be70e9df7",
+    "evt_bb0c6373a5f3",
+    "evt_004e06dfd2ad",
+    "evt_28d5f27d299d",
+    "evt_987662158cff",
+    "evt_c893a5f22ec0",
+    "evt_98de80cf81ef",
+    "evt_e1e2dff4b2e7",
+    "evt_a39210c76853",
+    "evt_126f281906eb",
+    "evt_bdc61c3438f2",
+    "evt_fc5ff6aad3f0",
+    "evt_c5892d1616f7",
+    "evt_58f444879957",
+    "evt_99fb55bd1407",
+    "evt_1da4003413b1",
+    "evt_0b6cc9398293",
+    "evt_983300d75b43",
+    "evt_f855aa210371",
+    "evt_c3c38eb532f9",
+    "evt_876f3732ff95",
+    "evt_2241283d26bf",
+    "evt_4e4c45b05131",
+    "evt_0df59aa48ab6",
+    "evt_d2da4b1b1def",
+    "evt_ad3cb4099d1f",
+    "evt_516bed112c7c",
+    "evt_04720243d1d2",
+    "evt_9991d0277b84",
+    "evt_4e96d020ad43"
+  ],
+  "created_at": "2026-08-29T07:39:23.043033+00:00",
+  "metadata": {
+    "event_count": 46
+  }
+}

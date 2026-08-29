@@ -1,0 +1,44 @@
+{
+  "event_id": "evt_2e3be70e9df7",
+  "trajectory_id": "traj_6230ed44dfbb",
+  "branch_id": "main",
+  "event_type": "tool_result",
+  "payload": {
+    "status": "ok",
+    "exit_code": null,
+    "preview": "[File: /marshmallow-code__marshmallow/reproduce.py (9 lines total)]\n1:from marshmallow.fields import TimeDelta\n2:from datetime import timedelta\n3:\n4:td_field = TimeDelta(precision=\"milliseconds\")\n5:\n6:obj = dict()\n7:obj[\"td_field\"] = timedelta(milliseconds=345)\n8:\n9:print(td_field.serialize(\"td_field\", obj))\nFile updated. Please review the changes and make sure they are correct (correct indentation, no duplicate lines, etc). Edit the file again if necessary.",
+    "raw_preview_truncated": false
+  },
+  "parent_event_ids": [
+    "evt_95cfebac1582"
+  ],
+  "actor": "tool",
+  "timestamp": "2026-08-29T07:39:22.899897+00:00",
+  "refs": {
+    "swe_step": 5,
+    "source_line": 17
+  },
+  "metadata": {
+    "observation_chars": 462,
+    "adapter_status": "ok",
+    "swe_state": {
+      "open_file": "/marshmallow-code__marshmallow/reproduce.py",
+      "working_dir": "/marshmallow-code__marshmallow"
+    },
+    "llm_trace_annotation": {
+      "enabled": true,
+      "provider": "qwen",
+      "model": "qwen3.7-max",
+      "status": "ok",
+      "confidence": 0.95,
+      "error_signature": "",
+      "reason": "The file edit was applied successfully. The observation shows the updated file contents and confirms 'File updated.'",
+      "evidence": "File updated. Please review the changes and make sure they are correct"
+    },
+    "status_resolution": "adapter_confirmed_or_low_confidence",
+    "normalized_from": "D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB\\examples\\swe_agent\\marshmallow-code__marshmallow-1867.traj",
+    "normalizer_source": "swe-agent-traj-llm",
+    "normalizer_event_index": 17,
+    "agent_id": "swe-agent"
+  }
+}

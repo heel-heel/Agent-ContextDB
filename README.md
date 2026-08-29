@@ -111,6 +111,172 @@ contextdb serve --host 127.0.0.1 --port 8765
 contextdb client-demo --base-url http://127.0.0.1:8765
 ```
 
+
+### Real-time Codex Hook
+
+`codex exec --json` emits JSONL while a Codex run is in progress. ContextDB consumes that stream through a stable Hook protocol, so the integration is live rather than an after-the-fact import. The Hook protocol is agent-neutral: a future adapter only needs to submit a `contextdb.agent_hook.v1` envelope with `source`, `session_id`, and an event object.
+
+Start ContextDB in one terminal:
+
+```bash
+source /home/benjamin/miniconda3/envs/contextdb_env/bin/activate
+cd /home/benjamin/windows/contextdb
+contextdb serve --host 127.0.0.1 --port 8765
+```
+
+In a second terminal, run Codex through its public JSONL stream. Keep only Codex stdout in the pipe; ContextDB prints Hook diagnostics and skill suggestions to stderr.
+
+```bash
+source /home/benjamin/miniconda3/envs/contextdb_env/bin/activate
+cd /path/to/your/coding/repository
+codex exec --json "Run the test suite and repair the failing issue." | \
+  contextdb hook-stream --base-url http://127.0.0.1:8765 \
+    --source codex --title "Codex live repair"
+```
+
+The initial `thread.started` record determines the Hook `session_id`; it is also printed in Codex JSONL. Each Hook session creates exactly one ContextDB trajectory. Codex command start/completion records become `tool_call`/`tool_result`, and a non-zero exit code immediately creates a `skill_match` event through the persistent vector skill index. The Hook response chooses the highest-confidence recommended action (ties retain stored action order) and returns it as an `agent_context` suggestion. It never auto-executes that command: Codex or another Agent must choose to apply it.
+
+Verify a session using its Codex thread id:
+
+```bash
+contextdb hook-status codex <thread_id>
+contextdb hook-context codex <thread_id> --format prompt
+contextdb query-view <trajectory_id> skill_application_trace
+```
+
+For a follow-up Codex turn, feed the `hook-context --format prompt` result into `codex exec resume <thread_id> ...` and pipe that resumed JSONL stream through `hook-stream` again. This is the explicit application step: the first run records and retrieves, while the resumed Agent turn decides whether to execute the recommended action.
+
+Successful real-time integration has three observable facts: `hook-status` shows the persistent source/session/trajectory mapping; the trajectory graph contains events with `metadata.integration = "agent-hook.v1"`; and, when a tool fails, it contains a `skill_match` event whose `metadata.operation` is `online_skill_retrieval`. A non-empty `agent_context.selected_action` in the Hook diagnostic proves that a stored skill was actually matched and ranked. An eventual Codex tool call is only an *applied* skill when its event refs explicitly carry the returned `skill_match_event_id` and `skill_id`.
+
+For an adapter other than Codex, POST the following envelope to `/api/v1/hooks/events` (or feed one JSON object per line to `contextdb hook-stream --source generic --session-id <id>`):
+
+```json
+{
+  "protocol_version": "contextdb.agent_hook.v1",
+  "source": "future-agent",
+  "session_id": "session_123",
+  "agent_id": "future-agent",
+  "event": {
+    "event_type": "tool_result",
+    "actor": "tool",
+    "payload": {
+      "tool_name": "shell",
+      "command": "pytest -q",
+      "status": "failed",
+      "preview": "AssertionError"
+    }
+  }
+}
+```
+
+### Bidirectional MCP Skill Injection
+
+The Windows session watcher is intentionally observation-only: it can record a
+Codex App tool failure after it happens, but it cannot alter the context of an
+already-running model turn. For actual context injection, ContextDB now exposes
+a dependency-free **stdio MCP server**:
+
+```powershell
+cd D:\software\Pycharm\SelfCode\Agent-ContextDB
+D:\software\Anaconda\ProgramFile\envs\contextdb_env\python.exe -m contextdb.cli --root data mcp-serve
+```
+
+For the Windows project, configure an MCP client to launch the same command, or
+use `scripts\run_mcp_server.py` as the Python script target. Keep stdout clean:
+it is reserved for MCP JSON-RPC. The Agent-side policy template is in
+`examples\agent_contextdb_mcp_instructions.md`.
+
+The server offers an Agent-neutral protocol suitable for Codex, Claude Code,
+or another MCP-capable harness:
+
+- `contextdb_prepare_context`: materializes compact turn context and records a
+  `skill_recommendation` delivery event.
+- `contextdb_record_tool_result`: records a real tool result; a failure invokes
+  vector skill retrieval and returns the recommendation in the same tool result.
+- `contextdb_get_recommendation`: redelivers a pending recommendation after a
+  resumed turn.
+- `contextdb_record_skill_decision`: records `accepted`, `rejected`, or
+  `deferred` rather than assuming a match was used.
+- `contextdb_record_skill_application`: records the outcome of an action the
+  Agent actually executed through its normal tool and approval mechanism. It
+  never executes the command itself.
+
+The resulting application trace is explicit:
+
+```text
+tool failure -> skill_match -> skill_recommendation delivered
+             -> skill_decision -> agent tool_call -> tool_result
+```
+
+This distinction is intentional: a matched skill is evidence retrieval; a
+delivered skill is context injection; only an Agent-recorded normal tool call
+is an application. The ContextDB dashboard's **Application Trace** view shows
+these states separately.
+
+### Native Exec Hook: Same-Turn Skill Injection
+
+For a Codex Desktop session, the log watcher can observe native `exec` calls
+but cannot modify their already-running context. ContextDB therefore also
+provides `tools\contextdb_native_exec_hook.py`: Codex invokes this wrapper via
+its normal native `exec`, and the wrapper executes the real child command.
+
+```text
+Codex native exec -> ContextDB wrapper -> real child command
+  -> tool_result hook -> skill retrieval -> same exec output contains recommendation
+```
+
+Start the HTTP server as usual, then have Codex use one stable session id for
+the live task. A native PowerShell execution looks like this:
+
+```powershell
+& 'D:\software\Anaconda\ProgramFile\envs\contextdb_env\python.exe' `
+  'D:\software\Pycharm\SelfCode\Agent-ContextDB\tools\contextdb_native_exec_hook.py' `
+  --source codex --session-id contextdb-live-001 -- `
+  powershell -NoProfile -Command "python --version"
+```
+
+If the real child command fails and a skill matches, its regular command output
+is followed by one machine-readable line:
+
+```text
+CONTEXTDB_RECOMMENDATION { ... }
+```
+
+That line is visible to Codex as part of the same native tool result, so it is
+available for the next repair decision without replaying a trace. To record an
+accepted, real skill-guided action, use the same wrapper with `--apply-skill`:
+
+```powershell
+& 'D:\software\Anaconda\ProgramFile\envs\contextdb_env\python.exe' `
+  'D:\software\Pycharm\SelfCode\Agent-ContextDB\tools\contextdb_native_exec_hook.py' `
+  --source codex --session-id contextdb-live-001 --apply-skill -- `
+  powershell -NoProfile -Command "CC=clang cargo build --release"
+```
+
+`AGENTS.md` contains the project-level instruction for this mode. Do not run
+the Windows session watcher for the same live task: the wrapper is the source
+of truth for tool calls and results, while MCP remains available for pre-turn
+context retrieval and other Agent frameworks.
+
+### Unified Agent Runtime Contract
+
+Every real-time adapter uses the same `contextdb.agent_hook.v1` envelope and
+the pair `(source, session_id)`. An Agent can integrate through either the HTTP
+hook response, the native-exec wrapper, or MCP, while ContextDB stores one
+trajectory and one application trace for that pair. Future Agent-specific
+adapters only need to map their tool start/result callbacks to this contract;
+they do not need a separate memory or skill storage implementation.
+
+### Claude Code Live Hook
+
+The project includes `.claude/settings.json` and
+`tools\claude_code_hook.py` for a project-local Claude Code integration. Its
+`PreToolUse`, `PostToolUse`, and `PostToolUseFailure` hooks map real Claude
+Code Bash calls to the same Agent Hook protocol used by Codex. On a failed Bash
+call, the adapter retrieves a ContextDB recommendation and returns it to Claude
+as Claude Code `additionalContext` before the next model decision. See
+`examples\claude_code_live_hook.md` for setup and verification.
+
 ## Useful CLI commands
 
 ```bash
@@ -142,3 +308,45 @@ curl -s -X POST http://127.0.0.1:8765/api/v1/diff \
 3. Switch views: `current_prompt` shows context loading and token savings, `failure_patterns` extracts failed tool calls with preceding agent actions, `success_patterns` extracts successful strategies across branches, and `repair_strategies` links failures to later successful repairs with deterministic structural evidence. The bundled demo includes same-branch and repair-branch cases where only the first successful tool result after a failure is linked as the direct repair; later smoke-test successes are intentionally not linked.
 4. Run `contextdb diff` to compare successful repair branches, then show `rl_dataset` as training-data export for SFT/RL/distillation.
 5. Explain the key claim: context is no longer only prompt text; it is a first-class, persistent, queryable, versioned database object.
+
+## Windows Codex App Live Hook
+
+ContextDB can record real Windows Codex App sessions without requiring the Codex CLI.
+The watcher tails the App's local `~/.codex/sessions/**/rollout-*.jsonl` files and
+forwards only appended records. Each rollout file becomes one `codex-session`
+trajectory; failed tool results use the normal ContextDB skill retrieval path.
+
+1. On Ubuntu, run ContextDB in `contextdb_env`:
+
+   ```bash
+   source /home/benjamin/miniconda3/envs/contextdb_env/bin/activate
+   cd /home/benjamin/windows/contextdb
+   contextdb serve --host 127.0.0.1 --port 8765
+   ```
+
+2. In a separate Windows PowerShell window, create and keep an SSH tunnel open:
+
+   ```powershell
+   ssh -N -L 8765:127.0.0.1:8765 benjamin@192.168.253.128
+   ```
+
+3. Copy and start the watcher on Windows:
+
+   ```powershell
+   scp benjamin@192.168.253.128:/home/benjamin/windows/contextdb/tools/windows_codex_session_watcher.py $env:USERPROFILE\bin\
+   python $env:USERPROFILE\bin\windows_codex_session_watcher.py --base-url http://127.0.0.1:8765
+   ```
+
+4. Use the Codex App normally. Watcher output `CONTEXTDB_SKILL_HOOK` after a failed
+   tool result proves a live skill retrieval. In Ubuntu, inspect the corresponding
+   session and graph with:
+
+   ```bash
+   contextdb hook-status codex-session rollout-YYYY-MM-DDTHH-MM-SS-<id>
+   ```
+
+On its first normal run the watcher starts at the end of existing logs, so it does not
+import old conversations. Use `--replay-existing --once` to import existing logs once.
+The hook is observation-only:
+it records what Codex actually did and retrieves a recommendation, but it never forces
+Codex to execute a recommendation.

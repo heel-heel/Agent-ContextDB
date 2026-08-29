@@ -1,0 +1,514 @@
+{
+  "view_name": "current_prompt",
+  "trajectory_id": "traj_7cc5f5848ac4",
+  "branch_id": "main",
+  "content": {
+    "summary": "Earlier trajectory context:\n- skill_recommendation:{'type': 'contextdb_skill_recommendation', 'matched': False, 'instruction': 'No reusable ContextDB skill matched this fa\n- tool_call:rg --files examples -g settings.json\n- tool_result:examples\\live-path-demo\\assets\\settings.json\nexamples\\live_path_demo\\assets\\settings.json\n\n- tool_call:powershell -NoProfile -Command \"Get-Content -Raw -LiteralPath '.\\examples\\live_path_demo\\assets\\settings.json'\"\n- tool_result:{\n  \"mode\": \"path-demo\",\n  \"source\": \"project-fixture\",\n  \"purpose\": \"real relative-path repair demonstration\"\n}\n\n\n- tool_call:powershell -NoProfile -Command \"Get-Content -Raw -LiteralPath '.\\assets\\settings.json'\"",
+    "recent_events": [
+      {
+        "event_id": "evt_cbc43f5d71aa",
+        "trajectory_id": "traj_7cc5f5848ac4",
+        "branch_id": "main",
+        "event_type": "tool_result",
+        "payload": {
+          "status": "failed",
+          "preview": "Get-Content : Cannot find path '.\\assets\\settings.json' because it does not exist.\nAt line:1 char:1\n+ Get-Content -Raw -LiteralPath '.\\assets\\settings.json'\n+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n    + CategoryInfo          : ObjectNotFound: (.\\assets\\settings.json:String) [Get-Content], ItemNotFoundException\n    + FullyQualifiedErrorId : PathNotFound,Microsoft.PowerShell.Commands.GetContentCommand\n \n",
+          "exit_code": 1
+        },
+        "parent_event_ids": [
+          "evt_506d5b87015d"
+        ],
+        "actor": "tool",
+        "timestamp": "2026-08-29T07:15:44.223657+00:00",
+        "refs": {
+          "hook_protocol": "contextdb.agent_hook.v1",
+          "hook_source": "codex",
+          "hook_adapter": "generic",
+          "hook_session_id": "path-skill-demo",
+          "tool_call_event_id": "evt_506d5b87015d"
+        },
+        "metadata": {
+          "agent_id": "codex",
+          "online": true,
+          "integration": "agent-hook.v1",
+          "hook_received_at": "2026-08-29T07:15:44.223413+00:00",
+          "adapter": "generic-hook"
+        }
+      },
+      {
+        "event_id": "evt_0fa1ebda07b8",
+        "trajectory_id": "traj_7cc5f5848ac4",
+        "branch_id": "main",
+        "event_type": "skill_match",
+        "payload": {
+          "schema_version": "skill_match_result.v2",
+          "trajectory_id": "traj_7cc5f5848ac4",
+          "input_failure": {
+            "tool": "shell",
+            "command": "powershell -NoProfile -Command \"Get-Content -Raw -LiteralPath '.\\assets\\settings.json'\"",
+            "error_signature": "Get-Content : Cannot find path '.\\assets\\settings.json' because it does not exist.\nAt line:1 char:1\n+ Get-Content -Raw -LiteralPath '.\\assets\\settings.json'\n+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n    + CategoryInfo          : ObjectNotFound: (.\\assets\\settings.json:String) [Get-Content], ItemNotFoundException\n    + FullyQualifiedErrorId : PathNotFound,Microsoft.PowerShell.Commands.GetContentCommand\n \n",
+            "normalized_signature": "get-content cannot find path ' assets settings.json' because it does not exist at line char + get-content -raw -literalpath ' assets settings.json' + ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+          },
+          "match_engine": {
+            "type": "sqlite-vector-index",
+            "embedding": "hash-384",
+            "similarity": "cosine",
+            "threshold": 0.32,
+            "indexed_skill_count": 1
+          },
+          "match_judge": {
+            "enabled": false,
+            "provider": "replaced_by_vector_index",
+            "reason": "Skill matching uses vector retrieval."
+          },
+          "matches": [
+            {
+              "schema_version": "skill_match.v2",
+              "matched_skill_id": "skill_incorrect_file_path_with_escaped_backslashes_get-content_cannot",
+              "skill_name": "Repair incorrect file path with escaped backslashes",
+              "score": 0.806406,
+              "match_reason": "vector cosine similarity over failure and learned trigger",
+              "matched_trigger": {
+                "failed_tool": "shell",
+                "failed_command_pattern": "powershell -NoProfile -Command \"Get-Content -Raw -LiteralPath '.\\examples\\live\\\\\\_path\\\\\\_demo\\assets\\settings.json'\"",
+                "normalized_signature": "get-content cannot find path ' examples live _path _demo assets settings.json' because it does not exist at line char + get-content -raw -literalpath '",
+                "error_signature": "Get-Content : Cannot find path '.\\examples\\live\\\\\\_path\\\\\\_demo\\assets\\settings.json' because it does not exist.\nAt line:1 char:1\n+ Get-Content -Raw -LiteralPath '.\\examples\\live\\\\\\_path\\\\\\_demo\\assets ...\n+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n    + CategoryInfo          : ObjectNotFound: (.\\examples\\live...s\\settings.json:String) [Get-Content], ItemNotFoundEx \n   ception\n    + FullyQualifiedErrorId : PathNotFound,Microsoft.PowerShell.Commands.GetContentCommand\n",
+                "likely_cause": "incorrect file path with escaped backslashes"
+              },
+              "recommended_actions": [
+                {
+                  "action_id": "act_incorrect_file_path_with_escaped_backslashes_get-content_cannot_1",
+                  "name": "Apply rg --files examples -g settings.json",
+                  "canonical_tool": "shell",
+                  "canonical_command_template": "rg --files examples -g settings.json",
+                  "strategy": "Apply rg --files examples -g settings.json",
+                  "support_event_ids": [
+                    "evt_68ad7695f7f8"
+                  ],
+                  "support_events": [
+                    {
+                      "trajectory_id": "traj_7cc5f5848ac4",
+                      "failure_event_id": "evt_e880fc6a6461",
+                      "success_event_id": "evt_68ad7695f7f8",
+                      "branch_id": "main",
+                      "tool": "shell",
+                      "command": "rg --files examples -g settings.json",
+                      "strategy": "",
+                      "outcome": "ok",
+                      "primary_rule": "same_branch_first_success_after_failure",
+                      "judgment_label": "likely_repair",
+                      "confidence": 0.85,
+                      "reason": "The failure was caused by an incorrect file path with escaped backslashes. The repair candidate uses 'rg --files examples -g settings.json' to search for the correct path of settings.json, which directly addresses the root cause of the path not found error.",
+                      "vector_text": "shell rg --files examples -g settings.json"
+                    }
+                  ],
+                  "confidence": {
+                    "max_llm_confidence": 0.85,
+                    "support_count": 1
+                  },
+                  "dedupe": {
+                    "method": "vector_cosine",
+                    "embedding": "hash-384",
+                    "threshold": 0.78,
+                    "group_size": 1
+                  }
+                }
+              ],
+              "skill_status": "candidate",
+              "highlight_event_ids": [
+                "evt_e880fc6a6461",
+                "evt_68ad7695f7f8"
+              ],
+              "source_trajectory_id": "traj_7cc5f5848ac4"
+            }
+          ],
+          "materialized": true,
+          "source_views": [
+            {
+              "key": "trajectories/traj_7cc5f5848ac4/views/main/learned_skills",
+              "branch_id": "main",
+              "created_at": "2026-08-29T07:15:21.664797+00:00",
+              "skill_count": 1
+            }
+          ]
+        },
+        "parent_event_ids": [
+          "evt_cbc43f5d71aa"
+        ],
+        "actor": "contextdb",
+        "timestamp": "2026-08-29T07:15:44.229666+00:00",
+        "refs": {
+          "failure_event_id": "evt_cbc43f5d71aa"
+        },
+        "metadata": {
+          "operation": "online_skill_retrieval",
+          "match_engine": "sqlite-vector-index"
+        }
+      },
+      {
+        "event_id": "evt_6d024cc90329",
+        "trajectory_id": "traj_7cc5f5848ac4",
+        "branch_id": "main",
+        "event_type": "skill_recommendation",
+        "payload": {
+          "type": "contextdb_skill_recommendation",
+          "matched": true,
+          "skill_id": "skill_incorrect_file_path_with_escaped_backslashes_get-content_cannot",
+          "skill_name": "Repair incorrect file path with escaped backslashes",
+          "match_score": 0.806406,
+          "match_reason": "vector cosine similarity over failure and learned trigger",
+          "selected_action": {
+            "action_id": "act_incorrect_file_path_with_escaped_backslashes_get-content_cannot_1",
+            "name": "Apply rg --files examples -g settings.json",
+            "canonical_tool": "shell",
+            "canonical_command_template": "rg --files examples -g settings.json",
+            "strategy": "Apply rg --files examples -g settings.json",
+            "support_event_ids": [
+              "evt_68ad7695f7f8"
+            ],
+            "support_events": [
+              {
+                "trajectory_id": "traj_7cc5f5848ac4",
+                "failure_event_id": "evt_e880fc6a6461",
+                "success_event_id": "evt_68ad7695f7f8",
+                "branch_id": "main",
+                "tool": "shell",
+                "command": "rg --files examples -g settings.json",
+                "strategy": "",
+                "outcome": "ok",
+                "primary_rule": "same_branch_first_success_after_failure",
+                "judgment_label": "likely_repair",
+                "confidence": 0.85,
+                "reason": "The failure was caused by an incorrect file path with escaped backslashes. The repair candidate uses 'rg --files examples -g settings.json' to search for the correct path of settings.json, which directly addresses the root cause of the path not found error.",
+                "vector_text": "shell rg --files examples -g settings.json"
+              }
+            ],
+            "confidence": {
+              "max_llm_confidence": 0.85,
+              "support_count": 1
+            },
+            "dedupe": {
+              "method": "vector_cosine",
+              "embedding": "hash-384",
+              "threshold": 0.78,
+              "group_size": 1
+            }
+          },
+          "selected_action_index": 0,
+          "selected_action_score": 0.85,
+          "selection_policy": "highest max_llm_confidence; ties keep original action order",
+          "instruction": "Use this as a suggestion. The Agent must decide whether it is safe and appropriate before executing it."
+        },
+        "parent_event_ids": [
+          "evt_0fa1ebda07b8"
+        ],
+        "actor": "contextdb",
+        "timestamp": "2026-08-29T07:15:44.261605+00:00",
+        "refs": {
+          "skill_match_event_id": "evt_0fa1ebda07b8",
+          "skill_id": "skill_incorrect_file_path_with_escaped_backslashes_get-content_cannot",
+          "selected_action_id": "act_incorrect_file_path_with_escaped_backslashes_get-content_cannot_1"
+        },
+        "metadata": {
+          "operation": "skill_recommendation_delivery",
+          "delivery_channel": "native-exec-hook",
+          "online": true
+        }
+      },
+      {
+        "event_id": "evt_8eec8e1fa619",
+        "trajectory_id": "traj_7cc5f5848ac4",
+        "branch_id": "main",
+        "event_type": "skill_decision",
+        "payload": {
+          "decision": "accepted",
+          "reason": "Agent selected the ContextDB recommendation.",
+          "skill_id": "skill_incorrect_file_path_with_escaped_backslashes_get-content_cannot",
+          "action_id": "act_incorrect_file_path_with_escaped_backslashes_get-content_cannot_1"
+        },
+        "parent_event_ids": [
+          "evt_6d024cc90329"
+        ],
+        "actor": "agent",
+        "timestamp": "2026-08-29T07:16:12.252816+00:00",
+        "refs": {
+          "skill_match_event_id": "evt_0fa1ebda07b8",
+          "skill_id": "skill_incorrect_file_path_with_escaped_backslashes_get-content_cannot",
+          "selected_action_id": "act_incorrect_file_path_with_escaped_backslashes_get-content_cannot_1"
+        },
+        "metadata": {
+          "operation": "skill_decision",
+          "online": true,
+          "integration": "agent-hook.v1"
+        }
+      },
+      {
+        "event_id": "evt_aeddf420b7b0",
+        "trajectory_id": "traj_7cc5f5848ac4",
+        "branch_id": "main",
+        "event_type": "tool_call",
+        "payload": {
+          "tool_name": "shell",
+          "command": "skill_incorrect_file_path_with_escaped_backslashes_get-content_cannot -- rg --files examples -g settings.json"
+        },
+        "parent_event_ids": [
+          "evt_8eec8e1fa619"
+        ],
+        "actor": "agent",
+        "timestamp": "2026-08-29T07:16:12.277577+00:00",
+        "refs": {
+          "skill_match_event_id": "evt_0fa1ebda07b8",
+          "skill_id": "skill_incorrect_file_path_with_escaped_backslashes_get-content_cannot",
+          "selected_action_id": "act_incorrect_file_path_with_escaped_backslashes_get-content_cannot_1"
+        },
+        "metadata": {
+          "agent_id": "codex",
+          "online": true,
+          "operation": "skill_application",
+          "integration": "agent-hook.v1"
+        }
+      },
+      {
+        "event_id": "evt_193da3b0d759",
+        "trajectory_id": "traj_7cc5f5848ac4",
+        "branch_id": "main",
+        "event_type": "tool_result",
+        "payload": {
+          "status": "failed",
+          "preview": "[WinError 2] 系统找不到指定的文件。",
+          "exit_code": 127
+        },
+        "parent_event_ids": [
+          "evt_aeddf420b7b0"
+        ],
+        "actor": "tool",
+        "timestamp": "2026-08-29T07:16:12.281093+00:00",
+        "refs": {
+          "skill_match_event_id": "evt_0fa1ebda07b8",
+          "skill_id": "skill_incorrect_file_path_with_escaped_backslashes_get-content_cannot",
+          "selected_action_id": "act_incorrect_file_path_with_escaped_backslashes_get-content_cannot_1",
+          "tool_call_event_id": "evt_aeddf420b7b0"
+        },
+        "metadata": {
+          "agent_id": "codex",
+          "online": true,
+          "operation": "skill_application",
+          "integration": "agent-hook.v1"
+        }
+      },
+      {
+        "event_id": "evt_4d2e939d0305",
+        "trajectory_id": "traj_7cc5f5848ac4",
+        "branch_id": "main",
+        "event_type": "skill_match",
+        "payload": {
+          "schema_version": "skill_match_result.v2",
+          "trajectory_id": "traj_7cc5f5848ac4",
+          "input_failure": {
+            "tool": "shell",
+            "command": "skill_incorrect_file_path_with_escaped_backslashes_get-content_cannot -- rg --files examples -g settings.json",
+            "error_signature": "[WinError 2] 系统找不到指定的文件。",
+            "normalized_signature": "winerror 系统找不到指定的文件。"
+          },
+          "match_engine": {
+            "type": "sqlite-vector-index",
+            "embedding": "hash-384",
+            "similarity": "cosine",
+            "threshold": 0.32,
+            "indexed_skill_count": 1
+          },
+          "match_judge": {
+            "enabled": false,
+            "provider": "replaced_by_vector_index",
+            "reason": "Skill matching uses vector retrieval."
+          },
+          "matches": [
+            {
+              "schema_version": "skill_match.v2",
+              "matched_skill_id": "skill_incorrect_file_path_with_escaped_backslashes_get-content_cannot",
+              "skill_name": "Repair incorrect file path with escaped backslashes",
+              "score": 0.422393,
+              "match_reason": "vector cosine similarity over failure and learned trigger",
+              "matched_trigger": {
+                "failed_tool": "shell",
+                "failed_command_pattern": "powershell -NoProfile -Command \"Get-Content -Raw -LiteralPath '.\\examples\\live\\\\\\_path\\\\\\_demo\\assets\\settings.json'\"",
+                "normalized_signature": "get-content cannot find path ' examples live _path _demo assets settings.json' because it does not exist at line char + get-content -raw -literalpath '",
+                "error_signature": "Get-Content : Cannot find path '.\\examples\\live\\\\\\_path\\\\\\_demo\\assets\\settings.json' because it does not exist.\nAt line:1 char:1\n+ Get-Content -Raw -LiteralPath '.\\examples\\live\\\\\\_path\\\\\\_demo\\assets ...\n+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n    + CategoryInfo          : ObjectNotFound: (.\\examples\\live...s\\settings.json:String) [Get-Content], ItemNotFoundEx \n   ception\n    + FullyQualifiedErrorId : PathNotFound,Microsoft.PowerShell.Commands.GetContentCommand\n",
+                "likely_cause": "incorrect file path with escaped backslashes"
+              },
+              "recommended_actions": [
+                {
+                  "action_id": "act_incorrect_file_path_with_escaped_backslashes_get-content_cannot_1",
+                  "name": "Apply rg --files examples -g settings.json",
+                  "canonical_tool": "shell",
+                  "canonical_command_template": "rg --files examples -g settings.json",
+                  "strategy": "Apply rg --files examples -g settings.json",
+                  "support_event_ids": [
+                    "evt_68ad7695f7f8"
+                  ],
+                  "support_events": [
+                    {
+                      "trajectory_id": "traj_7cc5f5848ac4",
+                      "failure_event_id": "evt_e880fc6a6461",
+                      "success_event_id": "evt_68ad7695f7f8",
+                      "branch_id": "main",
+                      "tool": "shell",
+                      "command": "rg --files examples -g settings.json",
+                      "strategy": "",
+                      "outcome": "ok",
+                      "primary_rule": "same_branch_first_success_after_failure",
+                      "judgment_label": "likely_repair",
+                      "confidence": 0.85,
+                      "reason": "The failure was caused by an incorrect file path with escaped backslashes. The repair candidate uses 'rg --files examples -g settings.json' to search for the correct path of settings.json, which directly addresses the root cause of the path not found error.",
+                      "vector_text": "shell rg --files examples -g settings.json"
+                    }
+                  ],
+                  "confidence": {
+                    "max_llm_confidence": 0.85,
+                    "support_count": 1
+                  },
+                  "dedupe": {
+                    "method": "vector_cosine",
+                    "embedding": "hash-384",
+                    "threshold": 0.78,
+                    "group_size": 1
+                  }
+                }
+              ],
+              "skill_status": "candidate",
+              "highlight_event_ids": [
+                "evt_e880fc6a6461",
+                "evt_68ad7695f7f8"
+              ],
+              "source_trajectory_id": "traj_7cc5f5848ac4"
+            }
+          ],
+          "materialized": true,
+          "source_views": [
+            {
+              "key": "trajectories/traj_7cc5f5848ac4/views/main/learned_skills",
+              "branch_id": "main",
+              "created_at": "2026-08-29T07:15:21.664797+00:00",
+              "skill_count": 1
+            }
+          ]
+        },
+        "parent_event_ids": [
+          "evt_193da3b0d759"
+        ],
+        "actor": "contextdb",
+        "timestamp": "2026-08-29T07:16:12.285447+00:00",
+        "refs": {
+          "failure_event_id": "evt_193da3b0d759"
+        },
+        "metadata": {
+          "operation": "online_skill_retrieval",
+          "match_engine": "sqlite-vector-index"
+        }
+      },
+      {
+        "event_id": "evt_d501b141cad7",
+        "trajectory_id": "traj_7cc5f5848ac4",
+        "branch_id": "main",
+        "event_type": "skill_recommendation",
+        "payload": {
+          "type": "contextdb_skill_recommendation",
+          "matched": true,
+          "skill_id": "skill_incorrect_file_path_with_escaped_backslashes_get-content_cannot",
+          "skill_name": "Repair incorrect file path with escaped backslashes",
+          "match_score": 0.422393,
+          "match_reason": "vector cosine similarity over failure and learned trigger",
+          "selected_action": {
+            "action_id": "act_incorrect_file_path_with_escaped_backslashes_get-content_cannot_1",
+            "name": "Apply rg --files examples -g settings.json",
+            "canonical_tool": "shell",
+            "canonical_command_template": "rg --files examples -g settings.json",
+            "strategy": "Apply rg --files examples -g settings.json",
+            "support_event_ids": [
+              "evt_68ad7695f7f8"
+            ],
+            "support_events": [
+              {
+                "trajectory_id": "traj_7cc5f5848ac4",
+                "failure_event_id": "evt_e880fc6a6461",
+                "success_event_id": "evt_68ad7695f7f8",
+                "branch_id": "main",
+                "tool": "shell",
+                "command": "rg --files examples -g settings.json",
+                "strategy": "",
+                "outcome": "ok",
+                "primary_rule": "same_branch_first_success_after_failure",
+                "judgment_label": "likely_repair",
+                "confidence": 0.85,
+                "reason": "The failure was caused by an incorrect file path with escaped backslashes. The repair candidate uses 'rg --files examples -g settings.json' to search for the correct path of settings.json, which directly addresses the root cause of the path not found error.",
+                "vector_text": "shell rg --files examples -g settings.json"
+              }
+            ],
+            "confidence": {
+              "max_llm_confidence": 0.85,
+              "support_count": 1
+            },
+            "dedupe": {
+              "method": "vector_cosine",
+              "embedding": "hash-384",
+              "threshold": 0.78,
+              "group_size": 1
+            }
+          },
+          "selected_action_index": 0,
+          "selected_action_score": 0.85,
+          "selection_policy": "highest max_llm_confidence; ties keep original action order",
+          "instruction": "Use this as a suggestion. The Agent must decide whether it is safe and appropriate before executing it."
+        },
+        "parent_event_ids": [
+          "evt_4d2e939d0305"
+        ],
+        "actor": "contextdb",
+        "timestamp": "2026-08-29T07:16:12.311337+00:00",
+        "refs": {
+          "skill_match_event_id": "evt_4d2e939d0305",
+          "skill_id": "skill_incorrect_file_path_with_escaped_backslashes_get-content_cannot",
+          "selected_action_id": "act_incorrect_file_path_with_escaped_backslashes_get-content_cannot_1"
+        },
+        "metadata": {
+          "operation": "skill_recommendation_delivery",
+          "delivery_channel": "native-exec-hook",
+          "online": true
+        }
+      }
+    ],
+    "relevant_memory": [],
+    "token_budget": 2000,
+    "estimated_full_history_tokens": 7583,
+    "estimated_loaded_tokens": 4301,
+    "estimated_saved_tokens": 3282,
+    "loading_policy": "summary + recent_events + relevant_memory"
+  },
+  "source_events": [
+    "evt_258d97f0c231",
+    "evt_2f8aacf3f4cb",
+    "evt_268418d31690",
+    "evt_0c840f9d6e87",
+    "evt_7f146308c5cf",
+    "evt_e880fc6a6461",
+    "evt_195369f5fa5c",
+    "evt_b61bd2ab6088",
+    "evt_6efd933ce3c6",
+    "evt_68ad7695f7f8",
+    "evt_335d577a166f",
+    "evt_b9389ff16a13",
+    "evt_506d5b87015d",
+    "evt_cbc43f5d71aa",
+    "evt_0fa1ebda07b8",
+    "evt_6d024cc90329",
+    "evt_8eec8e1fa619",
+    "evt_aeddf420b7b0",
+    "evt_193da3b0d759",
+    "evt_4d2e939d0305",
+    "evt_d501b141cad7"
+  ],
+  "created_at": "2026-08-29T07:16:19.344197+00:00",
+  "metadata": {
+    "event_count": 21
+  }
+}

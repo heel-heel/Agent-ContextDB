@@ -8,6 +8,8 @@ from .agent_import import import_trace, normalize_trace_to_jsonl, replay_trace
 from .client import ContextDBClient
 from .benchmark import BenchmarkRunner
 from .agent_runtime import CodexContextBridge
+from .hooks import HookSessionBridge, stream_hook_events
+from .mcp_server import serve_stdio as serve_mcp_stdio
 from .service import ContextDB
 from .server import serve
 
@@ -196,11 +198,28 @@ def main():
     p_benchmark.add_argument("manifest")
     p_codex_online = sub.add_parser("codex-online-demo")
     p_codex_online.add_argument("failure_json")
+    p_hook_stream = sub.add_parser("hook-stream", help="Forward live JSONL Agent events to the ContextDB Hook API.")
+    p_hook_stream.add_argument("--base-url", default="http://127.0.0.1:8765")
+    p_hook_stream.add_argument("--source", default="codex", choices=["codex", "codex-session", "generic"])
+    p_hook_stream.add_argument("--session-id", default=None)
+    p_hook_stream.add_argument("--title", default=None)
+    p_hook_stream.add_argument("--agent-id", default=None)
+    p_hook_stream.add_argument("--no-echo", action="store_true", help="Do not re-emit source JSONL on stdout.")
+    p_hook_status = sub.add_parser("hook-status", help="Show a persisted Hook session and its skill trace.")
+    p_hook_status.add_argument("source")
+    p_hook_status.add_argument("session_id")
+    p_hook_context = sub.add_parser("hook-context", help="Return the latest live skill recommendation for an Agent resume turn.")
+    p_hook_context.add_argument("source")
+    p_hook_context.add_argument("session_id")
+    p_hook_context.add_argument("--format", choices=["json", "prompt"], default="json")
+    p_mcp = sub.add_parser("mcp-serve", help="Run the ContextDB stdio MCP server for live skill injection.")
     args = parser.parse_args()
 
     if args.cmd == "serve":
         serve(args.root, args.host, args.port)
         return
+    if args.cmd == "mcp-serve":
+        raise SystemExit(serve_mcp_stdio(args.root))
     if args.cmd == "demo":
         run_demo(args.root, args.trace)
         return
@@ -229,8 +248,21 @@ def main():
     if args.cmd == "client-demo":
         run_client_demo(args.base_url)
         return
+    if args.cmd == "hook-stream":
+        raise SystemExit(stream_hook_events(args.base_url, source=args.source, session_id=args.session_id, title=args.title, agent_id=args.agent_id, echo=not args.no_echo))
 
     db = ContextDB(args.root)
+    if args.cmd == "hook-status":
+        emit(HookSessionBridge(db).status(args.source, args.session_id))
+        return
+    if args.cmd == "hook-context":
+        context = HookSessionBridge(db).agent_context(args.source, args.session_id)
+        if args.format == "prompt":
+            recommendation = context["agent_context"]
+            print("ContextDB live skill recommendation: " + json.dumps(recommendation, ensure_ascii=False))
+        else:
+            emit(context)
+        return
     if args.cmd == "match-skill":
         emit(db.match_skill(args.trajectory_id, json.loads(args.failure_json), top_k=args.top_k))
         return

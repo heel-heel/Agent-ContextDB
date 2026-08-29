@@ -1,0 +1,44 @@
+{
+  "event_id": "evt_c5892d1616f7",
+  "trajectory_id": "traj_6230ed44dfbb",
+  "branch_id": "main",
+  "event_type": "tool_result",
+  "payload": {
+    "status": "ok",
+    "exit_code": null,
+    "preview": "[File: /marshmallow-code__marshmallow/src/marshmallow/fields.py (1997 lines total)]\n(1458 more lines above)\n1459:            self.WEEKS,\n1460:        )\n1461:\n1462:        if precision not in units:\n1463:            msg = 'The precision must be {} or \"{}\".'.format(\n1464:                \", \".join([f'\"{each}\"' for each in units[:-1]]), units[-1]\n1465:            )\n1466:            raise ValueError(msg)\n1467:\n1468:        self.precision = precision\n1469:        super().__init__(**kwargs)\n1470:\n1471:",
+    "raw_preview_truncated": true
+  },
+  "parent_event_ids": [
+    "evt_fc5ff6aad3f0"
+  ],
+  "actor": "tool",
+  "timestamp": "2026-08-29T07:39:22.932318+00:00",
+  "refs": {
+    "swe_step": 9,
+    "source_line": 29
+  },
+  "metadata": {
+    "observation_chars": 4116,
+    "adapter_status": "ok",
+    "swe_state": {
+      "open_file": "/marshmallow-code__marshmallow/reproduce.py",
+      "working_dir": "/marshmallow-code__marshmallow"
+    },
+    "llm_trace_annotation": {
+      "enabled": true,
+      "provider": "qwen",
+      "model": "qwen3.7-max",
+      "status": "ok",
+      "confidence": 1.0,
+      "error_signature": "",
+      "reason": "The file was successfully opened and the requested lines are displayed without any errors.",
+      "evidence": "[File: /marshmallow-code__marshmallow/src/marshmallow/fields.py (1997 lines total)]"
+    },
+    "status_resolution": "adapter_confirmed_or_low_confidence",
+    "normalized_from": "D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB\\examples\\swe_agent\\marshmallow-code__marshmallow-1867.traj",
+    "normalizer_source": "swe-agent-traj-llm",
+    "normalizer_event_index": 29,
+    "agent_id": "swe-agent"
+  }
+}

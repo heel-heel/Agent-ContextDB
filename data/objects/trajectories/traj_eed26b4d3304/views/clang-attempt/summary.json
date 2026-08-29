@@ -1,0 +1,23 @@
+{
+  "view_name": "summary",
+  "trajectory_id": "traj_eed26b4d3304",
+  "branch_id": "clang-attempt",
+  "content": "- user_message:Set up an agent context service and expose a stable ContextDB API.\n- tool_call:python --version && cargo --version\n- tool_result:Python and Rust toolchains found\n- memory_update:{'fact': 'Prefer existing conda environments before creating new ones.'}\n- assistant_message:Rollback to the clean environment snapshot before trying safer repair strategies.\n- assistant_message:Retry native build with CC=clang to bypass gcc 9.4.\n- tool_call:CC=clang cargo build --release\n- tool_result:Native server healthy on port 1933\n- assistant_message:Run a follow-up smoke test on the clang branch; this later success should remain supporting history, not the direct repair link.\n- tool_call:curl -fsS http://127.0.0.1:1933/health\n- tool_result:Clang branch smoke test passed after native repair",
+  "source_events": [
+    "evt_0961e774db54",
+    "evt_e7a851850281",
+    "evt_be8bde64ff6f",
+    "evt_b7da94bd7805",
+    "evt_3f183e0237bd",
+    "evt_bae583435fea",
+    "evt_8beca63e0a8a",
+    "evt_a7fee210a99e",
+    "evt_3ebb216c6a77",
+    "evt_b4a64c73ac39",
+    "evt_559abb514cc3"
+  ],
+  "created_at": "2026-08-29T07:37:45.823767+00:00",
+  "metadata": {
+    "event_count": 11
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "event_id": "evt_7f146308c5cf",
+  "trajectory_id": "traj_7cc5f5848ac4",
+  "branch_id": "main",
+  "event_type": "tool_call",
+  "payload": {
+    "tool_name": "shell",
+    "command": "powershell -NoProfile -Command \"Get-Content -Raw -LiteralPath '.\\examples\\live\\\\\\_path\\\\\\_demo\\assets\\settings.json'\""
+  },
+  "parent_event_ids": [
+    "evt_0c840f9d6e87"
+  ],
+  "actor": "agent",
+  "timestamp": "2026-08-29T07:11:14.255743+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "codex",
+    "hook_adapter": "generic",
+    "hook_session_id": "path-skill-demo"
+  },
+  "metadata": {
+    "agent_id": "codex",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-08-29T07:11:14.255478+00:00",
+    "adapter": "generic-hook"
+  }
+}

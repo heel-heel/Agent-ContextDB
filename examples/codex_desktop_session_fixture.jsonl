@@ -1,0 +1,4 @@
+{"timestamp":"2026-08-25T10:00:00Z","type":"session_meta","payload":{"session_id":"desktop_contextdb_fixture","cwd":"C:\\work\\demo"}}
+{"timestamp":"2026-08-25T10:00:01Z","type":"response_item","payload":{"type":"message","id":"msg_user","role":"user","content":[{"type":"input_text","text":"Build the project and diagnose any error."}]}}
+{"timestamp":"2026-08-25T10:00:02Z","type":"response_item","payload":{"type":"function_call","id":"call_item","call_id":"call_build","name":"functions.exec_command","arguments":"{\"cmd\": \"cargo build --release\"}"}}
+{"timestamp":"2026-08-25T10:00:03Z","type":"response_item","payload":{"type":"function_call_output","id":"out_item","call_id":"call_build","output":"{\"exit_code\": 1, \"output\": \"gcc rejected aws-lc-sys generated memcmp code\"}"}}

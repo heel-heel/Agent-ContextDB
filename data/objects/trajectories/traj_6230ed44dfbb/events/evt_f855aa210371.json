@@ -1,0 +1,44 @@
+{
+  "event_id": "evt_f855aa210371",
+  "trajectory_id": "traj_6230ed44dfbb",
+  "branch_id": "main",
+  "event_type": "tool_result",
+  "payload": {
+    "status": "ok",
+    "exit_code": null,
+    "preview": "[File: /marshmallow-code__marshmallow/src/marshmallow/fields.py (1997 lines total)]\n(1424 more lines above)\n1425:\n1426:    :param precision: Influences how the integer is interpreted during\n1427:        (de)serialization. Must be 'days', 'seconds', 'microseconds',\n1428:        'milliseconds', 'minutes', 'hours' or 'weeks'.\n1429:    :param kwargs: The same keyword arguments that :class:`Field` receives.\n1430:\n1431:    .. versionchanged:: 2.0.0\n1432:        Always serializes to an integer value to",
+    "raw_preview_truncated": true
+  },
+  "parent_event_ids": [
+    "evt_983300d75b43"
+  ],
+  "actor": "tool",
+  "timestamp": "2026-08-29T07:39:22.949352+00:00",
+  "refs": {
+    "swe_step": 11,
+    "source_line": 35
+  },
+  "metadata": {
+    "observation_chars": 3966,
+    "adapter_status": "ok",
+    "swe_state": {
+      "open_file": "/marshmallow-code__marshmallow/src/marshmallow/fields.py",
+      "working_dir": "/marshmallow-code__marshmallow"
+    },
+    "llm_trace_annotation": {
+      "enabled": true,
+      "provider": "qwen",
+      "model": "qwen3.7-max",
+      "status": "ok",
+      "confidence": 1.0,
+      "error_signature": "",
+      "reason": "The file edit was applied successfully as indicated by 'File updated. Please review the changes...' message.",
+      "evidence": "File updated. Please review the changes and make sure they are correct (correct indentation, no duplicate lines, etc). Edit the file again if necessary."
+    },
+    "status_resolution": "adapter_confirmed_or_low_confidence",
+    "normalized_from": "D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB\\examples\\swe_agent\\marshmallow-code__marshmallow-1867.traj",
+    "normalizer_source": "swe-agent-traj-llm",
+    "normalizer_event_index": 35,
+    "agent_id": "swe-agent"
+  }
+}

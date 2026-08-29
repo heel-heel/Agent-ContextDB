@@ -1,0 +1,19 @@
+{
+  "event_id": "evt_d5a873f050b0",
+  "trajectory_id": "traj_eed26b4d3304",
+  "branch_id": "direct-fix-from-failure",
+  "event_type": "tool_call",
+  "payload": {
+    "tool_name": "shell",
+    "command": "python -m pytest tests/test_contextdb.py -q"
+  },
+  "parent_event_ids": [
+    "evt_6b298e55a236"
+  ],
+  "actor": "agent",
+  "timestamp": "2026-08-29T07:37:45.648979+00:00",
+  "refs": {
+    "source_line": 14
+  },
+  "metadata": {}
+}

@@ -1,0 +1,6 @@
+{"type":"thread.started","thread_id":"thread_contextdb_fixture"}
+{"type":"turn.started"}
+{"type":"item.completed","item":{"id":"msg_1","type":"agent_message","text":"I will build the service first."}}
+{"type":"item.started","item":{"id":"cmd_1","type":"command_execution","command":"cargo build --release"}}
+{"type":"item.completed","item":{"id":"cmd_1","type":"command_execution","command":"cargo build --release","exit_code":1,"aggregated_output":"gcc rejected aws-lc-sys generated memcmp code"}}
+{"type":"turn.completed","usage":{"input_tokens":12,"output_tokens":8}}

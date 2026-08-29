@@ -1,0 +1,32 @@
+{
+  "event_id": "evt_4e96d020ad43",
+  "trajectory_id": "traj_6230ed44dfbb",
+  "branch_id": "main",
+  "event_type": "summary_update",
+  "payload": {
+    "text": "SWE-agent trajectory finished with exit_status=submitted",
+    "model_stats": {
+      "total_cost": 0,
+      "instance_cost": 0,
+      "tokens_sent": 0,
+      "tokens_received": 0,
+      "api_calls": 0
+    }
+  },
+  "parent_event_ids": [
+    "evt_9991d0277b84"
+  ],
+  "actor": "agent",
+  "timestamp": "2026-08-29T07:39:22.980335+00:00",
+  "refs": {
+    "swe_info": "exit_status",
+    "source_line": 46
+  },
+  "metadata": {
+    "exit_status": "submitted",
+    "normalized_from": "D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB\\examples\\swe_agent\\marshmallow-code__marshmallow-1867.traj",
+    "normalizer_source": "swe-agent-traj-llm",
+    "normalizer_event_index": 46,
+    "agent_id": "swe-agent"
+  }
+}

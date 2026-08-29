@@ -1,0 +1,190 @@
+{
+  "view_name": "current_prompt",
+  "trajectory_id": "traj_eed26b4d3304",
+  "branch_id": "clang-attempt",
+  "content": {
+    "summary": "Earlier trajectory context:\n- user_message:Set up an agent context service and expose a stable ContextDB API.\n- tool_call:python --version && cargo --version\n- tool_result:Python and Rust toolchains found",
+    "recent_events": [
+      {
+        "event_id": "evt_b7da94bd7805",
+        "trajectory_id": "traj_eed26b4d3304",
+        "branch_id": "main",
+        "event_type": "memory_update",
+        "payload": {
+          "fact": "Prefer existing conda environments before creating new ones."
+        },
+        "parent_event_ids": [
+          "evt_be8bde64ff6f"
+        ],
+        "actor": "agent",
+        "timestamp": "2026-08-29T07:37:45.619853+00:00",
+        "refs": {
+          "source_line": 4
+        },
+        "metadata": {}
+      },
+      {
+        "event_id": "evt_3f183e0237bd",
+        "trajectory_id": "traj_eed26b4d3304",
+        "branch_id": "rollback-clean",
+        "event_type": "assistant_message",
+        "payload": {
+          "text": "Rollback to the clean environment snapshot before trying safer repair strategies."
+        },
+        "parent_event_ids": [
+          "evt_b7da94bd7805"
+        ],
+        "actor": "agent",
+        "timestamp": "2026-08-29T07:37:45.670360+00:00",
+        "refs": {
+          "source_line": 23
+        },
+        "metadata": {
+          "operation": "rollback",
+          "snapshot_ref": "clean"
+        }
+      },
+      {
+        "event_id": "evt_bae583435fea",
+        "trajectory_id": "traj_eed26b4d3304",
+        "branch_id": "clang-attempt",
+        "event_type": "assistant_message",
+        "payload": {
+          "text": "Retry native build with CC=clang to bypass gcc 9.4."
+        },
+        "parent_event_ids": [
+          "evt_3f183e0237bd"
+        ],
+        "actor": "agent",
+        "timestamp": "2026-08-29T07:37:45.684676+00:00",
+        "refs": {
+          "source_line": 30
+        },
+        "metadata": {}
+      },
+      {
+        "event_id": "evt_8beca63e0a8a",
+        "trajectory_id": "traj_eed26b4d3304",
+        "branch_id": "clang-attempt",
+        "event_type": "tool_call",
+        "payload": {
+          "tool_name": "shell",
+          "command": "CC=clang cargo build --release"
+        },
+        "parent_event_ids": [
+          "evt_bae583435fea"
+        ],
+        "actor": "agent",
+        "timestamp": "2026-08-29T07:37:45.687169+00:00",
+        "refs": {
+          "source_line": 31
+        },
+        "metadata": {}
+      },
+      {
+        "event_id": "evt_a7fee210a99e",
+        "trajectory_id": "traj_eed26b4d3304",
+        "branch_id": "clang-attempt",
+        "event_type": "tool_result",
+        "payload": {
+          "status": "ok",
+          "exit_code": null,
+          "preview": "Native server healthy on port 1933"
+        },
+        "parent_event_ids": [
+          "evt_8beca63e0a8a"
+        ],
+        "actor": "tool",
+        "timestamp": "2026-08-29T07:37:45.689726+00:00",
+        "refs": {
+          "source_line": 32
+        },
+        "metadata": {}
+      },
+      {
+        "event_id": "evt_3ebb216c6a77",
+        "trajectory_id": "traj_eed26b4d3304",
+        "branch_id": "clang-attempt",
+        "event_type": "assistant_message",
+        "payload": {
+          "text": "Run a follow-up smoke test on the clang branch; this later success should remain supporting history, not the direct repair link."
+        },
+        "parent_event_ids": [
+          "evt_a7fee210a99e"
+        ],
+        "actor": "agent",
+        "timestamp": "2026-08-29T07:37:45.692279+00:00",
+        "refs": {
+          "source_line": 33
+        },
+        "metadata": {}
+      },
+      {
+        "event_id": "evt_b4a64c73ac39",
+        "trajectory_id": "traj_eed26b4d3304",
+        "branch_id": "clang-attempt",
+        "event_type": "tool_call",
+        "payload": {
+          "tool_name": "shell",
+          "command": "curl -fsS http://127.0.0.1:1933/health"
+        },
+        "parent_event_ids": [
+          "evt_3ebb216c6a77"
+        ],
+        "actor": "agent",
+        "timestamp": "2026-08-29T07:37:45.695051+00:00",
+        "refs": {
+          "source_line": 34
+        },
+        "metadata": {}
+      },
+      {
+        "event_id": "evt_559abb514cc3",
+        "trajectory_id": "traj_eed26b4d3304",
+        "branch_id": "clang-attempt",
+        "event_type": "tool_result",
+        "payload": {
+          "status": "ok",
+          "exit_code": null,
+          "preview": "Clang branch smoke test passed after native repair"
+        },
+        "parent_event_ids": [
+          "evt_b4a64c73ac39"
+        ],
+        "actor": "tool",
+        "timestamp": "2026-08-29T07:37:45.697728+00:00",
+        "refs": {
+          "source_line": 35
+        },
+        "metadata": {}
+      }
+    ],
+    "relevant_memory": [
+      {
+        "fact": "Prefer existing conda environments before creating new ones."
+      }
+    ],
+    "token_budget": 2000,
+    "estimated_full_history_tokens": 1051,
+    "estimated_loaded_tokens": 851,
+    "estimated_saved_tokens": 200,
+    "loading_policy": "summary + recent_events + relevant_memory"
+  },
+  "source_events": [
+    "evt_0961e774db54",
+    "evt_e7a851850281",
+    "evt_be8bde64ff6f",
+    "evt_b7da94bd7805",
+    "evt_3f183e0237bd",
+    "evt_bae583435fea",
+    "evt_8beca63e0a8a",
+    "evt_a7fee210a99e",
+    "evt_3ebb216c6a77",
+    "evt_b4a64c73ac39",
+    "evt_559abb514cc3"
+  ],
+  "created_at": "2026-08-29T07:37:45.794663+00:00",
+  "metadata": {
+    "event_count": 11
+  }
+}

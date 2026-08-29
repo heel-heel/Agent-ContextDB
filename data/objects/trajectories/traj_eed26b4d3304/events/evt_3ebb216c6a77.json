@@ -1,0 +1,18 @@
+{
+  "event_id": "evt_3ebb216c6a77",
+  "trajectory_id": "traj_eed26b4d3304",
+  "branch_id": "clang-attempt",
+  "event_type": "assistant_message",
+  "payload": {
+    "text": "Run a follow-up smoke test on the clang branch; this later success should remain supporting history, not the direct repair link."
+  },
+  "parent_event_ids": [
+    "evt_a7fee210a99e"
+  ],
+  "actor": "agent",
+  "timestamp": "2026-08-29T07:37:45.692279+00:00",
+  "refs": {
+    "source_line": 33
+  },
+  "metadata": {}
+}

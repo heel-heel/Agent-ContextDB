@@ -1,0 +1,24 @@
+{
+  "event_id": "evt_b61bd2ab6088",
+  "trajectory_id": "traj_7cc5f5848ac4",
+  "branch_id": "main",
+  "event_type": "skill_recommendation",
+  "payload": {
+    "type": "contextdb_skill_recommendation",
+    "matched": false,
+    "instruction": "No reusable ContextDB skill matched this failure. Continue with normal diagnosis."
+  },
+  "parent_event_ids": [
+    "evt_195369f5fa5c"
+  ],
+  "actor": "contextdb",
+  "timestamp": "2026-08-29T07:11:14.546011+00:00",
+  "refs": {
+    "skill_match_event_id": "evt_195369f5fa5c"
+  },
+  "metadata": {
+    "operation": "skill_recommendation_delivery",
+    "delivery_channel": "native-exec-hook",
+    "online": true
+  }
+}

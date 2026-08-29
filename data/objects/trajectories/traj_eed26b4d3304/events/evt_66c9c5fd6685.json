@@ -1,0 +1,20 @@
+{
+  "event_id": "evt_66c9c5fd6685",
+  "trajectory_id": "traj_eed26b4d3304",
+  "branch_id": "future-session-skill-apply",
+  "event_type": "tool_result",
+  "payload": {
+    "status": "failed",
+    "exit_code": null,
+    "preview": "gcc rejected aws-lc-sys generated memcmp code"
+  },
+  "parent_event_ids": [
+    "evt_834ce7f29a57"
+  ],
+  "actor": "tool",
+  "timestamp": "2026-08-29T07:37:45.731810+00:00",
+  "refs": {
+    "source_line": 50
+  },
+  "metadata": {}
+}

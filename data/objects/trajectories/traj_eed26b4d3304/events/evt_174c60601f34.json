@@ -1,0 +1,20 @@
+{
+  "event_id": "evt_174c60601f34",
+  "trajectory_id": "traj_eed26b4d3304",
+  "branch_id": "direct-fix-from-failure",
+  "event_type": "tool_result",
+  "payload": {
+    "status": "ok",
+    "exit_code": null,
+    "preview": "Direct branch regression tests passed after repair"
+  },
+  "parent_event_ids": [
+    "evt_d5a873f050b0"
+  ],
+  "actor": "tool",
+  "timestamp": "2026-08-29T07:37:45.651471+00:00",
+  "refs": {
+    "source_line": 15
+  },
+  "metadata": {}
+}

@@ -1,0 +1,44 @@
+{
+  "event_id": "evt_367366f7ef55",
+  "trajectory_id": "traj_6230ed44dfbb",
+  "branch_id": "main",
+  "event_type": "tool_result",
+  "payload": {
+    "status": "ok",
+    "exit_code": null,
+    "preview": "AUTHORS.rst\nCHANGELOG.rst\nCODE_OF_CONDUCT.md\nCONTRIBUTING.rst\nLICENSE\nMANIFEST.in\nNOTICE\nREADME.rst\nRELEASING.md\nazure-pipelines.yml\ndocs/\nexamples/\nperformance/\npyproject.toml\nsetup.cfg\nsetup.py\nsrc/\ntests/\ntox.ini",
+    "raw_preview_truncated": false
+  },
+  "parent_event_ids": [
+    "evt_4bc7298c6461"
+  ],
+  "actor": "tool",
+  "timestamp": "2026-08-29T07:39:22.868812+00:00",
+  "refs": {
+    "swe_step": 1,
+    "source_line": 5
+  },
+  "metadata": {
+    "observation_chars": 215,
+    "adapter_status": "ok",
+    "swe_state": {
+      "open_file": "n/a",
+      "working_dir": "/marshmallow-code__marshmallow"
+    },
+    "llm_trace_annotation": {
+      "enabled": true,
+      "provider": "qwen",
+      "model": "qwen3.7-max",
+      "status": "ok",
+      "confidence": 1.0,
+      "error_signature": "",
+      "reason": "The ls -F command executed successfully and listed the directory contents without any errors.",
+      "evidence": "AUTHORS.rst CHANGELOG.rst CODE_OF_CONDUCT.md CONTRIBUTING.rst LICENSE MANIFEST.in NOTICE README.rst RELEASING.md azure-pipelines.yml docs/ examples/ performance/ pyproject.toml setup.cfg setup.py src/ tests/ tox.ini"
+    },
+    "status_resolution": "adapter_confirmed_or_low_confidence",
+    "normalized_from": "D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB\\examples\\swe_agent\\marshmallow-code__marshmallow-1867.traj",
+    "normalizer_source": "swe-agent-traj-llm",
+    "normalizer_event_index": 5,
+    "agent_id": "swe-agent"
+  }
+}

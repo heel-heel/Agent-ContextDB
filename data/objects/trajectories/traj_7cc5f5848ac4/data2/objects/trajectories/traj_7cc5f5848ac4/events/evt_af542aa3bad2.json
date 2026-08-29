@@ -1,0 +1,28 @@
+{
+  "event_id": "evt_af542aa3bad2",
+  "trajectory_id": "traj_7cc5f5848ac4",
+  "branch_id": "main",
+  "event_type": "tool_result",
+  "payload": {
+    "status": "ok",
+    "preview": "examples\\live_path_demo\\assets\\settings.json\nexamples\\live-path-demo\\assets\\settings.json\n",
+    "exit_code": 0
+  },
+  "parent_event_ids": [
+    "evt_a82d767917f1"
+  ],
+  "actor": "tool",
+  "timestamp": "2026-08-29T07:16:24.328831+00:00",
+  "refs": {
+    "skill_match_event_id": "evt_4d2e939d0305",
+    "skill_id": "skill_incorrect_file_path_with_escaped_backslashes_get-content_cannot",
+    "selected_action_id": "act_incorrect_file_path_with_escaped_backslashes_get-content_cannot_1",
+    "tool_call_event_id": "evt_a82d767917f1"
+  },
+  "metadata": {
+    "agent_id": "codex",
+    "online": true,
+    "operation": "skill_application",
+    "integration": "agent-hook.v1"
+  }
+}

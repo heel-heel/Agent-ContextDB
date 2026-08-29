@@ -1,0 +1,44 @@
+{
+  "event_id": "evt_98de80cf81ef",
+  "trajectory_id": "traj_6230ed44dfbb",
+  "branch_id": "main",
+  "event_type": "tool_result",
+  "payload": {
+    "status": "ok",
+    "exit_code": null,
+    "preview": "AUTHORS.rst\nCHANGELOG.rst\nCODE_OF_CONDUCT.md\nCONTRIBUTING.rst\nLICENSE\nMANIFEST.in\nNOTICE\nREADME.rst\nRELEASING.md\nazure-pipelines.yml\ndocs/\nexamples/\nperformance/\npyproject.toml\nreproduce.py\nsetup.cfg\nsetup.py\nsrc/\ntests/\ntox.ini",
+    "raw_preview_truncated": false
+  },
+  "parent_event_ids": [
+    "evt_c893a5f22ec0"
+  ],
+  "actor": "tool",
+  "timestamp": "2026-08-29T07:39:22.916599+00:00",
+  "refs": {
+    "swe_step": 7,
+    "source_line": 23
+  },
+  "metadata": {
+    "observation_chars": 228,
+    "adapter_status": "ok",
+    "swe_state": {
+      "open_file": "/marshmallow-code__marshmallow/reproduce.py",
+      "working_dir": "/marshmallow-code__marshmallow"
+    },
+    "llm_trace_annotation": {
+      "enabled": true,
+      "provider": "qwen",
+      "model": "qwen3.7-max",
+      "status": "ok",
+      "confidence": 1.0,
+      "error_signature": "",
+      "reason": "The ls command executed successfully and listed directory contents without any errors.",
+      "evidence": "AUTHORS.rst\nCHANGELOG.rst\nCODE_OF_CONDUCT.md\nCONTRIBUTING.rst\nLICENSE\nMANIFEST.in\nNOTICE\nREADME.rst\nRELEASING.md\nazure-pipelines.yml\ndocs/\nexamples/\nperformance/\npyproject.toml\nreproduce.py\nsetup.cfg\nsetup.py\nsrc/\ntests/\ntox.ini"
+    },
+    "status_resolution": "adapter_confirmed_or_low_confidence",
+    "normalized_from": "D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB\\examples\\swe_agent\\marshmallow-code__marshmallow-1867.traj",
+    "normalizer_source": "swe-agent-traj-llm",
+    "normalizer_event_index": 23,
+    "agent_id": "swe-agent"
+  }
+}
