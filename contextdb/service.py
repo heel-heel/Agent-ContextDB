@@ -14,6 +14,13 @@ from .contextql import ContextQLExecutor
 
 
 FAILURE_STATUSES = {"failed", "error", "timeout"}
+VERSION_EVENT_OPERATIONS = {
+    "version_snapshot_created",
+    "version_repair_branch_suggested",
+    "version_branch_created",
+    "version_rollback_created",
+    "version_decision",
+}
 
 
 class ContextDB:
@@ -99,11 +106,11 @@ class ContextDB:
             raise KeyError(f"branch not found: {branch_id}")
         return obj
 
-    def create_branch(self, trajectory_id: str, branch_id: str, base_event_id: Optional[str] = None, from_branch: str = "main") -> Dict[str, Any]:
+    def create_branch(self, trajectory_id: str, branch_id: str, base_event_id: Optional[str] = None, from_branch: str = "main", metadata: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         if self.store.get_object(uris.branch_key(trajectory_id, branch_id)) is not None:
             raise ValueError(f"branch already exists: {branch_id}")
         base = base_event_id or self.get_branch(trajectory_id, from_branch).get("head_event_id")
-        branch = Branch(branch_id=branch_id, trajectory_id=trajectory_id, base_event_id=base, head_event_id=base, metadata={"from_branch": from_branch})
+        branch = Branch(branch_id=branch_id, trajectory_id=trajectory_id, base_event_id=base, head_event_id=base, metadata={"from_branch": from_branch, **(metadata or {})})
         self.store.put_object(uris.branch_key(trajectory_id, branch_id), to_dict(branch))
         return to_dict(branch)
 
@@ -256,6 +263,141 @@ class ContextDB:
         self.store.put_object(uris.branch_key(trajectory_id, target_branch_id), to_dict(branch))
         return to_dict(branch)
 
+    def create_version_snapshot(
+        self,
+        trajectory_id: str,
+        branch_id: str = "main",
+        message: str = "",
+        origin: str = "manual",
+        reason: str = "",
+        actor: str = "contextdb",
+        refs: Optional[Dict[str, Any]] = None,
+    ) -> Dict[str, Any]:
+        """Create an auditable logical snapshot at the current branch head."""
+        event = self.append_event(
+            trajectory_id,
+            "system_event",
+            {
+                "text": "ContextDB created a logical snapshot before a versioned action.",
+                "message": message,
+                "reason": reason,
+                "origin": origin,
+                "logical_context_only": True,
+            },
+            branch_id=branch_id,
+            actor=actor,
+            refs=refs,
+            metadata={"operation": "version_snapshot_created", "origin": origin, "logical_context_only": True},
+        )
+        snapshot = self.snapshot(trajectory_id, branch_id=branch_id, message=message)
+        event["payload"]["snapshot_id"] = snapshot["snapshot_id"]
+        event["refs"] = {**event.get("refs", {}), "snapshot_id": snapshot["snapshot_id"]}
+        self.store.put_object(uris.event_key(trajectory_id, event["event_id"]), event)
+        return {"trajectory_id": trajectory_id, "branch_id": branch_id, "snapshot": snapshot, "event": event}
+
+    def create_version_branch(
+        self,
+        trajectory_id: str,
+        branch_id: str,
+        from_branch: str = "main",
+        base_event_id: Optional[str] = None,
+        snapshot_id: Optional[str] = None,
+        reason: str = "",
+        origin: str = "manual",
+        refs: Optional[Dict[str, Any]] = None,
+    ) -> Dict[str, Any]:
+        """Create a branch and persist a branch-created event on the new path."""
+        snapshot = None
+        if snapshot_id:
+            snapshot = self.store.get_object(uris.snapshot_key(trajectory_id, snapshot_id))
+            if snapshot is None:
+                raise KeyError(f"snapshot not found: {snapshot_id}")
+            base_event_id = snapshot.get("event_id")
+            from_branch = snapshot.get("branch_id") or from_branch
+        branch = self.create_branch(
+            trajectory_id,
+            branch_id,
+            base_event_id=base_event_id,
+            from_branch=from_branch,
+            metadata={
+                "version_origin": origin,
+                "created_from_snapshot": snapshot_id,
+                "reason": reason,
+            },
+        )
+        event = self.append_event(
+            trajectory_id,
+            "system_event",
+            {
+                "text": f"ContextDB created repair branch {branch_id}.",
+                "branch_id": branch_id,
+                "from_branch": from_branch,
+                "snapshot_id": snapshot_id,
+                "reason": reason,
+                "origin": origin,
+                "logical_context_only": True,
+            },
+            branch_id=branch_id,
+            actor="contextdb",
+            refs={**(refs or {}), **({"snapshot_id": snapshot_id} if snapshot_id else {})},
+            metadata={"operation": "version_branch_created", "origin": origin, "logical_context_only": True},
+        )
+        return {"trajectory_id": trajectory_id, "branch": self.get_branch(trajectory_id, branch_id), "event": event, "snapshot": snapshot}
+
+    def create_version_rollback(
+        self,
+        trajectory_id: str,
+        snapshot_id: str,
+        target_branch_id: str,
+        reason: str = "",
+        origin: str = "manual",
+        refs: Optional[Dict[str, Any]] = None,
+    ) -> Dict[str, Any]:
+        """Create a logical rollback branch without touching an Agent workspace."""
+        branch = self.rollback(trajectory_id, snapshot_id, target_branch_id)
+        branch["metadata"] = {**branch.get("metadata", {}), "version_origin": origin, "reason": reason, "logical_context_only": True}
+        self.store.put_object(uris.branch_key(trajectory_id, target_branch_id), branch)
+        event = self.append_event(
+            trajectory_id,
+            "system_event",
+            {
+                "text": f"ContextDB created logical rollback branch {target_branch_id}.",
+                "snapshot_id": snapshot_id,
+                "branch_id": target_branch_id,
+                "reason": reason,
+                "origin": origin,
+                "logical_context_only": True,
+                "workspace_restored": False,
+            },
+            branch_id=target_branch_id,
+            actor="contextdb",
+            refs={**(refs or {}), "snapshot_id": snapshot_id},
+            metadata={"operation": "version_rollback_created", "origin": origin, "logical_context_only": True},
+        )
+        return {"trajectory_id": trajectory_id, "branch": self.get_branch(trajectory_id, target_branch_id), "event": event}
+
+    def version_control_status(self, trajectory_id: str) -> Dict[str, Any]:
+        """Return the version-control state and its auditable lifecycle events."""
+        branches = sorted(self._branches(trajectory_id), key=lambda item: item.get("branch_id", ""))
+        snapshots = sorted(self._snapshots(trajectory_id), key=lambda item: item.get("created_at", ""))
+        events = [
+            event for event in self._all_events(trajectory_id)
+            if event.get("event_type") == "version_decision"
+            or (event.get("metadata", {}) or {}).get("operation") in VERSION_EVENT_OPERATIONS
+        ]
+        return {
+            "schema_version": "contextdb.version_control.v1",
+            "trajectory": self.get_trajectory(trajectory_id),
+            "branches": branches,
+            "snapshots": snapshots,
+            "version_events": events,
+            "workspace_restore": {
+                "supported": False,
+                "status": "not_connected",
+                "message": "ContextDB rollback creates a logical trajectory branch only; it never restores local workspace files automatically.",
+            },
+        }
+
     def diff(self, trajectory_id: str, left_branch: str, right_branch: str) -> Dict[str, Any]:
         # no usage now.
         left_events = self.list_events(trajectory_id, left_branch)
@@ -302,10 +444,12 @@ class ContextDB:
                 "actor": e.get("actor"),
                 "timestamp": e.get("timestamp"),
                 "label": self._event_line(e),
+                "payload": e.get("payload", {}),
                 "is_branch_head": eid in branch_heads,
                 "branch_heads": branch_heads.get(eid, []),
                 "branch_head": ",".join(branch_heads.get(eid, [])),
                 "snapshots": snapshot_events.get(eid, []),
+                "version_operation": (e.get("metadata", {}) or {}).get("operation"),
             })
             for parent in e.get("parent_event_ids") or []:
                 edges.append({"source": parent, "target": eid, "kind": "parent"})
@@ -313,6 +457,30 @@ class ContextDB:
             if b.get("base_event_id") and b.get("head_event_id") and b.get("base_event_id") != b.get("head_event_id"):
                 edges.append({"source": b["base_event_id"], "target": b["head_event_id"], "kind": "branch", "branch_id": b.get("branch_id")})
         return {"trajectory": self.get_trajectory(trajectory_id), "nodes": nodes, "edges": edges, "branches": branches, "snapshots": snapshots, "views": views}
+
+    def event_detail(self, trajectory_id: str, event_id: str) -> Dict[str, Any]:
+        """Return a complete event together with the graph metadata used by Playback."""
+        event = self.get_event(trajectory_id, event_id)
+        branches = list(self.store.scan_prefix(f"trajectories/{trajectory_id}/branches"))
+        snapshots = list(self.store.scan_prefix(f"trajectories/{trajectory_id}/snapshots"))
+        branch_heads: Dict[str, List[str]] = {}
+        for branch in branches:
+            if branch.get("head_event_id"):
+                branch_heads.setdefault(branch["head_event_id"], []).append(branch.get("branch_id"))
+        snapshot_ids = [snapshot.get("snapshot_id") for snapshot in snapshots if snapshot.get("event_id") == event_id]
+
+        detail = dict(event)
+        detail.update({
+            "id": event_id,
+            "type": "event",
+            "label": self._event_line(event, max_length=None),
+            "is_branch_head": event_id in branch_heads,
+            "branch_heads": branch_heads.get(event_id, []),
+            "branch_head": ",".join(branch_heads.get(event_id, [])),
+            "snapshots": snapshot_ids,
+            "version_operation": (event.get("metadata", {}) or {}).get("operation"),
+        })
+        return detail
 
     def failure_patterns(self, trajectory_id: str, branch_id: str = "main") -> List[Dict[str, Any]]:
         events = self.list_events(trajectory_id, branch_id)
@@ -1305,9 +1473,11 @@ class ContextDB:
         events = self.list_events(trajectory_id)
         return {"trajectory": self.get_trajectory(trajectory_id), "branches": branches, "snapshots": snapshots, "event_count": len(events)}
 
-    def _event_line(self, event: Dict[str, Any]) -> str:
+    def _event_line(self, event: Dict[str, Any], max_length: Optional[int] = 120) -> str:
         payload = event.get("payload", {})
-        text = payload.get("text") or payload.get("command") or payload.get("summary") or payload.get("preview") or str(payload)[:120]
+        text = str(payload.get("text") or payload.get("command") or payload.get("summary") or payload.get("preview") or payload)
+        if max_length is not None and len(text) > max_length:
+            text = text[:max(0, max_length - 3)].rstrip() + "..."
         return f"{event.get('event_type')}:{text}"
 
     def _compact_summary(self, events: List[Dict[str, Any]]) -> str:

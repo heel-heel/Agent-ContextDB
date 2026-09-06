@@ -1,0 +1,98 @@
+{
+  "event_id": "evt_2f8da74fb599",
+  "trajectory_id": "traj_2014e7a1531d",
+  "branch_id": "main",
+  "event_type": "skill_recommendation",
+  "payload": {
+    "type": "contextdb_skill_recommendation",
+    "matched": true,
+    "skill_id": "skill_file_not_found_specified_path_exit_code_get-content",
+    "skill_name": "Repair file not found at specified path",
+    "match_score": 0.569839,
+    "match_reason": "vector cosine similarity over failure and learned trigger",
+    "selected_action": {
+      "action_id": "act_file_not_found_specified_path_exit_code_get-content_1",
+      "name": "Apply powershell -NoProfile -Command \"Get-Content -Raw -LiteralPath '.\\examples\\live-path-demo\\assets\\settings.json'\"",
+      "canonical_tool": "shell",
+      "canonical_command_template": "powershell -NoProfile -Command \"Get-Content -Raw -LiteralPath '.\\examples\\live-path-demo\\assets\\settings.json'\"",
+      "strategy": "Apply powershell -NoProfile -Command \"Get-Content -Raw -LiteralPath '.\\examples\\live-path-demo\\assets\\settings.json'\"",
+      "support_event_ids": [
+        "evt_f68c0dc1563c"
+      ],
+      "support_events": [
+        {
+          "trajectory_id": "traj_2014e7a1531d",
+          "failure_event_id": "evt_9facbb570bdd",
+          "success_event_id": "evt_f68c0dc1563c",
+          "branch_id": "main",
+          "tool": "shell",
+          "command": "powershell -NoProfile -Command \"Get-Content -Raw -LiteralPath '.\\examples\\live-path-demo\\assets\\settings.json'\"",
+          "strategy": "",
+          "outcome": "ok",
+          "primary_rule": "same_branch_first_success_after_failure",
+          "judgment_label": "likely_repair",
+          "confidence": 0.9,
+          "reason": "The failure was a 'file not found' error for '.\\assets\\settings.json'. The successful action used the same command but with a corrected path '.\\examples\\live-path-demo\\assets\\settings.json', which resolved the issue.",
+          "vector_text": "shell powershell -NoProfile -Command \"Get-Content -Raw -LiteralPath '.\\examples\\live-path-demo\\assets\\settings.json'\""
+        }
+      ],
+      "confidence": {
+        "max_llm_confidence": 0.9,
+        "support_count": 1
+      },
+      "dedupe": {
+        "method": "vector_cosine",
+        "embedding": "hash-384",
+        "threshold": 0.78,
+        "group_size": 1
+      }
+    },
+    "selected_action_index": 0,
+    "selected_action_score": 0.9,
+    "selection_policy": "highest max_llm_confidence; ties keep original action order",
+    "instruction": "Use this as a suggestion. The Agent must decide whether it is safe and appropriate before executing it.",
+    "version_context": {
+      "active_branch_id": "main",
+      "latest_snapshot": {
+        "snapshot_id": "snap_23799bb4e1e8",
+        "branch_id": "main",
+        "event_id": "evt_41d215902818",
+        "message": "Before state-changing shell",
+        "created_at": "2026-09-01T01:08:26.877177+00:00"
+      },
+      "repair_branch_suggestion": {
+        "suggestion_event_id": "evt_6cbc7afa0286",
+        "failure_event_id": "evt_62ce55c9c672",
+        "snapshot_id": "snap_23799bb4e1e8",
+        "suggested_branch_id": "repair-62ce55c9",
+        "source_branch_id": "main",
+        "created_at": "2026-09-01T01:08:29.576486+00:00"
+      },
+      "last_version_decision": {
+        "event_id": "evt_175cf49bba0c",
+        "action": "create_repair_branch",
+        "decision": "rejected",
+        "at": "2026-09-01T01:08:06.779565+00:00"
+      },
+      "workspace_restore": {
+        "supported": false,
+        "instruction": "ContextDB records logical branch and rollback state only. Restore files through the Agent workspace after an explicit decision."
+      }
+    }
+  },
+  "parent_event_ids": [
+    "evt_6cbc7afa0286"
+  ],
+  "actor": "contextdb",
+  "timestamp": "2026-09-01T01:08:29.606447+00:00",
+  "refs": {
+    "skill_match_event_id": "evt_7970eb79855c",
+    "skill_id": "skill_file_not_found_specified_path_exit_code_get-content",
+    "selected_action_id": "act_file_not_found_specified_path_exit_code_get-content_1"
+  },
+  "metadata": {
+    "operation": "skill_recommendation_delivery",
+    "delivery_channel": "claude-code-post-tool-failure",
+    "online": true
+  }
+}

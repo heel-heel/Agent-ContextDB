@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Agent ContextDB Demo</title>
   <style>
-    :root { color-scheme: light; --ink:#17202a; --muted:#607080; --line:#d9e0e6; --bg:#f7f8fa; --panel:#ffffff; --blue:#2364aa; --green:#2f855a; --red:#b83232; --gold:#9a6b16; --violet:#6b46c1; --teal:#be185d; --cyan:#087ea4; --gray:#64748b; }
+    :root { color-scheme: light; --ink:#17202a; --muted:#607080; --line:#d9e0e6; --bg:#f7f8fa; --panel:#ffffff; --blue:#2364aa; --green:#2f855a; --red:#b83232; --gold:#9a6b16; --violet:#6b46c1; --teal:#be185d; --cyan:#087ea4; --gray:#64748b; --skill-match-accent:#087ea4; --skill-match-surface:#eaf8fb; --skill-match-divider:#bde5ec; --system-event-accent:#475569; --system-event-surface:#f1f5f9; --system-event-divider:#cbd5e1; }
     * { box-sizing: border-box; }
     body { margin: 0; font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: var(--bg); color: var(--ink); }
     header { height: 64px; display:flex; align-items:center; justify-content:space-between; padding:0 20px; border-bottom:1px solid var(--line); background:#fff; }
@@ -16,24 +16,30 @@
     button { cursor:pointer; background:#17324d; color:#fff; border-color:#17324d; }
     button:disabled { cursor:wait; opacity:.65; }
     button.secondary { background:#fff; color:#17324d; }
-    main { display:grid; grid-template-columns: minmax(500px, .9fr) minmax(600px, 1.1fr); gap:16px; padding:16px; min-height: calc(100vh - 64px); }
+    main { display:grid; grid-template-columns: 760px minmax(0, 1fr); gap:16px; padding:16px; min-height: calc(100vh - 64px); }
     section { background:var(--panel); border:1px solid var(--line); border-radius:8px; min-width:0; }
     .panel-head { display:flex; justify-content:space-between; align-items:center; padding:12px 14px; border-bottom:1px solid var(--line); }
-    .panel-head h2 { font-size:14px; margin:0; }
+    .panel-head h2 { margin:0; color:#17324d; font-size:16px; font-weight:700; }
     .content { padding:14px; }
-    .graph { position:relative; min-height:520px; overflow:auto; background:linear-gradient(#fff, #f9fbfc); }
-    .node { position:absolute; width:210px; min-height:58px; border:1px solid var(--line); border-left:5px solid var(--gray); border-radius:8px; background:#fff; padding:8px 10px; box-shadow:0 1px 3px rgba(0,0,0,.06); }
-    .node.user_message { border-left-color:var(--blue); }
-    .node.assistant_message { border-left-color:var(--violet); }
-    .node.tool_call { border-left-color:var(--gold); }
-    .node.tool_result { border-left-color:var(--green); }
-    .node.memory_update { border-left-color:var(--teal); }
-    .node.skill_match { border-left-color:var(--cyan); }
-    .node.skill_recommendation { border-left-color:#0284c7; }
-    .node.skill_decision { border-left-color:#c2410c; }
-    .node.summary_update, .node.system_event { border-left-color:var(--gray); }
-    .node .type { font-size:12px; color:var(--muted); }
-    .node .label { font-size:13px; margin-top:4px; line-height:1.3; word-break:break-word; }
+    .graph { position:relative; min-height:520px; overflow:hidden; background:linear-gradient(#fff, #f9fbfc); }
+    .node { --node-accent:var(--gray); --node-surface:#f3f6f8; --node-divider:#dce5eb; position:absolute; width:210px; min-height:58px; border:1px solid var(--node-divider); border-left:5px solid var(--node-accent); border-radius:8px; background:var(--node-surface); padding:8px 10px; box-shadow:0 1px 3px rgba(0,0,0,.06); }
+    .node.user_message { --node-accent:var(--blue); --node-surface:#edf5ff; --node-divider:#c9def5; }
+    .node.assistant_message { --node-accent:var(--violet); --node-surface:#f4f0ff; --node-divider:#d9cef8; }
+    .node.tool_call { --node-accent:var(--gold); --node-surface:#fff7e6; --node-divider:#f1d9a6; }
+    .node.tool_result { --node-accent:var(--green); --node-surface:#edf8f1; --node-divider:#c5e5d0; }
+    .node.memory_update { --node-accent:var(--teal); --node-surface:#fff0f6; --node-divider:#f3c7db; }
+    .node.skill_match { --node-accent:var(--skill-match-accent); --node-surface:var(--skill-match-surface); --node-divider:var(--skill-match-divider); }
+    .node.skill_recommendation { --node-accent:#0284c7; --node-surface:#ebf7ff; --node-divider:#bde3f7; }
+    .node.skill_decision { --node-accent:#c2410c; --node-surface:#fff2e9; --node-divider:#f2ceb9; }
+    .node.version_snapshot_created { --node-accent:#0f766e; --node-surface:#e9f8f5; --node-divider:#bce3dc; }
+    .node.version_repair_branch_suggested { --node-accent:#b45309; --node-surface:#fff5e8; --node-divider:#f0d4ad; }
+    .node.version_branch_created { --node-accent:#7c3aed; --node-surface:#f3efff; --node-divider:#d8cdf9; }
+    .node.version_rollback_created { --node-accent:#be123c; --node-surface:#fff0f3; --node-divider:#f2c8d3; }
+    .node.version_decision { --node-accent:#334155; --node-surface:#f1f5f9; --node-divider:#d3dee8; }
+    .node.summary_update { --node-accent:var(--gray); --node-surface:#f3f6f8; --node-divider:#dce5eb; }
+    .node.system_event { --node-accent:var(--system-event-accent); --node-surface:var(--system-event-surface); --node-divider:var(--system-event-divider); }
+    .node .type { font-size:12px; color:var(--node-accent); font-weight:700; }
+    .node .label { font-size:13px; margin-top:4px; line-height:1.3; white-space:pre-wrap; overflow-wrap:anywhere; word-break:break-word; }
     .badge { display:inline-block; font-size:11px; padding:2px 6px; border-radius:999px; background:#edf2f7; color:#314256; margin-left:4px; }
     svg.edges { position:absolute; inset:0; pointer-events:none; overflow:visible; }
     .tabs { display:flex; flex-wrap:wrap; gap:6px; padding:10px 14px 0; }
@@ -88,9 +94,15 @@
     .dot-tool_call { background:var(--gold); }
     .dot-tool_result { background:var(--green); }
     .dot-memory_update { background:var(--teal); }
-    .dot-skill_match { background:var(--cyan); }
+    .dot-skill_match { background:var(--skill-match-accent); }
     .dot-skill_recommendation { background:#0284c7; }
     .dot-skill_decision { background:#c2410c; }
+    .dot-version_snapshot_created { background:#0f766e; }
+    .dot-version_repair_branch_suggested { background:#b45309; }
+    .dot-version_branch_created { background:#7c3aed; }
+    .dot-version_rollback_created { background:#be123c; }
+    .dot-version_decision { background:#334155; }
+    .dot-system_event { background:var(--system-event-accent); }
     .app-flow { display:flex; flex-direction:column; gap:12px; }
     .timeline { display:grid; grid-template-columns: 28px 1fr; gap:0 10px; margin-top:10px; }
     .timeline-step { display:contents; }
@@ -104,7 +116,7 @@
     .mode-btn.active { background:#2364aa; border-color:#2364aa; color:#fff; }
     .page.hidden { display:none; }
     .playback-page { padding:16px; min-height:calc(100vh - 64px); }
-    .playback-layout { display:grid; grid-template-columns:minmax(0,1.75fr) minmax(310px,.7fr); gap:16px; align-items:start; }
+    .playback-layout { display:grid; grid-template-columns:minmax(0,1.45fr) minmax(390px,.85fr); gap:16px; align-items:start; }
     .playback-graph { position:relative; min-width:0; min-height:650px; overflow:hidden; background:linear-gradient(#fff, #f9fbfc); }
     .playback-controls { display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
     .playback-progress { display:flex; flex:1 1 360px; min-width:260px; align-items:center; gap:10px; }
@@ -115,10 +127,42 @@
     .playback-progress input[type="range"]::-moz-range-progress { height:6px; border-radius:999px; background:var(--blue); }
     .playback-progress input[type="range"]::-moz-range-thumb { width:10px; height:10px; border:2px solid #fff; border-radius:50%; background:var(--blue); box-shadow:0 1px 3px rgba(23,50,77,.35); }
     .playback-step { flex:0 0 auto; margin:0; white-space:nowrap; }
-    .step-card { min-width:0; overflow:hidden; border:1px solid var(--line); border-radius:8px; background:#fff; padding:12px; }
-    .step-card h3 { margin:0 0 8px; font-size:15px; }
+    .step-card { --event-accent:var(--gray); --event-surface:#f3f6f8; --event-divider:#dce5eb; min-width:0; overflow:visible; border:1px solid var(--line); border-top:4px solid var(--event-accent); border-radius:8px; background:var(--event-surface); padding:12px; }
+    .step-card.event-user_message { --event-accent:var(--blue); --event-surface:#edf5ff; --event-divider:#c9def5; }
+    .step-card.event-assistant_message { --event-accent:var(--violet); --event-surface:#f4f0ff; --event-divider:#d9cef8; }
+    .step-card.event-tool_call { --event-accent:var(--gold); --event-surface:#fff7e6; --event-divider:#f1d9a6; }
+    .step-card.event-tool_result { --event-accent:var(--green); --event-surface:#edf8f1; --event-divider:#c5e5d0; }
+    .step-card.event-memory_update { --event-accent:var(--teal); --event-surface:#fff0f6; --event-divider:#f3c7db; }
+    .step-card.event-skill_match { --event-accent:var(--skill-match-accent); --event-surface:var(--skill-match-surface); --event-divider:var(--skill-match-divider); }
+    .step-card.event-skill_recommendation { --event-accent:#0284c7; --event-surface:#ebf7ff; --event-divider:#bde3f7; }
+    .step-card.event-skill_decision { --event-accent:#c2410c; --event-surface:#fff2e9; --event-divider:#f2ceb9; }
+    .step-card.event-version_snapshot_created { --event-accent:#0f766e; --event-surface:#e9f8f5; --event-divider:#bce3dc; }
+    .step-card.event-version_repair_branch_suggested { --event-accent:#b45309; --event-surface:#fff5e8; --event-divider:#f0d4ad; }
+    .step-card.event-version_branch_created { --event-accent:#7c3aed; --event-surface:#f3efff; --event-divider:#d8cdf9; }
+    .step-card.event-version_rollback_created { --event-accent:#be123c; --event-surface:#fff0f3; --event-divider:#f2c8d3; }
+    .step-card.event-version_decision { --event-accent:#334155; --event-surface:#f1f5f9; --event-divider:#d3dee8; }
+    .step-card.event-system_event { --event-accent:var(--system-event-accent); --event-surface:var(--system-event-surface); --event-divider:var(--system-event-divider); }
+    .step-card h3 { margin:0; font-size:15px; }
+    .event-type-chip { display:inline-block; color:var(--event-accent); font-size:16px; font-weight:800; letter-spacing:.02em; }
+    .event-actor { color:var(--event-accent); font-size:12px; font-weight:700; white-space:nowrap; }
+    .step-card-head { display:flex; align-items:flex-start; justify-content:space-between; gap:8px; margin:-12px -12px 0; padding:10px 12px 6px; background:var(--event-surface); }
+    .step-card-meta { display:flex; flex-wrap:wrap; gap:4px; margin:0 -12px 10px; padding:0 12px 10px; background:var(--event-surface); border-bottom:1px solid var(--event-divider); }
+    .step-card-meta .pill { padding:4px 6px; font-family:inherit; font-size:12px; font-weight:700; line-height:1.2; }
+    .event-id { display:inline-block; border:1px solid var(--event-accent); border-radius:5px; background:#fff; color:var(--event-accent); padding:3px 6px; font-family:inherit; font-size:12px; font-weight:700; line-height:1.2; overflow-wrap:anywhere; }
     .step-card p, .step-card .mono { overflow-wrap:anywhere; word-break:break-word; }
-    .step-card pre { max-width:100%; white-space:pre-wrap; overflow:auto; overflow-wrap:anywhere; word-break:break-all; }
+    .step-card pre { max-width:100%; max-height:none; white-space:pre-wrap; overflow:visible; overflow-wrap:anywhere; word-break:break-all; }
+    .event-detail-table { width:100%; min-width:0; table-layout:fixed; border:1px solid var(--event-divider); border-radius:6px; overflow:hidden; background:transparent; }
+    .event-detail-table th, .event-detail-table td { position:static; padding:8px 7px; background:transparent; }
+    .event-detail-table th { width:28%; color:var(--ink); font-size:11px; text-transform:none; letter-spacing:0; }
+    .event-detail-table td { min-width:0; overflow-wrap:anywhere; word-break:break-word; }
+    .event-value-string { white-space:pre-wrap; line-height:1.45; }
+    .event-value-null { color:var(--muted); font-style:italic; }
+    .event-value-scalar { font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size:11px; }
+    .event-detail-group { border:1px solid var(--event-divider); border-radius:5px; background:rgba(255,255,255,.28); padding:6px 8px; }
+    .event-detail-group summary { cursor:pointer; color:#486174; font-size:11px; font-weight:700; }
+    .event-detail-group .event-detail-table { margin-top:7px; background:transparent; }
+    .event-detail-list { margin:7px 0 0; padding-left:17px; }
+    .event-detail-list > li + li { margin-top:6px; }
     .explorer-head { display:flex; align-items:flex-end; justify-content:space-between; gap:12px; padding:0 14px; border-bottom:1px solid var(--line); }
     .right-mode-tabs { display:flex; align-items:flex-end; gap:22px; }
     .right-mode-tabs button { position:relative; height:43px; padding:0; border:0; border-radius:0; background:transparent; color:#63758a; font-weight:700; }
@@ -126,19 +170,20 @@
     .right-mode-tabs button.active { background:transparent; color:#17324d; }
     .right-mode-tabs button.active::after { content:""; position:absolute; left:0; right:0; bottom:-1px; height:3px; background:#2364aa; }
     .right-pane.hidden { display:none; }
-    .view-groups { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px 14px; padding:12px 14px 2px; }
-    .view-group { min-width:0; border:1px dashed #b8c5d1; border-radius:6px; padding:9px; background:#fcfdfe; }
+    .view-groups { display:flex; flex-direction:column; gap:10px; padding:12px 14px 2px; }
+    .view-group-row { display:flex; min-width:0; gap:14px; }
+    .view-group { flex:1 1 auto; min-width:max-content; border:1px dashed #b8c5d1; border-radius:6px; padding:9px; background:#fcfdfe; }
     .view-group-title { margin:0 0 6px; color:#63758a; font-size:11px; font-weight:800; letter-spacing:.03em; text-transform:uppercase; }
-    .view-group-buttons { display:flex; flex-wrap:wrap; gap:6px; }
-    .view-group-buttons button { margin:0; }
+    .view-group-buttons { display:flex; flex-wrap:nowrap; gap:6px; }
+    .view-group-buttons button { flex:0 0 auto; margin:0; white-space:nowrap; }
     #contextQlPanel .contextql { margin-top:10px; }
     
 .contextql { margin:12px 14px 0; border:1px solid var(--line); border-radius:8px; background:#fbfcfd; padding:12px; }
-.contextql-head,.sql-actions { display:flex; justify-content:space-between; align-items:center; gap:8px; }
-.contextql-head h3 { margin:0; font-size:13px; }
+.sql-actions { display:flex; justify-content:space-between; align-items:center; gap:8px; }
 .nl-contextql { margin-bottom:12px; padding-bottom:12px; border-bottom:1px dashed var(--line); }
-.nl-contextql label { display:block; margin:0 0 6px; color:#17324d; font-size:12px; font-weight:700; }
-.nl-contextql textarea { display:block; width:100%; min-height:66px; resize:vertical; border:1px solid var(--line); border-radius:6px; padding:9px; font:13px/1.4 ui-sans-serif, system-ui, sans-serif; color:var(--ink); background:#fff; }
+.nl-contextql-label-row { display:flex; align-items:center; justify-content:space-between; gap:8px; margin:0 0 7px; }
+.nl-contextql label { display:block; margin:0; color:#17324d; font-size:14px; font-weight:700; }
+.nl-contextql textarea { display:block; width:100%; min-height:108px; resize:vertical; border:1px solid var(--line); border-radius:6px; padding:9px; font:13px/1.4 ui-sans-serif, system-ui, sans-serif; color:var(--ink); background:#fff; }
 .nl-actions { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-top:8px; }
 .nl-actions-left { display:flex; align-items:center; gap:8px; }
 .nl-actions select { height:30px; border:1px solid var(--line); border-radius:5px; color:#17324d; background:#fff; padding:0 6px; }
@@ -146,7 +191,24 @@
 .sql-actions { margin-top:8px; } .sql-actions .muted { font-size:11px; }
 .sql-result-meta { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px; }
 .sql-table tbody tr { cursor:pointer; } .sql-table tbody tr:hover { background:#f7faff; }
+.version-control { padding:14px; display:flex; flex-direction:column; gap:14px; }
+.version-control h3 { margin:0 0 7px; font-size:13px; }
+.version-toolbar { display:flex; flex-direction:column; gap:8px; padding-bottom:12px; border-bottom:1px dashed var(--line); }
+.version-action-row { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:8px; align-items:center; }
+.version-action-row input { min-width:0; width:100%; }
+.version-summary { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; }
+.version-stat { padding:9px 0; border-bottom:1px solid var(--line); min-width:0; }
+.version-stat b { display:block; font-size:12px; overflow-wrap:anywhere; }
+.version-stat span { color:var(--muted); font-size:11px; }
+.version-section { border-top:1px solid var(--line); padding-top:12px; }
+.version-note { border:1px dashed #d5a94a; background:#fffaf0; color:#6b4b09; padding:10px; border-radius:6px; font-size:12px; line-height:1.45; }
+.version-table { min-width:820px; }
+.version-event { padding:9px 0; border-bottom:1px solid var(--line); display:grid; grid-template-columns:130px 1fr auto; gap:10px; align-items:start; font-size:12px; }
+.version-event:last-child { border-bottom:0; }
+.version-event p { margin:3px 0 0; color:#4b5e70; overflow-wrap:anywhere; }
+@media (max-width:900px) { .view-groups { overflow-x:auto; } .view-group-row { min-width:max-content; } .version-action-row { grid-template-columns:1fr; } .version-summary { grid-template-columns:1fr; } .version-event { grid-template-columns:1fr; gap:4px; } }
 
+    @media (max-width: 1200px) { main { grid-template-columns:1fr; } }
     @media (max-width: 900px) { main, .playback-layout { grid-template-columns:1fr; } input { min-width: 160px; width:100%; } header { height:auto; gap:10px; align-items:flex-start; flex-direction:column; padding:12px; } .controls { width:100%; flex-wrap:wrap; } .playback-progress { flex-basis:100%; } }
   </style>
 </head>
@@ -154,8 +216,8 @@
   <header>
     <h1>Agent ContextDB: Trajectory DAG + Views</h1>
     <div class="controls">
-      <button id="traceMode" class="secondary mode-btn">Trace Playback</button>
-      <button id="finalMode" class="secondary mode-btn active">Final Dashboard</button>
+      <button id="traceMode" class="secondary mode-btn">Trajectory Playback</button>
+      <button id="finalMode" class="secondary mode-btn active">Trajectory Overview</button>
       <input id="tid" placeholder="trajectory_id, or click Seed demo">
       <select id="branch"><option>main</option></select>
       <button id="load">Load</button>
@@ -164,50 +226,59 @@
   </header>
   <main id="finalPage" class="page">
     <section>
-      <div class="panel-head"><h2>Versioned Trajectory Graph</h2><span id="graphMeta" class="badge">idle</span></div>
+      <div class="panel-head"><h2>Versioned Trajectory DAG</h2><span id="graphMeta" class="badge">idle</span></div>
       <div class="event-legend">
-        <span class="pill"><span class="legend-dot dot-user_message"></span>user</span>
-        <span class="pill"><span class="legend-dot dot-assistant_message"></span>assistant</span>
+        <span class="pill"><span class="legend-dot dot-user_message"></span>user message</span>
+        <span class="pill"><span class="legend-dot dot-assistant_message"></span>assistant message</span>
         <span class="pill"><span class="legend-dot dot-tool_call"></span>tool call</span>
         <span class="pill"><span class="legend-dot dot-tool_result"></span>tool result</span>
         <span class="pill"><span class="legend-dot dot-memory_update"></span>memory</span>
         <span class="pill"><span class="legend-dot dot-skill_match"></span>skill match</span>
-        <span class="pill"><span class="legend-dot dot-skill_recommendation"></span>delivered</span>
-        <span class="pill"><span class="legend-dot dot-skill_decision"></span>decision</span>
+        <span class="pill"><span class="legend-dot dot-skill_recommendation"></span>skill recommendation</span>
+        <span class="pill"><span class="legend-dot dot-skill_decision"></span>skill decision</span>
+        <span class="pill"><span class="legend-dot dot-version_snapshot_created"></span>snapshot</span>
+        <span class="pill"><span class="legend-dot dot-version_repair_branch_suggested"></span>branch recommendation</span>
+        <span class="pill"><span class="legend-dot dot-version_branch_created"></span>branch creation</span>
+        <span class="pill"><span class="legend-dot dot-version_rollback_created"></span>rollback</span>
+        <span class="pill"><span class="legend-dot dot-version_decision"></span>version decision</span>
+        <span class="pill"><span class="legend-dot dot-system_event"></span>system event</span>
       </div>
       <div id="graph" class="graph"><svg id="edges" class="edges"></svg></div>
     </section>
     <section>
       <div class="explorer-head">
-        <div class="right-mode-tabs" aria-label="ContextDB Explorer sections"><button id="viewsMode" class="active">Database Views</button><button id="queryMode">ContextQL Explorer</button></div>
+        <div class="right-mode-tabs" aria-label="ContextDB Explorer sections"><button id="viewsMode" class="active">Database Views</button><button id="queryMode">ContextQL Explorer</button><button id="versionMode">Version Control</button></div>
         <span id="viewMeta" class="badge">current_prompt</span>
       </div>
       <div id="databaseViewsPanel" class="right-pane">
         <div class="tabs view-groups" aria-label="Database Views">
-          <div class="view-group">
-            <div class="view-group-title">Context Loading &amp; Compression</div>
-            <div class="view-group-buttons"><button class="active" data-view="current_prompt">Prompt View</button><button data-view="summary">Summary</button></div>
+          <div class="view-group-row">
+            <div class="view-group">
+              <div class="view-group-title">Context Loading &amp; Compression</div>
+              <div class="view-group-buttons"><button class="active" data-view="current_prompt">Prompt View</button><button data-view="summary">Summary</button></div>
+            </div>
+            <div class="view-group">
+              <div class="view-group-title">Success / Failure Patterns</div>
+              <div class="view-group-buttons"><button data-view="failure_patterns">Failure Patterns</button><button data-view="success_patterns">Success Patterns</button><button data-view="repair_strategies">Repair Links</button></div>
+            </div>
           </div>
-          <div class="view-group">
-            <div class="view-group-title">Success / Failure Patterns</div>
-            <div class="view-group-buttons"><button data-view="failure_patterns">Failure Patterns</button><button data-view="success_patterns">Success Patterns</button><button data-view="repair_strategies">Repair Links</button></div>
-          </div>
-          <div class="view-group">
-            <div class="view-group-title">Skill Generation</div>
-            <div class="view-group-buttons"><button data-view="semantic_repair_judgments">Semantic Judge</button><button data-view="learned_skills">Learned Skills</button><button data-view="skill_library">Skill Library</button><button data-view="skill_application_trace">Application Trace</button></div>
-          </div>
-          <div class="view-group">
-            <div class="view-group-title">Training Data Export</div>
-            <div class="view-group-buttons"><button data-view="rl_dataset">RL Rows</button></div>
+          <div class="view-group-row">
+            <div class="view-group">
+              <div class="view-group-title">Skill Generation</div>
+              <div class="view-group-buttons"><button data-view="semantic_repair_judgments">Semantic Judge</button><button data-view="learned_skills">Learned Skills</button><button data-view="skill_library">Skill Library</button><button data-view="skill_application_trace">Application Trace</button></div>
+            </div>
+            <div class="view-group">
+              <div class="view-group-title">Training Data Export</div>
+              <div class="view-group-buttons"><button data-view="rl_dataset">RL Rows</button></div>
+            </div>
           </div>
         </div>
         <div class="content"><div id="metrics" class="metrics"></div><div id="out" class="view-output"><div class="view-empty">Run the ContextDB demo, paste its trajectory_id, then load. Or click Seed demo to create a browser-side sample through the HTTP API.</div></div></div>
       </div>
       <div id="contextQlPanel" class="right-pane hidden">
         <div class="contextql">
-          <div class="contextql-head"><h3>ContextQL Explorer</h3><span id="sqlMeta" class="badge">read-only SQL</span></div>
           <div class="nl-contextql">
-            <label for="nlQuestion">Ask ContextDB in natural language</label>
+            <div class="nl-contextql-label-row"><label for="nlQuestion">Ask ContextDB in natural language</label><span id="sqlMeta" class="badge">read-only SQL</span></div>
             <textarea id="nlQuestion" spellcheck="true" placeholder="Example: Show failures and their likely causes on this trajectory."></textarea>
             <div class="nl-actions"><div class="nl-actions-left"><span class="muted">LLM profile</span><select id="nlProfile" aria-label="LLM profile"><option value="">Loading models...</option></select></div><button id="runNaturalLanguage" class="small-btn">Translate to SQL</button></div>
           </div>
@@ -219,20 +290,41 @@ ORDER BY timestamp;</textarea>
         </div>
         <div class="content"><div id="sqlOut" class="view-output"><div class="view-empty">Choose a Database View to prefill its query, or write a ContextQL query here.</div></div></div>
       </div>
+      <div id="versionControlPanel" class="right-pane hidden">
+        <div class="version-control">
+          <div class="version-toolbar">
+            <div class="version-action-row">
+              <input id="versionMessage" aria-label="Snapshot message" placeholder="Checkpoint message (optional)">
+              <button id="createSnapshot" class="small-btn">Snapshot</button>
+            </div>
+            <div class="version-action-row">
+              <input id="versionBranchName" aria-label="Repair branch name" placeholder="Optional repair branch name; otherwise ContextDB chooses one">
+              <button id="createBranch" class="small-btn secondary">Create Repair Branch</button>
+            </div>
+          </div>
+          <div id="versionOut"><div class="view-empty">Load a trajectory to inspect its logical snapshots and branches.</div></div>
+        </div>
+      </div>
     </section>
   </main>
   <div id="tracePage" class="page playback-page hidden">
     <section>
-      <div class="panel-head"><h2>Demo Trace Playback</h2></div>
+      <div class="panel-head"><h2>Versioned Trajectory DAG</h2></div>
       <div class="event-legend">
-        <span class="pill"><span class="legend-dot dot-user_message"></span>user</span>
-        <span class="pill"><span class="legend-dot dot-assistant_message"></span>assistant</span>
+        <span class="pill"><span class="legend-dot dot-user_message"></span>user message</span>
+        <span class="pill"><span class="legend-dot dot-assistant_message"></span>assistant message</span>
         <span class="pill"><span class="legend-dot dot-tool_call"></span>tool call</span>
         <span class="pill"><span class="legend-dot dot-tool_result"></span>tool result</span>
         <span class="pill"><span class="legend-dot dot-memory_update"></span>memory</span>
         <span class="pill"><span class="legend-dot dot-skill_match"></span>skill match</span>
-        <span class="pill"><span class="legend-dot dot-skill_recommendation"></span>delivered</span>
-        <span class="pill"><span class="legend-dot dot-skill_decision"></span>decision</span>
+        <span class="pill"><span class="legend-dot dot-skill_recommendation"></span>skill recommendation</span>
+        <span class="pill"><span class="legend-dot dot-skill_decision"></span>skill decision</span>
+        <span class="pill"><span class="legend-dot dot-version_snapshot_created"></span>snapshot</span>
+        <span class="pill"><span class="legend-dot dot-version_repair_branch_suggested"></span>branch recommendation</span>
+        <span class="pill"><span class="legend-dot dot-version_branch_created"></span>branch creation</span>
+        <span class="pill"><span class="legend-dot dot-version_rollback_created"></span>rollback</span>
+        <span class="pill"><span class="legend-dot dot-version_decision"></span>version decision</span>
+        <span class="pill"><span class="legend-dot dot-system_event"></span>system event</span>
       </div>
       <div class="content playback-layout">
         <div>
@@ -252,12 +344,15 @@ ORDER BY timestamp;</textarea>
 const $ = id => document.getElementById(id);
 let currentView = 'current_prompt';
 let graphData = null;
+let versionData = null;
 let viewRequestSeq = 0;
 let globalBusy = false;
 let playbackStep = 0;
 let playbackTimer = null;
+let playbackDetailRequest = 0;
 const GRAPH_NODE_WIDTH = 210;
 const SAME_ROW_EDGE_OFFSET = 36;
+const GRAPH_PAYLOAD_VALUE_LIMIT = 96;
 async function api(path, body) {
   const opts = body ? {method:'POST', body:JSON.stringify(body)} : {};
   const res = await fetch(path, opts);
@@ -278,10 +373,109 @@ function displayNodeLabel(n) {
   }
   return label;
 }
-function measureNodeHeight(el) {
-  return Math.max(72, Math.ceil(el.scrollHeight));
+const VERSION_SYSTEM_OPERATIONS = new Set([
+  'version_snapshot_created',
+  'version_repair_branch_suggested',
+  'version_branch_created',
+  'version_rollback_created'
+]);
+const EVENT_PRESENTATION_LABELS = {
+  version_snapshot_created: 'snapshot',
+  version_repair_branch_suggested: 'branch recommendation',
+  version_branch_created: 'branch creation',
+  version_rollback_created: 'rollback'
+};
+function eventPresentationType(event) {
+  const eventType = event?.event_type || '';
+  const operation = event?.version_operation || event?.metadata?.operation || '';
+  return eventType === 'system_event' && VERSION_SYSTEM_OPERATIONS.has(operation)
+    ? operation
+    : (eventType || operation || 'system_event');
 }
-function layoutRenderedNodes(nodes, elements, availableWidth = 860, preferredColumns = null) {
+function displayEventType(value) {
+  return EVENT_PRESENTATION_LABELS[value] || String(value || 'event').replaceAll('_', ' ');
+}
+function compactGraphValue(value) {
+  const text = String(value).replace(/\s+/g, ' ').trim();
+  if (text.length <= GRAPH_PAYLOAD_VALUE_LIMIT) return text;
+  return text.slice(0, Math.max(0, GRAPH_PAYLOAD_VALUE_LIMIT - 3)).trimEnd() + '...';
+}
+function compactGraphPayload(value) {
+  if (typeof value === 'string') return compactGraphValue(value);
+  if (Array.isArray(value)) return value.map(compactGraphPayload);
+  if (value && typeof value === 'object') {
+    return Object.fromEntries(Object.entries(value).map(([key, childValue]) => [key, compactGraphPayload(childValue)]));
+  }
+  return value;
+}
+function graphPayloadLabel(n) {
+  if (!n.payload || typeof n.payload !== 'object') return displayNodeLabel(n);
+  return JSON.stringify(compactGraphPayload(n.payload), null, 2);
+}
+function playbackEventColorClass(event) {
+  return `event-${eventPresentationType(event) || 'default'}`;
+}
+function renderPlaybackValue(value, depth = 0) {
+  if (value === null || value === undefined) return '<span class="event-value-null">null</span>';
+  if (typeof value === 'string') return `<div class="event-value-string">${escapeHtml(value)}</div>`;
+  if (typeof value === 'number' || typeof value === 'boolean') return `<span class="event-value-scalar">${escapeHtml(value)}</span>`;
+  if (Array.isArray(value)) {
+    if (!value.length) return '<span class="event-value-null">[]</span>';
+    const items = value.map((item, index) => `<li><span class="muted">${index}</span>: ${renderPlaybackValue(item, depth + 1)}</li>`).join('');
+    return `<details class="event-detail-group" ${depth < 1 ? 'open' : ''}><summary>Array (${value.length})</summary><ol class="event-detail-list">${items}</ol></details>`;
+  }
+  if (typeof value === 'object') {
+    const entries = Object.entries(value);
+    if (!entries.length) return '<span class="event-value-null">{}</span>';
+    return `<details class="event-detail-group" ${depth < 1 ? 'open' : ''}><summary>Object (${entries.length} fields)</summary>${renderPlaybackTable(entries, depth + 1)}</details>`;
+  }
+  return `<span class="event-value-scalar">${escapeHtml(value)}</span>`;
+}
+function renderPlaybackTable(entries, depth = 0) {
+  const rows = entries.map(([key, value]) => `<tr><th scope="row">${escapeHtml(key)}</th><td>${renderPlaybackValue(value, depth)}</td></tr>`).join('');
+  return `<table class="event-detail-table"><tbody>${rows}</tbody></table>`;
+}
+const PLAYBACK_CARD_OMITTED_FIELDS = new Set(['trajectory_id', 'event_type', 'event_id', 'id', 'branch_id', 'actor', 'type', 'label']);
+function playbackDetailEntries(event) {
+  return Object.entries(event).filter(([key]) => !PLAYBACK_CARD_OMITTED_FIELDS.has(key));
+}
+function renderPlaybackEventCard(event) {
+  const actor = event.actor ? `<span class="event-actor">actor: ${escapeHtml(event.actor)}</span>` : '';
+  const meta = `<span class="pill">${escapeHtml(event.branch_id || 'main')}</span><span class="event-id">${escapeHtml(event.id || '')}</span>`;
+  return `<div class="step-card-head"><div><h3 class="event-type-chip">${escapeHtml(displayEventType(eventPresentationType(event)))}</h3></div>${actor}</div><p class="step-card-meta">${meta}</p>${renderPlaybackTable(playbackDetailEntries(event))}`;
+}
+function renderPlaybackDetailLoading(event) {
+  const actor = event.actor ? `<span class="event-actor">actor: ${escapeHtml(event.actor)}</span>` : '';
+  const meta = `<span class="pill">${escapeHtml(event.branch_id || 'main')}</span><span class="event-id">${escapeHtml(event.id || '')}</span>`;
+  return `<div class="step-card-head"><div><h3 class="event-type-chip">${escapeHtml(displayEventType(eventPresentationType(event)))}</h3></div>${actor}</div><p class="step-card-meta">${meta}</p><p class="muted">Loading complete event payload...</p>`;
+}
+async function loadPlaybackEventDetail(summaryEvent) {
+  const tid = getTid();
+  const requestId = ++playbackDetailRequest;
+  if (!tid || !summaryEvent?.id) return;
+  try {
+    const detail = await api(`/api/v1/event?trajectory_id=${encodeURIComponent(tid)}&event_id=${encodeURIComponent(summaryEvent.id)}`);
+    if (requestId !== playbackDetailRequest) return;
+    $('stepDetail').className = `step-card ${playbackEventColorClass(detail)}`;
+    $('stepDetail').innerHTML = renderPlaybackEventCard(detail);
+  } catch (err) {
+    if (requestId !== playbackDetailRequest) return;
+    $('stepDetail').className = `step-card ${playbackEventColorClass(summaryEvent)}`;
+    $('stepDetail').innerHTML = `${renderPlaybackEventCard(summaryEvent)}<p class="muted">Complete event payload unavailable: ${escapeHtml(err.message)}</p>`;
+  }
+}
+function estimatedNodeHeight(el) {
+  const label = el.querySelector('.label')?.textContent || '';
+  const visualLines = label.split('\n').reduce((count, line) => count + Math.max(1, Math.ceil(line.length / 22)), 0);
+  return 48 + visualLines * 17;
+}
+function measureNodeHeight(el) {
+  const rectHeight = el.getBoundingClientRect?.().height || 0;
+  const rendered = Math.max(el.scrollHeight || 0, rectHeight);
+  if (rectHeight > 0) return Math.max(72, Math.ceil(rendered));
+  return Math.max(72, estimatedNodeHeight(el));
+}
+function layoutRenderedNodes(nodes, elements, availableWidth = 860, preferredColumns = null, spreadColumns = true) {
   const nodeWidth = 210;
   const minColumnGap = 30;
   const rowGap = 30;
@@ -290,8 +484,9 @@ function layoutRenderedNodes(nodes, elements, availableWidth = 860, preferredCol
   const usableWidth = Math.max(nodeWidth, availableWidth - left * 2);
   const automaticColumns = Math.floor((usableWidth + minColumnGap) / (nodeWidth + minColumnGap));
   const columns = Math.max(1, Math.min(nodes.length || 1, preferredColumns || automaticColumns));
-  const canvasWidth = Math.max(usableWidth, nodeWidth * columns + minColumnGap * Math.max(0, columns - 1));
-  const columnGap = columns > 1 ? Math.max(minColumnGap, (canvasWidth - nodeWidth * columns) / (columns - 1)) : 0;
+  const minimumCanvasWidth = nodeWidth * columns + minColumnGap * Math.max(0, columns - 1);
+  const canvasWidth = spreadColumns ? Math.max(usableWidth, minimumCanvasWidth) : minimumCanvasWidth;
+  const columnGap = columns > 1 ? (spreadColumns ? Math.max(minColumnGap, (canvasWidth - nodeWidth * columns) / (columns - 1)) : minColumnGap) : 0;
   const rowHeights = [];
   nodes.forEach((n, i) => {
     const row = Math.floor(i / columns);
@@ -313,14 +508,15 @@ function layoutRenderedNodes(nodes, elements, availableWidth = 860, preferredCol
 }
 function createGraphNode(n, includeHead = false) {
   const el = document.createElement('div');
-  el.className = `node ${n.event_type}`;
+  const presentationType = eventPresentationType(n);
+  el.className = `node ${presentationType}`;
   el.dataset.eventId = n.id;
   el.dataset.branchId = n.branch_id || '';
   el.style.left = '0px';
   el.style.top = '0px';
   el.style.visibility = 'hidden';
-  el.innerHTML = `<div class="type">${n.event_type}<span class="badge">${n.branch_id}</span>${includeHead && n.branch_head ? `<span class="badge">HEAD:${n.branch_head}</span>` : ''}${n.snapshots.length ? '<span class="badge">snapshot</span>' : ''}</div><div class="label"></div>`;
-  el.querySelector('.label').textContent = displayNodeLabel(n);
+  el.innerHTML = `<div class="type">${displayEventType(presentationType)}<span class="badge">${n.branch_id}</span>${includeHead && n.branch_head ? `<span class="badge">HEAD:${n.branch_head}</span>` : ''}${n.snapshots.length ? '<span class="badge">snapshot</span>' : ''}</div><div class="label"></div>`;
+  el.querySelector('.label').textContent = graphPayloadLabel(n);
   return el;
 }
 function placeGraphNode(el, pos) {
@@ -360,6 +556,7 @@ function edgeEndpoints(source, target) {
   };
 }
 function drawGraph(data) {
+  const selectedBranch = $('branch').value || 'main';
   graphData = data;
   const graph = $('graph');
   graph.querySelectorAll('.node').forEach(n => n.remove());
@@ -370,7 +567,7 @@ function drawGraph(data) {
     elements.set(n.id, el);
     graph.appendChild(el);
   });
-  const {positions: byId, totalHeight, totalWidth} = layoutRenderedNodes(data.nodes, elements, graph.clientWidth || 860, 3);
+  const {positions: byId, totalHeight, totalWidth} = layoutRenderedNodes(data.nodes, elements, graph.clientWidth || 860, 3, false);
   data.nodes.forEach((n) => placeGraphNode(elements.get(n.id), byId.get(n.id)));
   graph.style.minHeight = Math.max(520, totalHeight) + 'px';
   edges.setAttribute('width', totalWidth);
@@ -391,6 +588,7 @@ function drawGraph(data) {
   });
   $('graphMeta').textContent = `${data.nodes.length} events, ${data.branches.length} branches`;
   $('branch').innerHTML = data.branches.map(b => `<option>${b.branch_id}</option>`).join('');
+  if (data.branches.some(b => b.branch_id === selectedBranch)) $('branch').value = selectedBranch;
 }
 function setMode(mode) {
   const trace = mode === 'trace';
@@ -399,6 +597,7 @@ function setMode(mode) {
   $('traceMode').classList.toggle('active', trace);
   $('finalMode').classList.toggle('active', !trace);
   if (trace) drawPlayback();
+  else if (graphData) requestAnimationFrame(() => drawGraph(graphData));
 }
 function playbackNodes() { return graphData ? graphData.nodes.slice(0, playbackStep + 1) : []; }
 function drawPlayback() {
@@ -408,6 +607,7 @@ function drawPlayback() {
   graph.querySelectorAll('.node').forEach(n => n.remove());
   edges.innerHTML = '';
   if (!graphData || !graphData.nodes.length) {
+    playbackDetailRequest += 1;
     $('playbackMeta').textContent = 'no trajectory';
     $('stepDetail').innerHTML = '<h3>No trajectory loaded</h3><p class="muted">Load a trajectory first.</p>';
     return;
@@ -425,7 +625,7 @@ function drawPlayback() {
     elements.set(n.id, el);
     if (shown.has(n.id)) graph.appendChild(el);
   });
-  const {positions: byId, totalHeight, totalWidth} = layoutRenderedNodes(graphData.nodes, elements, graph.clientWidth || 860);
+  const {positions: byId, totalHeight, totalWidth} = layoutRenderedNodes(graphData.nodes, elements, graph.clientWidth || 860, null, false);
   graphData.nodes.forEach((n) => {
     if (shown.has(n.id)) placeGraphNode(elements.get(n.id), byId.get(n.id));
   });
@@ -445,7 +645,9 @@ function drawPlayback() {
   });
   const event = graphData.nodes[playbackStep];
   $('playbackMeta').textContent = `step ${playbackStep + 1} / ${graphData.nodes.length}`;
-  $('stepDetail').innerHTML = `<h3>${escapeHtml(event.event_type)}</h3><p><span class="pill">${escapeHtml(event.branch_id)}</span><span class="mono">${escapeHtml(event.id)}</span></p><p>${escapeHtml(displayNodeLabel(event))}</p><pre class="json-block">${escapeHtml(JSON.stringify(event, null, 2))}</pre>`;
+  $('stepDetail').className = `step-card ${playbackEventColorClass(event)}`;
+  $('stepDetail').innerHTML = renderPlaybackDetailLoading(event);
+  void loadPlaybackEventDetail(event);
 }
 function stepPlayback(delta) {
   if (!graphData) return;
@@ -487,7 +689,7 @@ function viewLabel(view) {
 }
 function setBusyControls(busy) {
   globalBusy = busy;
-  document.querySelectorAll('.tabs button, #load, #seed, #branch, #runSql, #runNaturalLanguage, #nlProfile, #viewsMode, #queryMode').forEach(el => el.disabled = busy);
+  document.querySelectorAll('.tabs button, #load, #seed, #branch, #runSql, #runNaturalLanguage, #nlProfile, #viewsMode, #queryMode, #versionMode, #createSnapshot, #createBranch, #versionMessage, #versionBranchName').forEach(el => el.disabled = busy);
 }
 function setLoadingOutput(view, branch) {
   const label = viewLabel(view);
@@ -550,14 +752,14 @@ function renderSqlResult(data) {
   const thead=document.createElement('thead'), hr=document.createElement('tr'); columns.forEach(c=>{const th=document.createElement('th');th.textContent=c;hr.appendChild(th);});thead.appendChild(hr);table.appendChild(thead);
   const tbody=document.createElement('tbody');
   if(!rows.length){const tr=document.createElement('tr'),td=document.createElement('td');td.colSpan=Math.max(columns.length,1);td.className='muted';td.textContent='No rows returned.';tr.appendChild(td);tbody.appendChild(tr);}
-  rows.forEach(row=>{const tr=document.createElement('tr');columns.forEach(c=>{const td=document.createElement('td');td.textContent=row[c]===null||row[c]===undefined?'null':String(row[c]);if(String(row[c]||'').startsWith('evt_')||String(row[c]||'').startsWith('skill_'))td.className='mono';tr.appendChild(td);});tr.onclick=()=>highlightGraph(contextQlEventIds(row),[]);tbody.appendChild(tr);});
+  rows.forEach(row=>{const tr=document.createElement('tr');columns.forEach(c=>{const td=document.createElement('td');const value=c==='event_type'?displayEventType(row[c]):row[c];td.textContent=value===null||value===undefined?'null':String(value);if(String(row[c]||'').startsWith('evt_')||String(row[c]||'').startsWith('skill_'))td.className='mono';tr.appendChild(td);});tr.onclick=()=>highlightGraph(contextQlEventIds(row),[]);tbody.appendChild(tr);});
   table.appendChild(tbody); const wrap=document.createElement('div');wrap.className='table-wrap';wrap.appendChild(table);
   const card=document.createElement('div');card.className='summary-card'; const title=document.createElement('h3');title.textContent='Query Result';card.appendChild(title);
   const meta=document.createElement('div');meta.className='sql-result-meta';meta.innerHTML='<span class="pill ok">'+escapeHtml(data.row_count||0)+' rows</span><span class="pill">'+escapeHtml((data.highlight_event_ids||[]).length)+' evidence events</span><span class="pill rule">ContextQL</span>';card.appendChild(meta);card.appendChild(wrap);
   $('sqlOut').innerHTML='';$('sqlOut').appendChild(card);if((data.highlight_event_ids||[]).length)highlightGraph(data.highlight_event_ids,[]);
 }
 async function runSqlQuery(){const tid=getTid();if(!tid)return;const sql=$('sqlInput').value.trim();if(!sql)return;setBusyControls(true);$('sqlMeta').textContent='executing...';try{const data=await api('/api/v1/sql',{trajectory_id:tid,branch_id:$('branch').value||'main',sql:sql});renderSqlResult(data);$('sqlMeta').textContent=String(data.row_count)+' rows';}catch(err){$('sqlMeta').textContent='query error';$('sqlOut').innerHTML='<div class="view-empty"><b>Query failed</b><br>'+escapeHtml(err.message)+'</div>';}finally{setBusyControls(false);}}
-async function loadLlmProfiles(){const select=$('nlProfile');try{const data=await api('/api/v1/llm_profiles');const profiles=data.profiles||[];select.innerHTML='';profiles.forEach(profile=>{const option=document.createElement('option');option.value=profile.profile_id;option.textContent=profile.model+(profile.ready?'':' (configure API)');option.dataset.ready=profile.ready?'true':'false';select.appendChild(option);});const preferred=data.default_profile||profiles[0]?.profile_id;if(preferred)select.value=preferred;}catch(err){select.innerHTML='<option value="">Model profiles unavailable</option>';select.disabled=true;}}
+async function loadLlmProfiles(){const select=$('nlProfile');try{const data=await api('/api/v1/llm_profiles');const profiles=data.profiles||[];select.innerHTML='';profiles.forEach(profile=>{const option=document.createElement('option');option.value=profile.profile_id;option.textContent=profile.model;option.dataset.ready=profile.ready?'true':'false';select.appendChild(option);});const preferred=data.default_profile||profiles[0]?.profile_id;if(preferred)select.value=preferred;}catch(err){select.innerHTML='<option value="">Model profiles unavailable</option>';select.disabled=true;}}
 function modelExecutionMessage(execution, fallback){const requested=execution.requested_model||fallback||'selected model',actual=execution.response_model;if(execution.verified)return 'Confirmed by API response: '+actual+' (request id '+(execution.response_id||'unavailable')+').';if(actual)return 'API responded with '+actual+' although '+requested+' was requested.';return 'Translation completed, but the API did not return model metadata; the model cannot be independently confirmed.';}
 async function runNaturalLanguageQuery(){const tid=getTid(),question=$('nlQuestion').value.trim(),profileId=$('nlProfile').value;if(!tid||!question||!profileId)return;setBusyControls(true);$('sqlMeta').textContent='translating...';const profileLabel=$('nlProfile').selectedOptions[0]?.textContent||profileId;$('sqlOut').innerHTML='<div class="loading-card"><div class="spinner" aria-hidden="true"></div><div><b>Translating question with '+escapeHtml(profileLabel)+'</b><br><span class="muted">Review or edit the generated SQL, then use Run SQL.</span></div></div>';try{const data=await api('/api/v1/nl_sql',{trajectory_id:tid,branch_id:$('branch').value||'main',question:question,profile_id:profileId});const translation=data.translation||{},execution=translation.execution||{};$('sqlInput').value=translation.sql||'';$('sqlMeta').textContent=execution.verified?'verified '+execution.response_model:'SQL translated';$('sqlOut').innerHTML='<div class="view-empty"><b>SQL ready for review.</b><br>'+escapeHtml(modelExecutionMessage(execution,translation.model))+'<br><span class="muted">'+escapeHtml(translation.reason||'Click Run SQL to execute the generated statement.')+'</span></div>';}catch(err){$('sqlMeta').textContent='translation error';$('sqlOut').innerHTML='<div class="view-empty"><b>Natural-language translation failed</b><br>'+escapeHtml(err.message)+'</div>';}finally{setBusyControls(false);}}
 
@@ -876,6 +1078,7 @@ async function loadAll() {
     playbackStep = Math.min(playbackStep, Math.max(0, data.nodes.length - 1));
     drawPlayback();
     await loadView();
+    if (!$('versionControlPanel').classList.contains('hidden')) await loadVersionControl();
   } finally {
     if (!alreadyBusy) setBusyControls(false);
   }
@@ -908,6 +1111,98 @@ async function seedDemo() {
     setBusyControls(false);
   }
 }
+function versionOperationLabel(event) {
+  const operation = event?.metadata?.operation || event?.event_type || 'version event';
+  return operation.replace(/^version_/, '').replaceAll('_', ' ');
+}
+function versionEventText(event) {
+  const payload = event?.payload || {};
+  return payload.text || payload.reason || JSON.stringify(payload);
+}
+function branchVersionOrigin(branch) {
+  const meta = branch?.metadata || {};
+  if (meta.rollback_from) return 'logical rollback';
+  if (meta.version_origin) return meta.version_origin;
+  return meta.from_branch ? `from ${meta.from_branch}` : 'root';
+}
+function renderVersionControl(data) {
+  versionData = data;
+  const branches = data.branches || [];
+  const snapshots = data.snapshots || [];
+  const events = data.version_events || [];
+  const active = $('branch').value || 'main';
+  const branchRows = branches.map(b => `<tr>
+    <td><b>${escapeHtml(b.branch_id)}</b><div class="muted">${escapeHtml(branchVersionOrigin(b))}</div></td>
+    <td class="mono">${escapeHtml(b.base_event_id || '')}</td>
+    <td class="mono">${escapeHtml(b.head_event_id || '')}</td>
+    <td>${escapeHtml(b.snapshot_id || '')}</td>
+    <td><button class="small-btn" onclick='highlightGraph([], [${JSON.stringify(b.branch_id)}])'>Highlight</button></td>
+  </tr>`).join('') || '<tr><td colspan="5" class="muted">No branches.</td></tr>';
+  const snapshotRows = snapshots.map(s => `<tr>
+    <td><b>${escapeHtml(s.snapshot_id)}</b><div class="muted">${escapeHtml(s.created_at || '')}</div></td>
+    <td>${escapeHtml(s.branch_id || '')}</td><td class="mono">${escapeHtml(s.event_id || '')}</td>
+    <td>${escapeHtml(s.message || '')}</td>
+    <td><button class="small-btn" onclick='rollbackSnapshot(${JSON.stringify(s.snapshot_id)})'>Logical Rollback</button></td>
+  </tr>`).join('') || '<tr><td colspan="5" class="muted">No snapshots.</td></tr>';
+  const lifecycle = events.slice().reverse().map(e => `<div class="version-event">
+    <div><span class="pill rule">${escapeHtml(versionOperationLabel(e))}</span><div class="muted">${escapeHtml(e.timestamp || '')}</div></div>
+    <div><b>${escapeHtml(e.branch_id || 'main')}</b><p>${escapeHtml(versionEventText(e))}</p></div>
+    <button class="small-btn" onclick='highlightGraph([${JSON.stringify(e.event_id)}], [])'>Highlight</button>
+  </div>`).join('') || '<div class="view-empty">No version lifecycle events yet. Hook snapshots and Agent decisions will appear here.</div>';
+  $('versionOut').innerHTML = `<div class="version-summary">
+    <div class="version-stat"><b>${escapeHtml(active)}</b><span>selected branch</span></div>
+    <div class="version-stat"><b>${escapeHtml(snapshots.length)}</b><span>logical snapshots</span></div>
+    <div class="version-stat"><b>${escapeHtml(events.length)}</b><span>version events</span></div>
+  </div>
+  <div class="version-section"><h3>Branch Registry</h3><div class="table-wrap"><table class="version-table"><thead><tr><th>Branch</th><th>Base Event</th><th>Head Event</th><th>Snapshot</th><th></th></tr></thead><tbody>${branchRows}</tbody></table></div></div>
+  <div class="version-section"><h3>Snapshots</h3><div class="table-wrap"><table class="version-table"><thead><tr><th>Snapshot</th><th>Branch</th><th>Checkpoint Event</th><th>Message</th><th></th></tr></thead><tbody>${snapshotRows}</tbody></table></div></div>
+  <div class="version-section"><h3>Decision Timeline</h3><div>${lifecycle}</div></div>`;
+}
+async function loadVersionControl() {
+  const tid = getTid(); if (!tid) return;
+  const data = await api('/api/v1/version_status?trajectory_id=' + encodeURIComponent(tid));
+  renderVersionControl(data);
+}
+async function createVersionSnapshot() {
+  const tid = getTid(); if (!tid) return;
+  setBusyControls(true);
+  try {
+    await api('/api/v1/version/snapshot', {
+      trajectory_id:tid, branch_id:$('branch').value || 'main', message:$('versionMessage').value.trim(),
+      reason:'Manual dashboard checkpoint.', origin:'manual_ui', actor:'user',
+    });
+    await loadAll(); await loadVersionControl();
+  } catch (err) { $('versionOut').innerHTML='<div class="view-empty"><b>Snapshot failed</b><br>'+escapeHtml(err.message)+'</div>'; }
+  finally { setBusyControls(false); }
+}
+async function createVersionBranch() {
+  const tid = getTid(); if (!tid) return;
+  const fromBranch = $('branch').value || 'main';
+  const branchId = $('versionBranchName').value.trim() || `repair-${Date.now().toString(36)}`;
+  setBusyControls(true);
+  try {
+    await api('/api/v1/version/branch', {
+      trajectory_id:tid, branch_id:branchId, from_branch:fromBranch,
+      reason:'Manual dashboard repair branch.', origin:'manual_ui',
+    });
+    $('versionBranchName').value=''; await loadAll(); $('branch').value=branchId; await loadVersionControl();
+  } catch (err) { $('versionOut').innerHTML='<div class="view-empty"><b>Branch creation failed</b><br>'+escapeHtml(err.message)+'</div>'; }
+  finally { setBusyControls(false); }
+}
+async function rollbackSnapshot(snapshotId) {
+  const tid = getTid(); if (!tid) return;
+  if (!window.confirm('Create a logical rollback branch from this snapshot? Workspace files will not be changed.')) return;
+  setBusyControls(true);
+  try {
+    const target = `rollback-${String(snapshotId).split('_').pop().slice(0,6)}-${Date.now().toString(36).slice(-4)}`;
+    await api('/api/v1/version/rollback', {
+      trajectory_id:tid, snapshot_id:snapshotId, target_branch_id:target,
+      reason:'Manual dashboard logical rollback.', origin:'manual_ui',
+    });
+    await loadAll(); $('branch').value=target; await loadVersionControl();
+  } catch (err) { $('versionOut').innerHTML='<div class="view-empty"><b>Logical rollback failed</b><br>'+escapeHtml(err.message)+'</div>'; }
+  finally { setBusyControls(false); }
+}
 document.querySelectorAll('.tabs button').forEach(btn => btn.onclick = () => {
   if (globalBusy) return;
   document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
@@ -922,15 +1217,21 @@ document.querySelectorAll('.tabs button').forEach(btn => btn.onclick = () => {
 });
 $('runSql').onclick=()=>{if(!globalBusy)runSqlQuery();};$('runNaturalLanguage').onclick=()=>{if(!globalBusy)runNaturalLanguageQuery();};$('sqlInput').addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter'&&!globalBusy){e.preventDefault();runSqlQuery();}});$('nlQuestion').addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter'&&!globalBusy){e.preventDefault();runNaturalLanguageQuery();}});
 function setRightPanel(mode) {
-  const query = mode === 'query';
-  $('databaseViewsPanel').classList.toggle('hidden', query);
+  const query = mode === 'query', version = mode === 'version';
+  $('databaseViewsPanel').classList.toggle('hidden', query || version);
   $('contextQlPanel').classList.toggle('hidden', !query);
-  $('viewsMode').classList.toggle('active', !query);
+  $('versionControlPanel').classList.toggle('hidden', !version);
+  $('viewsMode').classList.toggle('active', !query && !version);
   $('queryMode').classList.toggle('active', query);
+  $('versionMode').classList.toggle('active', version);
   if (query && $('sqlMeta').textContent === 'SQL updated') $('sqlMeta').textContent = 'SQL ready';
+  if (version) loadVersionControl().catch(err => { $('versionOut').innerHTML='<div class="view-empty"><b>Version state unavailable</b><br>'+escapeHtml(err.message)+'</div>'; });
 }
 $('viewsMode').onclick = () => setRightPanel('views');
 $('queryMode').onclick = () => setRightPanel('query');
+$('versionMode').onclick = () => setRightPanel('version');
+$('createSnapshot').onclick = () => { if (!globalBusy) createVersionSnapshot(); };
+$('createBranch').onclick = () => { if (!globalBusy) createVersionBranch(); };
 $('traceMode').onclick = () => setMode('trace');
 $('finalMode').onclick = () => setMode('final');
 $('stepPrev').onclick = () => stepPlayback(-1);

@@ -1,0 +1,39 @@
+{
+  "event_id": "evt_6ed37a8e73d9",
+  "trajectory_id": "traj_2014e7a1531d",
+  "branch_id": "main",
+  "event_type": "tool_call",
+  "payload": {
+    "tool_name": "mcp__contextdb__contextdb_record_skill_decision",
+    "command": "{\"decision\": \"accepted\", \"reason\": \"The recommended path repair is safe and directly addresses the failed relative-path read.\", \"session_id\": \"f1087623-105e-44e4-ad83-d43625225df3\", \"source\": \"claude-code\"}",
+    "arguments": {
+      "source": "claude-code",
+      "session_id": "f1087623-105e-44e4-ad83-d43625225df3",
+      "decision": "accepted",
+      "reason": "The recommended path repair is safe and directly addresses the failed relative-path read."
+    },
+    "agent_tool_name": "mcp__contextdb__contextdb_record_skill_decision"
+  },
+  "parent_event_ids": [
+    "evt_c6a608a7fa48"
+  ],
+  "actor": "agent",
+  "timestamp": "2026-09-01T01:01:36.065601+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "claude-code",
+    "hook_adapter": "generic",
+    "hook_session_id": "f1087623-105e-44e4-ad83-d43625225df3"
+  },
+  "metadata": {
+    "agent_id": "claude-code",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-01T01:01:36.065437+00:00",
+    "adapter": "claude-code-hooks",
+    "claude_hook_event": "PreToolUse",
+    "claude_tool_name": "mcp__contextdb__contextdb_record_skill_decision",
+    "claude_cwd": "d:\\software\\Pycharm\\SelfCode\\Agent-ContextDB",
+    "claude_transcript_path": "C:\\Users\\lenovo\\.claude\\projects\\d--software-Pycharm-SelfCode-Agent-ContextDB\\f1087623-105e-44e4-ad83-d43625225df3.jsonl"
+  }
+}

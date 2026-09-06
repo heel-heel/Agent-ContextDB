@@ -1,0 +1,30 @@
+{
+  "event_id": "evt_6673a26d31e1",
+  "trajectory_id": "traj_2014e7a1531d",
+  "branch_id": "repair-62ce55c9",
+  "event_type": "system_event",
+  "payload": {
+    "text": "ContextDB created repair branch repair-62ce55c9.",
+    "branch_id": "repair-62ce55c9",
+    "from_branch": "main",
+    "snapshot_id": "snap_23799bb4e1e8",
+    "reason": "Preserve the second missing-directory failure and inspect a separate logical repair path.",
+    "origin": "agent",
+    "logical_context_only": true
+  },
+  "parent_event_ids": [
+    "evt_41d215902818"
+  ],
+  "actor": "contextdb",
+  "timestamp": "2026-09-01T01:09:04.316109+00:00",
+  "refs": {
+    "version_decision_event_id": "evt_c069de691612",
+    "suggestion_event_id": "evt_6cbc7afa0286",
+    "snapshot_id": "snap_23799bb4e1e8"
+  },
+  "metadata": {
+    "operation": "version_branch_created",
+    "origin": "agent",
+    "logical_context_only": true
+  }
+}

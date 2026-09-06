@@ -22,6 +22,32 @@ from .service import ContextDB
 
 HOOK_PROTOCOL_VERSION = 'contextdb.agent_hook.v1'
 
+# These are deliberately conservative.  A snapshot is a ContextDB logical
+# checkpoint, not a filesystem backup, so read-only shell commands should not
+# clutter an online trajectory with version events.
+_MUTATING_TOOL_NAMES = {'write', 'edit', 'file_edit', 'apply_patch'}
+_MUTATING_COMMAND = re.compile(
+    r"(?:^|\s)(?:set-content|add-content|new-item|remove-item|move-item|copy-item|"
+    r"mkdir|rmdir|rm|mv|cp|touch|git\s+(?:checkout|reset|clean|apply|commit)|"
+    r"pip\s+(?:install|uninstall)|npm\s+(?:install|uninstall|update)|"
+    r"cargo\s+(?:add|update))(?:\s|$)|(?<![<>=])>(?!>)",
+    re.IGNORECASE,
+)
+
+
+def _should_auto_snapshot(payload: Dict[str, Any]) -> bool:
+    """Return whether a Hook tool call merits a logical pre-action snapshot."""
+    explicit = payload.get('contextdb_snapshot')
+    if explicit is not None:
+        return bool(explicit)
+    tool_name = str(payload.get('tool_name') or payload.get('tool') or '').strip().lower()
+    if tool_name in _MUTATING_TOOL_NAMES:
+        return True
+    if tool_name not in {'shell', 'exec', 'powershell', 'bash', 'terminal', 'command'}:
+        return False
+    command = _text(payload.get('command') or payload.get('cmd') or '')
+    return bool(_MUTATING_COMMAND.search(command))
+
 
 @dataclass
 class HookEvent:
@@ -336,6 +362,7 @@ class HookSessionBridge:
         bridge = CodexContextBridge(self.db, source_id=f'hook:{source}') if source == 'codex' else AgentContextBridge(self.db, agent_id=session['agent_id'], source_id=f'hook:{source}')
         emitted, retrievals = [], []
         for item in adapter.normalize(raw_event):
+            active_branch_id = session.get('active_branch_id') or 'main'
             refs = {
                 'hook_protocol': HOOK_PROTOCOL_VERSION,
                 'hook_source': source,
@@ -350,12 +377,19 @@ class HookSessionBridge:
                 **item.metadata,
             }
             if item.event_type == 'tool_call':
-                event = bridge.record(trajectory_id, 'tool_call', item.payload, actor='agent', refs=refs, metadata=metadata)
+                if _should_auto_snapshot(item.payload):
+                    version = self._auto_snapshot_before_tool(session, item.payload, refs)
+                    emitted.append(version['event'])
+                event = bridge.record(
+                    trajectory_id, 'tool_call', item.payload, branch_id=active_branch_id,
+                    actor='agent', refs=refs, metadata=metadata,
+                )
                 if item.external_id:
                     session['pending_tools'][item.external_id] = {
                         'event_id': event['event_id'],
                         'tool_name': item.payload.get('tool_name') or 'shell',
                         'command': item.payload.get('command') or '',
+                        'branch_id': active_branch_id,
                     }
                 emitted.append(event)
                 continue
@@ -363,24 +397,37 @@ class HookSessionBridge:
                 pending = session['pending_tools'].pop(item.external_id, None) if item.external_id else None
                 tool_name = item.payload.get('tool_name') or (pending or {}).get('tool_name') or 'shell'
                 command = item.payload.get('command') or (pending or {}).get('command') or ''
+                result_branch_id = (pending or {}).get('branch_id') or active_branch_id
                 if pending:
                     refs['tool_call_event_id'] = pending['event_id']
                 else:
-                    implicit = bridge.record(trajectory_id, 'tool_call', {'tool_name': tool_name, 'command': command}, actor='agent', refs={**refs, 'implicit_from_hook_result': True}, metadata=metadata)
+                    implicit = bridge.record(
+                        trajectory_id, 'tool_call', {'tool_name': tool_name, 'command': command},
+                        branch_id=result_branch_id, actor='agent',
+                        refs={**refs, 'implicit_from_hook_result': True}, metadata=metadata,
+                    )
                     refs['tool_call_event_id'] = implicit['event_id']
                     emitted.append(implicit)
                 recorded = bridge.record_tool_result(
                     trajectory_id, tool_name, command, item.payload.get('status', 'ok'),
                     preview=item.payload.get('preview', ''), exit_code=item.payload.get('exit_code'),
-                    refs=refs, metadata=metadata,
+                    branch_id=result_branch_id, refs=refs, metadata=metadata,
                 )
                 emitted.append(recorded['tool_result'])
+                if item.payload.get('status', 'ok') in {'failed', 'error', 'timeout'}:
+                    suggestion = self._suggest_repair_branch(session, recorded['tool_result'], result_branch_id, refs)
+                    if suggestion:
+                        emitted.append(suggestion['event'])
                 if recorded.get('skill_retrieval'):
                     retrieval = self._skill_recommendation(recorded['skill_retrieval'])
+                    retrieval['agent_context']['version_context'] = self._version_context(session)
                     retrievals.append(retrieval)
                     session['last_skill_retrieval'] = retrieval
                 continue
-            event = bridge.record(trajectory_id, item.event_type, item.payload, actor=item.actor, refs=refs, metadata=metadata)
+            event = bridge.record(
+                trajectory_id, item.event_type, item.payload, branch_id=active_branch_id,
+                actor=item.actor, refs=refs, metadata=metadata,
+            )
             emitted.append(event)
         session['updated_at'] = utc_now()
         session['event_count'] = int(session.get('event_count', 0)) + len(emitted)
@@ -393,6 +440,105 @@ class HookSessionBridge:
             'emitted_event_ids': [event['event_id'] for event in emitted],
             'skill_retrievals': retrievals,
             'agent_context': [entry['agent_context'] for entry in retrievals if entry.get('agent_context')],
+            'version_context': self._version_context(session),
+        }
+
+    def create_snapshot(self, source: str, session_id: str, message: str = '', reason: str = '') -> Dict[str, Any]:
+        """Explicitly create a logical ContextDB snapshot for a live Agent."""
+        self.ensure_session(source, session_id)
+        session = self.status(source, session_id)['session']
+        version = self.db.create_version_snapshot(
+            session['trajectory_id'], session.get('active_branch_id') or 'main', message=message,
+            reason=reason or 'Agent requested a checkpoint.', origin='agent', actor='agent',
+            refs={'hook_source': source, 'hook_session_id': session_id},
+        )
+        session['last_version_snapshot'] = self._snapshot_context(version['snapshot'])
+        self._touch_session(source, session_id, session, 1)
+        return {**version, 'version_context': self._version_context(session)}
+
+    def create_repair_branch(
+        self,
+        source: str,
+        session_id: str,
+        branch_id: Optional[str] = None,
+        snapshot_id: Optional[str] = None,
+        reason: str = '',
+    ) -> Dict[str, Any]:
+        """Accept a branch suggestion or create a named repair branch logically."""
+        self.ensure_session(source, session_id)
+        session = self.status(source, session_id)['session']
+        suggestion = session.get('last_repair_suggestion') or {}
+        snapshot_id = snapshot_id or suggestion.get('snapshot_id') or (session.get('last_version_snapshot') or {}).get('snapshot_id')
+        if not snapshot_id:
+            raise ValueError('create a logical snapshot before creating a repair branch')
+        candidate = branch_id or suggestion.get('suggested_branch_id') or 'repair'
+        candidate = self._available_branch_id(session['trajectory_id'], candidate)
+        active_branch_id = session.get('active_branch_id') or 'main'
+        decision = self._record_version_decision(
+            session, 'create_repair_branch', 'accepted', reason or 'Agent selected a repair branch.',
+            {'suggestion_event_id': suggestion.get('suggestion_event_id'), 'snapshot_id': snapshot_id, 'target_branch_id': candidate},
+        )
+        version = self.db.create_version_branch(
+            session['trajectory_id'], candidate, from_branch=active_branch_id, snapshot_id=snapshot_id,
+            reason=reason or 'Agent accepted repair branch.', origin='agent',
+            refs={'version_decision_event_id': decision['event_id'], 'suggestion_event_id': suggestion.get('suggestion_event_id')},
+        )
+        session['active_branch_id'] = candidate
+        session['last_repair_suggestion'] = None
+        self._touch_session(source, session_id, session, 2)
+        return {**version, 'decision_event': decision, 'version_context': self._version_context(session)}
+
+    def rollback_context(
+        self,
+        source: str,
+        session_id: str,
+        snapshot_id: str,
+        target_branch_id: Optional[str] = None,
+        reason: str = '',
+    ) -> Dict[str, Any]:
+        """Create a logical rollback branch; workspace restoration stays external."""
+        self.ensure_session(source, session_id)
+        session = self.status(source, session_id)['session']
+        target = self._available_branch_id(session['trajectory_id'], target_branch_id or f'rollback-{snapshot_id.split("_")[-1][:6]}')
+        decision = self._record_version_decision(
+            session, 'rollback_context', 'accepted', reason or 'Agent selected logical rollback.',
+            {'snapshot_id': snapshot_id, 'target_branch_id': target},
+        )
+        version = self.db.create_version_rollback(
+            session['trajectory_id'], snapshot_id, target, reason=reason or 'Agent requested logical rollback.',
+            origin='agent', refs={'version_decision_event_id': decision['event_id']},
+        )
+        session['active_branch_id'] = target
+        session['last_repair_suggestion'] = None
+        self._touch_session(source, session_id, session, 2)
+        return {**version, 'decision_event': decision, 'version_context': self._version_context(session)}
+
+    def record_version_decision(
+        self,
+        source: str,
+        session_id: str,
+        action: str,
+        decision: str,
+        reason: str = '',
+        suggestion_event_id: Optional[str] = None,
+    ) -> Dict[str, Any]:
+        if decision not in {'accepted', 'rejected', 'deferred'}:
+            raise ValueError('decision must be accepted, rejected, or deferred')
+        if action not in {'continue_current_branch', 'create_repair_branch', 'rollback_context'}:
+            raise ValueError('unsupported version decision action')
+        self.ensure_session(source, session_id)
+        session = self.status(source, session_id)['session']
+        event = self._record_version_decision(session, action, decision, reason, {'suggestion_event_id': suggestion_event_id})
+        self._touch_session(source, session_id, session, 1)
+        return {'trajectory_id': session['trajectory_id'], 'decision_event': event, 'version_context': self._version_context(session)}
+
+    def version_status(self, source: str, session_id: str) -> Dict[str, Any]:
+        self.ensure_session(source, session_id)
+        session = self.status(source, session_id)['session']
+        return {
+            **self.db.version_control_status(session['trajectory_id']),
+            'session': session,
+            'version_context': self._version_context(session),
         }
 
     def status(self, source: str, session_id: str) -> Dict[str, Any]:
@@ -423,6 +569,7 @@ class HookSessionBridge:
                 'type': 'contextdb_skill_recommendation',
                 'matched': False,
                 'instruction': 'No live skill recommendation is available for this session yet.',
+                'version_context': self._version_context(session),
             },
         }
 
@@ -454,6 +601,7 @@ class HookSessionBridge:
             trajectory_id,
             'skill_recommendation',
             recommendation,
+            branch_id=session.get('active_branch_id') or 'main',
             actor='contextdb',
             refs=refs,
             metadata={
@@ -479,7 +627,10 @@ class HookSessionBridge:
             'delivery_event_id': delivery['event_id'],
             'match_event_id': refs.get('skill_match_event_id'),
             'agent_context': recommendation,
-            'prompt_context': self.db.stream_context(trajectory_id, token_budget=token_budget).get('content', {}),
+            'prompt_context': self.db.stream_context(
+                trajectory_id, session.get('active_branch_id') or 'main', token_budget=token_budget,
+            ).get('content', {}),
+            'version_context': self._version_context(session),
         }
 
     def record_skill_decision(
@@ -515,7 +666,7 @@ class HookSessionBridge:
                 'skill_id': refs.get('skill_id'),
                 'action_id': refs.get('selected_action_id'),
             },
-            actor='agent',
+            branch_id=session.get('active_branch_id') or 'main', actor='agent',
             refs=refs,
             metadata={'operation': 'skill_decision', 'online': True, 'integration': 'agent-hook.v1'},
         )
@@ -537,6 +688,8 @@ class HookSessionBridge:
         skill_match_event_id: Optional[str] = None,
         skill_id: Optional[str] = None,
         action_id: Optional[str] = None,
+        tool_call_id: Optional[str] = None,
+        tool_call_event_id: Optional[str] = None,
     ) -> Dict[str, Any]:
         """Persist a real Agent-executed skill action; this method never executes it."""
         self.ensure_session(source, session_id)
@@ -552,20 +705,34 @@ class HookSessionBridge:
         refs = {key: value for key, value in refs.items() if value}
         metadata = {'operation': 'skill_application', 'online': True, 'integration': 'agent-hook.v1'}
         bridge = AgentContextBridge(self.db, agent_id=session['agent_id'], source_id=f'hook:{source}')
-        call = bridge.record(
-            session['trajectory_id'], 'tool_call', {'tool_name': tool_name, 'command': command},
-            actor='agent', refs=refs, metadata=metadata,
-        )
+        pending = session['pending_tools'].pop(tool_call_id, None) if tool_call_id else None
+        existing_call_id = tool_call_event_id or (pending or {}).get('event_id')
+        if existing_call_id:
+            call = self.db.get_event(session['trajectory_id'], existing_call_id)
+            if call.get('event_type') != 'tool_call':
+                raise ValueError('tool_call_event_id must reference a tool_call event')
+            application_branch_id = call.get('branch_id') or session.get('active_branch_id') or 'main'
+        else:
+            application_branch_id = session.get('active_branch_id') or 'main'
+            call = bridge.record(
+                session['trajectory_id'], 'tool_call', {'tool_name': tool_name, 'command': command},
+                branch_id=application_branch_id, actor='agent', refs=refs, metadata=metadata,
+            )
         result = bridge.record_tool_result(
             session['trajectory_id'], tool_name, command, status, preview=preview,
-            exit_code=exit_code, refs={**refs, 'tool_call_event_id': call['event_id']}, metadata=metadata,
+            branch_id=application_branch_id, exit_code=exit_code,
+            refs={**refs, 'tool_call_event_id': call['event_id']}, metadata=metadata,
         )
+        suggestion = None
+        if status in {'failed', 'error', 'timeout'}:
+            suggestion = self._suggest_repair_branch(session, result['tool_result'], application_branch_id, refs)
         session['updated_at'] = utc_now()
-        session['event_count'] = int(session.get('event_count', 0)) + 2
+        session['event_count'] = int(session.get('event_count', 0)) + (1 if existing_call_id else 2) + (1 if suggestion else 0)
         self._put_session(source, session_id, session)
         retrieval = result.get('skill_retrieval')
         if retrieval:
             recommendation_result = self._skill_recommendation(retrieval)
+            recommendation_result['agent_context']['version_context'] = self._version_context(session)
             session['last_skill_retrieval'] = recommendation_result
             self._put_session(source, session_id, session)
         return {
@@ -574,12 +741,29 @@ class HookSessionBridge:
             'tool_result_event_id': result['tool_result']['event_id'],
             'status': status,
             'next_skill_retrieval': retrieval,
+            'repair_branch_suggestion': suggestion.get('suggestion') if suggestion else None,
+            'version_context': self._version_context(session),
         }
 
     def _ensure_session(self, source: str, session_id: str, envelope: Dict[str, Any]) -> Dict[str, Any]:
         key = self._session_key(source, session_id)
         session = self.db.store.get_object(key)
         if session:
+            changed = False
+            for name, value in {
+                'active_branch_id': 'main',
+                'last_version_snapshot': None,
+                'last_repair_suggestion': None,
+                'last_version_decision': None,
+            }.items():
+                if name not in session:
+                    session[name] = value
+                    changed = True
+            if session.get('schema_version') != 'contextdb.hook_session.v2':
+                session['schema_version'] = 'contextdb.hook_session.v2'
+                changed = True
+            if changed:
+                self._put_session(source, session_id, session)
             return session
         agent_id = str(envelope.get('agent_id') or ('codex' if source in {'codex', 'codex-session'} else source))
         title = str(envelope.get('title') or f'{agent_id} live hook session {session_id}')
@@ -590,7 +774,7 @@ class HookSessionBridge:
             'hook_session_id': session_id,
         })
         session = {
-            'schema_version': 'contextdb.hook_session.v1',
+            'schema_version': 'contextdb.hook_session.v2',
             'source': source,
             'session_id': session_id,
             'agent_id': agent_id,
@@ -602,6 +786,10 @@ class HookSessionBridge:
             'last_skill_retrieval': None,
             'last_skill_delivery': None,
             'last_skill_decision': None,
+            'active_branch_id': 'main',
+            'last_version_snapshot': None,
+            'last_repair_suggestion': None,
+            'last_version_decision': None,
         }
         self._put_session(source, session_id, session)
         return session
@@ -612,6 +800,110 @@ class HookSessionBridge:
 
     def _session_key(self, source: str, session_id: str) -> str:
         return 'hook_sessions/%s/%s' % (quote(source, safe='-_.').lower(), quote(session_id, safe='-_ .').replace(' ', '_'))
+
+    def _touch_session(self, source: str, session_id: str, session: Dict[str, Any], count: int) -> None:
+        session['updated_at'] = utc_now()
+        session['event_count'] = int(session.get('event_count', 0)) + count
+        self._put_session(source, session_id, session)
+
+    @staticmethod
+    def _snapshot_context(snapshot: Dict[str, Any]) -> Dict[str, Any]:
+        return {
+            'snapshot_id': snapshot.get('snapshot_id'),
+            'branch_id': snapshot.get('branch_id'),
+            'event_id': snapshot.get('event_id'),
+            'message': snapshot.get('message', ''),
+            'created_at': snapshot.get('created_at'),
+        }
+
+    def _version_context(self, session: Dict[str, Any]) -> Dict[str, Any]:
+        return {
+            'active_branch_id': session.get('active_branch_id') or 'main',
+            'latest_snapshot': session.get('last_version_snapshot'),
+            'repair_branch_suggestion': session.get('last_repair_suggestion'),
+            'last_version_decision': session.get('last_version_decision'),
+            'workspace_restore': {
+                'supported': False,
+                'instruction': 'ContextDB records logical branch and rollback state only. Restore files through the Agent workspace after an explicit decision.',
+            },
+        }
+
+    def _auto_snapshot_before_tool(self, session: Dict[str, Any], payload: Dict[str, Any], refs: Dict[str, Any]) -> Dict[str, Any]:
+        tool_name = str(payload.get('tool_name') or payload.get('tool') or 'tool')
+        command = _text(payload.get('command') or payload.get('cmd') or '')
+        version = self.db.create_version_snapshot(
+            session['trajectory_id'], session.get('active_branch_id') or 'main',
+            message=f'Before state-changing {tool_name}',
+            reason=f'Hook policy detected a potentially state-changing action: {command[:240]}',
+            origin='hook_policy', actor='contextdb',
+            refs={**refs, 'planned_tool_name': tool_name, 'planned_command': command[:1000]},
+        )
+        session['last_version_snapshot'] = self._snapshot_context(version['snapshot'])
+        return version
+
+    def _suggest_repair_branch(
+        self,
+        session: Dict[str, Any],
+        failure_event: Dict[str, Any],
+        branch_id: str,
+        refs: Dict[str, Any],
+    ) -> Optional[Dict[str, Any]]:
+        snapshot = session.get('last_version_snapshot') or {}
+        if snapshot.get('branch_id') != branch_id or not snapshot.get('snapshot_id'):
+            return None
+        suffix = str(failure_event.get('event_id') or '').split('_')[-1][:8] or 'failure'
+        suggested_branch_id = self._available_branch_id(session['trajectory_id'], f'repair-{suffix}')
+        event = self.db.append_event(
+            session['trajectory_id'], 'system_event',
+            {
+                'text': f'ContextDB suggests repair branch {suggested_branch_id} from snapshot {snapshot["snapshot_id"]}.',
+                'failure_event_id': failure_event.get('event_id'),
+                'snapshot_id': snapshot['snapshot_id'],
+                'suggested_branch_id': suggested_branch_id,
+                'source_branch_id': branch_id,
+                'logical_context_only': True,
+            },
+            branch_id=branch_id, actor='contextdb',
+            refs={**refs, 'failure_event_id': failure_event.get('event_id'), 'snapshot_id': snapshot['snapshot_id']},
+            metadata={'operation': 'version_repair_branch_suggested', 'origin': 'hook_policy', 'logical_context_only': True},
+        )
+        session['last_repair_suggestion'] = {
+            'suggestion_event_id': event['event_id'],
+            'failure_event_id': failure_event.get('event_id'),
+            'snapshot_id': snapshot['snapshot_id'],
+            'suggested_branch_id': suggested_branch_id,
+            'source_branch_id': branch_id,
+            'created_at': utc_now(),
+        }
+        return {'event': event, 'suggestion': session['last_repair_suggestion']}
+
+    def _record_version_decision(
+        self,
+        session: Dict[str, Any],
+        action: str,
+        decision: str,
+        reason: str,
+        refs: Dict[str, Any],
+    ) -> Dict[str, Any]:
+        event = self.db.append_event(
+            session['trajectory_id'], 'version_decision',
+            {'action': action, 'decision': decision, 'reason': reason, 'logical_context_only': True},
+            branch_id=session.get('active_branch_id') or 'main', actor='agent', refs={key: value for key, value in refs.items() if value},
+            metadata={'operation': 'version_decision', 'origin': 'agent', 'logical_context_only': True, 'online': True},
+        )
+        session['last_version_decision'] = {'event_id': event['event_id'], 'action': action, 'decision': decision, 'at': utc_now()}
+        return event
+
+    def _available_branch_id(self, trajectory_id: str, preferred: str) -> str:
+        base = re.sub(r'[^a-zA-Z0-9._-]+', '-', preferred.strip()).strip('-') or 'repair'
+        candidate, number = base, 2
+        while True:
+            try:
+                self.db.get_branch(trajectory_id, candidate)
+            except KeyError:
+                return candidate
+            candidate = f'{base}-{number}'
+            number += 1
 
     def _skill_recommendation(self, retrieval: Dict[str, Any]) -> Dict[str, Any]:
         match = retrieval.get('match') or {}

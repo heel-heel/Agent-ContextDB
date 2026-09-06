@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "contextdb": {
+      "type": "stdio",
+      "command": "D:\\software\\Anaconda\\ProgramFile\\envs\\contextdb_env\\python.exe",
+      "args": [
+        "D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB\\scripts\\run_mcp_server.py"
+      ]
+    }
+  }
+}

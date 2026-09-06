@@ -1,0 +1,26 @@
+{
+  "event_id": "evt_175cf49bba0c",
+  "trajectory_id": "traj_2014e7a1531d",
+  "branch_id": "main",
+  "event_type": "version_decision",
+  "payload": {
+    "action": "create_repair_branch",
+    "decision": "rejected",
+    "reason": "Keep the first missing-directory failure on main for diagnosis.",
+    "logical_context_only": true
+  },
+  "parent_event_ids": [
+    "evt_a2e8aaf0b5ca"
+  ],
+  "actor": "agent",
+  "timestamp": "2026-09-01T01:08:06.775927+00:00",
+  "refs": {
+    "suggestion_event_id": "evt_80d432982044"
+  },
+  "metadata": {
+    "operation": "version_decision",
+    "origin": "agent",
+    "logical_context_only": true,
+    "online": true
+  }
+}

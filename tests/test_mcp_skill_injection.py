@@ -88,6 +88,32 @@ def test_mcp_skill_delivery_decision_and_application_trace():
         server.db.store.conn.close()
 
 
+def test_mcp_records_pre_action_snapshot_and_agent_controlled_branch():
+    with TemporaryDirectory() as root:
+        server = ContextDBMCPServer(root)
+        source, session_id = 'codex', 'mcp-version-session'
+        recorded = server.dispatch('contextdb_record_tool_call', {
+            'source': source, 'session_id': session_id, 'tool_name': 'powershell',
+            'command': "Set-Content -LiteralPath '.\\scratch.txt' -Value 'x'", 'tool_call_id': 'write-1',
+        })
+        assert recorded['version_context']['latest_snapshot']['snapshot_id']
+        failed = server.dispatch('contextdb_record_tool_result', {
+            'source': source, 'session_id': session_id, 'tool_name': 'powershell',
+            'command': "Set-Content -LiteralPath '.\\scratch.txt' -Value 'x'", 'tool_call_id': 'write-1',
+            'status': 'failed', 'preview': 'Access is denied', 'exit_code': 1,
+        })
+        suggestion = failed['version_context']['repair_branch_suggestion']
+        assert suggestion and suggestion['suggested_branch_id']
+        repair = server.dispatch('contextdb_create_repair_branch', {
+            'source': source, 'session_id': session_id, 'reason': 'Keep the original failure branch for analysis.',
+        })
+        assert repair['version_context']['active_branch_id'] == repair['branch']['branch_id']
+        status = server.dispatch('contextdb_get_version_status', {'source': source, 'session_id': session_id})
+        assert status['workspace_restore']['supported'] is False
+        server.db.vector_index.conn.close()
+        server.db.store.conn.close()
+
+
 def test_mcp_stdio_lists_contextdb_tools():
     with TemporaryDirectory() as root:
         message = json.dumps({"jsonrpc": "2.0", "id": 1, "method": "tools/list", "params": {}}) + "\n"
@@ -99,6 +125,7 @@ def test_mcp_stdio_lists_contextdb_tools():
         names = {tool["name"] for tool in response["result"]["tools"]}
         assert "contextdb_prepare_context" in names
         assert "contextdb_record_skill_application" in names
+        assert "contextdb_create_repair_branch" in names
 
 
 def test_native_exec_hook_records_and_injects_recommendation():
@@ -128,6 +155,21 @@ def test_native_exec_hook_records_and_injects_recommendation():
             assert "tool_result" in event_types
             assert "skill_match" in event_types
             assert "skill_recommendation" in event_types
+            applied = subprocess.run(
+                [
+                    sys.executable, str(hook), "--base-url", "http://127.0.0.1:%s" % httpd.server_port,
+                    "--source", "codex", "--session-id", "native-hook-session", "--apply-skill",
+                    "--skill-match-event-id", "match-test", "--skill-id", "skill_compiler_repair", "--action-id", "act_use_clang", "--",
+                    sys.executable, "-c", "print('real skill-guided retry ran')",
+                ],
+                capture_output=True, text=True,
+            )
+            assert applied.returncode == 0
+            assert "real skill-guided retry ran" in applied.stdout
+            events = server.db.list_events(status["session"]["trajectory_id"])
+            assert [event["event_type"] for event in events].count("tool_call") == 2
+            assert [event["event_type"] for event in events].count("tool_result") == 2
+            assert events[-1]["refs"]["skill_id"] == "skill_compiler_repair"
         finally:
             httpd.shutdown()
             httpd.server_close()

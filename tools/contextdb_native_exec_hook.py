@@ -100,6 +100,12 @@ def run_hooked_command(args: argparse.Namespace) -> int:
                 "skill_id": args.skill_id,
                 "action_id": args.action_id,
             }))
+        # Record the real call before execution as well. This allows the common
+        # Hook policy to create a logical pre-action snapshot for an accepted
+        # skill that may change state, without duplicating the call later.
+        _best_effort("record skill tool call", lambda: _hook_event(args.base_url, args.source, args.session_id, call_id, "tool_call", {
+                "tool_name": args.tool_name, "command": command_text,
+            }))
     else:
         _best_effort("record tool call", lambda: _hook_event(args.base_url, args.source, args.session_id, call_id, "tool_call", {
                 "tool_name": args.tool_name, "command": command_text,
@@ -125,6 +131,7 @@ def run_hooked_command(args: argparse.Namespace) -> int:
                 "skill_match_event_id": args.skill_match_event_id,
                 "skill_id": args.skill_id,
                 "action_id": args.action_id,
+                "tool_call_id": call_id,
             })) or {}
         if result.get("next_skill_retrieval"):
             context = _best_effort("deliver next recommendation", lambda: _deliver_context(args.base_url, args.source, args.session_id))

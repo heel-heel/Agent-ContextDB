@@ -1,0 +1,28 @@
+{
+  "event_id": "evt_e39474ca93e5",
+  "trajectory_id": "traj_2014e7a1531d",
+  "branch_id": "main",
+  "event_type": "tool_result",
+  "payload": {
+    "status": "ok",
+    "preview": "The file was read successfully after applying the ContextDB path-repair recommendation.",
+    "exit_code": null
+  },
+  "parent_event_ids": [
+    "evt_2c9b891d3f7f"
+  ],
+  "actor": "tool",
+  "timestamp": "2026-09-01T01:02:03.001215+00:00",
+  "refs": {
+    "skill_match_event_id": "evt_f3db9e8aec9e",
+    "skill_id": "skill_file_not_found_specified_path_exit_code_get-content",
+    "selected_action_id": "act_file_not_found_specified_path_exit_code_get-content_1",
+    "tool_call_event_id": "evt_2c9b891d3f7f"
+  },
+  "metadata": {
+    "agent_id": "claude-code",
+    "online": true,
+    "operation": "skill_application",
+    "integration": "agent-hook.v1"
+  }
+}

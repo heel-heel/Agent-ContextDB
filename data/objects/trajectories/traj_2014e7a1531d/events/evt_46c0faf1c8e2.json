@@ -1,0 +1,31 @@
+{
+  "event_id": "evt_46c0faf1c8e2",
+  "trajectory_id": "traj_2014e7a1531d",
+  "branch_id": "repair-62ce55c9",
+  "event_type": "user_message",
+  "payload": {
+    "text": "Use ContextDB MCP tool `contextdb_get_version_status` with source\n`claude-code` and the real session id you discovered for this conversation.\n\nFind the snapshot created immediately before the second failed write attempt.\nCall `contextdb_rollback_context` using that snapshot id and this reason:\n\nThe repair branch was inspected. Continue from the logical checkpoint before the second missing-directory failure.\n\nCall `contextdb_get_version_status` again. Report the trajectory id, final active branch id, and confirm that no workspace files or Git state were restored."
+  },
+  "parent_event_ids": [
+    "evt_5adaeae7808a"
+  ],
+  "actor": "user",
+  "timestamp": "2026-09-01T01:09:50.704534+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "claude-code",
+    "hook_adapter": "generic",
+    "hook_session_id": "f1087623-105e-44e4-ad83-d43625225df3"
+  },
+  "metadata": {
+    "agent_id": "claude-code",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-01T01:09:50.704368+00:00",
+    "adapter": "claude-code-hooks",
+    "claude_hook_event": "UserPromptSubmit",
+    "claude_tool_name": "",
+    "claude_cwd": "d:\\software\\Pycharm\\SelfCode\\Agent-ContextDB",
+    "claude_transcript_path": "C:\\Users\\lenovo\\.claude\\projects\\d--software-Pycharm-SelfCode-Agent-ContextDB\\f1087623-105e-44e4-ad83-d43625225df3.jsonl"
+  }
+}

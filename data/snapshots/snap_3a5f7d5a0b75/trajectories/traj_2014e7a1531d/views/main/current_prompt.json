@@ -1,0 +1,313 @@
+{
+  "view_name": "current_prompt",
+  "trajectory_id": "traj_2014e7a1531d",
+  "branch_id": "main",
+  "content": {
+    "summary": "Earlier trajectory context:\n- skill_match:{'schema_version': 'skill_match_result.v2', 'trajectory_id': 'traj_2014e7a1531d', 'input_failure': {'tool': 'shell', 'co\n- skill_recommendation:{'type': 'contextdb_skill_recommendation', 'matched': True, 'skill_id': 'skill_file_not_found_specified_path_exit_code_g\n- user_message:Review the ContextDB guidance injected after the previous failed tool call.\n\nCall only ContextDB MCP tool `contextdb_record_skill_decision`. Use source\n`claude-code` and the real session id you discovered for this conversation.\n\nSet:\n- decision: accepted\n- reason: The recommended path repair is safe and directly addresses the failed relative-path read.\n\nDo not run terminal commands. Report the returned decision_event_id.\n- tool_call:{\"decision\": \"accepted\", \"reason\": \"The recommended path repair is safe and directly addresses the failed relative-path read.\", \"session_id\": \"f1087623-105e-44e4-ad83-d43625225df3\", \"source\": \"claude-code\"}\n- skill_decision:{'decision': 'accepted', 'reason': 'The recommended path repair is safe and directly addresses the failed relative-path \n- tool_result:{\"trajectory_id\":\"traj_2014e7a1531d\",\"decision_event_id\":\"evt_65ab727e1153\",\"decision\":\"accepted\"}",
+    "recent_events": [
+      {
+        "event_id": "evt_bc65710b2b47",
+        "trajectory_id": "traj_2014e7a1531d",
+        "branch_id": "main",
+        "event_type": "user_message",
+        "payload": {
+          "text": "Do not modify files. Use exactly one native shell tool call to run:\n\npowershell -NoProfile -Command \"Get-Content -Raw -LiteralPath '.\\examples\\live-path-demo\\assets\\settings.json'\"\n\nReport the complete raw output and raw file content in English."
+        },
+        "parent_event_ids": [
+          "evt_5325f48c1af4"
+        ],
+        "actor": "user",
+        "timestamp": "2026-09-01T01:01:47.300800+00:00",
+        "refs": {
+          "hook_protocol": "contextdb.agent_hook.v1",
+          "hook_source": "claude-code",
+          "hook_adapter": "generic",
+          "hook_session_id": "f1087623-105e-44e4-ad83-d43625225df3"
+        },
+        "metadata": {
+          "agent_id": "claude-code",
+          "online": true,
+          "integration": "agent-hook.v1",
+          "hook_received_at": "2026-09-01T01:01:47.300631+00:00",
+          "adapter": "claude-code-hooks",
+          "claude_hook_event": "UserPromptSubmit",
+          "claude_tool_name": "",
+          "claude_cwd": "d:\\software\\Pycharm\\SelfCode\\Agent-ContextDB",
+          "claude_transcript_path": "C:\\Users\\lenovo\\.claude\\projects\\d--software-Pycharm-SelfCode-Agent-ContextDB\\f1087623-105e-44e4-ad83-d43625225df3.jsonl"
+        }
+      },
+      {
+        "event_id": "evt_fa41ca15d0d6",
+        "trajectory_id": "traj_2014e7a1531d",
+        "branch_id": "main",
+        "event_type": "tool_call",
+        "payload": {
+          "tool_name": "shell",
+          "command": "powershell -NoProfile -Command \"Get-Content -Raw -LiteralPath '.\\examples\\live-path-demo\\assets\\settings.json'\"",
+          "arguments": {
+            "command": "powershell -NoProfile -Command \"Get-Content -Raw -LiteralPath '.\\examples\\live-path-demo\\assets\\settings.json'\"",
+            "description": "Read live-path-demo assets/settings.json raw content"
+          },
+          "agent_tool_name": "Bash"
+        },
+        "parent_event_ids": [
+          "evt_bc65710b2b47"
+        ],
+        "actor": "agent",
+        "timestamp": "2026-09-01T01:01:49.384616+00:00",
+        "refs": {
+          "hook_protocol": "contextdb.agent_hook.v1",
+          "hook_source": "claude-code",
+          "hook_adapter": "generic",
+          "hook_session_id": "f1087623-105e-44e4-ad83-d43625225df3"
+        },
+        "metadata": {
+          "agent_id": "claude-code",
+          "online": true,
+          "integration": "agent-hook.v1",
+          "hook_received_at": "2026-09-01T01:01:49.384431+00:00",
+          "adapter": "claude-code-hooks",
+          "claude_hook_event": "PreToolUse",
+          "claude_tool_name": "Bash",
+          "claude_cwd": "d:\\software\\Pycharm\\SelfCode\\Agent-ContextDB",
+          "claude_transcript_path": "C:\\Users\\lenovo\\.claude\\projects\\d--software-Pycharm-SelfCode-Agent-ContextDB\\f1087623-105e-44e4-ad83-d43625225df3.jsonl"
+        }
+      },
+      {
+        "event_id": "evt_73c3ed2ef732",
+        "trajectory_id": "traj_2014e7a1531d",
+        "branch_id": "main",
+        "event_type": "tool_result",
+        "payload": {
+          "status": "ok",
+          "preview": "",
+          "exit_code": null
+        },
+        "parent_event_ids": [
+          "evt_fa41ca15d0d6"
+        ],
+        "actor": "tool",
+        "timestamp": "2026-09-01T01:01:51.178786+00:00",
+        "refs": {
+          "hook_protocol": "contextdb.agent_hook.v1",
+          "hook_source": "claude-code",
+          "hook_adapter": "generic",
+          "hook_session_id": "f1087623-105e-44e4-ad83-d43625225df3",
+          "tool_call_event_id": "evt_fa41ca15d0d6"
+        },
+        "metadata": {
+          "agent_id": "claude-code",
+          "online": true,
+          "integration": "agent-hook.v1",
+          "hook_received_at": "2026-09-01T01:01:51.178618+00:00",
+          "adapter": "claude-code-hooks",
+          "claude_hook_event": "PostToolUse",
+          "claude_tool_name": "Bash",
+          "claude_cwd": "D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB",
+          "claude_transcript_path": "C:\\Users\\lenovo\\.claude\\projects\\d--software-Pycharm-SelfCode-Agent-ContextDB\\f1087623-105e-44e4-ad83-d43625225df3.jsonl"
+        }
+      },
+      {
+        "event_id": "evt_d9f7b496d92d",
+        "trajectory_id": "traj_2014e7a1531d",
+        "branch_id": "main",
+        "event_type": "user_message",
+        "payload": {
+          "text": "Call only ContextDB MCP tool `contextdb_record_skill_application`. Use source\n`claude-code` and the real session id you discovered for this conversation.\n\nSet:\n- tool_name: shell\n- command: powershell -NoProfile -Command \"Get-Content -Raw -LiteralPath '.\\examples\\live-path-demo\\assets\\settings.json'\"\n- status: ok\n- preview: The file was read successfully after applying the ContextDB path-repair recommendation.\n\nDo not run terminal commands. Report the returned application event id."
+        },
+        "parent_event_ids": [
+          "evt_73c3ed2ef732"
+        ],
+        "actor": "user",
+        "timestamp": "2026-09-01T01:01:59.028671+00:00",
+        "refs": {
+          "hook_protocol": "contextdb.agent_hook.v1",
+          "hook_source": "claude-code",
+          "hook_adapter": "generic",
+          "hook_session_id": "f1087623-105e-44e4-ad83-d43625225df3"
+        },
+        "metadata": {
+          "agent_id": "claude-code",
+          "online": true,
+          "integration": "agent-hook.v1",
+          "hook_received_at": "2026-09-01T01:01:59.028506+00:00",
+          "adapter": "claude-code-hooks",
+          "claude_hook_event": "UserPromptSubmit",
+          "claude_tool_name": "",
+          "claude_cwd": "d:\\software\\Pycharm\\SelfCode\\Agent-ContextDB",
+          "claude_transcript_path": "C:\\Users\\lenovo\\.claude\\projects\\d--software-Pycharm-SelfCode-Agent-ContextDB\\f1087623-105e-44e4-ad83-d43625225df3.jsonl"
+        }
+      },
+      {
+        "event_id": "evt_315c7bab9ef8",
+        "trajectory_id": "traj_2014e7a1531d",
+        "branch_id": "main",
+        "event_type": "tool_call",
+        "payload": {
+          "tool_name": "mcp__contextdb__contextdb_record_skill_application",
+          "command": "powershell -NoProfile -Command \"Get-Content -Raw -LiteralPath '.\\examples\\live-path-demo\\assets\\settings.json'\"",
+          "arguments": {
+            "source": "claude-code",
+            "session_id": "f1087623-105e-44e4-ad83-d43625225df3",
+            "tool_name": "shell",
+            "command": "powershell -NoProfile -Command \"Get-Content -Raw -LiteralPath '.\\examples\\live-path-demo\\assets\\settings.json'\"",
+            "status": "ok",
+            "preview": "The file was read successfully after applying the ContextDB path-repair recommendation."
+          },
+          "agent_tool_name": "mcp__contextdb__contextdb_record_skill_application"
+        },
+        "parent_event_ids": [
+          "evt_d9f7b496d92d"
+        ],
+        "actor": "agent",
+        "timestamp": "2026-09-01T01:02:01.817519+00:00",
+        "refs": {
+          "hook_protocol": "contextdb.agent_hook.v1",
+          "hook_source": "claude-code",
+          "hook_adapter": "generic",
+          "hook_session_id": "f1087623-105e-44e4-ad83-d43625225df3"
+        },
+        "metadata": {
+          "agent_id": "claude-code",
+          "online": true,
+          "integration": "agent-hook.v1",
+          "hook_received_at": "2026-09-01T01:02:01.817366+00:00",
+          "adapter": "claude-code-hooks",
+          "claude_hook_event": "PreToolUse",
+          "claude_tool_name": "mcp__contextdb__contextdb_record_skill_application",
+          "claude_cwd": "d:\\software\\Pycharm\\SelfCode\\Agent-ContextDB",
+          "claude_transcript_path": "C:\\Users\\lenovo\\.claude\\projects\\d--software-Pycharm-SelfCode-Agent-ContextDB\\f1087623-105e-44e4-ad83-d43625225df3.jsonl"
+        }
+      },
+      {
+        "event_id": "evt_2c9b891d3f7f",
+        "trajectory_id": "traj_2014e7a1531d",
+        "branch_id": "main",
+        "event_type": "tool_call",
+        "payload": {
+          "tool_name": "shell",
+          "command": "powershell -NoProfile -Command \"Get-Content -Raw -LiteralPath '.\\examples\\live-path-demo\\assets\\settings.json'\""
+        },
+        "parent_event_ids": [
+          "evt_315c7bab9ef8"
+        ],
+        "actor": "agent",
+        "timestamp": "2026-09-01T01:02:02.997542+00:00",
+        "refs": {
+          "skill_match_event_id": "evt_f3db9e8aec9e",
+          "skill_id": "skill_file_not_found_specified_path_exit_code_get-content",
+          "selected_action_id": "act_file_not_found_specified_path_exit_code_get-content_1"
+        },
+        "metadata": {
+          "agent_id": "claude-code",
+          "online": true,
+          "operation": "skill_application",
+          "integration": "agent-hook.v1"
+        }
+      },
+      {
+        "event_id": "evt_e39474ca93e5",
+        "trajectory_id": "traj_2014e7a1531d",
+        "branch_id": "main",
+        "event_type": "tool_result",
+        "payload": {
+          "status": "ok",
+          "preview": "The file was read successfully after applying the ContextDB path-repair recommendation.",
+          "exit_code": null
+        },
+        "parent_event_ids": [
+          "evt_2c9b891d3f7f"
+        ],
+        "actor": "tool",
+        "timestamp": "2026-09-01T01:02:03.001215+00:00",
+        "refs": {
+          "skill_match_event_id": "evt_f3db9e8aec9e",
+          "skill_id": "skill_file_not_found_specified_path_exit_code_get-content",
+          "selected_action_id": "act_file_not_found_specified_path_exit_code_get-content_1",
+          "tool_call_event_id": "evt_2c9b891d3f7f"
+        },
+        "metadata": {
+          "agent_id": "claude-code",
+          "online": true,
+          "operation": "skill_application",
+          "integration": "agent-hook.v1"
+        }
+      },
+      {
+        "event_id": "evt_5654194bd5ec",
+        "trajectory_id": "traj_2014e7a1531d",
+        "branch_id": "main",
+        "event_type": "tool_result",
+        "payload": {
+          "status": "ok",
+          "preview": "{\"trajectory_id\":\"traj_2014e7a1531d\",\"tool_call_event_id\":\"evt_2c9b891d3f7f\",\"tool_result_event_id\":\"evt_e39474ca93e5\",\"status\":\"ok\",\"next_skill_retrieval\":null,\"repair_branch_suggestion\":null,\"version_context\":{\"active_branch_id\":\"main\",\"latest_snapshot\":null,\"repair_branch_suggestion\":null,\"last_version_decision\":null,\"workspace_restore\":{\"supported\":false,\"instruction\":\"ContextDB records logical branch and rollback state only. Restore files through the Agent workspace after an explicit decision.\"}}}",
+          "exit_code": null
+        },
+        "parent_event_ids": [
+          "evt_e39474ca93e5"
+        ],
+        "actor": "tool",
+        "timestamp": "2026-09-01T01:02:03.265893+00:00",
+        "refs": {
+          "hook_protocol": "contextdb.agent_hook.v1",
+          "hook_source": "claude-code",
+          "hook_adapter": "generic",
+          "hook_session_id": "f1087623-105e-44e4-ad83-d43625225df3",
+          "tool_call_event_id": "evt_315c7bab9ef8"
+        },
+        "metadata": {
+          "agent_id": "claude-code",
+          "online": true,
+          "integration": "agent-hook.v1",
+          "hook_received_at": "2026-09-01T01:02:03.265710+00:00",
+          "adapter": "claude-code-hooks",
+          "claude_hook_event": "PostToolUse",
+          "claude_tool_name": "mcp__contextdb__contextdb_record_skill_application",
+          "claude_cwd": "d:\\software\\Pycharm\\SelfCode\\Agent-ContextDB",
+          "claude_transcript_path": "C:\\Users\\lenovo\\.claude\\projects\\d--software-Pycharm-SelfCode-Agent-ContextDB\\f1087623-105e-44e4-ad83-d43625225df3.jsonl"
+        }
+      }
+    ],
+    "relevant_memory": [],
+    "token_budget": 2000,
+    "estimated_full_history_tokens": 10498,
+    "estimated_loaded_tokens": 2650,
+    "estimated_saved_tokens": 7848,
+    "loading_policy": "summary + recent_events + relevant_memory"
+  },
+  "source_events": [
+    "evt_cfd6460f2cb8",
+    "evt_db676751f71f",
+    "evt_433b7240006d",
+    "evt_334d625b4076",
+    "evt_62558af008bf",
+    "evt_27ce1cb17ce0",
+    "evt_9facbb570bdd",
+    "evt_4d68651afdc6",
+    "evt_1fd38196c1a2",
+    "evt_814b340f1a38",
+    "evt_b4ba25be874c",
+    "evt_f68c0dc1563c",
+    "evt_817de6b0a3e2",
+    "evt_3f93812cdc7a",
+    "evt_77235dfe6da4",
+    "evt_f3db9e8aec9e",
+    "evt_ae56a8cb18cc",
+    "evt_c6a608a7fa48",
+    "evt_6ed37a8e73d9",
+    "evt_65ab727e1153",
+    "evt_5325f48c1af4",
+    "evt_bc65710b2b47",
+    "evt_fa41ca15d0d6",
+    "evt_73c3ed2ef732",
+    "evt_d9f7b496d92d",
+    "evt_315c7bab9ef8",
+    "evt_2c9b891d3f7f",
+    "evt_e39474ca93e5",
+    "evt_5654194bd5ec"
+  ],
+  "created_at": "2026-09-01T01:02:15.490715+00:00",
+  "metadata": {
+    "event_count": 29
+  }
+}

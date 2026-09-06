@@ -1,0 +1,412 @@
+{
+  "view_name": "current_prompt",
+  "trajectory_id": "traj_2014e7a1531d",
+  "branch_id": "main",
+  "content": {
+    "summary": "Earlier trajectory context:\n- tool_result:{\"trajectory_id\":\"traj_2014e7a1531d\",\"decision_event\":{\"event_id\":\"evt_175cf49bba0c\",\"trajectory_id\":\"traj_2014e7a153...\n- user_message:Do not create files or folders. Use exactly one native shell tool call to run:\n\npowershell -NoProfile -Command '$Erro...\n- system_event:ContextDB created a logical snapshot before a versioned action.\n- tool_call:powershell -NoProfile -Command '$ErrorActionPreference = \"Stop\"; Set-Content -LiteralPath \".\\__contextdb_combined_mis...\n- tool_result:Exit code 1\nSet-Content : 未锟斤拷锟揭碉拷路锟斤拷锟斤拷D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB\\__contextdb_combined_missing_ou...\n- skill_match:{'schema_version': 'skill_match_result.v2', 'trajectory_id': 'traj_2014e7a1531d', 'input_failure': {'tool': 'shell',...",
+    "recent_events": [
+      {
+        "event_id": "evt_6cbc7afa0286",
+        "trajectory_id": "traj_2014e7a1531d",
+        "branch_id": "main",
+        "event_type": "system_event",
+        "payload": {
+          "text": "ContextDB suggests repair branch repair-62ce55c9 from snapshot snap_23799bb4e1e8.",
+          "failure_event_id": "evt_62ce55c9c672",
+          "snapshot_id": "snap_23799bb4e1e8",
+          "suggested_branch_id": "repair-62ce55c9",
+          "source_branch_id": "main",
+          "logical_context_only": true
+        },
+        "parent_event_ids": [
+          "evt_7970eb79855c"
+        ],
+        "actor": "contextdb",
+        "timestamp": "2026-09-01T01:08:29.574070+00:00",
+        "refs": {
+          "hook_protocol": "contextdb.agent_hook.v1",
+          "hook_source": "claude-code",
+          "hook_adapter": "generic",
+          "hook_session_id": "f1087623-105e-44e4-ad83-d43625225df3",
+          "tool_call_event_id": "evt_3aedeca52d50",
+          "failure_event_id": "evt_62ce55c9c672",
+          "snapshot_id": "snap_23799bb4e1e8"
+        },
+        "metadata": {
+          "operation": "version_repair_branch_suggested",
+          "origin": "hook_policy",
+          "logical_context_only": true
+        }
+      },
+      {
+        "event_id": "evt_2f8da74fb599",
+        "trajectory_id": "traj_2014e7a1531d",
+        "branch_id": "main",
+        "event_type": "skill_recommendation",
+        "payload": {
+          "type": "contextdb_skill_recommendation",
+          "matched": true,
+          "skill_id": "skill_file_not_found_specified_path_exit_code_get-content",
+          "skill_name": "Repair file not found at specified path",
+          "match_score": 0.569839,
+          "match_reason": "vector cosine similarity over failure and learned trigger",
+          "selected_action": {
+            "action_id": "act_file_not_found_specified_path_exit_code_get-content_1",
+            "name": "Apply powershell -NoProfile -Command \"Get-Content -Raw -LiteralPath '.\\examples\\live-path-demo\\assets\\settings.json'\"",
+            "canonical_tool": "shell",
+            "canonical_command_template": "powershell -NoProfile -Command \"Get-Content -Raw -LiteralPath '.\\examples\\live-path-demo\\assets\\settings.json'\"",
+            "strategy": "Apply powershell -NoProfile -Command \"Get-Content -Raw -LiteralPath '.\\examples\\live-path-demo\\assets\\settings.json'\"",
+            "support_event_ids": [
+              "evt_f68c0dc1563c"
+            ],
+            "support_events": [
+              {
+                "trajectory_id": "traj_2014e7a1531d",
+                "failure_event_id": "evt_9facbb570bdd",
+                "success_event_id": "evt_f68c0dc1563c",
+                "branch_id": "main",
+                "tool": "shell",
+                "command": "powershell -NoProfile -Command \"Get-Content -Raw -LiteralPath '.\\examples\\live-path-demo\\assets\\settings.json'\"",
+                "strategy": "",
+                "outcome": "ok",
+                "primary_rule": "same_branch_first_success_after_failure",
+                "judgment_label": "likely_repair",
+                "confidence": 0.9,
+                "reason": "The failure was a 'file not found' error for '.\\assets\\settings.json'. The successful action used the same command but with a corrected path '.\\examples\\live-path-demo\\assets\\settings.json', which resolved the issue.",
+                "vector_text": "shell powershell -NoProfile -Command \"Get-Content -Raw -LiteralPath '.\\examples\\live-path-demo\\assets\\settings.json'\""
+              }
+            ],
+            "confidence": {
+              "max_llm_confidence": 0.9,
+              "support_count": 1
+            },
+            "dedupe": {
+              "method": "vector_cosine",
+              "embedding": "hash-384",
+              "threshold": 0.78,
+              "group_size": 1
+            }
+          },
+          "selected_action_index": 0,
+          "selected_action_score": 0.9,
+          "selection_policy": "highest max_llm_confidence; ties keep original action order",
+          "instruction": "Use this as a suggestion. The Agent must decide whether it is safe and appropriate before executing it.",
+          "version_context": {
+            "active_branch_id": "main",
+            "latest_snapshot": {
+              "snapshot_id": "snap_23799bb4e1e8",
+              "branch_id": "main",
+              "event_id": "evt_41d215902818",
+              "message": "Before state-changing shell",
+              "created_at": "2026-09-01T01:08:26.877177+00:00"
+            },
+            "repair_branch_suggestion": {
+              "suggestion_event_id": "evt_6cbc7afa0286",
+              "failure_event_id": "evt_62ce55c9c672",
+              "snapshot_id": "snap_23799bb4e1e8",
+              "suggested_branch_id": "repair-62ce55c9",
+              "source_branch_id": "main",
+              "created_at": "2026-09-01T01:08:29.576486+00:00"
+            },
+            "last_version_decision": {
+              "event_id": "evt_175cf49bba0c",
+              "action": "create_repair_branch",
+              "decision": "rejected",
+              "at": "2026-09-01T01:08:06.779565+00:00"
+            },
+            "workspace_restore": {
+              "supported": false,
+              "instruction": "ContextDB records logical branch and rollback state only. Restore files through the Agent workspace after an explicit decision."
+            }
+          }
+        },
+        "parent_event_ids": [
+          "evt_6cbc7afa0286"
+        ],
+        "actor": "contextdb",
+        "timestamp": "2026-09-01T01:08:29.606447+00:00",
+        "refs": {
+          "skill_match_event_id": "evt_7970eb79855c",
+          "skill_id": "skill_file_not_found_specified_path_exit_code_get-content",
+          "selected_action_id": "act_file_not_found_specified_path_exit_code_get-content_1"
+        },
+        "metadata": {
+          "operation": "skill_recommendation_delivery",
+          "delivery_channel": "claude-code-post-tool-failure",
+          "online": true
+        }
+      },
+      {
+        "event_id": "evt_291a3dce059a",
+        "trajectory_id": "traj_2014e7a1531d",
+        "branch_id": "main",
+        "event_type": "user_message",
+        "payload": {
+          "text": "Use ContextDB MCP tool `contextdb_get_version_status` with source\n`claude-code` and the real session id you discovered for this conversation.\n\nIdentify the newest repair-branch suggestion. Accept it by calling\n`contextdb_create_repair_branch` with reason:\n\nPreserve the second missing-directory failure and inspect a separate logical repair path.\n\nCall `contextdb_get_version_status` again and report the new active branch id in English."
+        },
+        "parent_event_ids": [
+          "evt_2f8da74fb599"
+        ],
+        "actor": "user",
+        "timestamp": "2026-09-01T01:08:51.067392+00:00",
+        "refs": {
+          "hook_protocol": "contextdb.agent_hook.v1",
+          "hook_source": "claude-code",
+          "hook_adapter": "generic",
+          "hook_session_id": "f1087623-105e-44e4-ad83-d43625225df3"
+        },
+        "metadata": {
+          "agent_id": "claude-code",
+          "online": true,
+          "integration": "agent-hook.v1",
+          "hook_received_at": "2026-09-01T01:08:51.067221+00:00",
+          "adapter": "claude-code-hooks",
+          "claude_hook_event": "UserPromptSubmit",
+          "claude_tool_name": "",
+          "claude_cwd": "d:\\software\\Pycharm\\SelfCode\\Agent-ContextDB",
+          "claude_transcript_path": "C:\\Users\\lenovo\\.claude\\projects\\d--software-Pycharm-SelfCode-Agent-ContextDB\\f1087623-105e-44e4-ad83-d43625225df3.jsonl"
+        }
+      },
+      {
+        "event_id": "evt_95faa6858da6",
+        "trajectory_id": "traj_2014e7a1531d",
+        "branch_id": "main",
+        "event_type": "tool_call",
+        "payload": {
+          "tool_name": "mcp__contextdb__contextdb_get_version_status",
+          "command": "{\"session_id\": \"f1087623-105e-44e4-ad83-d43625225df3\", \"source\": \"claude-code\"}",
+          "arguments": {
+            "session_id": "f1087623-105e-44e4-ad83-d43625225df3",
+            "source": "claude-code"
+          },
+          "agent_tool_name": "mcp__contextdb__contextdb_get_version_status"
+        },
+        "parent_event_ids": [
+          "evt_291a3dce059a"
+        ],
+        "actor": "agent",
+        "timestamp": "2026-09-01T01:08:53.158777+00:00",
+        "refs": {
+          "hook_protocol": "contextdb.agent_hook.v1",
+          "hook_source": "claude-code",
+          "hook_adapter": "generic",
+          "hook_session_id": "f1087623-105e-44e4-ad83-d43625225df3"
+        },
+        "metadata": {
+          "agent_id": "claude-code",
+          "online": true,
+          "integration": "agent-hook.v1",
+          "hook_received_at": "2026-09-01T01:08:53.158617+00:00",
+          "adapter": "claude-code-hooks",
+          "claude_hook_event": "PreToolUse",
+          "claude_tool_name": "mcp__contextdb__contextdb_get_version_status",
+          "claude_cwd": "d:\\software\\Pycharm\\SelfCode\\Agent-ContextDB",
+          "claude_transcript_path": "C:\\Users\\lenovo\\.claude\\projects\\d--software-Pycharm-SelfCode-Agent-ContextDB\\f1087623-105e-44e4-ad83-d43625225df3.jsonl"
+        }
+      },
+      {
+        "event_id": "evt_9dfff0aa6d6f",
+        "trajectory_id": "traj_2014e7a1531d",
+        "branch_id": "main",
+        "event_type": "tool_result",
+        "payload": {
+          "status": "ok",
+          "preview": "{\"schema_version\":\"contextdb.version_control.v1\",\"trajectory\":{\"trajectory_id\":\"traj_2014e7a1531d\",\"title\":\"claude-code live hook session f1087623-105e-44e4-ad83-d43625225df3\",\"agent_id\":\"claude-code\",\"source_id\":\"hook:claude-code\",\"default_branch\":\"main\",\"head_event_id\":\"evt_95faa6858da6\",\"created_at\":\"2026-09-01T00:58:36.748691+00:00\",\"updated_at\":\"2026-09-01T01:08:53.161377+00:00\",\"metadata\":{\"integration\":\"agent-hook.v1\",\"hook_protocol\":\"contextdb.agent_hook.v1\",\"hook_source\":\"claude-code\",\"hook_session_id\":\"f1087623-105e-44e4-ad83-d43625225df3\"}},\"branches\":[{\"branch_id\":\"main\",\"trajectory_id\":\"traj_2014e7a1531d\",\"base_event_id\":null,\"head_event_id\":\"evt_95faa6858da6\",\"snapshot_id\":\"snap_23799bb4e1e8\",\"created_at\":\"2026-09-01T00:58:36.752435+00:00\",\"metadata\":{}}],\"snapshots\":[{\"snapshot_id\":\"snap_3a5f7d5a0b75\",\"trajectory_id\":\"traj_2014e7a1531d\",\"branch_id\":\"main\",\"event_id\":\"evt_b5cc95b82781\",\"message\":\"Before state-changing shell\",\"object_keys\":[\"trajectories/traj_2014e7a1531d/branches/main\",\"trajectories/traj_2014e7a1531d/events/evt_1fd38196c1a2\",\"trajectories/traj_2014e7a1531d/events/evt_27ce1cb17ce0\",\"trajectories/traj_2014e7a1531d/events/evt_2c9b891d3f7f\",\"trajectories/traj_2014e7a1531d/events/evt_315c7bab9ef8\",\"trajectories/traj_2014e7a1531d/events/evt_334d625b4076\",\"trajectories/traj_2014e7a1531d/events/evt_3f93812cdc7a\",\"trajectories/traj_2014e7a1531d/events/evt_433b7240006d\",\"trajectories/traj_2014e7a1531d/events/evt_4d68651afdc6\",\"trajectories/traj_2014e7a1531d/events/evt_5325f48c1af4\",\"trajectories/traj_2014e7a1531d/events/evt_5654194bd5ec\",\"trajectories/traj_2014e7a1531d/events/evt_62558af008bf\",\"trajectories/traj_2014e7a1531d/events/evt_65ab727e1153\",\"trajectories/traj_2014e7a1531d/events/evt_6ed37a8e73d9\",\"trajectories/traj_2014e7a1531d/events/evt_73c3ed2ef732\",\"trajectories/traj_2014e7a1531d/events/evt_77235dfe6da4\",\"trajectories/traj_2014e7a1531d/events/evt_7ed4c85348fd\",\"trajectories/traj_2014e7a1531d/events/evt_814b340f1a38\",\"trajectories/traj_2014e7a1531d/events/evt_817de6b0a3e2\",\"trajectories/traj_2014e7a1531d/events/evt_9facbb570bdd\",\"trajectories/traj_2014e7a1531d/events/evt_ae56a8cb18cc\",\"trajectories/traj_2014e7a1531d/events/evt_b4ba25be874c\",\"trajectories/traj_2014e7a1531d/events/evt_b5cc95b82781\",\"trajectories/traj_2014e7a1531d/events/evt_bc65710b2b47\",\"trajectories/traj_2014e7a1531d/events/evt_c6a608a7fa48\",\"trajectories/traj_2014e7a1531d/events/evt_cfd6460f2cb8\",\"trajectories/traj_2014e7a1531d/events/evt_d9f7b496d92d\",\"trajectories/traj_2014e7a1531d/events/evt_db676751f71f\",\"trajectories/traj_2014e7a1531d/events/evt_e39474ca93e5\",\"trajectories/traj_2014e7a1531d/events/evt_f3db9e8aec9e\",\"trajectories/traj_2014e7a1531d/events/evt_f68c0dc1563c\",\"trajectories/traj_2014e7a1531d/events/evt_fa41ca15d0d6\",\"trajectories/traj_2014e7a1531d/meta\",\"trajectories/traj_2014e7a1531d/snapshots/snap_3a5f7d5a0b75\",\"trajectories/traj_2014e7a1531d/views/main/current_prompt\",\"trajectories/traj_2014e7a1531d/views/main/learned_skills\",\"trajectories/traj_2014e7a1531d/views/main/semantic_repair_judgments\",\"trajectories/traj_2014e7a1531d/views/main/skill_application_trace\",\"trajectories/traj_2014e7a1531d/views/main/skill_library\"],\"created_at\":\"2026-09-01T01:03:37.601956+00:00\",\"metadata\":{}},{\"snapshot_id\":\"snap_23799bb4e1e8\",\"trajectory_id\":\"traj_2014e7a1531d\",\"branch_id\":\"main\",\"event_id\":\"evt_41d215902818\",\"message\":\"Before state-changing shell\",\"object_keys\":[\"trajectories/traj_2014e7a1531d/branches/main\",\"trajectories/traj_2014e7a1531d/events/evt_0e4c05342e76\",\"trajectories/traj_2014e7a1531d/events/evt_175cf49bba0c\",\"trajectories/traj_2014e7a1531d/events/evt_1b494f3db227\",\"trajectories/traj_2014e7a1531d/events/evt_1fd38196c1a2\",\"trajectories/traj_2014e7a1531d/events/evt_27ce1cb17ce0\",\"trajectories/traj_2014e7a1531d/events/evt_2c9b891d3f7f\",\"trajectories/traj_2014e7a1531d/events/evt_2e6fc068ec6a\",\"trajectories/traj_2014e7a1531d/events/evt_315c7bab9ef8\",\"trajectories/traj_2014e7a1531d/events/evt_334d625b4076\",\"trajectories/traj_2014e7a1531d/events/evt_3f93812cdc7a\",\"trajectories/traj_2014e7a1531d/events/evt_415d26bc0393\",\"trajectories/traj_2014e7a1531d/events/evt_41d215902818\",\"trajectories/traj_2014e7a1531d/events/evt_433b7240006d\",\"trajectories/traj_2014e7a1531d/events/evt_4d68651afdc6\",\"trajectories/traj_2014e7a1531d/events/evt_5325f48c1af4\",\"trajectories/traj_2014e7a1531d/events/evt_55f1fea496ec\",\"trajectories/traj_2014e7a1531d/events/evt_5654194bd5ec\",\"trajectories/traj_2014e7a1531d/events/evt_62558af008bf\",\"trajectories/traj_2014e7a1531d/events/evt_65ab727e1153\",\"trajectories/traj_2014e7a1531d/events/evt_6ed37a8e73d9\",\"trajectories/traj_2014e7a1531d/events/evt_73c3ed2ef732\",\"trajectories/traj_2014e7a1531d/events/evt_77235dfe6da4\",\"trajectories/traj_2014e7a1531d/events/evt_7ed4c85348fd\",\"trajectories/traj_2014e7a1531d/events/evt_80d432982044\",\"trajectories/traj_2014e7a1531d/events/evt_814b340f1a38\",\"trajectories/traj_2014e7a1531d/events/evt_817de6b0a3e2\",\"trajectories/traj_2014e7a1531d/events/evt_8e3742ab20d4\",\"trajectories/traj_2014e7a1531d/events/evt_92105702867e\",\"trajectories/traj_2014e7a1531d/events/evt_9facbb570bdd\",\"trajectories/traj_2014e7a1531d/events/evt_a2e8aaf0b5ca\",\"trajectories/traj_2014e7a1531d/events/evt_ae56a8cb18cc\",\"trajectories/traj_2014e7a1531d/events/evt_b4ba25be874c\",\"trajectories/traj_2014e7a1531d/events/evt_b5cc95b82781\",\"trajectories/traj_2014e7a1531d/events/evt_b80ee9e66a0e\",\"trajectories/traj_2014e7a1531d/events/evt_bc65710b2b47\",\"trajectories/traj_2014e7a1531d/events/evt_c6a608a7fa48\",\"trajectories/traj_2014e7a1531d/events/evt_cfd6460f2cb8\",\"trajectories/traj_2014e7a1531d/events/evt_d9f7b496d92d\",\"trajectories/traj_2014e7a1531d/events/evt_db676751f71f\",\"trajectories/traj_2014e7a1531d/events/evt_e39474ca93e5\",\"trajectories/traj_2014e7a1531d/events/evt_f3db9e8aec9e\",\"trajectories/traj_2014e7a1531d/events/evt_f68c0dc1563c\",\"trajectories/traj_2014e7a1531d/events/evt_f9ffbd4b0854\",\"trajectories/traj_2014e7a1531d/events/evt_fa41ca15d0d6\",\"trajectories/traj_2014e7a1531d/meta\",\"trajectories/traj_2014e7a1531d/snapshots/snap_23799bb4e1e8\",\"trajectories/traj_2014e7a1531d/snapshots/snap_3a5f7d5a0b75\",\"trajectories/traj_2014e7a1531d/views/main/current_prompt\",\"trajectories/traj_2014e7a1531d/views/main/learned_skills\",\"trajectories/traj_2014e7a1531d/views/main/semantic_repair_judgments\",\"trajectories/traj_2014e7a1531d/views/main/skill_application_trace\",\"trajectories/traj_2014e7a1531d/views/main/skill_library\"],\"created_at\":\"2026-09-01T01:08:26.877177+00:00\",\"metadata\":{}}],\"version_events\":[{\"event_id\":\"evt_b5cc95b82781\",\"trajectory_id\":\"traj_2014e7a1531d\",\"branch_id\":\"main\",\"event_type\":\"system_event\",\"payload\":{\"text\":\"ContextDB created a logical snapshot before a versioned action.\",\"message\":\"Before state-changing shell\",\"reason\":\"Hook policy detected a potentially state-changing action: powershell -NoProfile -Command '$ErrorActionPreference = \\\"Stop\\\"; Set-Content -LiteralPath \\\".\\\\__contextdb_combined_missing_output__\\\\first-note.txt\\\" -Value \\\"first note\\\"'\",\"origin\":\"hook_policy\",\"logical_context_only\":true,\"snapshot_id\":\"snap_3a5f7d5a0b75\"},\"parent_event_ids\":[\"evt_7ed4c85348fd\"],\"actor\":\"contextdb\",\"timestamp\":\"2026-09-01T01:03:37.597974+00:00\",\"refs\":{\"hook_protocol\":\"contextdb.agent_hook.v1\",\"hook_source\":\"claude-code\",\"hook_adapter\":\"generic\",\"hook_session_id\":\"f1087623-105e-44e4-ad83-d43625225df3\",\"planned_tool_name\":\"shell\",\"planned_command\":\"powershell -NoProfile -Command '$ErrorActionPreference = \\\"Stop\\\"; Set-Content -LiteralPath \\\".\\\\__contextdb_combined_missing_output__\\\\first-note.txt\\\" -Value \\\"first note\\\"'\",\"snapshot_id\":\"snap_3a5f7d5a0b75\"},\"metadata\":{\"operation\":\"version_snapshot_created\",\"origin\":\"hook_policy\",\"logical_context_only\":true}},{\"event_id\":\"evt_80d432982044\",\"trajectory_id\":\"traj_2014e7a1531d\",\"branch_id\":\"main\",\"event_type\":\"system_event\",\"payload\":{\"text\":\"ContextDB suggests repair branch repair-b80ee9e6 from snapshot snap_3a5f7d5a0b75.\",\"failure_event_id\":\"evt_b80ee9e66a0e\",\"",
+          "exit_code": null
+        },
+        "parent_event_ids": [
+          "evt_95faa6858da6"
+        ],
+        "actor": "tool",
+        "timestamp": "2026-09-01T01:08:54.860928+00:00",
+        "refs": {
+          "hook_protocol": "contextdb.agent_hook.v1",
+          "hook_source": "claude-code",
+          "hook_adapter": "generic",
+          "hook_session_id": "f1087623-105e-44e4-ad83-d43625225df3",
+          "tool_call_event_id": "evt_95faa6858da6"
+        },
+        "metadata": {
+          "agent_id": "claude-code",
+          "online": true,
+          "integration": "agent-hook.v1",
+          "hook_received_at": "2026-09-01T01:08:54.860770+00:00",
+          "adapter": "claude-code-hooks",
+          "claude_hook_event": "PostToolUse",
+          "claude_tool_name": "mcp__contextdb__contextdb_get_version_status",
+          "claude_cwd": "d:\\software\\Pycharm\\SelfCode\\Agent-ContextDB",
+          "claude_transcript_path": "C:\\Users\\lenovo\\.claude\\projects\\d--software-Pycharm-SelfCode-Agent-ContextDB\\f1087623-105e-44e4-ad83-d43625225df3.jsonl"
+        }
+      },
+      {
+        "event_id": "evt_ef1e3dd734ff",
+        "trajectory_id": "traj_2014e7a1531d",
+        "branch_id": "main",
+        "event_type": "tool_call",
+        "payload": {
+          "tool_name": "mcp__contextdb__contextdb_create_repair_branch",
+          "command": "{\"branch_id\": \"repair-62ce55c9\", \"reason\": \"Preserve the second missing-directory failure and inspect a separate logical repair path.\", \"session_id\": \"f1087623-105e-44e4-ad83-d43625225df3\", \"snapshot_id\": \"snap_23799bb4e1e8\", \"source\": \"claude-code\"}",
+          "arguments": {
+            "source": "claude-code",
+            "session_id": "f1087623-105e-44e4-ad83-d43625225df3",
+            "branch_id": "repair-62ce55c9",
+            "snapshot_id": "snap_23799bb4e1e8",
+            "reason": "Preserve the second missing-directory failure and inspect a separate logical repair path."
+          },
+          "agent_tool_name": "mcp__contextdb__contextdb_create_repair_branch"
+        },
+        "parent_event_ids": [
+          "evt_9dfff0aa6d6f"
+        ],
+        "actor": "agent",
+        "timestamp": "2026-09-01T01:09:02.671284+00:00",
+        "refs": {
+          "hook_protocol": "contextdb.agent_hook.v1",
+          "hook_source": "claude-code",
+          "hook_adapter": "generic",
+          "hook_session_id": "f1087623-105e-44e4-ad83-d43625225df3"
+        },
+        "metadata": {
+          "agent_id": "claude-code",
+          "online": true,
+          "integration": "agent-hook.v1",
+          "hook_received_at": "2026-09-01T01:09:02.671114+00:00",
+          "adapter": "claude-code-hooks",
+          "claude_hook_event": "PreToolUse",
+          "claude_tool_name": "mcp__contextdb__contextdb_create_repair_branch",
+          "claude_cwd": "d:\\software\\Pycharm\\SelfCode\\Agent-ContextDB",
+          "claude_transcript_path": "C:\\Users\\lenovo\\.claude\\projects\\d--software-Pycharm-SelfCode-Agent-ContextDB\\f1087623-105e-44e4-ad83-d43625225df3.jsonl"
+        }
+      },
+      {
+        "event_id": "evt_c069de691612",
+        "trajectory_id": "traj_2014e7a1531d",
+        "branch_id": "main",
+        "event_type": "version_decision",
+        "payload": {
+          "action": "create_repair_branch",
+          "decision": "accepted",
+          "reason": "Preserve the second missing-directory failure and inspect a separate logical repair path.",
+          "logical_context_only": true
+        },
+        "parent_event_ids": [
+          "evt_ef1e3dd734ff"
+        ],
+        "actor": "agent",
+        "timestamp": "2026-09-01T01:09:04.310623+00:00",
+        "refs": {
+          "suggestion_event_id": "evt_6cbc7afa0286",
+          "snapshot_id": "snap_23799bb4e1e8",
+          "target_branch_id": "repair-62ce55c9"
+        },
+        "metadata": {
+          "operation": "version_decision",
+          "origin": "agent",
+          "logical_context_only": true,
+          "online": true
+        }
+      },
+      {
+        "event_id": "evt_a5b08a5df447",
+        "trajectory_id": "traj_2014e7a1531d",
+        "branch_id": "main",
+        "event_type": "tool_result",
+        "payload": {
+          "status": "ok",
+          "preview": "{\"trajectory_id\":\"traj_2014e7a1531d\",\"branch\":{\"branch_id\":\"repair-62ce55c9\",\"trajectory_id\":\"traj_2014e7a1531d\",\"base_event_id\":\"evt_41d215902818\",\"head_event_id\":\"evt_6673a26d31e1\",\"snapshot_id\":null,\"created_at\":\"2026-09-01T01:09:04.315150+00:00\",\"metadata\":{\"from_branch\":\"main\",\"version_origin\":\"agent\",\"created_from_snapshot\":\"snap_23799bb4e1e8\",\"reason\":\"Preserve the second missing-directory failure and inspect a separate logical repair path.\"}},\"event\":{\"event_id\":\"evt_6673a26d31e1\",\"trajectory_id\":\"traj_2014e7a1531d\",\"branch_id\":\"repair-62ce55c9\",\"event_type\":\"system_event\",\"payload\":{\"text\":\"ContextDB created repair branch repair-62ce55c9.\",\"branch_id\":\"repair-62ce55c9\",\"from_branch\":\"main\",\"snapshot_id\":\"snap_23799bb4e1e8\",\"reason\":\"Preserve the second missing-directory failure and inspect a separate logical repair path.\",\"origin\":\"agent\",\"logical_context_only\":true},\"parent_event_ids\":[\"evt_41d215902818\"],\"actor\":\"contextdb\",\"timestamp\":\"2026-09-01T01:09:04.316109+00:00\",\"refs\":{\"version_decision_event_id\":\"evt_c069de691612\",\"suggestion_event_id\":\"evt_6cbc7afa0286\",\"snapshot_id\":\"snap_23799bb4e1e8\"},\"metadata\":{\"operation\":\"version_branch_created\",\"origin\":\"agent\",\"logical_context_only\":true}},\"snapshot\":{\"snapshot_id\":\"snap_23799bb4e1e8\",\"trajectory_id\":\"traj_2014e7a1531d\",\"branch_id\":\"main\",\"event_id\":\"evt_41d215902818\",\"message\":\"Before state-changing shell\",\"object_keys\":[\"trajectories/traj_2014e7a1531d/branches/main\",\"trajectories/traj_2014e7a1531d/events/evt_0e4c05342e76\",\"trajectories/traj_2014e7a1531d/events/evt_175cf49bba0c\",\"trajectories/traj_2014e7a1531d/events/evt_1b494f3db227\",\"trajectories/traj_2014e7a1531d/events/evt_1fd38196c1a2\",\"trajectories/traj_2014e7a1531d/events/evt_27ce1cb17ce0\",\"trajectories/traj_2014e7a1531d/events/evt_2c9b891d3f7f\",\"trajectories/traj_2014e7a1531d/events/evt_2e6fc068ec6a\",\"trajectories/traj_2014e7a1531d/events/evt_315c7bab9ef8\",\"trajectories/traj_2014e7a1531d/events/evt_334d625b4076\",\"trajectories/traj_2014e7a1531d/events/evt_3f93812cdc7a\",\"trajectories/traj_2014e7a1531d/events/evt_415d26bc0393\",\"trajectories/traj_2014e7a1531d/events/evt_41d215902818\",\"trajectories/traj_2014e7a1531d/events/evt_433b7240006d\",\"trajectories/traj_2014e7a1531d/events/evt_4d68651afdc6\",\"trajectories/traj_2014e7a1531d/events/evt_5325f48c1af4\",\"trajectories/traj_2014e7a1531d/events/evt_55f1fea496ec\",\"trajectories/traj_2014e7a1531d/events/evt_5654194bd5ec\",\"trajectories/traj_2014e7a1531d/events/evt_62558af008bf\",\"trajectories/traj_2014e7a1531d/events/evt_65ab727e1153\",\"trajectories/traj_2014e7a1531d/events/evt_6ed37a8e73d9\",\"trajectories/traj_2014e7a1531d/events/evt_73c3ed2ef732\",\"trajectories/traj_2014e7a1531d/events/evt_77235dfe6da4\",\"trajectories/traj_2014e7a1531d/events/evt_7ed4c85348fd\",\"trajectories/traj_2014e7a1531d/events/evt_80d432982044\",\"trajectories/traj_2014e7a1531d/events/evt_814b340f1a38\",\"trajectories/traj_2014e7a1531d/events/evt_817de6b0a3e2\",\"trajectories/traj_2014e7a1531d/events/evt_8e3742ab20d4\",\"trajectories/traj_2014e7a1531d/events/evt_92105702867e\",\"trajectories/traj_2014e7a1531d/events/evt_9facbb570bdd\",\"trajectories/traj_2014e7a1531d/events/evt_a2e8aaf0b5ca\",\"trajectories/traj_2014e7a1531d/events/evt_ae56a8cb18cc\",\"trajectories/traj_2014e7a1531d/events/evt_b4ba25be874c\",\"trajectories/traj_2014e7a1531d/events/evt_b5cc95b82781\",\"trajectories/traj_2014e7a1531d/events/evt_b80ee9e66a0e\",\"trajectories/traj_2014e7a1531d/events/evt_bc65710b2b47\",\"trajectories/traj_2014e7a1531d/events/evt_c6a608a7fa48\",\"trajectories/traj_2014e7a1531d/events/evt_cfd6460f2cb8\",\"trajectories/traj_2014e7a1531d/events/evt_d9f7b496d92d\",\"trajectories/traj_2014e7a1531d/events/evt_db676751f71f\",\"trajectories/traj_2014e7a1531d/events/evt_e39474ca93e5\",\"trajectories/traj_2014e7a1531d/events/evt_f3db9e8aec9e\",\"trajectories/traj_2014e7a1531d/events/evt_f68c0dc1563c\",\"trajectories/traj_2014e7a1531d/events/evt_f9ffbd4b0854\",\"trajectories/traj_2014e7a1531d/events/evt_fa41ca15d0d6\",\"trajectories/traj_2014e7a1531d/meta\",\"trajectories/traj_2014e7a1531d/snapshots/snap_23799bb4e1e8\",\"trajectories/traj_2014e7a1531d/snapshots/snap_3a5f7d5a0b75\",\"trajectories/traj_2014e7a1531d/views/main/current_prompt\",\"trajectories/traj_2014e7a1531d/views/main/learned_skills\",\"trajectories/traj_2014e7a1531d/views/main/semantic_repair_judgments\",\"trajectories/traj_2014e7a1531d/views/main/skill_application_trace\",\"trajectories/traj_2014e7a1531d/views/main/skill_library\"],\"created_at\":\"2026-09-01T01:08:26.877177+00:00\",\"metadata\":{}},\"decision_event\":{\"event_id\":\"evt_c069de691612\",\"trajectory_id\":\"traj_2014e7a1531d\",\"branch_id\":\"main\",\"event_type\":\"version_decision\",\"payload\":{\"action\":\"create_repair_branch\",\"decision\":\"accepted\",\"reason\":\"Preserve the second missing-directory failure and inspect a separate logical repair path.\",\"logical_context_only\":true},\"parent_event_ids\":[\"evt_ef1e3dd734ff\"],\"actor\":\"agent\",\"timestamp\":\"2026-09-01T01:09:04.310623+00:00\",\"refs\":{\"suggestion_event_id\":\"evt_6cbc7afa0286\",\"snapshot_id\":\"snap_23799bb4e1e8\",\"target_branch_id\":\"repair-62ce55c9\"},\"metadata\":{\"operation\":\"version_decision\",\"origin\":\"agent\",\"logical_context_only\":true,\"online\":true}},\"version_context\":{\"active_branch_id\":\"repair-62ce55c9\",\"latest_snapshot\":{\"snapshot_id\":\"snap_23799bb4e1e8\",\"branch_id\":\"main\",\"event_id\":\"evt_41d215902818\",\"message\":\"Before state-changing shell\",\"created_at\":\"2026-09-01T01:08:26.877177+00:00\"},\"repair_branch_suggestion\":null,\"last_version_decision\":{\"event_id\":\"evt_c069de691612\",\"action\":\"create_repair_branch\",\"decision\":\"accepted\",\"at\":\"2026-09-01T01:09:04.314883+00:00\"},\"workspace_restore\":{\"supported\":false,\"instruction\":\"ContextDB records logical branch and rollback state only. Restore files through the Agent workspace after an explicit decision.\"}}}",
+          "exit_code": null
+        },
+        "parent_event_ids": [
+          "evt_c069de691612"
+        ],
+        "actor": "tool",
+        "timestamp": "2026-09-01T01:09:04.580856+00:00",
+        "refs": {
+          "hook_protocol": "contextdb.agent_hook.v1",
+          "hook_source": "claude-code",
+          "hook_adapter": "generic",
+          "hook_session_id": "f1087623-105e-44e4-ad83-d43625225df3",
+          "tool_call_event_id": "evt_ef1e3dd734ff"
+        },
+        "metadata": {
+          "agent_id": "claude-code",
+          "online": true,
+          "integration": "agent-hook.v1",
+          "hook_received_at": "2026-09-01T01:09:04.580686+00:00",
+          "adapter": "claude-code-hooks",
+          "claude_hook_event": "PostToolUse",
+          "claude_tool_name": "mcp__contextdb__contextdb_create_repair_branch",
+          "claude_cwd": "d:\\software\\Pycharm\\SelfCode\\Agent-ContextDB",
+          "claude_transcript_path": "C:\\Users\\lenovo\\.claude\\projects\\d--software-Pycharm-SelfCode-Agent-ContextDB\\f1087623-105e-44e4-ad83-d43625225df3.jsonl"
+        }
+      }
+    ],
+    "relevant_memory": [],
+    "token_budget": 2000,
+    "estimated_full_history_tokens": 28545,
+    "estimated_loaded_tokens": 6706,
+    "estimated_saved_tokens": 21839,
+    "loading_policy": "summary + recent_events + relevant_memory"
+  },
+  "source_events": [
+    "evt_cfd6460f2cb8",
+    "evt_db676751f71f",
+    "evt_433b7240006d",
+    "evt_334d625b4076",
+    "evt_62558af008bf",
+    "evt_27ce1cb17ce0",
+    "evt_9facbb570bdd",
+    "evt_4d68651afdc6",
+    "evt_1fd38196c1a2",
+    "evt_814b340f1a38",
+    "evt_b4ba25be874c",
+    "evt_f68c0dc1563c",
+    "evt_817de6b0a3e2",
+    "evt_3f93812cdc7a",
+    "evt_77235dfe6da4",
+    "evt_f3db9e8aec9e",
+    "evt_ae56a8cb18cc",
+    "evt_c6a608a7fa48",
+    "evt_6ed37a8e73d9",
+    "evt_65ab727e1153",
+    "evt_5325f48c1af4",
+    "evt_bc65710b2b47",
+    "evt_fa41ca15d0d6",
+    "evt_73c3ed2ef732",
+    "evt_d9f7b496d92d",
+    "evt_315c7bab9ef8",
+    "evt_2c9b891d3f7f",
+    "evt_e39474ca93e5",
+    "evt_5654194bd5ec",
+    "evt_7ed4c85348fd",
+    "evt_b5cc95b82781",
+    "evt_92105702867e",
+    "evt_b80ee9e66a0e",
+    "evt_55f1fea496ec",
+    "evt_80d432982044",
+    "evt_2e6fc068ec6a",
+    "evt_0e4c05342e76",
+    "evt_f9ffbd4b0854",
+    "evt_1b494f3db227",
+    "evt_a2e8aaf0b5ca",
+    "evt_175cf49bba0c",
+    "evt_8e3742ab20d4",
+    "evt_415d26bc0393",
+    "evt_41d215902818",
+    "evt_3aedeca52d50",
+    "evt_62ce55c9c672",
+    "evt_7970eb79855c",
+    "evt_6cbc7afa0286",
+    "evt_2f8da74fb599",
+    "evt_291a3dce059a",
+    "evt_95faa6858da6",
+    "evt_9dfff0aa6d6f",
+    "evt_ef1e3dd734ff",
+    "evt_c069de691612",
+    "evt_a5b08a5df447"
+  ],
+  "created_at": "2026-09-06T05:45:45.540865+00:00",
+  "metadata": {
+    "event_count": 55
+  }
+}

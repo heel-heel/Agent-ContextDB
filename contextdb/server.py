@@ -47,11 +47,13 @@ def make_handler(db: ContextDB):
                 elif parsed.path == "/api/v1/trajectory":
                     self._send(200, db.get_trajectory(q["trajectory_id"][0]))
                 elif parsed.path == "/api/v1/event":
-                    self._send(200, db.get_event(q["trajectory_id"][0], q["event_id"][0]))
+                    self._send(200, db.event_detail(q["trajectory_id"][0], q["event_id"][0]))
                 elif parsed.path == "/api/v1/log":
                     self._send(200, db.log(q["trajectory_id"][0]))
                 elif parsed.path == "/api/v1/graph":
                     self._send(200, db.graph(q["trajectory_id"][0]))
+                elif parsed.path == "/api/v1/version_status":
+                    self._send(200, db.version_control_status(q["trajectory_id"][0]))
                 elif parsed.path == "/api/v1/llm_profiles":
                     self._send(200, public_profiles())
                 elif parsed.path == "/api/v1/hook_session":
@@ -83,6 +85,12 @@ def make_handler(db: ContextDB):
                     self._send(200, db.snapshot(**body))
                 elif parsed.path == "/api/v1/rollback":
                     self._send(200, db.rollback(**body))
+                elif parsed.path == "/api/v1/version/snapshot":
+                    self._send(200, db.create_version_snapshot(**body))
+                elif parsed.path == "/api/v1/version/branch":
+                    self._send(200, db.create_version_branch(**body))
+                elif parsed.path == "/api/v1/version/rollback":
+                    self._send(200, db.create_version_rollback(**body))
                 elif parsed.path == "/api/v1/diff":
                     self._send(200, db.diff(**body))
                 elif parsed.path == "/api/v1/stream_context":
@@ -112,7 +120,24 @@ def make_handler(db: ContextDB):
                     self._send(200, HookSessionBridge(db).record_skill_application(
                         body["source"], body["session_id"], body["tool_name"], body["command"], body["status"],
                         body.get("preview", ""), body.get("exit_code"), body.get("skill_match_event_id"),
-                        body.get("skill_id"), body.get("action_id"),
+                        body.get("skill_id"), body.get("action_id"), body.get("tool_call_id"), body.get("tool_call_event_id"),
+                    ))
+                elif parsed.path == "/api/v1/hooks/version_snapshot":
+                    self._send(200, HookSessionBridge(db).create_snapshot(
+                        body["source"], body["session_id"], body.get("message", ""), body.get("reason", ""),
+                    ))
+                elif parsed.path == "/api/v1/hooks/repair_branch":
+                    self._send(200, HookSessionBridge(db).create_repair_branch(
+                        body["source"], body["session_id"], body.get("branch_id"), body.get("snapshot_id"), body.get("reason", ""),
+                    ))
+                elif parsed.path == "/api/v1/hooks/rollback":
+                    self._send(200, HookSessionBridge(db).rollback_context(
+                        body["source"], body["session_id"], body["snapshot_id"], body.get("target_branch_id"), body.get("reason", ""),
+                    ))
+                elif parsed.path == "/api/v1/hooks/version_decision":
+                    self._send(200, HookSessionBridge(db).record_version_decision(
+                        body["source"], body["session_id"], body["action"], body["decision"],
+                        body.get("reason", ""), body.get("suggestion_event_id"),
                     ))
                 else:
                     self._send(404, {"error": "not found"})

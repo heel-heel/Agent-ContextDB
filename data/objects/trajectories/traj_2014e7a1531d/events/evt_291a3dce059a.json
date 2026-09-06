@@ -1,0 +1,31 @@
+{
+  "event_id": "evt_291a3dce059a",
+  "trajectory_id": "traj_2014e7a1531d",
+  "branch_id": "main",
+  "event_type": "user_message",
+  "payload": {
+    "text": "Use ContextDB MCP tool `contextdb_get_version_status` with source\n`claude-code` and the real session id you discovered for this conversation.\n\nIdentify the newest repair-branch suggestion. Accept it by calling\n`contextdb_create_repair_branch` with reason:\n\nPreserve the second missing-directory failure and inspect a separate logical repair path.\n\nCall `contextdb_get_version_status` again and report the new active branch id in English."
+  },
+  "parent_event_ids": [
+    "evt_2f8da74fb599"
+  ],
+  "actor": "user",
+  "timestamp": "2026-09-01T01:08:51.067392+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "claude-code",
+    "hook_adapter": "generic",
+    "hook_session_id": "f1087623-105e-44e4-ad83-d43625225df3"
+  },
+  "metadata": {
+    "agent_id": "claude-code",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-01T01:08:51.067221+00:00",
+    "adapter": "claude-code-hooks",
+    "claude_hook_event": "UserPromptSubmit",
+    "claude_tool_name": "",
+    "claude_cwd": "d:\\software\\Pycharm\\SelfCode\\Agent-ContextDB",
+    "claude_transcript_path": "C:\\Users\\lenovo\\.claude\\projects\\d--software-Pycharm-SelfCode-Agent-ContextDB\\f1087623-105e-44e4-ad83-d43625225df3.jsonl"
+  }
+}

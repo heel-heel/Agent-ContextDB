@@ -1,0 +1,31 @@
+{
+  "event_id": "evt_acd69066a227",
+  "trajectory_id": "traj_2014e7a1531d",
+  "branch_id": "repair-62ce55c9",
+  "event_type": "user_message",
+  "payload": {
+    "text": "Use exactly one native shell tool call to run:\n\npowershell -NoProfile -Command \"python --version\"\n\nDo not modify files. Report the complete raw output in English."
+  },
+  "parent_event_ids": [
+    "evt_bd1ff1b1f6ea"
+  ],
+  "actor": "user",
+  "timestamp": "2026-09-01T01:09:38.969281+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "claude-code",
+    "hook_adapter": "generic",
+    "hook_session_id": "f1087623-105e-44e4-ad83-d43625225df3"
+  },
+  "metadata": {
+    "agent_id": "claude-code",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-01T01:09:38.969121+00:00",
+    "adapter": "claude-code-hooks",
+    "claude_hook_event": "UserPromptSubmit",
+    "claude_tool_name": "",
+    "claude_cwd": "d:\\software\\Pycharm\\SelfCode\\Agent-ContextDB",
+    "claude_transcript_path": "C:\\Users\\lenovo\\.claude\\projects\\d--software-Pycharm-SelfCode-Agent-ContextDB\\f1087623-105e-44e4-ad83-d43625225df3.jsonl"
+  }
+}

@@ -200,6 +200,16 @@ or another MCP-capable harness:
 - `contextdb_record_skill_application`: records the outcome of an action the
   Agent actually executed through its normal tool and approval mechanism. It
   never executes the command itself.
+- `contextdb_record_tool_call`: records the tool start. Potentially
+  state-changing calls receive an automatic **logical ContextDB snapshot**
+  before the call runs.
+- `contextdb_create_snapshot`, `contextdb_create_repair_branch`, and
+  `contextdb_rollback_context`: let an Agent explicitly checkpoint, branch, or
+  recover the trajectory state. They never modify the Agent workspace or run
+  Git commands.
+- `contextdb_record_version_decision` and `contextdb_get_version_status`:
+  preserve the Agent's choice to continue, repair on a new branch, or roll
+  back logically, together with the active branch and pending repair advice.
 
 The resulting application trace is explicit:
 
@@ -212,6 +222,25 @@ This distinction is intentional: a matched skill is evidence retrieval; a
 delivered skill is context injection; only an Agent-recorded normal tool call
 is an application. The ContextDB dashboard's **Application Trace** view shows
 these states separately.
+
+### Logical Version Control for Live Agents
+
+The live Hook follows a conservative hybrid policy:
+
+```text
+potentially state-changing tool call -> automatic logical snapshot
+failure -> skill retrieval + repair-branch suggestion
+Agent decision -> continue | create repair branch | logical rollback
+Agent workspace action -> only after the Agent explicitly chooses it
+```
+
+The snapshot contains ContextDB trajectory state, not a copy of workspace
+files. A logical rollback creates a new DAG branch at the snapshot event; it
+does not call `git reset`, check out files, or change the local filesystem.
+Open **Version Control** in the Dashboard to inspect the branch registry,
+snapshots, decision timeline, and the logical-only boundary. The page also
+offers manual Snapshot, Create Repair Branch, and Logical Rollback controls for
+demonstration purposes.
 
 ### Native Exec Hook: Same-Turn Skill Injection
 
@@ -272,8 +301,8 @@ they do not need a separate memory or skill storage implementation.
 The project includes `.claude/settings.json` and
 `tools\claude_code_hook.py` for a project-local Claude Code integration. Its
 `PreToolUse`, `PostToolUse`, and `PostToolUseFailure` hooks map real Claude
-Code Bash calls to the same Agent Hook protocol used by Codex. On a failed Bash
-call, the adapter retrieves a ContextDB recommendation and returns it to Claude
+Code tool callbacks, including Bash and Read, to the same Agent Hook protocol
+used by Codex. On a failed tool call, the adapter retrieves a ContextDB recommendation and returns it to Claude
 as Claude Code `additionalContext` before the next model decision. See
 `examples\claude_code_live_hook.md` for setup and verification.
 
