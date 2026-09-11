@@ -39,6 +39,8 @@
               "failure_event_id": "evt_9facbb570bdd",
               "success_event_id": "evt_f68c0dc1563c",
               "branch_id": "main",
+              "failure_tool_call_event_id": "evt_27ce1cb17ce0",
+              "success_tool_call_event_id": "evt_b4ba25be874c",
               "tool": "shell",
               "command": "powershell -NoProfile -Command \"Get-Content -Raw -LiteralPath '.\\examples\\live-path-demo\\assets\\settings.json'\"",
               "strategy": "",
@@ -46,7 +48,7 @@
               "primary_rule": "same_branch_first_success_after_failure",
               "judgment_label": "likely_repair",
               "confidence": 0.95,
-              "reason": "The failure was a 'file not found' error for '.\\assets\\settings.json'. The successful action used the same command structure but with a corrected path '.\\examples\\live-path-demo\\assets\\settings.json', which resolved the PathNotFound error.",
+              "reason": "The failure was a PathNotFound error for '.\\assets\\settings.json'. The successful action used the exact same command but corrected the file path to '.\\examples\\live-path-demo\\assets\\settings.json', which resolved the issue.",
               "vector_text": "shell powershell -NoProfile -Command \"Get-Content -Raw -LiteralPath '.\\examples\\live-path-demo\\assets\\settings.json'\""
             }
           ],
@@ -82,7 +84,9 @@
       "status": "candidate",
       "highlight_event_ids": [
         "evt_9facbb570bdd",
-        "evt_f68c0dc1563c"
+        "evt_27ce1cb17ce0",
+        "evt_f68c0dc1563c",
+        "evt_b4ba25be874c"
       ],
       "action_grouping": {
         "method": "vector_cosine",
@@ -149,7 +153,7 @@
     "evt_c069de691612",
     "evt_a5b08a5df447"
   ],
-  "created_at": "2026-09-01T01:25:01.190245+00:00",
+  "created_at": "2026-09-11T06:14:42.012570+00:00",
   "metadata": {
     "event_count": 55
   }

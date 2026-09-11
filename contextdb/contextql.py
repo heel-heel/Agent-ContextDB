@@ -115,7 +115,7 @@ class ContextQLExecutor:
             ))
 
     def _load_failure_patterns(self, conn: sqlite3.Connection, trajectory_id: str, branch_id: str) -> None:
-        for row in self.db.failure_patterns(trajectory_id, branch_id):
+        for row in self.db.failure_patterns(trajectory_id):
             conn.execute("INSERT INTO failure_patterns VALUES (?,?,?,?,?,?,?,?,?,?,?)", (
                 trajectory_id, row.get("failure_event_id"), row.get("branch_id"), row.get("failed_tool"),
                 row.get("failed_command"), row.get("likely_cause"), row.get("error_signature"),

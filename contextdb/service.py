@@ -21,6 +21,16 @@ VERSION_EVENT_OPERATIONS = {
     "version_rollback_created",
     "version_decision",
 }
+RECENT_CAUSAL_EVENT_LIMIT = 8
+MEMORY_RETRIEVAL_LIMIT = 5
+CONTEXT_SEGMENT_ORDER = (
+    "current_task",
+    "recent_causal_trace",
+    "branch_version_state",
+    "retrieved_memory",
+    "matched_skills",
+    "earlier_trajectory_digest",
+)
 
 
 class ContextDB:
@@ -144,17 +154,26 @@ class ContextDB:
         limit = int(filters.get("limit", len(events)))
         return events[-limit:]
 
-    def query_view(self, trajectory_id: str, view_name: str, branch_id: str = "main", token_budget: int = 4000) -> Dict[str, Any]:
+    def query_view(
+        self,
+        trajectory_id: str,
+        view_name: str,
+        branch_id: str = "main",
+        token_budget: int = 4000,
+        profile_id: Optional[str] = None,
+        refresh_summary: bool = False,
+    ) -> Dict[str, Any]:
         events = self.list_events(trajectory_id, branch_id)
         if view_name == "memory":
             content = [e["payload"] for e in events if e.get("event_type") == "memory_update"]
         elif view_name == "summary":
-            facts = [self._event_line(e) for e in events[-12:]]
-            content = "\n".join(f"- {x}" for x in facts)
+            content = self._semantic_summary(
+                trajectory_id, branch_id, events, profile_id=profile_id, force_refresh=refresh_summary,
+            )
         elif view_name == "failures":
             content = [e for e in events if e.get("event_type") == "tool_result" and e.get("payload", {}).get("status") in FAILURE_STATUSES]
         elif view_name == "failure_patterns":
-            content = self.failure_patterns(trajectory_id, branch_id)
+            content = self.failure_patterns(trajectory_id)
         elif view_name == "success_patterns":
             content = self.success_patterns(trajectory_id)
         elif view_name == "repair_strategies":
@@ -168,41 +187,324 @@ class ContextDB:
         elif view_name == "skill_application_trace":
             content = self.skill_application_trace(trajectory_id)
         elif view_name == "current_prompt":
-            recent = events[-8:]
-            memory = [e["payload"] for e in events if e.get("event_type") == "memory_update"][-5:]
-            summary = self._compact_summary(events[:-8]) if len(events) > 8 else ""
-            full_tokens = self._estimate_tokens(events)
-            loaded_tokens = self._estimate_tokens(recent) + self._estimate_tokens(memory) + self._estimate_tokens(summary)
-            content = {
-                "summary": summary,
-                "recent_events": recent,
-                "relevant_memory": memory,
-                "token_budget": token_budget,
-                "estimated_full_history_tokens": full_tokens,
-                "estimated_loaded_tokens": loaded_tokens,
-                "estimated_saved_tokens": max(0, full_tokens - loaded_tokens),
-                "loading_policy": "summary + recent_events + relevant_memory",
-            }
+            content = self._context_assembly(
+                trajectory_id, branch_id, events, token_budget, profile_id=profile_id, refresh_summary=refresh_summary,
+            )
+        elif view_name == "context_budget":
+            content = self._context_assembly(
+                trajectory_id, branch_id, events, token_budget, profile_id=profile_id, refresh_summary=refresh_summary,
+            )
         elif view_name == "rl_dataset":
             content = self.export_rl_dataset(trajectory_id, branch_id)
         else:
             content = events
-        view = View(view_name=view_name, trajectory_id=trajectory_id, branch_id=branch_id, content=content, source_events=[e["event_id"] for e in events], metadata={"event_count": len(events)})
+        source_events = [e["event_id"] for e in events]
+        if view_name == "failure_patterns":
+            # A failure-pattern source is the action that failed, rather than
+            # the failed result which is already represented by failure_event_id.
+            source_events = self._dedupe_ids([
+                event_id
+                for pattern in content
+                for event_id in pattern.get("source_event_ids", [])
+            ])
+        view = View(view_name=view_name, trajectory_id=trajectory_id, branch_id=branch_id, content=content, source_events=source_events, metadata={"event_count": len(events)})
         view_dict = to_dict(view)
-        self.store.put_object(uris.view_key(trajectory_id, branch_id, view_name), view_dict)
+        # _semantic_summary owns profile-scoped summary materialization.
+        if view_name != "summary":
+            self.store.put_object(uris.view_key(trajectory_id, branch_id, view_name), view_dict)
         return view_dict
 
-    def query_sql(self, trajectory_id: str, sql: str, branch_id: str = "main") -> Dict[str, Any]:
-        """Execute one read-only ContextQL statement over logical trajectory relations."""
-        return ContextQLExecutor(self).execute(trajectory_id, sql, branch_id)
+    def _semantic_summary(
+        self,
+        trajectory_id: str,
+        branch_id: str,
+        events: List[Dict[str, Any]],
+        profile_id: Optional[str] = None,
+        force_refresh: bool = False,
+    ) -> Dict[str, Any]:
+        """Materialize an incremental LLM digest for the prefix outside short-term context."""
+        judge = SemanticRepairJudge(profile_id=profile_id)
+        profile_identity = judge.profile_id or f"{judge.provider}:{judge.model or 'default'}"
+        source_events = events[:-RECENT_CAUSAL_EVENT_LIMIT] if len(events) > RECENT_CAUSAL_EVENT_LIMIT else []
+        source_ids = [event["event_id"] for event in source_events]
+        raw_tokens = self._estimate_tokens(source_events)
+        if not source_events:
+            return {
+                "schema_version": "semantic_summary.v1",
+                "trajectory_id": trajectory_id,
+                "branch_id": branch_id,
+                "summary": "",
+                "key_facts": [],
+                "open_items": [],
+                "status": "not_needed",
+                "method": "incremental_llm_semantic_summary",
+                "scope": {"start_event_id": None, "end_event_id": None, "source_event_count": 0},
+                "source_event_ids": [],
+                "source_event_timeline": [],
+                "raw_tokens": 0,
+                "compressed_tokens": 0,
+                "compression_ratio": 0.0,
+                "materialization": {"cache_hit": True, "generation_mode": "not_needed", "previous_covered_event_count": 0, "profile_id": judge.profile_id or None},
+                "llm": {"enabled": False, "profile_id": judge.profile_id or None, "provider": None, "model": None, "reason": "The complete trajectory fits in the recent causal window; no earlier prefix needs compression.", "error": None, "execution": {}},
+            }
+        summary_key = uris.summary_view_key(trajectory_id, branch_id, profile_identity)
+        cached_view = self.store.get_object(summary_key) or {}
+        cached = cached_view.get("content") if isinstance(cached_view, dict) else None
+        if not force_refresh and isinstance(cached, dict) and cached.get("schema_version") == "semantic_summary.v1" and cached.get("source_event_ids") == source_ids:
+            content = dict(cached)
+            content["materialization"] = {**(content.get("materialization") or {}), "cache_hit": True}
+            return content
 
-    def translate_natural_language_sql(self, trajectory_id: str, question: str, branch_id: str = "main", profile_id: Optional[str] = None, provider: Optional[str] = None, model: Optional[str] = None) -> Dict[str, Any]:
+        previous_summary = ""
+        delta_events = source_events
+        generation_mode = "full"
+        if isinstance(cached, dict):
+            cached_ids = cached.get("source_event_ids") or []
+            cached_text = str(cached.get("summary") or "")
+            if cached_text and source_ids[:len(cached_ids)] == cached_ids and len(source_ids) > len(cached_ids):
+                previous_summary = cached_text
+                delta_events = source_events[len(cached_ids):]
+                generation_mode = "incremental"
+
+        result = judge.summarize_trajectory_context(delta_events, previous_summary)
+        summary_text = str(result.get("summary") or "")
+        status = "ready" if result.get("enabled") and summary_text and not result.get("error") else "unavailable"
+        content = {
+            "schema_version": "semantic_summary.v1",
+            "trajectory_id": trajectory_id,
+            "branch_id": branch_id,
+            "summary": summary_text,
+            "key_facts": result.get("key_facts") or [],
+            "open_items": result.get("open_items") or [],
+            "status": status,
+            "method": "incremental_llm_semantic_summary",
+            "scope": {
+                "start_event_id": source_ids[0] if source_ids else None,
+                "end_event_id": source_ids[-1] if source_ids else None,
+                "source_event_count": len(source_events),
+            },
+            "source_event_ids": source_ids,
+            "source_event_timeline": [
+                {"event_id": event["event_id"], "event_type": event.get("event_type"), "branch_id": event.get("branch_id"), "text": self._event_line(event, 260)}
+                for event in source_events
+            ],
+            "raw_tokens": raw_tokens,
+            "compressed_tokens": self._estimate_tokens(summary_text) if summary_text else 0,
+            "compression_ratio": round((1 - (self._estimate_tokens(summary_text) / raw_tokens)) * 100, 1) if summary_text and raw_tokens else 0.0,
+            "materialization": {
+                "cache_hit": False,
+                "generation_mode": generation_mode,
+                "previous_covered_event_count": len(source_events) - len(delta_events),
+                "profile_id": judge.profile_id or None,
+            },
+            "llm": {
+                "enabled": bool(result.get("enabled")),
+                "profile_id": judge.profile_id or None,
+                "provider": result.get("provider"),
+                "model": result.get("model"),
+                "reason": result.get("reason"),
+                "error": result.get("error"),
+                "execution": result.get("execution") or result.get("_contextdb_execution") or {},
+            },
+        }
+        view = View(
+            view_name="summary", trajectory_id=trajectory_id, branch_id=branch_id,
+            content=content, source_events=source_ids, metadata={"event_count": len(source_events), "semantic": True},
+        )
+        self.store.put_object(summary_key, to_dict(view))
+        return content
+
+    def _context_assembly(
+        self,
+        trajectory_id: str,
+        branch_id: str,
+        events: List[Dict[str, Any]],
+        token_budget: int,
+        profile_id: Optional[str] = None,
+        refresh_summary: bool = False,
+    ) -> Dict[str, Any]:
+        """Pack short-term, retrieved, and compressed context with provenance."""
+        budget = max(1, int(token_budget or 2000))
+        recent_events = events[-RECENT_CAUSAL_EVENT_LIMIT:]
+        summary = self._semantic_summary(
+            trajectory_id, branch_id, events, profile_id=profile_id, force_refresh=refresh_summary,
+        )
+        current_task_event = next((event for event in reversed(events) if event.get("event_type") == "user_message"), None)
+        current_task = self._payload_text(current_task_event) or "No user request has been recorded on this branch."
+
+        task_ids = [current_task_event["event_id"]] if current_task_event else []
+        recent_text = "\n".join(f"- {self._event_line(event, 420)}" for event in recent_events)
+        branch_state = self._context_branch_state(trajectory_id, branch_id)
+        memories = self._retrieve_context_memories(trajectory_id, events, current_task)
+        matched_skills = self._context_matched_skills(events)
+        memory_text = "\n".join(f"- {item['fact']}" for item in memories)
+        skill_text = "\n".join(f"- {item['instruction']}" for item in matched_skills)
+        digest_text = str(summary.get("summary") or "")
+
+        segments = [
+            self._context_segment("current_task", "P0", "Current Task", current_task, task_ids, "Latest user request on the selected branch."),
+            self._context_segment("recent_causal_trace", "P1", "Recent Causal Trace", recent_text, [event["event_id"] for event in recent_events], "Short-term causal window: recent user, assistant, tool-call, and tool-result events."),
+            self._context_segment("branch_version_state", "P2", "Branch / Version State", branch_state["text"], branch_state["source_event_ids"], "Active branch head and the latest snapshot/version transition."),
+            self._context_segment("retrieved_memory", "P3", "Retrieved Memory", memory_text, [item["event_id"] for item in memories], "Top memory_update records ranked by vector relevance to the current task, with recency as a tie-break."),
+            self._context_segment("matched_skills", "P4", "Matched Skills", skill_text, [item["event_id"] for item in matched_skills], "Latest ContextDB skill recommendation events on the selected branch."),
+            self._context_segment("earlier_trajectory_digest", "P5", "Earlier Trajectory Digest", digest_text, summary.get("source_event_ids") or [], "LLM-generated incremental semantic digest of the earlier completed trajectory prefix."),
+        ]
+        remaining = budget
+        rendered_sections = []
+        for segment in segments:
+            if not segment["text"]:
+                segment.update({"included": False, "loaded_token_cost": 0, "selection_status": "not_available", "omission_reason": "No eligible context was available for this segment."})
+                continue
+            cost = segment["token_cost"]
+            if cost <= remaining:
+                segment.update({"included": True, "loaded_text": segment["text"], "loaded_token_cost": cost, "selection_status": "included", "omission_reason": ""})
+                remaining -= cost
+            elif remaining > 0:
+                truncated = self._truncate_to_tokens(segment["text"], remaining)
+                loaded_cost = self._estimate_tokens(truncated)
+                segment.update({"included": True, "loaded_text": truncated, "loaded_token_cost": loaded_cost, "selection_status": "truncated", "omission_reason": "Truncated to fit the remaining context budget."})
+                remaining = max(0, remaining - loaded_cost)
+            else:
+                segment.update({"included": False, "loaded_text": "", "loaded_token_cost": 0, "selection_status": "omitted", "omission_reason": "Omitted after the budget was exhausted."})
+            if segment.get("included"):
+                rendered_sections.append(f"## {segment['title']}\n{segment['loaded_text']}")
+
+        selected_tokens = sum(segment.get("loaded_token_cost", 0) for segment in segments)
+        max_selectable_tokens = sum(segment.get("token_cost", 0) for segment in segments if segment.get("text"))
+        full_tokens = self._estimate_tokens(events)
+        return {
+            "schema_version": "context_assembly.v1",
+            "trajectory_id": trajectory_id,
+            "branch_id": branch_id,
+            "head_event_id": self.get_branch(trajectory_id, branch_id).get("head_event_id"),
+            "token_budget": budget,
+            "selected_tokens": selected_tokens,
+            "max_selectable_tokens": max_selectable_tokens,
+            "remaining_tokens": max(0, budget - selected_tokens),
+            "estimated_full_history_tokens": full_tokens,
+            "estimated_loaded_tokens": selected_tokens,
+            "estimated_saved_tokens": max(0, full_tokens - selected_tokens),
+            "estimated_saved_percent": round((max(0, full_tokens - selected_tokens) / full_tokens) * 100, 1) if full_tokens else 0.0,
+            "loading_policy": "priority budget packing over current task, recent causal trace, version state, retrieved memory, matched skills, and semantic digest",
+            "segments": segments,
+            "rendered_agent_context": "\n\n".join(rendered_sections),
+            "summary": summary,
+            # Compatibility fields for existing consumers of current_prompt.
+            "recent_events": recent_events,
+            "relevant_memory": memories,
+        }
+
+    def _context_segment(self, segment_id: str, priority: str, title: str, text: str, source_event_ids: List[str], selection_reason: str) -> Dict[str, Any]:
+        text = str(text or "").strip()
+        return {
+            "segment_id": segment_id,
+            "priority": priority,
+            "title": title,
+            "text": text,
+            "token_cost": self._estimate_tokens(text) if text else 0,
+            "source_event_ids": self._dedupe_ids(source_event_ids),
+            "selection_reason": selection_reason,
+        }
+
+    def _context_branch_state(self, trajectory_id: str, branch_id: str) -> Dict[str, Any]:
+        branch = self.get_branch(trajectory_id, branch_id)
+        snapshots = [snapshot for snapshot in self._snapshots(trajectory_id) if snapshot.get("branch_id") == branch_id]
+        latest_snapshot = max(snapshots, key=lambda item: item.get("created_at", ""), default=None)
+        version_events = [
+            event for event in self.list_events(trajectory_id, branch_id)
+            if event.get("event_type") == "version_decision" or (event.get("metadata", {}) or {}).get("operation") in VERSION_EVENT_OPERATIONS
+        ][-3:]
+        parts = [f"Active branch: {branch_id}", f"Head: {branch.get('head_event_id') or 'empty'}"]
+        if latest_snapshot:
+            parts.append(f"Latest snapshot: {latest_snapshot.get('snapshot_id')} ({latest_snapshot.get('message') or 'no message'})")
+        if version_events:
+            parts.append("Recent version state: " + "; ".join(self._event_line(event, 180) for event in version_events))
+        ids = [branch.get("head_event_id"), latest_snapshot.get("event_id") if latest_snapshot else None] + [event["event_id"] for event in version_events]
+        return {"text": "\n".join(parts), "source_event_ids": self._dedupe_ids(ids)}
+
+    def _retrieve_context_memories(self, trajectory_id: str, events: List[Dict[str, Any]], query: str) -> List[Dict[str, Any]]:
+        memories = [event for event in events if event.get("event_type") == "memory_update"]
+        if not memories:
+            return []
+        entries = []
+        for event in memories:
+            payload = event.get("payload", {}) or {}
+            fact = str(payload.get("fact") or payload.get("text") or payload.get("summary") or "").strip()
+            if fact:
+                importance = payload.get("importance", (event.get("metadata", {}) or {}).get("importance", 0))
+                try:
+                    importance = float(importance or 0)
+                except (TypeError, ValueError):
+                    importance = 0.0
+                entries.append({"entry_id": f"{trajectory_id}:{event['event_id']}", "document": fact, "metadata": {"event_id": event["event_id"], "fact": fact, "timestamp": event.get("timestamp", ""), "importance": importance}})
+        if not entries:
+            return []
+        collection = f"context_memories:{trajectory_id}"
+        self.vector_index.replace_owner(collection, trajectory_id, entries)
+        matches = self.vector_index.search(collection, query, top_k=MEMORY_RETRIEVAL_LIMIT, min_score=-1.0)
+        by_id = {event["event_id"]: event for event in memories}
+        selected = []
+        for match in matches:
+            metadata = match.get("metadata") or {}
+            event = by_id.get(metadata.get("event_id"))
+            if not event:
+                continue
+            selected.append({
+                "event_id": event["event_id"],
+                "fact": metadata.get("fact") or self._payload_text(event),
+                "score": match.get("score"),
+                "importance": metadata.get("importance", 0),
+                "timestamp": metadata.get("timestamp", ""),
+            })
+        selected.sort(key=lambda item: (float(item.get("score", 0.0) or 0.0), float(item.get("importance", 0.0) or 0.0), str(item.get("timestamp", ""))), reverse=True)
+        for item in selected:
+            item["selection_reason"] = (
+                f"Vector relevance to current task (score {float(item.get('score', 0.0)):.3f}); "
+                f"importance ({float(item.get('importance', 0.0)):.2f}) and recency break ties."
+            )
+        return selected
+
+    def _context_matched_skills(self, events: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+        selected = []
+        for event in reversed(events):
+            if event.get("event_type") != "skill_recommendation":
+                continue
+            payload = event.get("payload", {}) or {}
+            if not payload.get("matched") and not payload.get("skill_id"):
+                continue
+            selected.append({
+                "event_id": event["event_id"],
+                "skill_id": payload.get("skill_id") or payload.get("matched_skill_id"),
+                "confidence": payload.get("score") or payload.get("confidence"),
+                "evidence_count": payload.get("evidence_count"),
+                "instruction": str(payload.get("instruction") or payload.get("recommended_action") or "ContextDB supplied a skill recommendation."),
+            })
+            if len(selected) >= 3:
+                break
+        return list(reversed(selected))
+
+    def _truncate_to_tokens(self, text: str, token_budget: int) -> str:
+        if token_budget <= 0:
+            return ""
+        max_chars = max(1, token_budget * 4)
+        if len(text) <= max_chars:
+            return text
+        return text[:max(1, max_chars - 3)].rstrip() + "..."
+
+    def query_sql(self, trajectory_id: str, sql: str, branch_id: Optional[str] = None) -> Dict[str, Any]:
+        """Execute one read-only ContextQL statement over logical trajectory relations."""
+        resolved_branch_id = branch_id or self.get_trajectory(trajectory_id).get("default_branch") or "main"
+        return ContextQLExecutor(self).execute(trajectory_id, sql, resolved_branch_id)
+
+    def translate_natural_language_sql(self, trajectory_id: str, question: str, branch_id: Optional[str] = None, profile_id: Optional[str] = None, provider: Optional[str] = None, model: Optional[str] = None) -> Dict[str, Any]:
         """Translate one question into ContextQL SQL without executing it."""
         if not str(question or "").strip():
             raise ValueError("natural-language question is empty")
-        # Validate the trajectory and branch before asking the LLM for a scoped query.
-        self.get_trajectory(trajectory_id)
-        self.get_branch(trajectory_id, branch_id)
+        # ContextQL is trajectory-scoped. The default branch is only used for
+        # internal materialization of branch-addressable relations.
+        trajectory = self.get_trajectory(trajectory_id)
+        resolved_branch_id = branch_id or trajectory.get("default_branch") or "main"
+        self.get_branch(trajectory_id, resolved_branch_id)
         relations = [
             {"name": "trajectories", "columns": ["trajectory_id", "title", "agent_id", "source_id", "default_branch", "head_event_id", "metadata_json"]},
             {"name": "events", "columns": ["event_id", "trajectory_id", "branch_id", "event_type", "actor", "timestamp", "status", "tool_name", "command", "preview", "error_signature", "text", "payload_json", "refs_json", "metadata_json"]},
@@ -223,9 +525,9 @@ class ContextDB:
         # Apply the same read-only grammar gate now, while deferring execution to /api/v1/sql.
         validated_sql = ContextQLExecutor(self)._validate(sql)
         translation["sql"] = validated_sql
-        return {"schema_version": "contextql_nl_translation.v1", "trajectory_id": trajectory_id, "branch_id": branch_id, "question": question, "translation": translation}
+        return {"schema_version": "contextql_nl_translation.v1", "trajectory_id": trajectory_id, "branch_id": resolved_branch_id, "question": question, "translation": translation}
 
-    def natural_language_query(self, trajectory_id: str, question: str, branch_id: str = "main", profile_id: Optional[str] = None, provider: Optional[str] = None, model: Optional[str] = None) -> Dict[str, Any]:
+    def natural_language_query(self, trajectory_id: str, question: str, branch_id: Optional[str] = None, profile_id: Optional[str] = None, provider: Optional[str] = None, model: Optional[str] = None) -> Dict[str, Any]:
         """Compatibility helper: translate then execute a natural-language ContextQL request."""
         translated = self.translate_natural_language_sql(trajectory_id, question, branch_id, profile_id, provider, model)
         result = self.query_sql(trajectory_id, translated["translation"]["sql"], branch_id)
@@ -482,47 +784,58 @@ class ContextDB:
         })
         return detail
 
-    def failure_patterns(self, trajectory_id: str, branch_id: str = "main") -> List[Dict[str, Any]]:
-        events = self.list_events(trajectory_id, branch_id)
+    def failure_patterns(self, trajectory_id: str, branch_id: Optional[str] = None) -> List[Dict[str, Any]]:
+        """Extract failures from every branch, mirroring ``success_patterns``.
+
+        A branch-local filter prevents an inherited ancestor event from being
+        emitted repeatedly for every descendant branch.
+        """
+        events_by_branch = (
+            {branch_id: self.list_events(trajectory_id, branch_id)}
+            if branch_id is not None
+            else self._events_by_branch(trajectory_id)
+        )
         patterns = []
-        for i, event in enumerate(events):
-            if not self._is_failed_tool_result(event):
-                continue
-            tool_call = self._previous_event(events, i, "tool_call")
-            assistant = self._previous_event(events, i, "assistant_message")
-            repair_events = self._following_repair_events(events, i)
-            signature = self._result_signature(event)
-            normalized_signature = self._normalize_signature(signature)
-            cause_judgment = self._llm_likely_cause(
-                trajectory_id,
-                event,
-                {
+        for current_branch_id, events in events_by_branch.items():
+            for i, event in enumerate(events):
+                if event.get("branch_id") != current_branch_id or not self._is_failed_tool_result(event):
+                    continue
+                tool_call = self._previous_event(events, i, "tool_call")
+                assistant = self._previous_event(events, i, "assistant_message")
+                repair_events = self._following_repair_events(events, i)
+                signature = self._result_signature(event)
+                normalized_signature = self._normalize_signature(signature)
+                cause_judgment = self._llm_likely_cause(
+                    trajectory_id,
+                    event,
+                    {
+                        "failed_tool": self._tool_name(tool_call),
+                        "failed_command": self._command_text(tool_call),
+                        "error_signature": signature,
+                        "normalized_signature": normalized_signature,
+                        "preceding_action": self._payload_text(assistant),
+                    },
+                )
+                patterns.append({
+                    "schema_version": "experience_mining.v2",
+                    "pattern_id": f"fp_{event['event_id'].split('_')[-1]}",
+                    "failure_event_id": event["event_id"],
+                    "branch_id": current_branch_id,
                     "failed_tool": self._tool_name(tool_call),
                     "failed_command": self._command_text(tool_call),
                     "error_signature": signature,
                     "normalized_signature": normalized_signature,
                     "preceding_action": self._payload_text(assistant),
-                },
-            )
-            pattern = {
-                "schema_version": "experience_mining.v2",
-                "pattern_id": f"fp_{event['event_id'].split('_')[-1]}",
-                "failure_event_id": event["event_id"],
-                "branch_id": event.get("branch_id"),
-                "failed_tool": self._tool_name(tool_call),
-                "failed_command": self._command_text(tool_call),
-                "error_signature": signature,
-                "normalized_signature": normalized_signature,
-                "preceding_action": self._payload_text(assistant),
-                "likely_cause": cause_judgment.get("likely_cause"),
-                "likely_cause_judgment": cause_judgment,
-                "repair_status": "not_evaluated",
-                "repair_events_after_failure": repair_events,
-                "source_event_ids": self._compact_ids([assistant, tool_call, event]),
-                "evidence_event_ids": self._compact_ids([assistant, tool_call, event]),
-                "highlight_event_ids": self._compact_ids([event]),
-            }
-            patterns.append(pattern)
+                    "likely_cause": cause_judgment.get("likely_cause"),
+                    "likely_cause_judgment": cause_judgment,
+                    "repair_status": "not_evaluated",
+                    "repair_events_after_failure": repair_events,
+                    # The visible source of a failure pattern is its direct
+                    # non-failure action; the full causal chain remains below.
+                    "source_event_ids": self._compact_ids([tool_call]),
+                    "evidence_event_ids": self._compact_ids([assistant, tool_call, event]),
+                    "highlight_event_ids": self._compact_ids([event]),
+                })
         return patterns
 
     def success_patterns(self, trajectory_id: str) -> List[Dict[str, Any]]:
@@ -548,7 +861,7 @@ class ContextDB:
                     "outcome": event.get("payload", {}).get("status"),
                     "result_preview": event.get("payload", {}).get("preview", ""),
                     "is_first_success_on_branch": is_first,
-                    "source_event_ids": self._compact_ids([assistant, tool_call, event]),
+                    "source_event_ids": self._compact_ids([tool_call]),
                     "evidence_event_ids": self._compact_ids([assistant, tool_call, event]),
                     "highlight_event_ids": self._compact_ids([event]),
                 })
@@ -587,6 +900,7 @@ class ContextDB:
                         "schema_version": "experience_mining.v1",
                         "branch_id": success["branch_id"],
                         "success_event_id": success["success_event_id"],
+                        "tool_call_event_id": (success.get("source_event_ids") or [None])[0],
                         "strategy": success.get("strategy"),
                         "tool": success.get("successful_tool"),
                         "command": success.get("successful_command"),
@@ -607,6 +921,7 @@ class ContextDB:
                     excluded_successes.append(exclusion)
             failure_summary = {
                 "failure_event_id": failure["failure_event_id"],
+                "tool_call_event_id": (failure.get("source_event_ids") or [None])[0],
                 "branch_id": failure["branch_id"],
                 "command": failure.get("failed_command"),
                 "tool": failure.get("failed_tool"),
@@ -640,6 +955,19 @@ class ContextDB:
 
     def semantic_repair_judgments(self, trajectory_id: str) -> List[Dict[str, Any]]:
         judge = SemanticRepairJudge()
+        source_events = self.list_events(trajectory_id)
+        source_event_ids = [event["event_id"] for event in source_events]
+        profile_identity = judge.profile_id or f"{judge.provider}:{judge.model or 'default'}"
+        cache_key = uris.semantic_judgments_view_key(trajectory_id, profile_identity)
+        cached_view = self.store.get_object(cache_key) or {}
+        cached_content = cached_view.get("content") if isinstance(cached_view, dict) else None
+        if (
+            cached_view.get("metadata", {}).get("schema_version") == "semantic_repair_judgment_cache.v1"
+            and cached_view.get("source_events") == source_event_ids
+            and isinstance(cached_content, list)
+        ):
+            return cached_content
+
         rows = []
         for group in self.repair_strategies(trajectory_id):
             failure = group.get("failure", {})
@@ -656,6 +984,30 @@ class ContextDB:
                     "judgment": judgment,
                     "highlight_event_ids": self._dedupe_ids([failure.get("failure_event_id"), candidate.get("success_event_id")]),
                 })
+
+        # Do not preserve transient transport failures: a later request can
+        # retry the semantic judgment batch after the LLM becomes available.
+        cacheable = all(
+            judgment.get("enabled") and not judgment.get("error")
+            for row in rows
+            for judgment in [row.get("judgment", {})]
+        )
+        if cacheable:
+            view = View(
+                view_name="semantic_repair_judgments",
+                trajectory_id=trajectory_id,
+                branch_id="all_branches",
+                content=rows,
+                source_events=source_event_ids,
+                metadata={
+                    "schema_version": "semantic_repair_judgment_cache.v1",
+                    "event_count": len(source_events),
+                    "profile_id": judge.profile_id or None,
+                    "provider": judge.provider,
+                    "model": judge.model,
+                },
+            )
+            self.store.put_object(cache_key, to_dict(view))
         return rows
 
     def learned_skills(self, trajectory_id: str) -> List[Dict[str, Any]]:
@@ -1480,12 +1832,6 @@ class ContextDB:
             text = text[:max(0, max_length - 3)].rstrip() + "..."
         return f"{event.get('event_type')}:{text}"
 
-    def _compact_summary(self, events: List[Dict[str, Any]]) -> str:
-        if not events:
-            return ""
-        lines = [self._event_line(e) for e in events[-6:]]
-        return "Earlier trajectory context:\n" + "\n".join(f"- {line}" for line in lines)
-
     def _estimate_tokens(self, value: Any) -> int:
         text = json.dumps(value, ensure_ascii=False) if not isinstance(value, str) else value
         return max(1, len(text) // 4)
@@ -1527,6 +1873,22 @@ def _vector_cluster(index, items, threshold):
     return [group["items"] for group in groups]
 
 
+def _tool_call_ids_for_results(self, trajectory_id, result_event_ids):
+    target_ids = {event_id for event_id in result_event_ids if event_id}
+    tool_call_ids = {}
+    if not target_ids:
+        return tool_call_ids
+    for events in self._events_by_branch(trajectory_id).values():
+        for index, event in enumerate(events):
+            result_id = event.get("event_id")
+            if result_id not in target_ids:
+                continue
+            tool_call = self._previous_event(events, index, "tool_call")
+            if tool_call and tool_call.get("event_id"):
+                tool_call_ids[result_id] = tool_call["event_id"]
+    return tool_call_ids
+
+
 def _vector_learned_skills(self, trajectory_id):
     judgments = self.semantic_repair_judgments(trajectory_id)
     failures, support = {}, {}
@@ -1540,6 +1902,8 @@ def _vector_learned_skills(self, trajectory_id):
         support.setdefault(fid, []).append({
             "trajectory_id": trajectory_id, "failure_event_id": fid,
             "success_event_id": row.get("success_event_id"), "branch_id": candidate.get("branch_id"),
+            "failure_tool_call_event_id": failure.get("tool_call_event_id"),
+            "success_tool_call_event_id": candidate.get("tool_call_event_id"),
             "tool": candidate.get("tool"), "command": candidate.get("command"),
             "strategy": candidate.get("strategy"), "outcome": candidate.get("outcome"),
             "primary_rule": candidate.get("primary_rule") or candidate.get("link_type"),
@@ -1547,6 +1911,12 @@ def _vector_learned_skills(self, trajectory_id):
             "reason": judgment.get("reason"),
         })
     failure_rows = [{"failure_id": fid, "failure": failure, "vector_text": _vector_text([failure.get("tool"), failure.get("command"), failure.get("normalized_signature"), failure.get("error_signature"), failure.get("likely_cause")])} for fid, failure in failures.items()]
+    result_event_ids = list(failures) + [
+        event.get("success_event_id")
+        for events in support.values()
+        for event in events
+    ]
+    inferred_tool_calls = _tool_call_ids_for_results(self, trajectory_id, result_event_ids)
     skills = []
     for number, group in enumerate(_vector_cluster(self.vector_index, failure_rows, .74), 1):
         first = group[0]["failure"]; ids = [row["failure_id"] for row in group]
@@ -1583,7 +1953,17 @@ def _vector_learned_skills(self, trajectory_id):
             "failure_grouping": {"method": "vector_cosine", "embedding": "hash-384", "threshold": .74, "failure_event_ids": ids, "group_size": len(ids)},
             "recommended_actions": actions, "avoid_actions": [], "evidence_refs": refs,
             "confidence": {"support_count": len(all_support), "max_llm_confidence": max([float(event.get("confidence", 0) or 0) for event in all_support] or [0]), "evidence_levels": ["structural"]},
-            "status": "candidate", "highlight_event_ids": self._dedupe_ids(ids + [event.get("success_event_id") for event in all_support]),
+            "status": "candidate", "highlight_event_ids": self._dedupe_ids(
+                ids
+                + [inferred_tool_calls.get(event_id) for event_id in ids]
+                + [event.get("failure_tool_call_event_id") for event in all_support]
+                + [event.get("success_event_id") for event in all_support]
+                + [
+                    event.get("success_tool_call_event_id")
+                    or inferred_tool_calls.get(event.get("success_event_id"))
+                    for event in all_support
+                ]
+            ),
             "action_grouping": {"method": "vector_cosine", "embedding": "hash-384", "threshold": .78, "group_count": len(actions)},
         }
         skills.append(skill)

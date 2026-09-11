@@ -1,7 +1,7 @@
 {
   "view_name": "semantic_repair_judgments",
   "trajectory_id": "traj_2014e7a1531d",
-  "branch_id": "main",
+  "branch_id": "all_branches",
   "content": [
     {
       "schema_version": "semantic_repair_judgment.v1",
@@ -714,10 +714,32 @@
     "evt_9dfff0aa6d6f",
     "evt_ef1e3dd734ff",
     "evt_c069de691612",
-    "evt_a5b08a5df447"
+    "evt_6673a26d31e1",
+    "evt_a5b08a5df447",
+    "evt_b55298ee40a0",
+    "evt_bd1ff1b1f6ea",
+    "evt_acd69066a227",
+    "evt_c0ebd351086a",
+    "evt_5adaeae7808a",
+    "evt_46c0faf1c8e2",
+    "evt_94f39b32a0c5",
+    "evt_a1619b335d2c",
+    "evt_3efb3a563f55",
+    "evt_78ce173e66f2",
+    "evt_517ab4ff80a7",
+    "evt_fccc05217eca",
+    "evt_0530ad5f3d74",
+    "evt_d044f55cc1ff",
+    "evt_8899ef0db478",
+    "evt_5fc11f0ed8cf",
+    "evt_951d89ce5f7f"
   ],
-  "created_at": "2026-09-11T06:13:05.833575+00:00",
+  "created_at": "2026-09-11T06:13:05.831213+00:00",
   "metadata": {
-    "event_count": 55
+    "schema_version": "semantic_repair_judgment_cache.v1",
+    "event_count": 73,
+    "profile_id": "qwen-3.7-max",
+    "provider": "bailian",
+    "model": "qwen3.7-max"
   }
 }

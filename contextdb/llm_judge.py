@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import os
 import re
+import time
 from typing import Any, Dict, List
 from urllib import error, request
 
@@ -31,11 +32,14 @@ class SemanticRepairJudge:
         self._base_url = ""
         self._profile_error = ""
         self.supports_json_response_format = True
-        # Reuse the configured default profile for every LLM task when its credentials are ready.
+        # Reuse the configured default profile for every LLM task.  Keeping the
+        # profile identity even when its endpoint is incomplete lets the caller
+        # report the exact missing configuration instead of falling back to an
+        # unrelated public endpoint.
         if not self.profile_id and provider is None and model is None and not os.environ.get("CONTEXTDB_LLM_PROVIDER"):
             try:
                 default_profile = resolve_profile()
-                if default_profile["api_key"] and default_profile["base_url"]:
+                if default_profile["api_key"]:
                     self.profile_id = default_profile["profile_id"]
             except ValueError:
                 pass
@@ -66,6 +70,12 @@ class SemanticRepairJudge:
 
     def enabled(self) -> bool:
         return self.provider in {"qwen", "bailian", "openai-compatible", "mock"}
+
+    def _retry_window_seconds(self) -> float:
+        try:
+            return max(0.0, min(float(os.environ.get("CONTEXTDB_LLM_RETRY_WINDOW_SECONDS", "60")), 300.0))
+        except ValueError:
+            return 60.0
 
     def judge(self, failure: Dict[str, Any], candidate: Dict[str, Any]) -> Dict[str, Any]:
         if self.provider in {"", "disabled", "off", "none"}:
@@ -152,6 +162,70 @@ class SemanticRepairJudge:
         result = self._disabled_likely_cause_result()
         result.update({"error": f"unsupported provider: {self.provider}"})
         return result
+
+    def summarize_trajectory_context(
+        self,
+        events: List[Dict[str, Any]],
+        previous_summary: str = "",
+    ) -> Dict[str, Any]:
+        """Create a factual semantic digest for a completed trajectory prefix.
+
+        The caller owns incremental state and caching.  This method deliberately
+        has no rule-based fallback: an unavailable model is surfaced as such so
+        a UI never labels a line-concatenation result as an LLM summary.
+        """
+        if self.provider in {"", "disabled", "off", "none"}:
+            return self._disabled_context_summary_result()
+        if self.provider == "mock":
+            return self._mock_context_summary_result(events, previous_summary)
+        if self.provider in {"qwen", "bailian", "openai-compatible"}:
+            result = self._openai_json_call(
+                "You produce factual, compact semantic summaries of completed agent trajectories. Return strict JSON only.",
+                self._context_summary_prompt(events, previous_summary),
+                self._disabled_context_summary_result(),
+                "OpenAI-compatible LLM semantic context summarization failed.",
+            )
+            if result.get("error"):
+                return result
+            normalized = self._normalize_context_summary_result(result)
+            normalized["execution"] = result.get("_contextdb_execution", {})
+            return normalized
+        result = self._disabled_context_summary_result()
+        result.update({"error": f"unsupported provider: {self.provider}"})
+        return result
+
+    def _disabled_context_summary_result(self) -> Dict[str, Any]:
+        return {
+            "enabled": False,
+            "provider": self.provider or "disabled",
+            "model": self.model,
+            "summary": "",
+            "key_facts": [],
+            "open_items": [],
+            "reason": "Configure a ContextDB LLM profile to generate a semantic trajectory summary.",
+            "error": "llm_semantic_summary_disabled",
+        }
+
+    def _mock_context_summary_result(self, events: List[Dict[str, Any]], previous_summary: str) -> Dict[str, Any]:
+        # Kept solely for deterministic tests. Production semantic summaries use
+        # an explicitly configured LLM profile.
+        lines = []
+        if previous_summary:
+            lines.append(previous_summary)
+        for event in events[-4:]:
+            payload = event.get("payload", {})
+            text = payload.get("text") or payload.get("command") or payload.get("preview") or ""
+            if text:
+                lines.append(f"{event.get('event_type')}: {str(text)[:180]}")
+        return {
+            "enabled": True,
+            "provider": "mock",
+            "model": "deterministic-mock",
+            "summary": "\n".join(f"- {line}" for line in lines)[:3000],
+            "key_facts": [],
+            "open_items": [],
+            "reason": "Deterministic mock summary for offline tests.",
+        }
 
     def _disabled_likely_cause_result(self) -> Dict[str, Any]:
         return {
@@ -432,29 +506,77 @@ class SemanticRepairJudge:
             result = dict(disabled_result)
             result.update({"provider": self.provider, "model": self.model, "error": "No API key is configured for the selected LLM profile"})
             return result
+        if self.profile_id and not self._base_url:
+            result = dict(disabled_result)
+            result.update({
+                "enabled": False,
+                "provider": self.provider,
+                "model": self.model,
+                "error": (
+                    f"LLM profile '{self.profile_id}' is not ready: "
+                    "CONTEXTDB_LLM_BASE_URL is not configured."
+                ),
+                "reason": "Configure the Bailian workspace endpoint, then restart the ContextDB dashboard service.",
+            })
+            return result
         base_url = (self._base_url or os.environ.get("CONTEXTDB_LLM_BASE_URL", "https://dashscope.aliyuncs.com/compatible-mode/v1")).rstrip("/")
         payload = {"model": self.model, "messages": [{"role": "system", "content": system}, {"role": "user", "content": prompt}], "temperature": 0}
         if self.supports_json_response_format:
             payload["response_format"] = {"type": "json_object"}
         req = request.Request(base_url + "/chat/completions", data=json.dumps(payload).encode("utf-8"), headers={"Content-Type": "application/json", "Authorization": f"Bearer {api_key}"}, method="POST")
-        try:
-            with request.urlopen(req, timeout=self.timeout) as resp:
-                data = json.loads(resp.read().decode("utf-8"))
-            parsed = _parse_json_object(data["choices"][0]["message"]["content"])
-            response_model = str(data.get("model") or "").strip()
-            parsed["_contextdb_execution"] = {
-                "profile_id": self.profile_id or None,
-                "provider": self.provider,
-                "requested_model": self.model,
-                "response_model": response_model or None,
-                "response_id": str(data.get("id") or "") or None,
-                "verified": bool(response_model and response_model == self.model),
-            }
-            return parsed
-        except (error.HTTPError, error.URLError, TimeoutError, KeyError, IndexError, json.JSONDecodeError) as exc:
-            result = dict(disabled_result)
-            result.update({"enabled": True, "provider": self.provider, "model": self.model, "error": str(exc), "reason": failure_reason, "_contextdb_execution": {"profile_id": self.profile_id or None, "provider": self.provider, "requested_model": self.model, "response_model": None, "response_id": None, "verified": False}})
-            return result
+        retry_window = self._retry_window_seconds()
+        deadline = time.monotonic() + retry_window
+        attempt = 0
+        retry_delay = 0.5
+
+        while True:
+            attempt += 1
+            try:
+                remaining = deadline - time.monotonic()
+                request_timeout = min(self.timeout, max(1.0, remaining))
+                with request.urlopen(req, timeout=request_timeout) as resp:
+                    data = json.loads(resp.read().decode("utf-8"))
+                parsed = _parse_json_object(data["choices"][0]["message"]["content"])
+                response_model = str(data.get("model") or "").strip()
+                parsed["_contextdb_execution"] = {
+                    "profile_id": self.profile_id or None,
+                    "provider": self.provider,
+                    "requested_model": self.model,
+                    "response_model": response_model or None,
+                    "response_id": str(data.get("id") or "") or None,
+                    "verified": bool(response_model and response_model == self.model),
+                }
+                return parsed
+            except (error.HTTPError, error.URLError, TimeoutError, OSError, KeyError, IndexError, json.JSONDecodeError) as exc:
+                retryable = isinstance(exc, (error.URLError, TimeoutError, OSError)) or (
+                    isinstance(exc, error.HTTPError) and exc.code >= 500
+                )
+                remaining = deadline - time.monotonic()
+                if retryable and remaining > 0:
+                    time.sleep(min(retry_delay, remaining))
+                    retry_delay = min(retry_delay * 2, 5.0)
+                    continue
+
+                detail = str(exc) or exc.__class__.__name__
+                connection_refused = (
+                    isinstance(exc, ConnectionRefusedError)
+                    or getattr(exc, "winerror", None) == 10061
+                    or getattr(getattr(exc, "reason", None), "winerror", None) == 10061
+                    or isinstance(getattr(exc, "reason", None), ConnectionRefusedError)
+                )
+                if connection_refused:
+                    detail = (
+                        f"The connection to the configured LLM endpoint was refused after {attempt} attempt(s) within {retry_window:g} seconds: {detail}. "
+                        "Check VPN, firewall or network egress rules, and any required HTTPS proxy."
+                    )
+                elif isinstance(exc, OSError):
+                    detail = (
+                        f"The remote LLM endpoint closed or reset the connection after {attempt} attempt(s) within {retry_window:g} seconds: {detail}. "
+                        "Verify CONTEXTDB_LLM_BASE_URL for the selected Bailian workspace and any proxy/firewall settings."
+                    )
+                result = dict(disabled_result)
+                result.update({"enabled": True, "provider": self.provider, "model": self.model, "error": detail, "reason": failure_reason, "_contextdb_execution": {"profile_id": self.profile_id or None, "provider": self.provider, "requested_model": self.model, "response_model": None, "response_id": None, "verified": False}})
+                return result
 
     def _contextql_translation_prompt(self, question: str, relations: List[Dict[str, Any]]) -> str:
         compact = {
@@ -490,6 +612,60 @@ class SemanticRepairJudge:
             "failure": failure,
         }
         return json.dumps(compact, ensure_ascii=False, indent=2)
+
+    def _context_summary_prompt(self, events: List[Dict[str, Any]], previous_summary: str) -> str:
+        compact_events = []
+        for event in events:
+            payload = event.get("payload", {}) or {}
+            text = (
+                payload.get("text")
+                or payload.get("command")
+                or payload.get("preview")
+                or payload.get("summary")
+                or payload.get("error_signature")
+                or ""
+            )
+            compact_events.append({
+                "event_id": event.get("event_id"),
+                "branch_id": event.get("branch_id"),
+                "event_type": event.get("event_type"),
+                "actor": event.get("actor"),
+                "status": payload.get("status"),
+                "text": str(text)[:1200],
+            })
+        compact = {
+            "task": "Create an incremental semantic digest of a completed prefix of an agent trajectory.",
+            "instructions": [
+                "Use only the supplied previous summary and source events.",
+                "Preserve concrete task intent, completed actions, tool outcomes, failures, repairs, version transitions, and unresolved work.",
+                "Do not invent facts, commands, or future plans.",
+                "Do not repeat the recent live context; these events are an earlier completed prefix.",
+                "Keep the summary concise enough for an agent context window.",
+                "Return strict JSON only.",
+            ],
+            "output_schema": {
+                "summary": "factual compact prose or bullets",
+                "key_facts": ["important durable facts"],
+                "open_items": ["unresolved items, if any"],
+            },
+            "previous_summary": str(previous_summary or "")[:5000],
+            "new_source_events": compact_events,
+        }
+        return json.dumps(compact, ensure_ascii=False, indent=2)
+
+    def _normalize_context_summary_result(self, value: Dict[str, Any]) -> Dict[str, Any]:
+        summary = re.sub(r"\s+", " ", str(value.get("summary") or "").strip())[:6000]
+        key_facts = [re.sub(r"\s+", " ", str(item).strip())[:500] for item in value.get("key_facts", []) if str(item).strip()][:16]
+        open_items = [re.sub(r"\s+", " ", str(item).strip())[:500] for item in value.get("open_items", []) if str(item).strip()][:16]
+        return {
+            "enabled": True,
+            "provider": self.provider,
+            "model": self.model,
+            "summary": summary,
+            "key_facts": key_facts,
+            "open_items": open_items,
+            "reason": "LLM generated a factual semantic trajectory digest.",
+        }
 
     def _normalize_likely_cause_result(self, value: Dict[str, Any]) -> Dict[str, Any]:
         try:

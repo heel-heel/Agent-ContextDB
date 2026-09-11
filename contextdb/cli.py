@@ -2,7 +2,9 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 from pathlib import Path
+import re
 
 from .agent_import import import_trace, normalize_trace_to_jsonl, replay_trace
 from .client import ContextDBClient
@@ -12,6 +14,21 @@ from .hooks import HookSessionBridge, stream_hook_events
 from .mcp_server import serve_stdio as serve_mcp_stdio
 from .service import ContextDB
 from .server import serve
+
+
+def _load_dashboard_environment() -> None:
+    """Load local dashboard credentials for the CLI serve entry point only."""
+    env_path = Path(__file__).resolve().parent.parent / "_API" / "dashboard.env"
+    if not env_path.is_file():
+        return
+    for raw_line in env_path.read_text(encoding="utf-8").splitlines():
+        line = raw_line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, value = line.split("=", 1)
+        key = key.strip()
+        if re.fullmatch(r"[A-Z_][A-Z0-9_]*", key):
+            os.environ[key] = value.strip()
 
 
 def emit(obj):
@@ -216,6 +233,7 @@ def main():
     args = parser.parse_args()
 
     if args.cmd == "serve":
+        _load_dashboard_environment()
         serve(args.root, args.host, args.port)
         return
     if args.cmd == "mcp-serve":

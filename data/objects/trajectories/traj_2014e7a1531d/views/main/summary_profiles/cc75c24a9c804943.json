@@ -6,20 +6,18 @@
     "schema_version": "semantic_summary.v1",
     "trajectory_id": "traj_2014e7a1531d",
     "branch_id": "main",
-    "summary": "The agent identified the ContextDB session ID (f1087623-105e-44e4-ad83-d43625225df3) via PowerShell. It attempted to read '.\\assets\\settings.json', which failed due to a missing path. The user corrected the path to '.\\examples\\live-path-demo\\assets\\settings.json', which was read successfully. The agent recorded a skill decision (accepted) and skill application for the path repair via ContextDB MCP tools. Subsequently, the agent attempted to write to '.\\__contextdb_combined_missing_output__\\first-note.txt', which failed because the directory does not exist. ContextDB suggested a repair branch (repair-b80ee9e6), but the agent explicitly rejected the branch creation to keep the failure on main for diagnosis. A second write attempt to '.\\__contextdb_combined_missing_output__\\second-note.txt' also failed with a DirectoryNotFoundException.",
+    "summary": "The agent identified the ContextDB session ID (f1087623-105e-44e4-ad83-d43625225df3) via PowerShell. It attempted to read '.\\assets\\settings.json', which failed due to a missing path. After a ContextDB skill recommendation, the agent successfully read '.\\examples\\live-path-demo\\assets\\settings.json' and recorded the skill decision and application via MCP tools. The agent then attempted to write to '.\\__contextdb_combined_missing_output__\\first-note.txt', which failed due to a missing directory. ContextDB suggested a repair branch (repair-b80ee9e6), but the agent rejected it to keep the failure on main for diagnosis. A subsequent attempt to write 'second-note.txt' to the same missing directory also failed, triggering another snapshot and skill match.",
     "key_facts": [
       "Session ID: f1087623-105e-44e4-ad83-d43625225df3",
       "Trajectory ID: traj_2014e7a1531d",
-      "Active branch: main",
-      "Latest snapshot: snap_3a5f7d5a0b75",
-      "Successfully read '.\\examples\\live-path-demo\\assets\\settings.json' after initial path failure.",
-      "Recorded skill decision (evt_65ab727e1153) accepting path repair.",
-      "Recorded skill application (evt_2c9b891d3f7f) for successful file read.",
-      "Failed to write 'first-note.txt' and 'second-note.txt' to non-existent directory '.\\__contextdb_combined_missing_output__'.",
-      "Rejected ContextDB suggestion to create repair branch 'repair-b80ee9e6' (decision evt_175cf49bba0c)."
+      "Active Branch: main",
+      "Latest Snapshot: snap_3a5f7d5a0b75",
+      "Successfully read: .\\examples\\live-path-demo\\assets\\settings.json",
+      "Failed writes: .\\__contextdb_combined_missing_output__\\first-note.txt and second-note.txt (DirectoryNotFoundException)",
+      "Repair branch 'repair-b80ee9e6' was suggested but rejected."
     ],
     "open_items": [
-      "Resolve the missing directory '.\\__contextdb_combined_missing_output__' or handle the write failures for first-note.txt and second-note.txt."
+      "Handle the second missing-directory failure for 'second-note.txt' and address any new ContextDB skill recommendations or repair branch suggestions."
     ],
     "status": "ready",
     "method": "incremental_llm_semantic_summary",
@@ -362,25 +360,27 @@
       }
     ],
     "raw_tokens": 22033,
-    "compressed_tokens": 211,
-    "compression_ratio": 99.0,
+    "compressed_tokens": 189,
+    "compression_ratio": 99.1,
     "materialization": {
-      "cache_hit": true,
+      "cache_hit": false,
       "generation_mode": "full",
-      "previous_covered_event_count": 0
+      "previous_covered_event_count": 0,
+      "profile_id": "qwen-3.7-max"
     },
     "llm": {
       "enabled": true,
-      "provider": "qwen",
+      "profile_id": "qwen-3.7-max",
+      "provider": "bailian",
       "model": "qwen3.7-max",
       "reason": "LLM generated a factual semantic trajectory digest.",
       "error": null,
       "execution": {
-        "profile_id": null,
-        "provider": "qwen",
+        "profile_id": "qwen-3.7-max",
+        "provider": "bailian",
         "requested_model": "qwen3.7-max",
         "response_model": "qwen3.7-max",
-        "response_id": "chatcmpl-92185fbf-537c-9d53-9eb3-83431e016b7f",
+        "response_id": "chatcmpl-d48579c7-947a-9114-9a56-7df0c60a4537",
         "verified": true
       }
     }
@@ -432,18 +432,11 @@
     "evt_41d215902818",
     "evt_3aedeca52d50",
     "evt_62ce55c9c672",
-    "evt_7970eb79855c",
-    "evt_6cbc7afa0286",
-    "evt_2f8da74fb599",
-    "evt_291a3dce059a",
-    "evt_95faa6858da6",
-    "evt_9dfff0aa6d6f",
-    "evt_ef1e3dd734ff",
-    "evt_c069de691612",
-    "evt_a5b08a5df447"
+    "evt_7970eb79855c"
   ],
-  "created_at": "2026-09-07T07:59:17.397796+00:00",
+  "created_at": "2026-09-07T09:05:36.982149+00:00",
   "metadata": {
-    "event_count": 55
+    "event_count": 47,
+    "semantic": true
   }
 }

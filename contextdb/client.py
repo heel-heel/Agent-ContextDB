@@ -39,8 +39,8 @@ class ContextDBClient:
     def post_hook_event(self, source: str, session_id: str, event: Dict[str, Any], title: Optional[str] = None, agent_id: Optional[str] = None) -> Dict[str, Any]:
         return self._post("/api/v1/hooks/events", {"protocol_version": "contextdb.agent_hook.v1", "source": source, "session_id": session_id, "event": event, "title": title, "agent_id": agent_id})
 
-    def query_view(self, trajectory_id: str, view_name: str, branch_id: str = "main", token_budget: int = 4000) -> Dict[str, Any]:
-        return self._post("/api/v1/query_view", {"trajectory_id": trajectory_id, "view_name": view_name, "branch_id": branch_id, "token_budget": token_budget})
+    def query_view(self, trajectory_id: str, view_name: str, branch_id: str = "main", token_budget: int = 4000, profile_id: Optional[str] = None, refresh_summary: bool = False) -> Dict[str, Any]:
+        return self._post("/api/v1/query_view", {"trajectory_id": trajectory_id, "view_name": view_name, "branch_id": branch_id, "token_budget": token_budget, "profile_id": profile_id, "refresh_summary": refresh_summary})
 
     def _post(self, path: str, payload: Dict[str, Any]) -> Dict[str, Any]:
         data = json.dumps(payload).encode("utf-8")

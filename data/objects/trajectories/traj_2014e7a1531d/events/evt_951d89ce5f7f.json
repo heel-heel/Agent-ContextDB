@@ -1,0 +1,34 @@
+{
+  "event_id": "evt_951d89ce5f7f",
+  "trajectory_id": "traj_2014e7a1531d",
+  "branch_id": "skill-apply-compiler",
+  "event_type": "tool_result",
+  "payload": {
+    "status": "failed",
+    "preview": "No matching skill was found."
+  },
+  "parent_event_ids": [
+    "evt_5fc11f0ed8cf"
+  ],
+  "actor": "tool",
+  "timestamp": "2026-09-11T06:10:49.923307+00:00",
+  "refs": {
+    "skill_match_event_id": "evt_5fc11f0ed8cf"
+  },
+  "metadata": {
+    "likely_cause_judgment": {
+      "enabled": true,
+      "provider": "bailian",
+      "model": "qwen3.7-max",
+      "likely_cause": "missing skill registration",
+      "confidence": 0.95,
+      "reason": "Error signature explicitly states no matching skill was found, indicating the invoked mcp tool is unregistered or unavailable in the current environment.",
+      "input": {
+        "failed_tool": "mcp__contextdb__contextdb_create_repair_branch",
+        "failed_command": "{\"branch_id\": \"repair-62ce55c9\", \"reason\": \"Preserve the second missing-directory failure and inspect a separate logical repair path.\", \"session_id\": \"f1087623-105e-44e4-ad83-d43625225df3\", \"snapshot_id\": \"snap_23799bb4e1e8\", \"source\": \"claude-code\"}",
+        "error_signature": "No matching skill was found.",
+        "preceding_action": ""
+      }
+    }
+  }
+}

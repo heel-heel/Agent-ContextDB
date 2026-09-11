@@ -71,13 +71,59 @@
     .pill.failed { background:#fdeaea; color:#9f2a2a; }
     .pill.rule { background:#eef4ff; color:#1f5592; }
     .pill.excluded { background:#fff4df; color:#7a4d07; }
-    .repair-table { min-width:1040px; }
-    .repair-table th:nth-child(1), .repair-table td:nth-child(1) { width:15%; }
-    .repair-table th:nth-child(2), .repair-table td:nth-child(2) { width:20%; }
-    .repair-table th:nth-child(3), .repair-table td:nth-child(3) { width:20%; }
-    .repair-table th:nth-child(4), .repair-table td:nth-child(4) { width:15%; }
-    .repair-table th:nth-child(5), .repair-table td:nth-child(5) { width:24%; min-width:260px; line-height:1.45; }
-    .repair-table th:nth-child(6), .repair-table td:nth-child(6) { width:6%; white-space:nowrap; }
+    .repair-table-wrap { overflow-x:hidden; }
+    .repair-table { width:100%; min-width:0; table-layout:fixed; }
+    .repair-table th:nth-child(1), .repair-table td:nth-child(1) { width:18%; }
+    .repair-table th:nth-child(2), .repair-table td:nth-child(2) { width:40%; }
+    .repair-table th:nth-child(3), .repair-table td:nth-child(3) { width:29%; line-height:1.45; }
+    .repair-table th:nth-child(4), .repair-table td:nth-child(4) { width:13%; white-space:nowrap; }
+    .repair-failure-title { font-size:16px !important; }
+    .repair-failure-title .mono { font-size:16px; }
+    .repair-failure-event-id { color:#315d89; white-space:nowrap; }
+    .repair-likely-cause { font-size:13px; line-height:1.35 !important; }
+    .repair-strategy-card { border-color:#b9d5ec; border-left:4px solid #2364aa; background:#fbfdff; }
+    .repair-table td { overflow-wrap:anywhere; }
+    .repair-table .mono { white-space:pre-wrap; overflow-wrap:anywhere; }
+    .learned-skill-card { border-color:#b9d5ec; border-left:4px solid #2364aa; background:#fbfdff; }
+    .learned-skill-title { display:flex; align-items:center; gap:8px; margin:0 0 8px; }
+    .summary-card .learned-skill-title h3 { margin:0; }
+    .skill-trigger { margin:10px 0; padding:8px 10px; border:1px solid #c9ddec; border-radius:6px; background:#f4f8fd; line-height:1.45; }
+    .skill-trigger > div { margin-top:2px; font-size:12px; }
+    .skill-trigger .mono { font-size:12px; white-space:pre-wrap; overflow-wrap:anywhere; }
+    .learned-skills-wrap { overflow-x:visible; }
+    .learned-skills-table { width:100%; min-width:0; table-layout:fixed; }
+    .learned-skills-table th:nth-child(1), .learned-skills-table td:nth-child(1) { width:42%; }
+    .learned-skills-table th:nth-child(2), .learned-skills-table td:nth-child(2) { width:58%; }
+    .learned-skills-table td { overflow-wrap:anywhere; }
+    .learned-skill-action { font-weight:400; }
+    .skill-support-event + .skill-support-event { margin-top:7px; padding-top:7px; border-top:1px solid #d8e4ef; }
+    .skill-support-judge { margin-top:3px; font-size:11px; line-height:1.35; }
+    .skill-support-judge .muted { display:block; margin-top:2px; }
+    .semantic-judgments-wrap { overflow-x:visible; }
+    .semantic-judgments-table { width:100%; min-width:0; table-layout:fixed; }
+    .semantic-judgments-table th, .semantic-judgments-table td { padding:4px 8px; line-height:1.3; }
+    .semantic-judgments-table th:nth-child(1), .semantic-judgments-table td:nth-child(1) { width:23%; }
+    .semantic-judgments-table th:nth-child(2), .semantic-judgments-table td:nth-child(2) { width:25%; }
+    .semantic-judgments-table th:nth-child(3), .semantic-judgments-table td:nth-child(3) { width:19%; }
+    .semantic-judgments-table th:nth-child(4), .semantic-judgments-table td:nth-child(4) { width:20%; }
+    .semantic-judgments-table th:nth-child(5), .semantic-judgments-table td:nth-child(5) { width:13%; white-space:nowrap; }
+    .semantic-judgments-table .mono { white-space:pre-wrap; overflow-wrap:anywhere; }
+    .repair-excluded-table { width:100%; min-width:0; table-layout:fixed; }
+    .repair-excluded-table th:nth-child(1), .repair-excluded-table td:nth-child(1) { width:18%; }
+    .repair-excluded-table th:nth-child(2), .repair-excluded-table td:nth-child(2) { width:57%; }
+    .repair-excluded-table th:nth-child(3), .repair-excluded-table td:nth-child(3) { width:25%; }
+    .repair-excluded-table td { overflow-wrap:anywhere; }
+    .repair-excluded-table .mono { white-space:pre-wrap; overflow-wrap:anywhere; }
+    .failure-patterns-wrap { overflow-x:hidden; }
+    .failure-patterns-table { width:100%; max-width:100%; min-width:0; table-layout:fixed; }
+    .failure-patterns-table th, .failure-patterns-table td { padding:7px 6px; }
+    .failure-patterns-table th:nth-child(1), .failure-patterns-table td:nth-child(1) { width:14%; }
+    .failure-patterns-table th:nth-child(2), .failure-patterns-table td:nth-child(2) { width:39%; }
+    .failure-patterns-table th:nth-child(3), .failure-patterns-table td:nth-child(3) { width:20%; }
+    .failure-patterns-table th:nth-child(4), .failure-patterns-table td:nth-child(4) { width:17%; }
+    .failure-patterns-table th:nth-child(5), .failure-patterns-table td:nth-child(5) { width:10%; white-space:nowrap; }
+    .failure-patterns-table td { overflow-wrap:anywhere; }
+    .failure-patterns-table .mono { white-space:pre-wrap; overflow-wrap:anywhere; }
     .small-btn { height:28px; padding:0 8px; font-size:12px; border-radius:5px; }
     .node.dimmed { opacity:.28; }
     .node.highlighted { outline:3px solid #f0b429; box-shadow:0 0 0 5px rgba(240,180,41,.18); z-index:5; }
@@ -87,6 +133,59 @@
     .metric { border:1px solid var(--line); border-radius:8px; padding:10px; background:#fff; }
     .metric b { display:block; font-size:18px; }
     .metric span { color:var(--muted); font-size:12px; }
+    .context-head { display:flex; flex-wrap:wrap; align-items:flex-start; justify-content:space-between; gap:12px; padding:2px 0 4px; }
+    .context-head h3 { margin:0; font-size:16px; }
+    .context-identifiers { display:flex; flex-wrap:wrap; gap:5px; }
+    .context-stat-grid { display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:8px; }
+    .context-stat { border-left:3px solid #2364aa; background:#f7faff; padding:9px 10px; min-width:0; }
+    .context-stat b { display:block; font-size:16px; overflow-wrap:anywhere; }
+    .context-stat span { color:var(--muted); font-size:11px; }
+    .context-evidence { height:auto; min-height:24px; padding:3px 7px; border-color:#b8cce1; background:#f6faff; color:#1f5592; font-size:11px; white-space:nowrap; }
+    .context-evidence:hover { background:#eaf3ff; }
+    .context-evidence-list { display:inline-flex; flex-wrap:wrap; align-items:center; gap:3px; }
+    .context-evidence-label { color:var(--muted); }
+    .rendered-context { border:1px solid #cbd9e8; background:#f7faff; padding:11px; white-space:pre-wrap; overflow-wrap:anywhere; line-height:1.45; font-size:12px; }
+    .summary-status { margin:0; }
+    .summary-profile-control { display:flex; align-items:center; gap:7px; padding-right:10px; border-right:1px solid #d4e1ee; color:#4b6074; white-space:nowrap; }
+    .digest-insights { display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:14px; margin:14px 0; }
+    .digest-insight { min-width:0; padding:4px 0 4px 12px; border-left:3px solid #237b7d; }
+    .digest-insight.open-items { border-left-color:#b77218; }
+    .digest-insight h3 { margin:0 0 7px; color:#204f52; font-size:13px; }
+    .digest-insight.open-items h3 { color:#7a4d11; }
+    .digest-insight-list { margin:0; padding:0; list-style:none; }
+    .digest-insight-list li { position:relative; padding:6px 0 6px 13px; border-top:1px solid #e1e9ed; color:#314256; font-size:12px; line-height:1.45; overflow-wrap:anywhere; }
+    .digest-insight-list li::before { content:'•'; position:absolute; left:1px; color:#237b7d; font-weight:700; }
+    .digest-insight.open-items li::before { color:#b77218; }
+    .digest-sources { min-width:0; margin-top:14px; padding:4px 0 4px 12px; border-left:3px solid #315d89; }
+    .digest-sources h3 { margin:0 0 7px; color:#315d89; font-size:13px; }
+    .budget-control { display:flex; flex-wrap:wrap; align-items:center; gap:10px; padding:10px; background:#f7faff; border:1px solid #d4e1ee; }
+    .budget-control label { font-size:12px; font-weight:700; }
+    .budget-control input { flex:1 1 260px; padding:0; height:16px; border:0; }
+    .budget-value { min-width:92px; text-align:right; font-family:inherit; font-size:12px; font-weight:700; }
+    .budget-branch-control { display:flex; align-items:center; gap:7px; padding-right:10px; border-right:1px solid #d4e1ee; color:#4b6074; white-space:nowrap; }
+    .budget-branch-control select, .summary-profile-control select { min-width:140px; height:28px; box-sizing:border-box; border:1px solid var(--line); border-radius:5px; color:#17324d; background:#fff; padding:0 6px; }
+    .budget-table { min-width:780px; table-layout:fixed; }
+    .budget-table .budget-candidate-column { width:72px; }
+    .budget-table .budget-loaded-column { width:68px; }
+    .budget-table .budget-state-column { width:118px; }
+    .budget-table .budget-sources-column { width:370px; }
+    .budget-table td:last-child { overflow-wrap:anywhere; }
+    .context-plan-row { cursor:pointer; }
+    .context-plan-row:hover td { background:#f5f9fd; }
+    .context-plan-row.selected td { background:#eaf3ff; }
+    .context-plan-table-wrap { position:relative; }
+    .context-plan-detail { position:absolute; inset:0; z-index:3; overflow:auto; border:1px solid #9db9d5; background:#f7faff; padding:12px; box-shadow:0 4px 16px rgba(31,85,146,.16); }
+    .context-plan-detail h3 { margin:0 0 7px; font-size:14px; }
+    .context-plan-detail-meta { display:flex; flex-wrap:wrap; align-items:center; gap:6px 9px; margin-bottom:8px; color:#4b6074; font-size:12px; }
+    .context-plan-detail-text { margin:8px 0; padding:10px; border:1px solid #d8e4ef; background:#fff; white-space:pre-wrap; overflow-wrap:anywhere; line-height:1.45; font-size:12px; }
+    .context-plan-detail-close { position:absolute; top:8px; right:8px; width:28px; height:28px; padding:0; border-radius:5px; background:#fff; color:#315d89; font-size:19px; line-height:1; }
+    .budget-state.included { color:#256c45; font-weight:700; }
+    .budget-state.truncated { color:#8a5b12; font-weight:700; }
+    .budget-state.omitted, .budget-state.not_available { color:#68798b; font-weight:700; }
+    .view-branch-toolbar { display:flex; justify-content:flex-end; margin:0 0 8px; }
+    .view-branch-toolbar label { display:flex; align-items:center; gap:7px; color:#4b6074; font-size:12px; font-weight:700; }
+    .view-branch-toolbar select { min-width:140px; }
+    @media (max-width: 900px) { .context-stat-grid { grid-template-columns:repeat(2, minmax(0,1fr)); } }
     .event-legend { display:flex; flex-wrap:wrap; gap:6px; padding:8px 14px; border-top:1px solid var(--line); background:#fbfcfd; }
     .legend-dot { width:9px; height:9px; border-radius:50%; display:inline-block; margin-right:5px; vertical-align:middle; }
     .dot-user_message { background:var(--blue); }
@@ -219,7 +318,6 @@
       <button id="traceMode" class="secondary mode-btn">Trajectory Playback</button>
       <button id="finalMode" class="secondary mode-btn active">Trajectory Overview</button>
       <input id="tid" placeholder="trajectory_id, or click Seed demo">
-      <select id="branch"><option>main</option></select>
       <button id="load">Load</button>
       <button id="seed" class="secondary">Seed demo</button>
     </div>
@@ -248,14 +346,13 @@
     <section>
       <div class="explorer-head">
         <div class="right-mode-tabs" aria-label="ContextDB Explorer sections"><button id="viewsMode" class="active">Database Views</button><button id="queryMode">ContextQL Explorer</button><button id="versionMode">Version Control</button></div>
-        <span id="viewMeta" class="badge">current_prompt</span>
       </div>
       <div id="databaseViewsPanel" class="right-pane">
         <div class="tabs view-groups" aria-label="Database Views">
           <div class="view-group-row">
             <div class="view-group">
               <div class="view-group-title">Context Loading &amp; Compression</div>
-              <div class="view-group-buttons"><button class="active" data-view="current_prompt">Prompt View</button><button data-view="summary">Summary</button></div>
+              <div class="view-group-buttons"><button data-view="summary">Context Digest</button><button data-view="current_prompt">Context Assembly</button></div>
             </div>
             <div class="view-group">
               <div class="view-group-title">Success / Failure Patterns</div>
@@ -293,6 +390,10 @@ ORDER BY timestamp;</textarea>
       <div id="versionControlPanel" class="right-pane hidden">
         <div class="version-control">
           <div class="version-toolbar">
+            <div class="version-action-row">
+              <label for="versionBranch">Branch</label>
+              <select id="versionBranch"><option>main</option></select>
+            </div>
             <div class="version-action-row">
               <input id="versionMessage" aria-label="Snapshot message" placeholder="Checkpoint message (optional)">
               <button id="createSnapshot" class="small-btn">Snapshot</button>
@@ -342,7 +443,11 @@ ORDER BY timestamp;</textarea>
   </div>
 <script>
 const $ = id => document.getElementById(id);
-let currentView = 'current_prompt';
+let currentView = '';
+let contextBudget = 2000;
+let contextAssemblySegments = [];
+let contextBudgetLoadTimer = null;
+let contextBudgetRange = null;
 let graphData = null;
 let versionData = null;
 let viewRequestSeq = 0;
@@ -350,6 +455,11 @@ let globalBusy = false;
 let playbackStep = 0;
 let playbackTimer = null;
 let playbackDetailRequest = 0;
+let llmProfiles = [];
+let defaultLlmProfileId = '';
+let summaryProfileId = '';
+const BRANCH_SCOPED_VIEWS = new Set(['current_prompt', 'summary', 'rl_dataset']);
+const viewBranches = {current_prompt: 'main', summary: 'main', rl_dataset: 'main'};
 const GRAPH_NODE_WIDTH = 210;
 const SAME_ROW_EDGE_OFFSET = 36;
 const GRAPH_PAYLOAD_VALUE_LIMIT = 96;
@@ -361,6 +471,82 @@ async function api(path, body) {
   return data;
 }
 function getTid() { return $('tid').value.trim() || new URLSearchParams(location.search).get('trajectory_id') || ''; }
+function availableBranchIds() {
+  const branches = (graphData?.branches || []).map(branch => branch.branch_id).filter(Boolean);
+  return branches.length ? branches : ['main'];
+}
+function defaultBranchId() {
+  const branches = availableBranchIds();
+  return branches.includes('main') ? 'main' : branches[0];
+}
+function branchOptions(selected) {
+  const branches = availableBranchIds();
+  const value = branches.includes(selected) ? selected : defaultBranchId();
+  return branches.map(branch => `<option value="${escapeHtml(branch)}"${branch === value ? ' selected' : ''}>${escapeHtml(branch)}</option>`).join('');
+}
+function selectedViewBranch(view) {
+  if (!BRANCH_SCOPED_VIEWS.has(view)) return defaultBranchId();
+  const branches = availableBranchIds();
+  if (!branches.includes(viewBranches[view])) viewBranches[view] = defaultBranchId();
+  return viewBranches[view];
+}
+function viewBranchSelector(view) {
+  const selected = selectedViewBranch(view);
+  return `<div class="view-branch-toolbar"><label>Branch <select data-view-branch="${view}" aria-label="${escapeHtml(viewLabel(view))} branch">${branchOptions(selected)}</select></label></div>`;
+}
+function viewBranchInlineSelector(view) {
+  const selected = selectedViewBranch(view);
+  return `<label class="budget-branch-control">Branch <select data-view-branch="${view}" aria-label="${escapeHtml(viewLabel(view))} branch">${branchOptions(selected)}</select></label>`;
+}
+function viewBranchStatusSelector(view) {
+  const selected = selectedViewBranch(view);
+  return `<label class="budget-branch-control">Branch <select data-view-branch="${view}" aria-label="${escapeHtml(viewLabel(view))} branch">${branchOptions(selected)}</select></label>`;
+}
+function selectedSummaryProfile() {
+  const available = llmProfiles.map(profile => profile.profile_id);
+  if (available.includes(summaryProfileId)) return summaryProfileId;
+  return available.includes(defaultLlmProfileId) ? defaultLlmProfileId : (available[0] || '');
+}
+function llmProfileOptions(selected) {
+  if (!llmProfiles.length) return '<option value="">Loading models...</option>';
+  const value = selectedSummaryProfile() || selected;
+  return llmProfiles.map(profile => `<option value="${escapeHtml(profile.profile_id)}"${profile.profile_id === value ? ' selected' : ''}>${escapeHtml(profile.model)}</option>`).join('');
+}
+function viewSummaryProfileSelector() {
+  return `<label class="summary-profile-control">LLM profile <select id="summaryProfile" aria-label="Context Digest LLM profile"${llmProfiles.length ? '' : ' disabled'}>${llmProfileOptions(summaryProfileId)}</select></label>`;
+}
+function populateSummaryProfileSelector() {
+  const select = $('summaryProfile');
+  if (!select) return;
+  const selected = selectedSummaryProfile();
+  select.innerHTML = llmProfileOptions(selected);
+  select.disabled = !llmProfiles.length;
+  if (selected) select.value = selected;
+}
+function bindSummaryProfileControls() {
+  const select = $('summaryProfile');
+  const button = $('generateSummary');
+  if (select) select.onchange = () => { summaryProfileId = select.value; };
+  if (button) button.onclick = () => {
+    summaryProfileId = select?.value || selectedSummaryProfile();
+    if (!globalBusy && currentView === 'summary' && summaryProfileId) loadView({refreshSummary: true});
+  };
+}
+function bindViewBranchSelector(view) {
+  const select = document.querySelector(`[data-view-branch="${view}"]`);
+  if (!select) return;
+  select.onchange = () => {
+    viewBranches[view] = select.value;
+    if (!globalBusy && currentView === view) loadView();
+  };
+}
+function populateVersionBranchSelector() {
+  const select = $('versionBranch');
+  if (!select) return;
+  const current = select.value;
+  const selected = availableBranchIds().includes(current) ? current : defaultBranchId();
+  select.innerHTML = branchOptions(selected);
+}
 function escapeRegExp(value) {
   return String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
@@ -556,7 +742,6 @@ function edgeEndpoints(source, target) {
   };
 }
 function drawGraph(data) {
-  const selectedBranch = $('branch').value || 'main';
   graphData = data;
   const graph = $('graph');
   graph.querySelectorAll('.node').forEach(n => n.remove());
@@ -587,8 +772,7 @@ function drawGraph(data) {
     edges.appendChild(line);
   });
   $('graphMeta').textContent = `${data.nodes.length} events, ${data.branches.length} branches`;
-  $('branch').innerHTML = data.branches.map(b => `<option>${b.branch_id}</option>`).join('');
-  if (data.branches.some(b => b.branch_id === selectedBranch)) $('branch').value = selectedBranch;
+  populateVersionBranchSelector();
 }
 function setMode(mode) {
   const trace = mode === 'trace';
@@ -667,6 +851,7 @@ function togglePlayback() {
 
 function renderMetrics(content) {
   const m = $('metrics'); m.innerHTML = '';
+  if (content?.schema_version === 'context_assembly.v1' || content?.schema_version === 'semantic_summary.v1') return;
   if (!content || !content.estimated_full_history_tokens) return;
   const cells = [
     ['Full tokens', content.estimated_full_history_tokens], ['Loaded', content.estimated_loaded_tokens],
@@ -681,7 +866,7 @@ function setOutput(html) { $('out').innerHTML = html; }
 function jsonBlock(data) { return `<pre class="json-block">${escapeHtml(JSON.stringify(data, null, 2))}</pre>`; }
 function viewLabel(view) {
   const labels = {
-    current_prompt:'Prompt View', summary:'Summary', failures:'Failures', failure_patterns:'Failure Patterns',
+    current_prompt:'Context Assembly', summary:'Context Digest', context_budget:'Context Assembly', failures:'Failures', failure_patterns:'Failure Patterns',
     success_patterns:'Success Patterns', repair_strategies:'Repair Links', semantic_repair_judgments:'Semantic Judge',
     learned_skills:'Learned Skills', skill_library:'Skill Library', skill_application_trace:'Application Trace', rl_dataset:'RL Rows', diff:'Diff'
   };
@@ -689,16 +874,22 @@ function viewLabel(view) {
 }
 function setBusyControls(busy) {
   globalBusy = busy;
-  document.querySelectorAll('.tabs button, #load, #seed, #branch, #runSql, #runNaturalLanguage, #nlProfile, #viewsMode, #queryMode, #versionMode, #createSnapshot, #createBranch, #versionMessage, #versionBranchName').forEach(el => el.disabled = busy);
+  document.querySelectorAll('.tabs button, #load, #seed, #runSql, #runNaturalLanguage, #nlProfile, #summaryProfile, #generateSummary, #viewsMode, #queryMode, #versionMode, #createSnapshot, #createBranch, #versionMessage, #versionBranchName, #versionBranch, [data-view-branch]').forEach(el => el.disabled = busy);
 }
 function setLoadingOutput(view, branch) {
   const label = viewLabel(view);
-  const slow = view === 'semantic_repair_judgments' || view === 'learned_skills';
-  $('viewMeta').textContent = `${label} loading...`;
+  const slow = view === 'semantic_repair_judgments' || view === 'learned_skills' || view === 'summary' || view === 'current_prompt' || view === 'context_budget';
+  const scope = BRANCH_SCOPED_VIEWS.has(view) ? `Reading branch ${branch || defaultBranchId()} from ContextDB.` : 'Reading trajectory-wide ContextDB data.';
   setOutput(`<div class="loading-card">
     <div class="spinner" aria-hidden="true"></div>
-    <div class="loading-text"><b>Loading ${escapeHtml(label)}</b><span>${escapeHtml(slow ? 'This view may call the configured LLM, so it can take a little longer.' : `Reading branch ${branch || 'main'} from ContextDB.`)}</span><div class="progress"><div></div></div></div>
+    <div class="loading-text"><b>Loading ${escapeHtml(label)}</b><span>${escapeHtml(slow ? 'This view may call the configured LLM, so it can take a little longer.' : scope)}</span><div class="progress"><div></div></div></div>
   </div>`);
+}
+function showDatabaseViewsPlaceholder() {
+  currentView = '';
+  document.querySelectorAll('.tabs button').forEach(button => button.classList.remove('active'));
+  renderMetrics(null);
+  setOutput('<div class="view-empty">Choose a Database View to inspect the loaded trajectory.</div>');
 }
 function showError(message) {
   setOutput(`<div class="view-empty"><b>Request failed</b><br>${escapeHtml(message)}</div>`);
@@ -731,13 +922,14 @@ learned_skills: 'SELECT skill_id, name, status, confidence_json, trigger_json, h
 skill_evidence: 'SELECT skill_id, action_id, failure_event_id, success_event_id, primary_rule, judgment_label\nFROM skill_evidence\nWHERE trajectory_id = :trajectory_id\nORDER BY skill_id, action_id;',
 skill_application_trace: 'SELECT event_id, branch_id, event_type, actor, timestamp, payload_json\nFROM skill_application_trace\nWHERE trajectory_id = :trajectory_id\nORDER BY timestamp;',
 branches: 'SELECT branch_id, base_event_id, head_event_id, snapshot_id, metadata_json\nFROM branches\nWHERE trajectory_id = :trajectory_id\nORDER BY branch_id;',
-current_prompt: 'SELECT event_id, branch_id, event_type, actor, timestamp, text, tool_name, command, status, preview\nFROM events\nWHERE trajectory_id = :trajectory_id AND branch_id = :branch_id\nORDER BY timestamp DESC\nLIMIT 8;',
-summary: 'SELECT event_id, branch_id, event_type, actor, timestamp, text, tool_name, command, status, preview\nFROM events\nWHERE trajectory_id = :trajectory_id AND branch_id = :branch_id\nORDER BY timestamp DESC\nLIMIT 12;',
+current_prompt: 'SELECT event_id, branch_id, event_type, actor, timestamp, text, tool_name, command, status, preview\nFROM events\nWHERE trajectory_id = :trajectory_id\nORDER BY timestamp DESC\nLIMIT 8;',
+summary: 'SELECT event_id, branch_id, event_type, actor, timestamp, text, tool_name, command, status, preview\nFROM events\nWHERE trajectory_id = :trajectory_id\nORDER BY timestamp DESC\nLIMIT 12;',
+context_budget: 'SELECT event_id, branch_id, event_type, actor, timestamp, text, tool_name, command, status, preview\nFROM events\nWHERE trajectory_id = :trajectory_id\nORDER BY timestamp DESC;',
 failures: 'SELECT event_id, branch_id, timestamp, tool_name, command, status, preview, error_signature\nFROM events\nWHERE trajectory_id = :trajectory_id AND status IN (\'failed\', \'error\', \'timeout\')\nORDER BY timestamp;',
 success_patterns: 'SELECT event_id AS success_event_id, branch_id, tool_name AS successful_tool, command AS successful_command, status AS outcome, preview, timestamp\nFROM events\nWHERE trajectory_id = :trajectory_id AND event_type = \'tool_result\' AND status = \'ok\'\nORDER BY timestamp;',
 semantic_repair_judgments: 'SELECT view_name, branch_id, created_at, event_count, object_key\nFROM materialized_views\nWHERE trajectory_id = :trajectory_id AND view_name = \'semantic_repair_judgments\'\nORDER BY created_at DESC;',
 skill_library: 'SELECT skill_id, name, status, trigger_json, confidence_json, highlight_event_ids\nFROM skills\nWHERE trajectory_id = :trajectory_id\nORDER BY skill_id;',
-rl_dataset: 'SELECT event_id, branch_id, event_type, actor, timestamp, payload_json, refs_json\nFROM events\nWHERE trajectory_id = :trajectory_id AND branch_id = :branch_id\nORDER BY timestamp;',
+rl_dataset: 'SELECT event_id, branch_id, event_type, actor, timestamp, payload_json, refs_json\nFROM events\nWHERE trajectory_id = :trajectory_id\nORDER BY timestamp;',
 diff: 'SELECT branch_id, base_event_id, head_event_id, snapshot_id\nFROM branches\nWHERE trajectory_id = :trajectory_id\nORDER BY branch_id;'
 };
 function contextQlEventIds(row) {
@@ -758,123 +950,161 @@ function renderSqlResult(data) {
   const meta=document.createElement('div');meta.className='sql-result-meta';meta.innerHTML='<span class="pill ok">'+escapeHtml(data.row_count||0)+' rows</span><span class="pill">'+escapeHtml((data.highlight_event_ids||[]).length)+' evidence events</span><span class="pill rule">ContextQL</span>';card.appendChild(meta);card.appendChild(wrap);
   $('sqlOut').innerHTML='';$('sqlOut').appendChild(card);if((data.highlight_event_ids||[]).length)highlightGraph(data.highlight_event_ids,[]);
 }
-async function runSqlQuery(){const tid=getTid();if(!tid)return;const sql=$('sqlInput').value.trim();if(!sql)return;setBusyControls(true);$('sqlMeta').textContent='executing...';try{const data=await api('/api/v1/sql',{trajectory_id:tid,branch_id:$('branch').value||'main',sql:sql});renderSqlResult(data);$('sqlMeta').textContent=String(data.row_count)+' rows';}catch(err){$('sqlMeta').textContent='query error';$('sqlOut').innerHTML='<div class="view-empty"><b>Query failed</b><br>'+escapeHtml(err.message)+'</div>';}finally{setBusyControls(false);}}
-async function loadLlmProfiles(){const select=$('nlProfile');try{const data=await api('/api/v1/llm_profiles');const profiles=data.profiles||[];select.innerHTML='';profiles.forEach(profile=>{const option=document.createElement('option');option.value=profile.profile_id;option.textContent=profile.model;option.dataset.ready=profile.ready?'true':'false';select.appendChild(option);});const preferred=data.default_profile||profiles[0]?.profile_id;if(preferred)select.value=preferred;}catch(err){select.innerHTML='<option value="">Model profiles unavailable</option>';select.disabled=true;}}
+async function runSqlQuery(){const tid=getTid();if(!tid)return;const sql=$('sqlInput').value.trim();if(!sql)return;setBusyControls(true);$('sqlMeta').textContent='executing...';try{const data=await api('/api/v1/sql',{trajectory_id:tid,sql:sql});renderSqlResult(data);$('sqlMeta').textContent=String(data.row_count)+' rows';}catch(err){$('sqlMeta').textContent='query error';$('sqlOut').innerHTML='<div class="view-empty"><b>Query failed</b><br>'+escapeHtml(err.message)+'</div>';}finally{setBusyControls(false);}}
+async function loadLlmProfiles(){
+  const select=$('nlProfile');
+  try{
+    const data=await api('/api/v1/llm_profiles');
+    llmProfiles=data.profiles||[];
+    defaultLlmProfileId=data.default_profile||llmProfiles[0]?.profile_id||'';
+    if (!summaryProfileId) summaryProfileId=defaultLlmProfileId;
+    select.innerHTML='';
+    llmProfiles.forEach(profile=>{const option=document.createElement('option');option.value=profile.profile_id;option.textContent=profile.model;option.dataset.ready=profile.ready?'true':'false';select.appendChild(option);});
+    if(defaultLlmProfileId)select.value=defaultLlmProfileId;
+    populateSummaryProfileSelector();
+    bindSummaryProfileControls();
+  }catch(err){
+    llmProfiles=[];
+    select.innerHTML='<option value="">Model profiles unavailable</option>';
+    select.disabled=true;
+    populateSummaryProfileSelector();
+  }
+}
 function modelExecutionMessage(execution, fallback){const requested=execution.requested_model||fallback||'selected model',actual=execution.response_model;if(execution.verified)return 'Confirmed by API response: '+actual+' (request id '+(execution.response_id||'unavailable')+').';if(actual)return 'API responded with '+actual+' although '+requested+' was requested.';return 'Translation completed, but the API did not return model metadata; the model cannot be independently confirmed.';}
-async function runNaturalLanguageQuery(){const tid=getTid(),question=$('nlQuestion').value.trim(),profileId=$('nlProfile').value;if(!tid||!question||!profileId)return;setBusyControls(true);$('sqlMeta').textContent='translating...';const profileLabel=$('nlProfile').selectedOptions[0]?.textContent||profileId;$('sqlOut').innerHTML='<div class="loading-card"><div class="spinner" aria-hidden="true"></div><div><b>Translating question with '+escapeHtml(profileLabel)+'</b><br><span class="muted">Review or edit the generated SQL, then use Run SQL.</span></div></div>';try{const data=await api('/api/v1/nl_sql',{trajectory_id:tid,branch_id:$('branch').value||'main',question:question,profile_id:profileId});const translation=data.translation||{},execution=translation.execution||{};$('sqlInput').value=translation.sql||'';$('sqlMeta').textContent=execution.verified?'verified '+execution.response_model:'SQL translated';$('sqlOut').innerHTML='<div class="view-empty"><b>SQL ready for review.</b><br>'+escapeHtml(modelExecutionMessage(execution,translation.model))+'<br><span class="muted">'+escapeHtml(translation.reason||'Click Run SQL to execute the generated statement.')+'</span></div>';}catch(err){$('sqlMeta').textContent='translation error';$('sqlOut').innerHTML='<div class="view-empty"><b>Natural-language translation failed</b><br>'+escapeHtml(err.message)+'</div>';}finally{setBusyControls(false);}}
+async function runNaturalLanguageQuery(){const tid=getTid(),question=$('nlQuestion').value.trim(),profileId=$('nlProfile').value;if(!tid||!question||!profileId)return;setBusyControls(true);$('sqlMeta').textContent='translating...';const profileLabel=$('nlProfile').selectedOptions[0]?.textContent||profileId;$('sqlOut').innerHTML='<div class="loading-card"><div class="spinner" aria-hidden="true"></div><div><b>Translating question with '+escapeHtml(profileLabel)+'</b><br><span class="muted">Review or edit the generated SQL, then use Run SQL.</span></div></div>';try{const data=await api('/api/v1/nl_sql',{trajectory_id:tid,question:question,profile_id:profileId});const translation=data.translation||{},execution=translation.execution||{};$('sqlInput').value=translation.sql||'';$('sqlMeta').textContent=execution.verified?'verified '+execution.response_model:'SQL translated';$('sqlOut').innerHTML='<div class="view-empty"><b>SQL ready for review.</b><br>'+escapeHtml(modelExecutionMessage(execution,translation.model))+'<br><span class="muted">'+escapeHtml(translation.reason||'Click Run SQL to execute the generated statement.')+'</span></div>';}catch(err){$('sqlMeta').textContent='translation error';$('sqlOut').innerHTML='<div class="view-empty"><b>Natural-language translation failed</b><br>'+escapeHtml(err.message)+'</div>';}finally{setBusyControls(false);}}
 
 function renderFailurePatterns(data) {
   const rows = Array.isArray(data.content) ? data.content : [];
   renderMetrics(null);
-  if (!rows.length) return setOutput('<div class="view-empty">No failures on this branch. Try branch main for the bundled demo.</div>' + jsonBlock(data));
-  const table = `<div class="table-wrap"><table><thead><tr><th>Failure</th><th>Command</th><th>Cause</th><th>Signature</th><th>Source</th><th></th></tr></thead><tbody>${rows.map(r => `
+  if (!rows.length) return setOutput('<div class="view-empty">No failures in this trajectory.</div>');
+  const table = `<div class="table-wrap failure-patterns-wrap"><table class="failure-patterns-table"><thead><tr><th>Failure</th><th>Command</th><th>Cause</th><th>Tool Call</th><th></th></tr></thead><tbody>${rows.map(r => `
     <tr>
       <td><span class="pill failed">${escapeHtml(r.branch_id)}</span><div class="mono">${escapeHtml(r.failure_event_id)}</div></td>
       <td><div class="mono">${escapeHtml(r.failed_command)}</div><div class="muted">${escapeHtml(r.failed_tool)}</div></td>
       <td>${escapeHtml(r.likely_cause)}</td>
-      <td><div>${escapeHtml(r.normalized_signature || r.error_signature)}</div><div class="muted">${escapeHtml(r.error_signature)}</div></td>
-      <td>${(r.source_event_ids || []).map(id => `<span class="pill">${escapeHtml(id)}</span>`).join('')}</td>
+      <td>${(r.source_event_ids || []).filter(id => id !== r.failure_event_id).map(id => `<span class="pill">${escapeHtml(id)}</span>`).join('') || '<span class="muted">No tool call</span>'}</td>
       <td><button class="small-btn" onclick='highlightGraph(${JSON.stringify(r.highlight_event_ids || [])}, [])'>Highlight</button></td>
     </tr>`).join('')}</tbody></table></div>`;
-  setOutput(table + jsonBlock(data));
+  setOutput(table);
 }
 function renderSuccessPatterns(data) {
   const rows = Array.isArray(data.content) ? data.content : [];
   renderMetrics(null);
-  if (!rows.length) return setOutput('<div class="view-empty">No successes found in this trajectory.</div>' + jsonBlock(data));
-  const table = `<div class="table-wrap"><table><thead><tr><th>Success</th><th>Command</th><th>Strategy</th><th>First?</th><th>Outcome</th><th></th></tr></thead><tbody>${rows.map(r => `
+  if (!rows.length) return setOutput('<div class="view-empty">No successes found in this trajectory.</div>');
+  const table = `<div class="table-wrap"><table><thead><tr><th>Success</th><th>Command</th><th>Tool Call</th><th></th></tr></thead><tbody>${rows.map(r => `
     <tr>
       <td><span class="pill ok">${escapeHtml(r.branch_id)}</span><div class="mono">${escapeHtml(r.success_event_id)}</div></td>
       <td><div class="mono">${escapeHtml(r.successful_command)}</div><div class="muted">${escapeHtml(r.successful_tool)}</div></td>
-      <td>${escapeHtml(r.strategy)}</td>
-      <td>${r.is_first_success_on_branch ? '<span class="pill ok">first success</span>' : '<span class="pill excluded">later success</span>'}</td>
-      <td><span class="pill ok">${escapeHtml(r.outcome)}</span></td>
+      <td>${(r.source_event_ids || []).filter(id => id !== r.success_event_id).map(id => `<span class="pill">${escapeHtml(id)}</span>`).join('') || '<span class="muted">No tool call</span>'}</td>
       <td><button class="small-btn" onclick='highlightGraph(${JSON.stringify(r.highlight_event_ids || [])}, [])'>Highlight</button></td>
     </tr>`).join('')}</tbody></table></div>`;
-  setOutput(table + jsonBlock(data));
+  setOutput(table);
+}
+function excludedReasonText(reason) {
+  const labels = {
+    not_first_success_on_branch: 'This success is not the first successful tool result after the failure on its branch, so it is not treated as the direct repair.',
+    supporting_only: 'This success has only supporting command-similarity evidence and no primary structural link to the failure.',
+    no_structural_evidence: 'This success has no structural trajectory link that establishes it as a repair for this failure.'
+  };
+  return labels[reason] || 'This success was excluded by the deterministic repair-link filter.';
 }
 function renderRepairStrategies(data) {
   const groups = Array.isArray(data.content) ? data.content : [];
   renderMetrics(null);
-  if (!groups.length) return setOutput('<div class="view-empty">No failure rows found for repair mining.</div>' + jsonBlock(data));
+  if (!groups.length) return setOutput('<div class="view-empty">No failure rows found for repair mining.</div>');
   const cards = groups.map((g, idx) => {
     const f = g.failure || {};
+    const toolCallEventId = f.tool_call_event_id || '';
     const candidates = g.repair_candidates || g.repairs || [];
     const excluded = g.excluded_successes || [];
     const candidateRows = candidates.length ? candidates.map(c => `
       <tr>
         <td><span class="pill ok">${escapeHtml(c.branch_id)}</span><div class="mono">${escapeHtml(c.success_event_id)}</div></td>
         <td><div class="mono">${escapeHtml(c.command)}</div><div class="muted">${escapeHtml(c.tool)}</div></td>
-        <td>${escapeHtml(c.strategy)}</td>
-        <td><span class="pill rule">${escapeHtml(c.primary_rule || c.link_type)}</span><div class="muted">${escapeHtml(c.strength)}</div></td>
         <td>${escapeHtml(c.why_linked)}</td>
         <td><button class="small-btn" onclick='highlightGraph(${JSON.stringify(c.highlight_event_ids || [])}, [])'>Highlight</button></td>
-      </tr>`).join('') : '<tr><td colspan="6" class="muted">No repair candidate.</td></tr>';
-    const excludedRows = excluded.length ? `<div class="table-wrap"><table><thead><tr><th>Excluded Success</th><th>Command</th><th>Reason</th></tr></thead><tbody>${excluded.map(x => `
-      <tr><td><span class="pill excluded">${escapeHtml(x.branch_id)}</span><div class="mono">${escapeHtml(x.success_event_id)}</div></td><td class="mono">${escapeHtml(x.command)}</td><td>${escapeHtml(x.reason)}</td></tr>`).join('')}</tbody></table></div>` : '<p class="muted">No excluded later successes for this failure.</p>';
-    return `<div class="summary-card">
-      <h3>Failure ${idx + 1}: <span class="mono">${escapeHtml(f.command)}</span></h3>
-      <p><span class="pill failed">${escapeHtml(f.branch_id)}</span><span class="pill">${escapeHtml(g.repair_status)}</span><span class="pill">${escapeHtml(g.candidate_count)} candidates</span></p>
-      <p><b>Likely cause:</b> ${escapeHtml(f.likely_cause)} <span class="muted">${escapeHtml(f.normalized_signature || '')}</span></p>
-      <div class="table-wrap"><table class="repair-table"><thead><tr><th>Repair Branch</th><th>Command</th><th>Strategy</th><th>Rule</th><th>Why Linked</th><th></th></tr></thead><tbody>${candidateRows}</tbody></table></div>
-      <h3>Excluded Successes</h3>${excludedRows}
+      </tr>`).join('') : '<tr><td colspan="4" class="muted">No repair candidate.</td></tr>';
+    const excludedRows = excluded.length ? `<div class="table-wrap repair-table-wrap"><table class="repair-excluded-table"><thead><tr><th>Excluded Event</th><th>Command</th><th>Why Excluded</th></tr></thead><tbody>${excluded.map(x => `
+      <tr><td><span class="pill excluded">${escapeHtml(x.branch_id)}</span><div class="mono">${escapeHtml(x.success_event_id)}</div></td><td class="mono">${escapeHtml(x.command)}</td><td>${escapeHtml(excludedReasonText(x.reason))}</td></tr>`).join('')}</tbody></table></div>` : '<p class="muted">No excluded later successes for this failure.</p>';
+    return `<div class="summary-card repair-strategy-card">
+      <h3 class="repair-failure-title">Failure ${idx + 1}: <span class="mono">${escapeHtml(f.command)}</span>${toolCallEventId ? ` <span class="pill mono repair-failure-event-id">${escapeHtml(toolCallEventId)}</span>` : ''}</h3>
+      <p><span class="pill failed">${escapeHtml(f.branch_id)}</span><span class="pill mono">${escapeHtml(f.failure_event_id || '')}</span><span class="pill">${escapeHtml(g.candidate_count)} candidates</span></p>
+      <p class="repair-likely-cause"><b>Likely cause:</b> ${escapeHtml(f.likely_cause)}</p>
+      <div class="table-wrap repair-table-wrap"><table class="repair-table"><thead><tr><th>Repair Event</th><th>Command</th><th>Why Linked</th><th></th></tr></thead><tbody>${candidateRows}</tbody></table></div>
+      ${excludedRows}
     </div>`;
   }).join('');
-  setOutput(cards + jsonBlock(data));
+  setOutput(cards);
 }
 function renderSemanticJudgments(data) {
   const rows = Array.isArray(data.content) ? data.content : [];
   renderMetrics(null);
-  if (!rows.length) return setOutput('<div class="view-empty">No semantic judgments. Query repair strategies first or check the trajectory.</div>' + jsonBlock(data));
-  const table = `<div class="table-wrap"><table class="repair-table"><thead><tr><th>Failure</th><th>Candidate</th><th>Rule</th><th>LLM Label</th><th>Reason</th><th></th></tr></thead><tbody>${rows.map(r => {
+  if (!rows.length) return setOutput('<div class="view-empty">No semantic judgments. Query repair strategies first or check the trajectory.</div>');
+  const table = `<div class="table-wrap semantic-judgments-wrap"><table class="semantic-judgments-table"><thead><tr><th>Failure</th><th>Candidate</th><th>LLM Label</th><th>Reason</th><th></th></tr></thead><tbody>${rows.map(r => {
     const j = r.judgment || {}; const f = r.failure || {}; const c = r.repair_candidate || {};
     const cls = j.label === 'likely_repair' || j.label === 'partial_repair' ? 'ok' : (j.label === 'not_evaluated' ? '' : 'excluded');
     return `<tr>
-      <td><div class="mono">${escapeHtml(f.command)}</div><div class="muted">${escapeHtml(r.failure_event_id)}</div></td>
-      <td><div class="mono">${escapeHtml(c.command)}</div><div class="muted">${escapeHtml(r.success_event_id)}</div></td>
-      <td><span class="pill rule">${escapeHtml(r.structural_rule)}</span></td>
-      <td><span class="pill ${cls}">${escapeHtml(j.label)}</span><div class="muted">${escapeHtml(j.provider)} ${escapeHtml(j.model || '')} ${escapeHtml(j.confidence ?? '')}</div></td>
+      <td><div class="mono">${escapeHtml(f.command)}</div><span class="pill failed">${escapeHtml(f.branch_id || '')}</span><span class="pill mono">${escapeHtml(r.failure_event_id)}</span></td>
+      <td><div class="mono">${escapeHtml(c.command)}</div><span class="pill ok">${escapeHtml(c.branch_id || '')}</span><span class="pill mono">${escapeHtml(r.success_event_id)}</span></td>
+      <td><span class="pill ${cls}">${escapeHtml(j.label)}</span><div class="muted">Confidence: ${escapeHtml(j.confidence ?? '')}</div><div class="muted">Recommended for skill: ${j.recommended_for_skill ? 'true' : 'false'}</div></td>
       <td>${escapeHtml(j.reason)}${j.error ? `<div class="muted">${escapeHtml(j.error)}</div>` : ''}</td>
       <td><button class="small-btn" onclick='highlightGraph(${JSON.stringify(r.highlight_event_ids || [])}, [])'>Highlight</button></td>
     </tr>`;
   }).join('')}</tbody></table></div>`;
-  setOutput(table + jsonBlock(data));
+  setOutput(table);
 }
 function renderLearnedSkills(data) {
   const skills = Array.isArray(data.content) ? data.content : [];
   renderMetrics(null);
-  if (!skills.length) return setOutput('<div class="view-empty">No learned skills. Enable LLM judge or use structural candidates that are recommended for skills.</div>' + jsonBlock(data));
+  if (!skills.length) return setOutput('<div class="view-empty">No learned skills. Enable LLM judge or use structural candidates that are recommended for skills.</div>');
+  const semanticSupportText = (items) => {
+    const groups = {};
+    for (const item of items || []) {
+      const label = String(item.judgment_label || '').replaceAll('_', ' ').trim();
+      if (!label) continue;
+      const confidence = Number(item.confidence);
+      const entry = groups[label] || { count: 0, confidences: [] };
+      entry.count += 1;
+      if (Number.isFinite(confidence)) entry.confidences.push(confidence);
+      groups[label] = entry;
+    }
+    return Object.entries(groups).map(([label, entry]) => {
+      const average = entry.confidences.length
+        ? entry.confidences.reduce((sum, value) => sum + value, 0) / entry.confidences.length
+        : null;
+      return `${entry.count} ${label}${average === null ? '' : ` (${average.toFixed(2)})`}`;
+    }).join(', ') || 'No semantic support';
+  };
   const cards = skills.map(s => {
-    const trigger = s.trigger || {}; const conf = s.confidence || {}; const grouping = s.action_grouping || {};
-    const actions = (s.recommended_actions || []).map(a => {
-      const actionConf = a.confidence || {};
-      const supports = (a.support_events || []).map(e => `<tr>
-        <td>${escapeHtml(e.branch_id)}</td>
-        <td class="mono">${escapeHtml(e.success_event_id)}</td>
-        <td class="mono">${escapeHtml(e.command)}</td>
-        <td><span class="pill rule">${escapeHtml(e.primary_rule)}</span></td>
-        <td><span class="pill ok">${escapeHtml(e.judgment_label)}</span> ${escapeHtml(e.confidence ?? '')}</td>
-      </tr>`).join('') || '<tr><td colspan="5" class="muted">No support events.</td></tr>';
-      const variants = (a.variants || []).map(v => `<span class="pill mono">${escapeHtml(v)}</span>`).join('');
+    const trigger = s.trigger || {}; const conf = s.confidence || {};
+    const recommendedActions = s.recommended_actions || [];
+    const skillSupport = recommendedActions.flatMap(action => action.support_events || []);
+    const actions = recommendedActions.map(a => {
+      const actionSupport = a.support_events || [];
+      const actionCommand = a.canonical_command_template || a.command_template || a.command || '';
+      const supports = actionSupport.map(e => {
+        const label = String(e.judgment_label || 'not_evaluated');
+        const pillClass = label === 'likely_repair' || label === 'partial_repair'
+          ? 'ok' : (label === 'not_evaluated' ? '' : 'excluded');
+        return `<div class="skill-support-event">
+          <span class="pill ok">${escapeHtml(e.branch_id || '')}</span><span class="pill mono">${escapeHtml(e.success_event_id || '')}</span><span class="pill ${pillClass}">${escapeHtml(label.replaceAll('_', ' '))}</span>
+          <div class="skill-support-judge"><span class="muted">Confidence: ${escapeHtml(e.confidence ?? '')}${e.reason ? ` - ${escapeHtml(e.reason)}` : ''}</span></div>
+        </div>`;
+      }).join('') || '<span class="muted">No support events.</span>';
       return `<tr>
-        <td>${escapeHtml(a.canonical_tool || a.tool)}</td>
-        <td><b>${escapeHtml(a.name || '')}</b><div class="mono">${escapeHtml(a.canonical_command_template || a.command_template)}</div><div class="muted">${escapeHtml(a.dedupe_method || '')}</div></td>
-        <td>${escapeHtml(a.strategy)}<div>${variants}</div></td>
-        <td><span class="pill ok">${escapeHtml(actionConf.support_count || 0)} supports</span><div class="muted">max ${escapeHtml(actionConf.max_llm_confidence ?? '')}</div></td>
-        <td><div class="table-wrap"><table><thead><tr><th>Branch</th><th>Success Event</th><th>Variant</th><th>Rule</th><th>Judge</th></tr></thead><tbody>${supports}</tbody></table></div></td>
+        <td><div class="learned-skill-action">${escapeHtml(actionCommand ? `Apply ${actionCommand}` : 'Apply successful repair')}</div></td>
+        <td>${supports}</td>
       </tr>`;
     }).join('');
-    const avoid = (s.avoid_actions || []).map(a => `<tr><td>${escapeHtml(a.tool)}</td><td class="mono">${escapeHtml(a.command || a.command_template)}</td><td>${escapeHtml(a.reason)}</td></tr>`).join('') || '<tr><td colspan="3" class="muted">No avoid actions.</td></tr>';
-    return `<div class="summary-card">
-      <h3>${escapeHtml(s.name)}</h3>
-      <p><span class="pill rule">${escapeHtml(s.skill_id)}</span><span class="pill">${escapeHtml(conf.support_count)} evidence refs</span><span class="pill ok">max ${escapeHtml(conf.max_llm_confidence)}</span><span class="pill">grouped by ${escapeHtml(grouping.provider || 'disabled')} ${escapeHtml(grouping.model || '')}</span></p>
-      <p><b>Trigger:</b> ${escapeHtml(trigger.likely_cause)} <span class="muted">${escapeHtml(trigger.normalized_signature || trigger.error_signature || '')}</span></p>
-      <div class="table-wrap"><table><thead><tr><th>Tool</th><th>Recommended Action</th><th>Strategy / Variants</th><th>Support</th><th>Support Events</th></tr></thead><tbody>${actions}</tbody></table></div>
-      <h3>Avoid / Validation-only Actions</h3><div class="table-wrap"><table><thead><tr><th>Tool</th><th>Command</th><th>Reason</th></tr></thead><tbody>${avoid}</tbody></table></div>
-      <p><button class="small-btn" onclick='highlightGraph(${JSON.stringify(s.highlight_event_ids || [])}, [])'>Highlight Evidence</button></p>
+    return `<div class="summary-card learned-skill-card">
+      <div class="learned-skill-title"><h3>${escapeHtml(s.name)}</h3><button class="small-btn" onclick='highlightGraph(${JSON.stringify(s.highlight_event_ids || [])}, [])'>Highlight Evidence</button></div>
+      <p><span class="pill rule">Skill ID: ${escapeHtml(s.skill_id)}</span></p>
+      <p><span class="pill">${escapeHtml(conf.support_count)} evidence refs</span><span class="pill ok">Semantic support: ${escapeHtml(semanticSupportText(skillSupport))}</span></p>
+      <div class="skill-trigger"><b>Trigger</b><div><span class="muted">Tool:</span> ${escapeHtml(trigger.failed_tool || '')}</div><div><span class="muted">Command pattern:</span> <span class="mono">${escapeHtml(trigger.failed_command_pattern || '')}</span></div><div><span class="muted">Likely cause:</span> ${escapeHtml(trigger.likely_cause || '')}</div></div>
+      <div class="table-wrap learned-skills-wrap"><table class="learned-skills-table"><thead><tr><th>Recommended Action</th><th>Support Events</th></tr></thead><tbody>${actions}</tbody></table></div>
     </div>`;
   }).join('');
-  setOutput(cards + jsonBlock(data));
+  setOutput(cards);
 }
 
 function sampleFailure(kind) {
@@ -887,7 +1117,6 @@ async function previewSkillMatch(kind = 'compiler') {
   try {
     const data = await api('/api/v1/match_skill', {trajectory_id:tid, failure:sampleFailure(kind), top_k:3});
     renderSkillMatchResult(data);
-    $('viewMeta').textContent = `Skill Match: ${kind}`;
   } catch (err) {
     showError(err.message);
   } finally {
@@ -902,7 +1131,6 @@ async function applySkillPreview(kind = 'compiler') {
     const data = await api('/api/v1/apply_skill', {trajectory_id:tid, failure:sampleFailure(kind), branch_id:branch});
     await loadAll();
     renderSkillMatchResult(data.match || data);
-    $('viewMeta').textContent = `Applied Skill: ${branch}`;
   } catch (err) {
     showError(err.message);
   } finally {
@@ -1022,8 +1250,178 @@ function renderSkillApplicationTrace(data) {
   setOutput((cards.join('') || '<div class="view-empty">No skill_match workflow found.</div>') + jsonBlock(data));
 }
 
+function contextEvidenceButton(ids, label = 'Source event IDs') {
+  const clean = [...new Set((ids || []).filter(Boolean))];
+  if (!clean.length) return '<span class="muted">No source events</span>';
+  const idsHtml = clean.map(id => `<button class="context-evidence mono" onclick='highlightGraph(${JSON.stringify([id])}, [])'>${escapeHtml(id)}</button>`).join('');
+  const prefix = label ? `<span class="context-evidence-label">${escapeHtml(label)}:</span>` : '';
+  return `<span class="context-evidence-list">${prefix}${idsHtml}</span>`;
+}
+function contextStat(label, value) {
+  return `<div class="context-stat"><b>${escapeHtml(value)}</b><span>${escapeHtml(label)}</span></div>`;
+}
+function displayContextOmissionReason(reason) {
+  return reason === 'Lower-priority segment omitted after the budget was exhausted.'
+    ? 'Omitted after the budget was exhausted.'
+    : (reason || '');
+}
+function displayContextSegmentTitle(segment) {
+  if (segment?.segment_id === 'recent_causal_trace' || segment?.title === 'Recent Causal Trace') return 'Recent Trace';
+  return segment?.title || segment?.segment_id || 'Context Fragment';
+}
+function renderContextStats(content) {
+  return `<div class="context-stat-grid">
+    ${contextStat('Full', `${content.estimated_full_history_tokens ?? 0} tokens`)}
+    ${contextStat('Budget', `${content.token_budget || 0} tokens`)}
+    ${contextStat('Selected', `${content.selected_tokens ?? content.estimated_loaded_tokens ?? 0} tokens`)}
+    ${contextStat('Saved', `${content.estimated_saved_tokens || 0} tokens / ${content.estimated_saved_percent || 0}%`)}
+  </div>`;
+}
+function renderContextHeader(content, title) {
+  return `<div class="context-head"><div><h3>${escapeHtml(title)}</h3><div class="context-identifiers"><span class="pill mono">${escapeHtml(content.trajectory_id || '')}</span><span class="pill">${escapeHtml(content.branch_id || '')}</span><span class="pill mono">head ${escapeHtml(content.head_event_id || 'empty')}</span></div></div></div>
+    ${renderContextStats(content)}`;
+}
+function scheduleContextBudgetLoad(value) {
+  contextBudget = Number(value);
+  if (contextBudgetLoadTimer) clearTimeout(contextBudgetLoadTimer);
+  contextBudgetLoadTimer = setTimeout(() => {
+    contextBudgetLoadTimer = null;
+    if (currentView === 'current_prompt' || currentView === 'context_budget') loadView();
+  }, 180);
+}
+function contextBudgetBounds(content) {
+  const trajectoryId = content.trajectory_id || getTid();
+  const branchId = content.branch_id || selectedViewBranch('current_prompt');
+  const key = `${trajectoryId}:${branchId}`;
+  if (!contextBudgetRange || contextBudgetRange.key !== key) {
+    const maxSelectable = Math.max(1, Number(content.max_selectable_tokens || content.selected_tokens || 1));
+    const step = maxSelectable >= 2000 ? 100 : 50;
+    // Keep both endpoints on the same token grid as the slider increments.
+    const minBudget = Math.max(step, Math.floor((maxSelectable * 0.5) / step) * step);
+    const maxBudget = Math.max(minBudget + step, Math.ceil((maxSelectable * 1.5) / step) * step);
+    contextBudgetRange = {
+      key,
+      min: minBudget,
+      max: maxBudget,
+      step,
+      maxSelectable,
+    };
+  }
+  return contextBudgetRange;
+}
+function renderContextAssembly(data) {
+  const content = data.content || {};
+  renderMetrics(null);
+  const segments = content.segments || [];
+  contextAssemblySegments = segments;
+  const bounds = contextBudgetBounds(content);
+  const requestedBudget = Number(content.token_budget || contextBudget);
+  const displayedBudget = Math.max(bounds.min, Math.min(bounds.max, requestedBudget));
+  if (displayedBudget !== requestedBudget) {
+    contextBudget = displayedBudget;
+    setTimeout(() => loadView(), 0);
+  }
+  const rows = segments.map((segment, index) => ({segment, index}))
+    .filter(({segment}) => Number(segment.token_cost || 0) > 0)
+    .map(({segment, index}) => {
+    const state = segment.selection_status || 'omitted';
+    return `<tr class="context-plan-row" data-context-segment-index="${index}" onclick="showContextSegmentDetail(${index})"><td><b>${escapeHtml(displayContextSegmentTitle(segment))}</b><div class="muted">${escapeHtml(segment.selection_reason || '')}</div></td><td>${escapeHtml(segment.token_cost ?? 0)}</td><td>${escapeHtml(segment.loaded_token_cost ?? 0)}</td><td><span class="budget-state ${escapeHtml(state)}">${escapeHtml(state.replace('_', ' '))}</span><div class="muted">${escapeHtml(displayContextOmissionReason(segment.omission_reason))}</div></td><td>${contextEvidenceButton(segment.source_event_ids, '')}</td></tr>`;
+  }).join('') || '<tr><td colspan="5" class="muted">No context fragments are available on this branch.</td></tr>';
+  setOutput(`<div class="context-assembly">${renderContextStats(content)}
+    <section class="budget-control">${viewBranchInlineSelector('current_prompt')}<label for="contextBudgetRange">Budget (${escapeHtml(bounds.min)}-${escapeHtml(bounds.max)})</label><input id="contextBudgetRange" type="range" min="${escapeHtml(bounds.min)}" max="${escapeHtml(bounds.max)}" step="${escapeHtml(bounds.step)}" value="${escapeHtml(displayedBudget)}"><output id="contextBudgetValue" class="budget-value">${escapeHtml(displayedBudget)} tokens</output></section>
+    <div id="contextPlanTableWrap" class="table-wrap context-plan-table-wrap"><table class="budget-table"><colgroup><col><col class="budget-candidate-column"><col class="budget-loaded-column"><col class="budget-state-column"><col class="budget-sources-column"></colgroup><thead><tr><th>Context fragment</th><th>Candidate tokens</th><th>Loaded tokens</th><th>State</th><th>Sources</th></tr></thead><tbody>${rows}</tbody></table><section id="contextSegmentDetail" class="context-plan-detail" hidden></section></div>
+  </div>`);
+  const range = $('contextBudgetRange');
+  const output = $('contextBudgetValue');
+  bindViewBranchSelector('current_prompt');
+  range.oninput = () => {
+    output.textContent = `${range.value} tokens`;
+    if (!range.dataset.dragging) scheduleContextBudgetLoad(range.value);
+  };
+  range.onpointerdown = () => { range.dataset.dragging = 'true'; };
+  range.onpointerup = () => {
+    delete range.dataset.dragging;
+    scheduleContextBudgetLoad(range.value);
+  };
+  range.onpointercancel = () => { delete range.dataset.dragging; };
+  range.onchange = () => {
+    if (!range.dataset.dragging) scheduleContextBudgetLoad(range.value);
+  };
+}
+function showContextSegmentDetail(index) {
+  const segment = contextAssemblySegments[index];
+  if (!segment) return;
+  document.querySelectorAll('.context-plan-row').forEach(row => row.classList.toggle('selected', Number(row.dataset.contextSegmentIndex) === index));
+  const state = segment.selection_status || (segment.included ? 'included' : 'omitted');
+  const text = segment.loaded_text ?? segment.text ?? '';
+  const explanation = segment.selection_reason || displayContextOmissionReason(segment.omission_reason);
+  const detail = $('contextSegmentDetail');
+  detail.hidden = false;
+  detail.innerHTML = `<button class="context-plan-detail-close" title="Close context fragment detail" aria-label="Close context fragment detail" onclick="hideContextSegmentDetail()">&times;</button><h3>${escapeHtml(displayContextSegmentTitle(segment))}</h3>
+    <div class="context-plan-detail-meta"><span class="pill ${state === 'included' ? 'ok' : state === 'truncated' ? 'excluded' : ''}">${escapeHtml(state.replace('_', ' '))}</span><span>${escapeHtml(segment.loaded_token_cost ?? 0)} / ${escapeHtml(segment.token_cost ?? 0)} tokens</span></div>
+    <div class="context-plan-detail-meta"><span>${escapeHtml(explanation)}</span></div>
+    ${text ? `<div class="context-plan-detail-text">${escapeHtml(text)}</div>` : '<div class="muted">This fragment is not available under the selected budget.</div>'}
+    <div class="context-plan-detail-meta">${contextEvidenceButton(segment.source_event_ids)}</div>`;
+}
+function hideContextSegmentDetail() {
+  const detail = $('contextSegmentDetail');
+  if (detail) detail.hidden = true;
+  document.querySelectorAll('.context-plan-row').forEach(row => row.classList.remove('selected'));
+}
+function renderCompressionSummary(data) {
+  const content = data.content || {};
+  renderMetrics(null);
+  const scope = content.scope || {}, llm = content.llm || {};
+  const facts = (content.key_facts || []).map(fact => `<li>${escapeHtml(fact)}</li>`).join('');
+  const open = (content.open_items || []).map(item => `<li>${escapeHtml(item)}</li>`).join('');
+  const insights = facts || open ? `<div class="digest-insights">
+    ${facts ? `<section class="digest-insight"><h3>Key Facts</h3><ul class="digest-insight-list">${facts}</ul></section>` : ''}
+    ${open ? `<section class="digest-insight open-items"><h3>Open Items</h3><ul class="digest-insight-list">${open}</ul></section>` : ''}
+  </div>` : '';
+  const summaryBody = content.summary
+    ? `<div class="rendered-context">${escapeHtml(content.summary)}</div>`
+    : content.status === 'not_needed'
+      ? `<div class="view-empty">${escapeHtml(llm.reason || 'The complete trajectory fits in the short-term causal window; no earlier prefix needs compression.')}</div>`
+      : `<div class="view-empty"><b>Semantic summary unavailable.</b><br>${escapeHtml(llm.error || llm.reason || 'Configure a working LLM profile and reload this view.')}</div>`;
+  setOutput(`<div class="context-assembly">
+    <div class="context-stat-grid">
+      ${contextStat('Source events', `${scope.source_event_count || 0}`)}
+      ${contextStat('Raw size', `${content.raw_tokens || 0} tokens`)}
+      ${contextStat('Compressed size', `${content.compressed_tokens || 0} tokens`)}
+      ${contextStat('Compression ratio', `${content.compression_ratio || 0}%`)}
+    </div>
+    <section class="budget-control summary-status">${viewBranchStatusSelector('summary')}${viewSummaryProfileSelector()}<button id="generateSummary" class="small-btn"${llmProfiles.length ? '' : ' disabled'}>Generate Digest</button></section>
+    <section class="summary-card">
+      ${summaryBody}
+      ${insights}
+      <section class="digest-sources"><h3>Source Events</h3>${contextEvidenceButton(content.source_event_ids, '')}</section>
+    </section>
+  </div>`);
+  bindViewBranchSelector('summary');
+  bindSummaryProfileControls();
+}
+function renderContextBudget(data) {
+  return renderContextAssembly(data);
+}
+function renderRlDataset(data) {
+  const rows = Array.isArray(data.content) ? data.content : [];
+  renderMetrics(null);
+  const body = rows.map(row => {
+    const action = row.action?.text || row.action?.command || JSON.stringify(row.action || {});
+    const stateCount = Array.isArray(row.state_events) ? row.state_events.length : 0;
+    return `<tr onclick='highlightGraph(${JSON.stringify([row.event_id])}, [])'><td class="mono">${escapeHtml(row.event_id || '')}</td><td>${escapeHtml(row.branch_id || '')}</td><td>${escapeHtml(action)}</td><td>${escapeHtml(stateCount)}</td><td>${escapeHtml(row.reward_hint ?? '')}</td></tr>`;
+  }).join('') || '<tr><td colspan="5" class="muted">No assistant-action rows are available on this branch.</td></tr>';
+  setOutput(`<div class="context-assembly">${viewBranchSelector('rl_dataset')}
+    <div class="table-wrap"><table><thead><tr><th>Action event</th><th>Branch</th><th>Action</th><th>State events</th><th>Reward hint</th></tr></thead><tbody>${body}</tbody></table></div>
+  </div>`);
+  bindViewBranchSelector('rl_dataset');
+}
+
 function renderView(view, data) {
   clearHighlight();
+  if (view === 'current_prompt') return renderContextAssembly(data);
+  if (view === 'summary') return renderCompressionSummary(data);
+  if (view === 'context_budget') return renderContextBudget(data);
   if (view === 'failure_patterns') return renderFailurePatterns(data);
   if (view === 'success_patterns') return renderSuccessPatterns(data);
   if (view === 'repair_strategies') return renderRepairStrategies(data);
@@ -1031,13 +1429,14 @@ function renderView(view, data) {
   if (view === 'learned_skills') return renderLearnedSkills(data);
   if (view === 'skill_library') return renderSkillLibrary(data);
   if (view === 'skill_application_trace') return renderSkillApplicationTrace(data);
+  if (view === 'rl_dataset') return renderRlDataset(data);
   $('out').innerHTML = jsonBlock(data);
 }
 
-async function loadView() {
+async function loadView(options = {}) {
   const tid = getTid(); if (!tid) return;
-  const branch = $('branch').value || 'main';
   const requestedView = currentView;
+  const branch = selectedViewBranch(requestedView);
   const seq = ++viewRequestSeq;
   setBusyControls(true);
   setLoadingOutput(requestedView, branch);
@@ -1049,15 +1448,18 @@ async function loadView() {
       if (seq !== viewRequestSeq) return;
       renderMetrics(null);
     } else {
-      data = await api('/api/v1/query_view', {trajectory_id:tid, branch_id:branch, view_name:requestedView, token_budget:2000});
+      const body = {trajectory_id:tid, branch_id:branch, view_name:requestedView, token_budget:contextBudget};
+      if (requestedView === 'summary' || requestedView === 'current_prompt' || requestedView === 'context_budget') {
+        body.profile_id = selectedSummaryProfile() || undefined;
+        body.refresh_summary = Boolean(options.refreshSummary);
+      }
+      data = await api('/api/v1/query_view', body);
       if (seq !== viewRequestSeq) return;
       renderMetrics(data.content);
     }
     renderView(requestedView, data);
-    $('viewMeta').textContent = viewLabel(requestedView);
   } catch (err) {
     if (seq === viewRequestSeq) {
-      $('viewMeta').textContent = `${viewLabel(requestedView)} error`;
       showError(err.message);
     }
   } finally {
@@ -1069,7 +1471,7 @@ async function loadAll() {
   const alreadyBusy = globalBusy;
   if (!alreadyBusy) {
     setBusyControls(true);
-    setLoadingOutput(currentView, $('branch').value || 'main');
+    if (currentView) setLoadingOutput(currentView, selectedViewBranch(currentView));
   }
   try {
     $('graphMeta').textContent = 'loading...';
@@ -1077,7 +1479,8 @@ async function loadAll() {
     drawGraph(data);
     playbackStep = Math.min(playbackStep, Math.max(0, data.nodes.length - 1));
     drawPlayback();
-    await loadView();
+    if (currentView) await loadView();
+    else showDatabaseViewsPlaceholder();
     if (!$('versionControlPanel').classList.contains('hidden')) await loadVersionControl();
   } finally {
     if (!alreadyBusy) setBusyControls(false);
@@ -1086,7 +1489,7 @@ async function loadAll() {
 async function seedDemo() {
   setBusyControls(true);
   $('graphMeta').textContent = 'seeding...';
-  setLoadingOutput(currentView, $('branch').value || 'main');
+  showDatabaseViewsPlaceholder();
   try {
   const traj = await api('/api/v1/trajectories', {title:'Browser seeded rollback demo', agent_id:'codex', source_id:'dashboard'});
   const tid = traj.trajectory_id; $('tid').value = tid;
@@ -1127,10 +1530,11 @@ function branchVersionOrigin(branch) {
 }
 function renderVersionControl(data) {
   versionData = data;
+  populateVersionBranchSelector();
   const branches = data.branches || [];
   const snapshots = data.snapshots || [];
   const events = data.version_events || [];
-  const active = $('branch').value || 'main';
+  const active = $('versionBranch').value || defaultBranchId();
   const branchRows = branches.map(b => `<tr>
     <td><b>${escapeHtml(b.branch_id)}</b><div class="muted">${escapeHtml(branchVersionOrigin(b))}</div></td>
     <td class="mono">${escapeHtml(b.base_event_id || '')}</td>
@@ -1168,7 +1572,7 @@ async function createVersionSnapshot() {
   setBusyControls(true);
   try {
     await api('/api/v1/version/snapshot', {
-      trajectory_id:tid, branch_id:$('branch').value || 'main', message:$('versionMessage').value.trim(),
+      trajectory_id:tid, branch_id:$('versionBranch').value || defaultBranchId(), message:$('versionMessage').value.trim(),
       reason:'Manual dashboard checkpoint.', origin:'manual_ui', actor:'user',
     });
     await loadAll(); await loadVersionControl();
@@ -1177,7 +1581,7 @@ async function createVersionSnapshot() {
 }
 async function createVersionBranch() {
   const tid = getTid(); if (!tid) return;
-  const fromBranch = $('branch').value || 'main';
+  const fromBranch = $('versionBranch').value || defaultBranchId();
   const branchId = $('versionBranchName').value.trim() || `repair-${Date.now().toString(36)}`;
   setBusyControls(true);
   try {
@@ -1185,7 +1589,7 @@ async function createVersionBranch() {
       trajectory_id:tid, branch_id:branchId, from_branch:fromBranch,
       reason:'Manual dashboard repair branch.', origin:'manual_ui',
     });
-    $('versionBranchName').value=''; await loadAll(); $('branch').value=branchId; await loadVersionControl();
+    $('versionBranchName').value=''; await loadAll(); $('versionBranch').value=branchId; await loadVersionControl();
   } catch (err) { $('versionOut').innerHTML='<div class="view-empty"><b>Branch creation failed</b><br>'+escapeHtml(err.message)+'</div>'; }
   finally { setBusyControls(false); }
 }
@@ -1199,7 +1603,7 @@ async function rollbackSnapshot(snapshotId) {
       trajectory_id:tid, snapshot_id:snapshotId, target_branch_id:target,
       reason:'Manual dashboard logical rollback.', origin:'manual_ui',
     });
-    await loadAll(); $('branch').value=target; await loadVersionControl();
+    await loadAll(); $('versionBranch').value=target; await loadVersionControl();
   } catch (err) { $('versionOut').innerHTML='<div class="view-empty"><b>Logical rollback failed</b><br>'+escapeHtml(err.message)+'</div>'; }
   finally { setBusyControls(false); }
 }
@@ -1238,9 +1642,9 @@ $('stepPrev').onclick = () => stepPlayback(-1);
 $('stepNext').onclick = () => stepPlayback(1);
 $('stepPlay').onclick = () => togglePlayback();
 $('stepSlider').oninput = e => { playbackStep = Number(e.target.value || 0); drawPlayback(); };
-$('load').onclick = () => { if (!globalBusy) loadAll().catch(err => { showError(err.message); $('graphMeta').textContent = 'load failed'; setBusyControls(false); }); };
+$('load').onclick = () => { if (!globalBusy) { showDatabaseViewsPlaceholder(); loadAll().catch(err => { showError(err.message); $('graphMeta').textContent = 'load failed'; setBusyControls(false); }); } };
 $('seed').onclick = () => { if (!globalBusy) seedDemo(); };
-$('branch').onchange = () => { if (!globalBusy) loadView(); };
+$('versionBranch').onchange = () => { if (!globalBusy && !$('versionControlPanel').classList.contains('hidden')) loadVersionControl(); };
 loadLlmProfiles();
 if (getTid()) { $('tid').value = getTid(); loadAll().catch(err => { showError(err.message); $('graphMeta').textContent = 'load failed'; setBusyControls(false); }); }
 </script>
