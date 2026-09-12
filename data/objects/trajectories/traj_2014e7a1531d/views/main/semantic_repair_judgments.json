@@ -17,7 +17,7 @@
         "error_signature": "Exit code 1\nGet-Content : 锟揭诧拷锟斤拷路锟斤拷锟斤拷.\\assets\\settings.json锟斤拷锟斤拷锟斤拷为锟斤拷路锟斤拷锟斤拷锟斤拷锟节★拷\r\n锟斤拷锟斤拷位锟斤拷 锟斤拷:1 锟街凤拷: 1\r\n+ Get-Content -Raw -LiteralPath '.\\assets\\settings.json'\r\n+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\n    + CategoryInfo          : ObjectNotFound: (.\\assets\\settings.json:String) [Get-Content], ItemNotFoundException\r\n    + FullyQualifiedErrorId : PathNotFound,Microsoft.PowerShell.Commands.GetContentCommand",
         "normalized_signature": "exit code get-content 锟揭诧拷锟斤拷路锟斤拷锟斤拷 assets settings.json锟斤拷锟斤拷锟斤拷为锟斤拷路锟斤拷锟斤拷锟斤拷锟节★拷 锟斤拷锟斤拷位锟斤拷 锟斤拷 锟街凤拷 + get-content -raw -literalpath ' assets settings.json' + ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ + categoryinfo objectnotfound  assets settings.json",
         "preceding_action": "",
-        "likely_cause": "file not found at specified path",
+        "likely_cause": "missing file at specified path",
         "evidence_event_ids": [
           "evt_27ce1cb17ce0",
           "evt_9facbb570bdd"
@@ -69,19 +69,19 @@
       "structural_rule": "same_branch_first_success_after_failure",
       "judgment": {
         "enabled": true,
-        "provider": "bailian",
-        "model": "qwen3.7-max",
+        "provider": "openai-compatible",
+        "model": "deepseek-flash",
         "label": "likely_repair",
-        "confidence": 0.95,
-        "reason": "The agent corrected the file path in the Get-Content command from a non-existent relative path to the correct nested path, resolving the PathNotFound error.",
-        "risk": "None significant, the command variant directly addresses the missing file error.",
+        "confidence": 0.9,
+        "reason": "The failed command tried to read .\\assets\\settings.json and hit a missing-path error; the successful follow-up read the same settings.json under .\\examples\\live-path-demo\\assets\\, indicating the path was corrected to an existing file.",
+        "risk": "The success confirms a valid path, but it does not prove that this nested settings.json is the originally intended target file.",
         "recommended_for_skill": true,
         "execution": {
-          "profile_id": "qwen-3.7-max",
-          "provider": "bailian",
-          "requested_model": "qwen3.7-max",
-          "response_model": "qwen3.7-max",
-          "response_id": "chatcmpl-5687e86a-8d83-9612-9038-910376b1ad8d",
+          "profile_id": "background-deepseek-flash",
+          "provider": "openai-compatible",
+          "requested_model": "deepseek-flash",
+          "response_model": "deepseek-flash",
+          "response_id": "40691307-701e-421c-918c-bec8a68e7a62",
           "verified": true
         }
       },
@@ -104,7 +104,7 @@
         "error_signature": "Exit code 1\nGet-Content : 锟揭诧拷锟斤拷路锟斤拷锟斤拷.\\assets\\settings.json锟斤拷锟斤拷锟斤拷为锟斤拷路锟斤拷锟斤拷锟斤拷锟节★拷\r\n锟斤拷锟斤拷位锟斤拷 锟斤拷:1 锟街凤拷: 1\r\n+ Get-Content -Raw -LiteralPath '.\\assets\\settings.json'\r\n+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\n    + CategoryInfo          : ObjectNotFound: (.\\assets\\settings.json:String) [Get-Content], ItemNotFoundException\r\n    + FullyQualifiedErrorId : PathNotFound,Microsoft.PowerShell.Commands.GetContentCommand",
         "normalized_signature": "exit code get-content 锟揭诧拷锟斤拷路锟斤拷锟斤拷 assets settings.json锟斤拷锟斤拷锟斤拷为锟斤拷路锟斤拷锟斤拷锟斤拷锟节★拷 锟斤拷锟斤拷位锟斤拷 锟斤拷 锟街凤拷 + get-content -raw -literalpath ' assets settings.json' + ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ + categoryinfo objectnotfound  assets settings.json",
         "preceding_action": "",
-        "likely_cause": "file not found at specified path",
+        "likely_cause": "file not found at expected path",
         "evidence_event_ids": [
           "evt_3f93812cdc7a",
           "evt_77235dfe6da4"
@@ -149,19 +149,19 @@
       "structural_rule": "same_branch_first_success_after_failure",
       "judgment": {
         "enabled": true,
-        "provider": "bailian",
-        "model": "qwen3.7-max",
+        "provider": "openai-compatible",
+        "model": "deepseek-flash",
         "label": "unrelated_success",
-        "confidence": 0.9,
-        "reason": "The successful action is a meta-tool call to record a skill decision in a context database, rather than the actual execution of the repaired file read command.",
-        "risk": "The actual file read repair might have occurred in a different step not captured in this candidate.",
+        "confidence": 0.88,
+        "reason": "The successful action only records a skill decision accepting a recommended path repair; it does not read, recreate, or redirect the missing .\\assets\\settings.json file. No actual path repair was executed, so the prior file-not-found failure is not semantically repaired.",
+        "risk": "The structural same-branch linkage may falsely imply repair; the underlying file may still be missing or the path issue unresolved.",
         "recommended_for_skill": false,
         "execution": {
-          "profile_id": "qwen-3.7-max",
-          "provider": "bailian",
-          "requested_model": "qwen3.7-max",
-          "response_model": "qwen3.7-max",
-          "response_id": "chatcmpl-8913c88c-9002-9b53-893d-c079f9970cf7",
+          "profile_id": "background-deepseek-flash",
+          "provider": "openai-compatible",
+          "requested_model": "deepseek-flash",
+          "response_model": "deepseek-flash",
+          "response_id": "af722179-2a26-4de2-9850-973da1eee184",
           "verified": true
         }
       },
@@ -184,7 +184,7 @@
         "error_signature": "Exit code 1\nSet-Content : 未锟斤拷锟揭碉拷路锟斤拷锟斤拷D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB\\__contextdb_combined_missing_output__\\first-not\r\ne.txt锟斤拷锟斤拷一锟斤拷锟街★拷\r\n锟斤拷锟斤拷位锟斤拷 锟斤拷:1 锟街凤拷: 34\r\n+ ... e = \"Stop\"; Set-Content -LiteralPath \".\\__contextdb_combined_missing_ ...\r\n+                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\n    + CategoryInfo          : ObjectNotFound: (D:\\software\\Pyc...\\first-note.txt:String) [Set-Content], DirectoryNotFo \r\n   undException\r\n    + FullyQualifiedE",
         "normalized_signature": "exit code set-content 未锟斤拷锟揭碉拷路锟斤拷锟斤拷d software pycharm selfcode agent-contextdb __contextdb_combined_missing_output__ first-not e.txt锟斤拷锟斤拷一锟斤拷锟街★拷 锟斤拷锟斤拷位锟斤拷 锟斤拷 锟街凤拷 +  e = \"stop\" set-content -literalpath \" __contextdb_combined_missing_ ",
         "preceding_action": "",
-        "likely_cause": "target directory does not exist",
+        "likely_cause": "target directory missing before file write",
         "evidence_event_ids": [
           "evt_92105702867e",
           "evt_b80ee9e66a0e"
@@ -229,19 +229,19 @@
       "structural_rule": "same_branch_first_success_after_failure",
       "judgment": {
         "enabled": true,
-        "provider": "bailian",
-        "model": "qwen3.7-max",
+        "provider": "openai-compatible",
+        "model": "deepseek-flash",
         "label": "unrelated_success",
-        "confidence": 1.0,
-        "reason": "The successful action calls a completely different tool (contextdb_get_version_status) that does not address the DirectoryNotFoundException from the failed shell command attempting to write a file.",
-        "risk": "None, the actions are clearly unrelated.",
+        "confidence": 0.95,
+        "reason": "The failure was a Set-Content write that failed because the target directory was missing. The successful repair candidate is an unrelated contextdb_get_version_status call; it does not create the missing directory or retry the file write, so it does not semantically repair the failure.",
+        "risk": "The link is only structural (first success after failure on the same branch); no evidence shows it addressed the missing-directory cause.",
         "recommended_for_skill": false,
         "execution": {
-          "profile_id": "qwen-3.7-max",
-          "provider": "bailian",
-          "requested_model": "qwen3.7-max",
-          "response_model": "qwen3.7-max",
-          "response_id": "chatcmpl-a2ee6d3e-9183-9793-a15d-147f798481d0",
+          "profile_id": "background-deepseek-flash",
+          "provider": "openai-compatible",
+          "requested_model": "deepseek-flash",
+          "response_model": "deepseek-flash",
+          "response_id": "06b83acc-b915-4833-9ae3-3b9df1342e93",
           "verified": true
         }
       },
@@ -264,7 +264,7 @@
         "error_signature": "Exit code 1\nSet-Content : 未锟斤拷锟揭碉拷路锟斤拷锟斤拷D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB\\__contextdb_combined_missing_output__\\second-no\r\nte.txt锟斤拷锟斤拷一锟斤拷锟街★拷\r\n锟斤拷锟斤拷位锟斤拷 锟斤拷:1 锟街凤拷: 34\r\n+ ... e = \"Stop\"; Set-Content -LiteralPath \".\\__contextdb_combined_missing_ ...\r\n+                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\n    + CategoryInfo          : ObjectNotFound: (D:\\software\\Pyc...second-note.txt:String) [Set-Content], DirectoryNotFo \r\n   undException\r\n    + FullyQualified",
         "normalized_signature": "exit code set-content 未锟斤拷锟揭碉拷路锟斤拷锟斤拷d software pycharm selfcode agent-contextdb __contextdb_combined_missing_output__ second-no te.txt锟斤拷锟斤拷一锟斤拷锟街★拷 锟斤拷锟斤拷位锟斤拷 锟斤拷 锟街凤拷 +  e = \"stop\" set-content -literalpath \" __contextdb_combined_missing_ ",
         "preceding_action": "",
-        "likely_cause": "target directory does not exist for file write",
+        "likely_cause": "missing target directory for file write",
         "evidence_event_ids": [
           "evt_3aedeca52d50",
           "evt_62ce55c9c672"
@@ -309,19 +309,19 @@
       "structural_rule": "same_branch_first_success_after_failure",
       "judgment": {
         "enabled": true,
-        "provider": "bailian",
-        "model": "qwen3.7-max",
+        "provider": "openai-compatible",
+        "model": "deepseek-flash",
         "label": "unrelated_success",
-        "confidence": 1.0,
-        "reason": "The successful action is a call to an unrelated MCP tool (contextdb_get_version_status) and does not address the DirectoryNotFoundException from the previous shell command.",
-        "risk": "The agent might have abandoned the file write task entirely instead of actually repairing the directory creation issue.",
+        "confidence": 0.98,
+        "reason": "The failure was a file write that failed because the target directory was missing. The successful action only calls contextdb_get_version_status with a session ID and source, so it does not create the missing directory or retry the file write.",
+        "risk": "The success is merely the first successful tool call after the failure on the same branch and has no apparent semantic connection to repairing the directory-not-found error.",
         "recommended_for_skill": false,
         "execution": {
-          "profile_id": "qwen-3.7-max",
-          "provider": "bailian",
-          "requested_model": "qwen3.7-max",
-          "response_model": "qwen3.7-max",
-          "response_id": "chatcmpl-38132733-3e27-9f5d-a480-bf444960fd0e",
+          "profile_id": "background-deepseek-flash",
+          "provider": "openai-compatible",
+          "requested_model": "deepseek-flash",
+          "response_model": "deepseek-flash",
+          "response_id": "cdb4e442-f6b7-4d26-aefe-5e1d4c6ed95a",
           "verified": true
         }
       },
@@ -344,7 +344,7 @@
         "error_signature": "Exit code 1\nSet-Content : 未锟斤拷锟揭碉拷路锟斤拷锟斤拷D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB\\__contextdb_combined_missing_output__\\second-no\r\nte.txt锟斤拷锟斤拷一锟斤拷锟街★拷\r\n锟斤拷锟斤拷位锟斤拷 锟斤拷:1 锟街凤拷: 34\r\n+ ... e = \"Stop\"; Set-Content -LiteralPath \".\\__contextdb_combined_missing_ ...\r\n+                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\n    + CategoryInfo          : ObjectNotFound: (D:\\software\\Pyc...second-note.txt:String) [Set-Content], DirectoryNotFo \r\n   undException\r\n    + FullyQualified",
         "normalized_signature": "exit code set-content 未锟斤拷锟揭碉拷路锟斤拷锟斤拷d software pycharm selfcode agent-contextdb __contextdb_combined_missing_output__ second-no te.txt锟斤拷锟斤拷一锟斤拷锟街★拷 锟斤拷锟斤拷位锟斤拷 锟斤拷 锟街凤拷 +  e = \"stop\" set-content -literalpath \" __contextdb_combined_missing_ ",
         "preceding_action": "",
-        "likely_cause": "target directory does not exist for file write",
+        "likely_cause": "missing target directory for file write",
         "evidence_event_ids": [
           "evt_3aedeca52d50",
           "evt_62ce55c9c672"
@@ -391,19 +391,19 @@
       "structural_rule": "branch_from_failure_ancestor_first_success",
       "judgment": {
         "enabled": true,
-        "provider": "bailian",
-        "model": "qwen3.7-max",
+        "provider": "openai-compatible",
+        "model": "deepseek-flash",
         "label": "unrelated_success",
         "confidence": 0.95,
-        "reason": "The failure was a directory not found error when trying to write a file via a shell command. The successful action was a call to an MCP tool to get version status, which does not address the missing directory or file write issue. The link is purely structural.",
-        "risk": "The structural link might imply a broader context reset or branch divergence, but the specific action does not semantically repair the file write failure.",
+        "reason": "The failed action attempted to write a file into a missing directory. The successful action only calls contextdb_get_version_status, which does not create directories or retry the file write, so it likely did not repair the failure.",
+        "risk": "The structural branch link may be incidental, but there is no semantic evidence that the original missing-directory issue was resolved.",
         "recommended_for_skill": false,
         "execution": {
-          "profile_id": "qwen-3.7-max",
-          "provider": "bailian",
-          "requested_model": "qwen3.7-max",
-          "response_model": "qwen3.7-max",
-          "response_id": "chatcmpl-2bce93cd-a4bf-95e3-8d06-e6a440a7c57c",
+          "profile_id": "background-deepseek-flash",
+          "provider": "openai-compatible",
+          "requested_model": "deepseek-flash",
+          "response_model": "deepseek-flash",
+          "response_id": "f8aac7cd-73aa-4d99-8b71-034a0112042b",
           "verified": true
         }
       },
@@ -426,7 +426,7 @@
         "error_signature": "Exit code 1\nSet-Content : 未锟斤拷锟揭碉拷路锟斤拷锟斤拷D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB\\__contextdb_combined_missing_output__\\second-no\r\nte.txt锟斤拷锟斤拷一锟斤拷锟街★拷\r\n锟斤拷锟斤拷位锟斤拷 锟斤拷:1 锟街凤拷: 34\r\n+ ... e = \"Stop\"; Set-Content -LiteralPath \".\\__contextdb_combined_missing_ ...\r\n+                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\n    + CategoryInfo          : ObjectNotFound: (D:\\software\\Pyc...second-note.txt:String) [Set-Content], DirectoryNotFo \r\n   undException\r\n    + FullyQualified",
         "normalized_signature": "exit code set-content 未锟斤拷锟揭碉拷路锟斤拷锟斤拷d software pycharm selfcode agent-contextdb __contextdb_combined_missing_output__ second-no te.txt锟斤拷锟斤拷一锟斤拷锟街★拷 锟斤拷锟斤拷位锟斤拷 锟斤拷 锟街凤拷 +  e = \"stop\" set-content -literalpath \" __contextdb_combined_missing_ ",
         "preceding_action": "",
-        "likely_cause": "target directory does not exist for file write",
+        "likely_cause": "missing target directory for file write",
         "evidence_event_ids": [
           "evt_3aedeca52d50",
           "evt_62ce55c9c672"
@@ -473,188 +473,24 @@
       "structural_rule": "branch_from_failure_ancestor_first_success",
       "judgment": {
         "enabled": true,
-        "provider": "bailian",
-        "model": "qwen3.7-max",
+        "provider": "openai-compatible",
+        "model": "deepseek-flash",
         "label": "unrelated_success",
         "confidence": 0.95,
-        "reason": "The successful action calls a tool to get version status, which does not address the missing directory error that caused the file write failure.",
-        "risk": "The structural link indicates it's the first success on a rollback branch, but semantically it doesn't repair the specific file system error.",
+        "reason": "The successful action calls mcp__contextdb__contextdb_get_version_status and does not create the missing directory or retry the failed Set-Content file write. The link is only structural via branch ancestry, not semantic repair of the DirectoryNotFoundException.",
+        "risk": "The version-status call could be an implicit prerequisite, but the provided JSON contains no evidence that it addressed the missing directory or file-write failure.",
         "recommended_for_skill": false,
         "execution": {
-          "profile_id": "qwen-3.7-max",
-          "provider": "bailian",
-          "requested_model": "qwen3.7-max",
-          "response_model": "qwen3.7-max",
-          "response_id": "chatcmpl-715cc397-c970-9d26-bb93-eeeb49ae90b0",
+          "profile_id": "background-deepseek-flash",
+          "provider": "openai-compatible",
+          "requested_model": "deepseek-flash",
+          "response_model": "deepseek-flash",
+          "response_id": "70aee75b-b9ee-45df-95ba-e1329016019f",
           "verified": true
         }
       },
       "highlight_event_ids": [
         "evt_62ce55c9c672",
-        "evt_d044f55cc1ff"
-      ]
-    },
-    {
-      "schema_version": "semantic_repair_judgment.v1",
-      "trajectory_id": "traj_2014e7a1531d",
-      "failure_event_id": "evt_951d89ce5f7f",
-      "success_event_id": "evt_bd1ff1b1f6ea",
-      "failure": {
-        "failure_event_id": "evt_951d89ce5f7f",
-        "tool_call_event_id": "evt_ef1e3dd734ff",
-        "branch_id": "skill-apply-compiler",
-        "command": "{\"branch_id\": \"repair-62ce55c9\", \"reason\": \"Preserve the second missing-directory failure and inspect a separate logical repair path.\", \"session_id\": \"f1087623-105e-44e4-ad83-d43625225df3\", \"snapshot_id\": \"snap_23799bb4e1e8\", \"source\": \"claude-code\"}",
-        "tool": "mcp__contextdb__contextdb_create_repair_branch",
-        "error_signature": "No matching skill was found.",
-        "normalized_signature": "no matching skill was found",
-        "preceding_action": "",
-        "likely_cause": "missing skill registration",
-        "evidence_event_ids": [
-          "evt_ef1e3dd734ff",
-          "evt_951d89ce5f7f"
-        ],
-        "highlight_event_ids": [
-          "evt_951d89ce5f7f"
-        ]
-      },
-      "repair_candidate": {
-        "schema_version": "experience_mining.v1",
-        "branch_id": "repair-62ce55c9",
-        "success_event_id": "evt_bd1ff1b1f6ea",
-        "tool_call_event_id": "evt_b55298ee40a0",
-        "strategy": "",
-        "tool": "mcp__contextdb__contextdb_get_version_status",
-        "command": "{\"session_id\": \"f1087623-105e-44e4-ad83-d43625225df3\", \"source\": \"claude-code\"}",
-        "outcome": "ok",
-        "primary_rule": "branch_from_failure_ancestor_first_success",
-        "link_type": "branch_from_failure_ancestor_first_success",
-        "strength": "structural",
-        "why_linked": "The repair branch was created from an ancestor of the failed event, and this is the first success on that branch.",
-        "evidence": [
-          {
-            "rule": "branch_from_failure_ancestor_first_success",
-            "strength": "structural",
-            "evidence_level": "weak_structural",
-            "repair_branch": "repair-62ce55c9",
-            "base_event_id": "evt_41d215902818",
-            "failure_event_id": "evt_951d89ce5f7f",
-            "success_event_id": "evt_bd1ff1b1f6ea"
-          }
-        ],
-        "evidence_event_ids": [
-          "evt_951d89ce5f7f",
-          "evt_bd1ff1b1f6ea",
-          "evt_41d215902818"
-        ],
-        "highlight_event_ids": [
-          "evt_951d89ce5f7f",
-          "evt_bd1ff1b1f6ea"
-        ],
-        "highlight_branch_ids": []
-      },
-      "structural_rule": "branch_from_failure_ancestor_first_success",
-      "judgment": {
-        "enabled": true,
-        "provider": "bailian",
-        "model": "qwen3.7-max",
-        "label": "unrelated_success",
-        "confidence": 0.9,
-        "reason": "The successful action calls a completely different tool (contextdb_get_version_status) than the one that failed (contextdb_create_repair_branch), and does not address the missing skill registration error.",
-        "risk": "The success might be part of a larger workflow, but it doesn't directly repair the specific tool failure.",
-        "recommended_for_skill": false,
-        "execution": {
-          "profile_id": "qwen-3.7-max",
-          "provider": "bailian",
-          "requested_model": "qwen3.7-max",
-          "response_model": "qwen3.7-max",
-          "response_id": "chatcmpl-30627199-130e-9211-8e89-84693b406a6c",
-          "verified": true
-        }
-      },
-      "highlight_event_ids": [
-        "evt_951d89ce5f7f",
-        "evt_bd1ff1b1f6ea"
-      ]
-    },
-    {
-      "schema_version": "semantic_repair_judgment.v1",
-      "trajectory_id": "traj_2014e7a1531d",
-      "failure_event_id": "evt_951d89ce5f7f",
-      "success_event_id": "evt_d044f55cc1ff",
-      "failure": {
-        "failure_event_id": "evt_951d89ce5f7f",
-        "tool_call_event_id": "evt_ef1e3dd734ff",
-        "branch_id": "skill-apply-compiler",
-        "command": "{\"branch_id\": \"repair-62ce55c9\", \"reason\": \"Preserve the second missing-directory failure and inspect a separate logical repair path.\", \"session_id\": \"f1087623-105e-44e4-ad83-d43625225df3\", \"snapshot_id\": \"snap_23799bb4e1e8\", \"source\": \"claude-code\"}",
-        "tool": "mcp__contextdb__contextdb_create_repair_branch",
-        "error_signature": "No matching skill was found.",
-        "normalized_signature": "no matching skill was found",
-        "preceding_action": "",
-        "likely_cause": "missing skill registration",
-        "evidence_event_ids": [
-          "evt_ef1e3dd734ff",
-          "evt_951d89ce5f7f"
-        ],
-        "highlight_event_ids": [
-          "evt_951d89ce5f7f"
-        ]
-      },
-      "repair_candidate": {
-        "schema_version": "experience_mining.v1",
-        "branch_id": "rollback-23799b",
-        "success_event_id": "evt_d044f55cc1ff",
-        "tool_call_event_id": "evt_0530ad5f3d74",
-        "strategy": "",
-        "tool": "mcp__contextdb__contextdb_get_version_status",
-        "command": "{\"session_id\": \"f1087623-105e-44e4-ad83-d43625225df3\", \"source\": \"claude-code\"}",
-        "outcome": "ok",
-        "primary_rule": "branch_from_failure_ancestor_first_success",
-        "link_type": "branch_from_failure_ancestor_first_success",
-        "strength": "structural",
-        "why_linked": "The repair branch was created from an ancestor of the failed event, and this is the first success on that branch.",
-        "evidence": [
-          {
-            "rule": "branch_from_failure_ancestor_first_success",
-            "strength": "structural",
-            "evidence_level": "weak_structural",
-            "repair_branch": "rollback-23799b",
-            "base_event_id": "evt_41d215902818",
-            "failure_event_id": "evt_951d89ce5f7f",
-            "success_event_id": "evt_d044f55cc1ff"
-          }
-        ],
-        "evidence_event_ids": [
-          "evt_951d89ce5f7f",
-          "evt_d044f55cc1ff",
-          "evt_41d215902818"
-        ],
-        "highlight_event_ids": [
-          "evt_951d89ce5f7f",
-          "evt_d044f55cc1ff"
-        ],
-        "highlight_branch_ids": []
-      },
-      "structural_rule": "branch_from_failure_ancestor_first_success",
-      "judgment": {
-        "enabled": true,
-        "provider": "bailian",
-        "model": "qwen3.7-max",
-        "label": "unrelated_success",
-        "confidence": 0.9,
-        "reason": "The successful action calls a completely different tool (contextdb_get_version_status) that does not address the original failure cause of missing skill registration for contextdb_create_repair_branch.",
-        "risk": "The success might be part of a broader fallback or diagnostic strategy not fully visible in the provided context.",
-        "recommended_for_skill": false,
-        "execution": {
-          "profile_id": "qwen-3.7-max",
-          "provider": "bailian",
-          "requested_model": "qwen3.7-max",
-          "response_model": "qwen3.7-max",
-          "response_id": "chatcmpl-a8eadd16-f7d1-9c8e-a46b-0084553f3fd6",
-          "verified": true
-        }
-      },
-      "highlight_event_ids": [
-        "evt_951d89ce5f7f",
         "evt_d044f55cc1ff"
       ]
     }
@@ -716,7 +552,7 @@
     "evt_c069de691612",
     "evt_a5b08a5df447"
   ],
-  "created_at": "2026-09-12T06:59:04.168526+00:00",
+  "created_at": "2026-09-12T09:44:42.958683+00:00",
   "metadata": {
     "event_count": 55
   }

@@ -17,18 +17,19 @@ from .server import serve
 
 
 def _load_dashboard_environment() -> None:
-    """Load local dashboard credentials for the CLI serve entry point only."""
-    env_path = Path(__file__).resolve().parent.parent / "_API" / "dashboard.env"
-    if not env_path.is_file():
-        return
-    for raw_line in env_path.read_text(encoding="utf-8").splitlines():
-        line = raw_line.strip()
-        if not line or line.startswith("#") or "=" not in line:
+    """Load dashboard and private background-LLM credentials for serving."""
+    api_dir = Path(__file__).resolve().parent.parent / "_API"
+    for env_path in (api_dir / "dashboard.env", api_dir / "background_llm.env"):
+        if not env_path.is_file():
             continue
-        key, value = line.split("=", 1)
-        key = key.strip()
-        if re.fullmatch(r"[A-Z_][A-Z0-9_]*", key):
-            os.environ[key] = value.strip()
+        for raw_line in env_path.read_text(encoding="utf-8").splitlines():
+            line = raw_line.strip()
+            if not line or line.startswith("#") or "=" not in line:
+                continue
+            key, value = line.split("=", 1)
+            key = key.strip()
+            if re.fullmatch(r"[A-Z_][A-Z0-9_]*", key):
+                os.environ[key] = value.strip()
 
 
 def emit(obj):

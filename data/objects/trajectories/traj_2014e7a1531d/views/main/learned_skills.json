@@ -5,14 +5,14 @@
   "content": [
     {
       "schema_version": "learned_skill.v2",
-      "skill_id": "skill_file_not_found_specified_path_exit_code_get-content",
-      "name": "Repair file not found at specified path",
+      "skill_id": "skill_missing_file_specified_path_exit_code_get-content_锟揭诧拷锟斤拷路锟斤拷锟斤拷",
+      "name": "Repair missing file at specified path",
       "trigger": {
         "failed_tool": "shell",
         "failed_command_pattern": "powershell -NoProfile -Command \"Get-Content -Raw -LiteralPath '.\\assets\\settings.json'\"",
         "normalized_signature": "exit code get-content 锟揭诧拷锟斤拷路锟斤拷锟斤拷 assets settings.json锟斤拷锟斤拷锟斤拷为锟斤拷路锟斤拷锟斤拷锟斤拷锟节★拷 锟斤拷锟斤拷位锟斤拷 锟斤拷 锟街凤拷 + get-content -raw -literalpath ' assets settings.json' + ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ + categoryinfo objectnotfound  assets settings.json",
         "error_signature": "Exit code 1\nGet-Content : 锟揭诧拷锟斤拷路锟斤拷锟斤拷.\\assets\\settings.json锟斤拷锟斤拷锟斤拷为锟斤拷路锟斤拷锟斤拷锟斤拷锟节★拷\r\n锟斤拷锟斤拷位锟斤拷 锟斤拷:1 锟街凤拷: 1\r\n+ Get-Content -Raw -LiteralPath '.\\assets\\settings.json'\r\n+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\n    + CategoryInfo          : ObjectNotFound: (.\\assets\\settings.json:String) [Get-Content], ItemNotFoundException\r\n    + FullyQualifiedErrorId : PathNotFound,Microsoft.PowerShell.Commands.GetContentCommand",
-        "likely_cause": "file not found at specified path"
+        "likely_cause": "missing file at specified path"
       },
       "failure_grouping": {
         "method": "vector_cosine",
@@ -25,7 +25,7 @@
       },
       "recommended_actions": [
         {
-          "action_id": "act_file_not_found_specified_path_exit_code_get-content_1",
+          "action_id": "act_missing_file_specified_path_exit_code_get-content_锟揭诧拷锟斤拷路锟斤拷锟斤拷_1",
           "name": "Apply powershell -NoProfile -Command \"Get-Content -Raw -LiteralPath '.\\examples\\live-path-demo\\assets\\settings.json'\"",
           "canonical_tool": "shell",
           "canonical_command_template": "powershell -NoProfile -Command \"Get-Content -Raw -LiteralPath '.\\examples\\live-path-demo\\assets\\settings.json'\"",
@@ -47,13 +47,13 @@
               "outcome": "ok",
               "primary_rule": "same_branch_first_success_after_failure",
               "judgment_label": "likely_repair",
-              "confidence": 0.95,
-              "reason": "The agent corrected the file path in the Get-Content command from a non-existent relative path to the correct nested path, resolving the PathNotFound error.",
+              "confidence": 0.9,
+              "reason": "The failed command tried to read .\\assets\\settings.json and hit a missing-path error; the successful follow-up read the same settings.json under .\\examples\\live-path-demo\\assets\\, indicating the path was corrected to an existing file.",
               "vector_text": "shell powershell -NoProfile -Command \"Get-Content -Raw -LiteralPath '.\\examples\\live-path-demo\\assets\\settings.json'\""
             }
           ],
           "confidence": {
-            "max_llm_confidence": 0.95,
+            "max_llm_confidence": 0.9,
             "support_count": 1
           },
           "dedupe": {
@@ -76,7 +76,7 @@
       ],
       "confidence": {
         "support_count": 1,
-        "max_llm_confidence": 0.95,
+        "max_llm_confidence": 0.9,
         "evidence_levels": [
           "structural"
         ]
@@ -153,7 +153,7 @@
     "evt_c069de691612",
     "evt_a5b08a5df447"
   ],
-  "created_at": "2026-09-12T06:59:40.135240+00:00",
+  "created_at": "2026-09-12T09:44:46.986798+00:00",
   "metadata": {
     "event_count": 55
   }

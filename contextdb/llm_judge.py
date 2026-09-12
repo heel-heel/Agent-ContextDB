@@ -27,23 +27,41 @@ class SemanticRepairJudge:
     """
 
     def __init__(self, provider: str | None = None, model: str | None = None, profile_id: str | None = None) -> None:
-        self.profile_id = profile_id or os.environ.get("CONTEXTDB_LLM_PROFILE") or ""
+        explicit_profile_id = profile_id or ""
+        self.profile_id = explicit_profile_id or os.environ.get("CONTEXTDB_LLM_PROFILE") or ""
         self._api_key = ""
         self._base_url = ""
         self._profile_error = ""
         self.supports_json_response_format = True
-        # Reuse the configured default profile for every LLM task.  Keeping the
-        # profile identity even when its endpoint is incomplete lets the caller
-        # report the exact missing configuration instead of falling back to an
-        # unrelated public endpoint.
-        if not self.profile_id and provider is None and model is None and not os.environ.get("CONTEXTDB_LLM_PROVIDER"):
+        background_model = os.environ.get("CONTEXTDB_BACKGROUND_LLM_MODEL", "").strip()
+        background_api_key = os.environ.get("CONTEXTDB_BACKGROUND_LLM_API_KEY", "").strip()
+        uses_background_config = False
+        # Calls without an explicit profile are the background semantic tasks
+        # (skill generation, repair judgment, and failure classification).
+        # Keep Query Explorer on its selected profile and credentials.
+        if not explicit_profile_id and provider is None and model is None and background_model and background_api_key:
+            uses_background_config = True
+            self.profile_id = f"background-{background_model}"
+            self.provider = os.environ.get("CONTEXTDB_BACKGROUND_LLM_PROVIDER", "bailian").strip().lower()
+            self.model = background_model
+            self._api_key = background_api_key
+            self._base_url = (
+                os.environ.get("CONTEXTDB_BACKGROUND_LLM_BASE_URL")
+                or os.environ.get("CONTEXTDB_LLM_BASE_URL", "")
+            ).strip().rstrip("/")
+            self.supports_json_response_format = os.environ.get(
+                "CONTEXTDB_BACKGROUND_LLM_SUPPORTS_JSON_RESPONSE_FORMAT", "false"
+            ).strip().lower() in {"1", "true", "yes"}
+        # Reuse the configured default profile only when no separate background
+        # model is configured. Keeping its identity preserves cache separation.
+        elif not self.profile_id and provider is None and model is None and not os.environ.get("CONTEXTDB_LLM_PROVIDER"):
             try:
                 default_profile = resolve_profile()
                 if default_profile["api_key"]:
                     self.profile_id = default_profile["profile_id"]
             except ValueError:
                 pass
-        if self.profile_id:
+        if self.profile_id and not uses_background_config:
             try:
                 profile = resolve_profile(self.profile_id)
                 self.profile_id = profile["profile_id"]
@@ -56,7 +74,7 @@ class SemanticRepairJudge:
                 self.provider = "disabled"
                 self.model = model or ""
                 self._profile_error = str(exc)
-        else:
+        elif not uses_background_config:
             configured_provider = provider if provider is not None else os.environ.get("CONTEXTDB_LLM_PROVIDER")
             has_api_key = bool(
                 os.environ.get("CONTEXTDB_LLM_API_KEY")
@@ -66,14 +84,25 @@ class SemanticRepairJudge:
             )
             self.provider = (configured_provider if configured_provider is not None else ("qwen" if has_api_key else "disabled")).strip().lower()
             self.model = (model or os.environ.get("CONTEXTDB_LLM_MODEL", "qwen3.7-max")).strip()
-        self.timeout = float(os.environ.get("CONTEXTDB_LLM_TIMEOUT", "60"))
+        self._uses_background_config = uses_background_config
+        timeout_key = (
+            "CONTEXTDB_BACKGROUND_LLM_TIMEOUT"
+            if self._uses_background_config
+            else "CONTEXTDB_LLM_TIMEOUT"
+        )
+        self.timeout = float(os.environ.get(timeout_key, "60"))
 
     def enabled(self) -> bool:
         return self.provider in {"qwen", "bailian", "openai-compatible", "mock"}
 
     def _retry_window_seconds(self) -> float:
+        retry_window_key = (
+            "CONTEXTDB_BACKGROUND_LLM_RETRY_WINDOW_SECONDS"
+            if self._uses_background_config
+            else "CONTEXTDB_LLM_RETRY_WINDOW_SECONDS"
+        )
         try:
-            return max(0.0, min(float(os.environ.get("CONTEXTDB_LLM_RETRY_WINDOW_SECONDS", "60")), 300.0))
+            return max(0.0, min(float(os.environ.get(retry_window_key, "60")), 300.0))
         except ValueError:
             return 60.0
 
