@@ -56,6 +56,119 @@ class ContextDB:
             raise KeyError(f"trajectory not found: {trajectory_id}")
         return obj
 
+    def global_overview(self) -> Dict[str, Any]:
+        """Aggregate trajectory metadata, tool calls, and globally indexed skills."""
+        trajectories = []
+        for key in self.store.list_objects("trajectories"):
+            if not key.endswith("/meta"):
+                continue
+            trajectory = self.store.get_object(key)
+            if trajectory and trajectory.get("trajectory_id"):
+                trajectories.append(trajectory)
+        trajectories.sort(key=lambda item: (item.get("updated_at") or "", item.get("trajectory_id") or ""), reverse=True)
+
+        skills = []
+        skills_by_key: Dict[str, Dict[str, Any]] = {}
+        skills_by_id: Dict[str, List[Dict[str, Any]]] = {}
+        for entry in self.vector_index.list_entries("skills"):
+            metadata = entry.get("metadata", {}) or {}
+            skill = metadata.get("skill", {}) or {}
+            skill_id = skill.get("skill_id")
+            source_trajectory_id = metadata.get("trajectory_id") or entry.get("owner_id")
+            if not skill_id or not source_trajectory_id:
+                continue
+            key = f"skill:{source_trajectory_id}:{skill_id}"
+            row = {
+                "node_id": key,
+                "skill_id": skill_id,
+                "name": skill.get("name") or skill_id,
+                "source_trajectory_id": source_trajectory_id,
+                "trigger_tool": (skill.get("trigger", {}) or {}).get("failed_tool"),
+                "support_count": (skill.get("confidence", {}) or {}).get("support_count", 0),
+                "status": skill.get("status", "candidate"),
+            }
+            skills.append(row)
+            skills_by_key[key] = row
+            skills_by_id.setdefault(skill_id, []).append(row)
+
+        trajectory_rows = []
+        edges: Dict[Tuple[str, str, str], int] = {}
+        all_tools: Dict[str, int] = {}
+        for trajectory in trajectories:
+            trajectory_id = trajectory["trajectory_id"]
+            events = self._all_events(trajectory_id)
+            match_sources: Dict[str, Tuple[str, str]] = {}
+            for event in events:
+                if event.get("event_type") != "skill_match":
+                    continue
+                match = (event.get("payload", {}) or {}).get("matches", [])
+                first = match[0] if isinstance(match, list) and match else {}
+                skill_id = first.get("matched_skill_id")
+                source_id = first.get("source_trajectory_id")
+                if skill_id and source_id:
+                    match_sources[event.get("event_id", "")] = (source_id, skill_id)
+
+            tools: Dict[str, int] = {}
+            associated_skills: Dict[str, int] = {}
+            for event in events:
+                if event.get("event_type") != "tool_call":
+                    continue
+                payload = event.get("payload", {}) or {}
+                tool_name = str(payload.get("tool_name") or payload.get("tool") or "unknown tool")
+                tools[tool_name] = tools.get(tool_name, 0) + 1
+                all_tools[tool_name] = all_tools.get(tool_name, 0) + 1
+                trajectory_node = f"trajectory:{trajectory_id}"
+                tool_node = f"tool:{tool_name}"
+                edges[(trajectory_node, tool_node, "calls")] = edges.get((trajectory_node, tool_node, "calls"), 0) + 1
+
+                refs = event.get("refs", {}) or {}
+                skill_id = refs.get("skill_id")
+                source_id = refs.get("skill_source_trajectory_id")
+                if not source_id and refs.get("skill_match_event_id") in match_sources:
+                    source_id, matched_skill_id = match_sources[refs["skill_match_event_id"]]
+                    skill_id = skill_id or matched_skill_id
+                candidates = skills_by_id.get(skill_id, []) if skill_id else []
+                if not source_id and len(candidates) == 1:
+                    source_id = candidates[0]["source_trajectory_id"]
+                skill_node = f"skill:{source_id}:{skill_id}" if source_id and skill_id else ""
+                if skill_node not in skills_by_key:
+                    continue
+                associated_skills[skill_node] = associated_skills.get(skill_node, 0) + 1
+                edges[(trajectory_node, skill_node, "uses_skill")] = edges.get((trajectory_node, skill_node, "uses_skill"), 0) + 1
+                edges[(tool_node, skill_node, "skill_action")] = edges.get((tool_node, skill_node, "skill_action"), 0) + 1
+
+            trajectory_rows.append({
+                **trajectory,
+                "event_count": len(events),
+                "tool_call_count": sum(tools.values()),
+                "tools": [{"tool_name": name, "call_count": count} for name, count in sorted(tools.items())],
+                "associated_skills": [
+                    {**skills_by_key[key], "application_count": count}
+                    for key, count in sorted(associated_skills.items())
+                ],
+            })
+
+        nodes = (
+            [{"id": f"trajectory:{row['trajectory_id']}", "type": "trajectory", "label": row.get("title") or row["trajectory_id"], "trajectory_id": row["trajectory_id"], "detail": row.get("agent_id") or "unknown-agent"} for row in trajectory_rows]
+            + [{"id": f"tool:{name}", "type": "tool", "label": name, "detail": f"{count} calls"} for name, count in sorted(all_tools.items())]
+            + [{"id": skill["node_id"], "type": "skill", "label": skill["name"], "detail": skill["source_trajectory_id"]} for skill in skills]
+        )
+        return {
+            "schema_version": "global_overview.v1",
+            "trajectory_count": len(trajectory_rows),
+            "tool_count": len(all_tools),
+            "skill_count": len(skills),
+            "trajectories": trajectory_rows,
+            "skills": skills,
+            "graph": {
+                "nodes": nodes,
+                "edges": [
+                    {"source": source, "target": target, "kind": kind, "count": count}
+                    for (source, target, kind), count in sorted(edges.items())
+                ],
+            },
+        }
+
     def append_event(self, trajectory_id: str, event_type: str, payload: Dict[str, Any], branch_id: str = "main", actor: str = "agent", parent_event_ids: Optional[List[str]] = None, refs: Optional[Dict[str, Any]] = None, metadata: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         branch = self.get_branch(trajectory_id, branch_id)
         parents = parent_event_ids if parent_event_ids is not None else ([branch["head_event_id"]] if branch.get("head_event_id") else [])
@@ -1206,6 +1319,7 @@ class ContextDB:
         if selected_action:
             selection_refs = {
                 "skill_id": selected.get("matched_skill_id"),
+                "skill_source_trajectory_id": selected.get("source_trajectory_id"),
                 "skill_match_event_id": match_event.get("event_id"),
                 "selected_action_id": selected_action.get("action_id"),
                 "selected_action_index": selected_action_index,

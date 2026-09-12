@@ -52,6 +52,8 @@ def make_handler(db: ContextDB):
                     self._send(200, db.log(q["trajectory_id"][0]))
                 elif parsed.path == "/api/v1/graph":
                     self._send(200, db.graph(q["trajectory_id"][0]))
+                elif parsed.path == "/api/v1/global_overview":
+                    self._send(200, db.global_overview())
                 elif parsed.path == "/api/v1/version_status":
                     self._send(200, db.version_control_status(q["trajectory_id"][0]))
                 elif parsed.path == "/api/v1/llm_profiles":

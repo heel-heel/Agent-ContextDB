@@ -238,15 +238,54 @@
       "highlight_event_ids": [
         "evt_62ce55c9c672"
       ]
+    },
+    {
+      "schema_version": "experience_mining.v2",
+      "pattern_id": "fp_951d89ce5f7f",
+      "failure_event_id": "evt_951d89ce5f7f",
+      "branch_id": "skill-apply-compiler",
+      "failed_tool": "mcp__contextdb__contextdb_create_repair_branch",
+      "failed_command": "{\"branch_id\": \"repair-62ce55c9\", \"reason\": \"Preserve the second missing-directory failure and inspect a separate logical repair path.\", \"session_id\": \"f1087623-105e-44e4-ad83-d43625225df3\", \"snapshot_id\": \"snap_23799bb4e1e8\", \"source\": \"claude-code\"}",
+      "error_signature": "No matching skill was found.",
+      "normalized_signature": "no matching skill was found",
+      "preceding_action": "",
+      "likely_cause": "missing skill registration",
+      "likely_cause_judgment": {
+        "enabled": true,
+        "provider": "bailian",
+        "model": "qwen3.7-max",
+        "likely_cause": "missing skill registration",
+        "confidence": 0.95,
+        "reason": "Error signature explicitly states no matching skill was found, indicating the invoked mcp tool is unregistered or unavailable in the current environment.",
+        "input": {
+          "failed_tool": "mcp__contextdb__contextdb_create_repair_branch",
+          "failed_command": "{\"branch_id\": \"repair-62ce55c9\", \"reason\": \"Preserve the second missing-directory failure and inspect a separate logical repair path.\", \"session_id\": \"f1087623-105e-44e4-ad83-d43625225df3\", \"snapshot_id\": \"snap_23799bb4e1e8\", \"source\": \"claude-code\"}",
+          "error_signature": "No matching skill was found.",
+          "preceding_action": ""
+        }
+      },
+      "repair_status": "not_evaluated",
+      "repair_events_after_failure": [],
+      "source_event_ids": [
+        "evt_ef1e3dd734ff"
+      ],
+      "evidence_event_ids": [
+        "evt_ef1e3dd734ff",
+        "evt_951d89ce5f7f"
+      ],
+      "highlight_event_ids": [
+        "evt_951d89ce5f7f"
+      ]
     }
   ],
   "source_events": [
     "evt_27ce1cb17ce0",
     "evt_3f93812cdc7a",
     "evt_92105702867e",
-    "evt_3aedeca52d50"
+    "evt_3aedeca52d50",
+    "evt_ef1e3dd734ff"
   ],
-  "created_at": "2026-09-11T05:08:43.150688+00:00",
+  "created_at": "2026-09-12T07:33:29.305107+00:00",
   "metadata": {
     "event_count": 55
   }

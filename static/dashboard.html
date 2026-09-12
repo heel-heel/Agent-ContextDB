@@ -45,7 +45,7 @@
     .tabs { display:flex; flex-wrap:wrap; gap:6px; padding:10px 14px 0; }
     .tabs button { background:#fff; color:#17324d; border-color:var(--line); }
     .tabs button.active { background:#17324d; color:#fff; }
-    pre, .json-block { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height:1.45; background:#f3f5f7; border-radius:6px; padding:12px; max-height:520px; }
+pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height:1.45; background:#f3f5f7; border-radius:6px; padding:12px; max-height:520px; }
     .view-output { display:flex; flex-direction:column; gap:12px; }
     .view-empty { color:var(--muted); border:1px dashed var(--line); border-radius:8px; padding:16px; background:#fbfcfd; }
     .loading-card { border:1px solid var(--line); border-radius:8px; background:#fff; padding:18px; min-height:150px; display:flex; align-items:center; gap:14px; box-shadow:0 1px 4px rgba(0,0,0,.04); }
@@ -66,6 +66,7 @@
     tr:last-child td { border-bottom:0; }
     .mono { font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size:12px; }
     .muted { color:var(--muted); }
+    .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
     .pill { display:inline-block; border-radius:999px; padding:2px 7px; font-size:11px; background:#edf2f7; color:#314256; margin:1px 3px 1px 0; white-space:nowrap; }
     .pill.ok { background:#e6f4ec; color:#256c45; }
     .pill.failed { background:#fdeaea; color:#9f2a2a; }
@@ -202,18 +203,47 @@
     .dot-version_rollback_created { background:#be123c; }
     .dot-version_decision { background:#334155; }
     .dot-system_event { background:var(--system-event-accent); }
-    .app-flow { display:flex; flex-direction:column; gap:12px; }
+    .app-flow { display:flex; flex-direction:column; gap:12px; border-color:#b9d5ec; border-left:4px solid #2364aa; background:#fbfdff; }
+    .app-flow-status { margin:-4px 0 !important; line-height:1.2 !important; }
+    .app-flow-title, .timeline-title { display:flex; align-items:center; gap:8px; }
+    .summary-card .app-flow-title h3 { margin:0; font-size:16px; }
+    .timeline-title h4 { margin:0; }
+    .trace-match-reason { font-size:12px; }
+    .trace-secondary-detail { font-size:12px; }
     .timeline { display:grid; grid-template-columns: 28px 1fr; gap:0 10px; margin-top:10px; }
     .timeline-step { display:contents; }
     .timeline-mark { position:relative; display:flex; justify-content:center; }
     .timeline-step:not(:last-child) .timeline-mark::after { content:""; position:absolute; top:27px; bottom:-11px; width:2px; background:#dbe3ea; }
     .timeline-dot { width:16px; height:16px; border-radius:50%; margin-top:5px; box-shadow:0 0 0 4px #fff; border:2px solid #fff; z-index:1; }
     .timeline-body { border:1px solid var(--line); border-radius:8px; padding:9px 10px; margin-bottom:10px; background:#fff; }
-    .timeline-body h4 { margin:0 0 5px; font-size:13px; }
+    .timeline-body h4 { margin:0; font-size:13px; }
     .timeline-body p { margin:4px 0; }
-    .flow-meta { display:flex; flex-wrap:wrap; gap:4px; margin-top:6px; }
+    .flow-meta { display:flex; flex-wrap:wrap; align-items:center; gap:4px; margin-top:6px; }
     .mode-btn.active { background:#2364aa; border-color:#2364aa; color:#fff; }
     .page.hidden { display:none; }
+    .global-page { display:block; padding:16px; min-height:calc(100vh - 64px); }
+    .global-page > section { min-height:calc(100vh - 96px); }
+    .global-overview-content { padding:14px; display:flex; flex-direction:column; gap:14px; }
+    .global-metrics { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; }
+    .global-metric { border-left:3px solid #2364aa; background:#f4f8fd; padding:10px; }
+    .global-metric b { display:block; font-size:20px; }
+    .global-metric span { color:var(--muted); font-size:12px; }
+    .global-relationship-graph { position:relative; min-height:350px; overflow:auto; border:1px solid #c9ddec; border-radius:7px; background:#f8fbff; }
+    .global-relationship-edges { position:absolute; inset:0; z-index:0; pointer-events:none; overflow:visible; }
+    .global-relationship-edges line { stroke:#91abc3; stroke-width:2; opacity:.85; }
+    .global-relationship-edges line.uses-skill { stroke:#2f855a; stroke-dasharray:5 4; }
+    .global-relationship-edges line.skill-action { stroke:#087ea4; }
+    .global-relationship-columns { position:relative; z-index:1; display:grid; grid-template-columns:repeat(3,minmax(230px,1fr)); gap:42px; min-width:840px; padding:16px; }
+    .global-relationship-column h3 { margin:0 0 9px; color:#355e87; font-size:13px; }
+    .global-relationship-stack { display:flex; flex-direction:column; gap:9px; }
+    .global-graph-node { min-height:58px; border:1px solid #d4e1ee; border-left:4px solid #64748b; border-radius:6px; background:#fff; padding:8px 9px; box-shadow:0 1px 2px rgba(23,50,77,.05); overflow-wrap:anywhere; }
+    .global-graph-node.trajectory { border-left-color:#2364aa; background:#f4f8fd; }
+    .global-graph-node.tool { border-left-color:#9a6b16; background:#fffaf0; }
+    .global-graph-node.skill { border-left-color:#2f855a; background:#f2fbf5; }
+    .global-graph-node b { display:block; font-size:12px; }
+    .global-graph-node span { display:block; margin-top:3px; color:var(--muted); font-size:11px; }
+    .global-graph-node button { width:100%; height:auto; min-height:20px; margin-top:5px; padding:2px 5px; border:0; background:transparent; color:#1f5592; text-align:left; font-size:11px; }
+    .global-graph-node button:hover { text-decoration:underline; }
     .playback-page { padding:16px; min-height:calc(100vh - 64px); }
     .playback-layout { display:grid; grid-template-columns:minmax(0,1.45fr) minmax(390px,.85fr); gap:16px; align-items:start; }
     .playback-graph { position:relative; min-width:0; min-height:650px; overflow:hidden; background:linear-gradient(#fff, #f9fbfc); }
@@ -271,21 +301,24 @@
     .right-pane.hidden { display:none; }
     .view-groups { display:flex; flex-direction:column; gap:10px; padding:12px 14px 2px; }
     .view-group-row { display:flex; min-width:0; gap:14px; }
-    .view-group { flex:1 1 auto; min-width:max-content; border:1px dashed #b8c5d1; border-radius:6px; padding:9px; background:#fcfdfe; }
-    .view-group-title { margin:0 0 6px; color:#63758a; font-size:11px; font-weight:800; letter-spacing:.03em; text-transform:uppercase; }
-    .view-group-buttons { display:flex; flex-wrap:nowrap; gap:6px; }
+    .view-group { display:grid; grid-template-columns:235px minmax(0, 1fr); align-items:center; flex:1 1 auto; min-width:0; min-height:58px; border:1px dashed #b8c5d1; border-radius:6px; padding:9px 12px; background:#fcfdfe; }
+    .view-group-title { margin:0; color:#63758a; font-size:11px; font-weight:800; letter-spacing:.03em; line-height:1.25; text-transform:uppercase; white-space:nowrap; }
+    .view-group-buttons { display:flex; flex-wrap:nowrap; align-items:center; gap:6px; }
     .view-group-buttons button { flex:0 0 auto; margin:0; white-space:nowrap; }
-    #contextQlPanel .contextql { margin-top:10px; }
+    #contextQlPanel .contextql { margin-top:10px; border-color:#c9def5; border-top:3px solid #2364aa; background:#f8fbff; }
     
 .contextql { margin:12px 14px 0; border:1px solid var(--line); border-radius:8px; background:#fbfcfd; padding:12px; }
-.sql-actions { display:flex; justify-content:space-between; align-items:center; gap:8px; }
+.sql-actions { display:flex; justify-content:flex-end; align-items:center; gap:8px; }
 .nl-contextql { margin-bottom:12px; padding-bottom:12px; border-bottom:1px dashed var(--line); }
 .nl-contextql-label-row { display:flex; align-items:center; justify-content:space-between; gap:8px; margin:0 0 7px; }
-.nl-contextql label { display:block; margin:0; color:#17324d; font-size:14px; font-weight:700; }
+    .nl-contextql label { display:block; margin:0; color:#17202a; font-size:16px; font-weight:700; }
 .nl-contextql textarea { display:block; width:100%; min-height:108px; resize:vertical; border:1px solid var(--line); border-radius:6px; padding:9px; font:13px/1.4 ui-sans-serif, system-ui, sans-serif; color:var(--ink); background:#fff; }
-.nl-actions { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-top:8px; }
-.nl-actions-left { display:flex; align-items:center; gap:8px; }
+    .nl-actions { display:flex; align-items:center; justify-content:flex-end; gap:8px; margin-top:8px; }
+    .nl-actions-left { display:flex; align-items:center; gap:8px; padding:4px 7px; border:1px solid #c9def5; border-radius:6px; background:#f4f8fd; }
+.nl-actions-left .muted, .nl-actions select { font-size:14px; }
 .nl-actions select { height:30px; border:1px solid var(--line); border-radius:5px; color:#17324d; background:#fff; padding:0 6px; }
+    .nl-actions #runNaturalLanguage { font-size:12px; }
+    .sql-editor-hint { margin:0 0 6px; color:#17202a; font-size:16px; font-weight:700; line-height:1.3; }
 #sqlInput { display:block; width:100%; min-height:112px; resize:vertical; border:1px solid var(--line); border-radius:6px; padding:9px; font:12px/1.45 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; color:var(--ink); background:#fff; }
 .sql-actions { margin-top:8px; } .sql-actions .muted { font-size:11px; }
 .sql-result-meta { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px; }
@@ -305,7 +338,7 @@
 .version-event { padding:9px 0; border-bottom:1px solid var(--line); display:grid; grid-template-columns:130px 1fr auto; gap:10px; align-items:start; font-size:12px; }
 .version-event:last-child { border-bottom:0; }
 .version-event p { margin:3px 0 0; color:#4b5e70; overflow-wrap:anywhere; }
-@media (max-width:900px) { .view-groups { overflow-x:auto; } .view-group-row { min-width:max-content; } .version-action-row { grid-template-columns:1fr; } .version-summary { grid-template-columns:1fr; } .version-event { grid-template-columns:1fr; gap:4px; } }
+@media (max-width:900px) { .view-groups { overflow-x:auto; } .view-group-row { min-width:max-content; } .version-action-row { grid-template-columns:1fr; } .version-summary { grid-template-columns:1fr; } .version-event { grid-template-columns:1fr; gap:4px; } .global-metrics { grid-template-columns:1fr; } }
 
     @media (max-width: 1200px) { main { grid-template-columns:1fr; } }
     @media (max-width: 900px) { main, .playback-layout { grid-template-columns:1fr; } input { min-width: 160px; width:100%; } header { height:auto; gap:10px; align-items:flex-start; flex-direction:column; padding:12px; } .controls { width:100%; flex-wrap:wrap; } .playback-progress { flex-basis:100%; } }
@@ -315,11 +348,11 @@
   <header>
     <h1>Agent ContextDB: Trajectory DAG + Views</h1>
     <div class="controls">
+      <button id="globalMode" class="secondary mode-btn">Global Overview</button>
       <button id="traceMode" class="secondary mode-btn">Trajectory Playback</button>
       <button id="finalMode" class="secondary mode-btn active">Trajectory Overview</button>
-      <input id="tid" placeholder="trajectory_id, or click Seed demo">
+      <input id="tid" placeholder="trajectory_id">
       <button id="load">Load</button>
-      <button id="seed" class="secondary">Seed demo</button>
     </div>
   </header>
   <main id="finalPage" class="page">
@@ -345,7 +378,7 @@
     </section>
     <section>
       <div class="explorer-head">
-        <div class="right-mode-tabs" aria-label="ContextDB Explorer sections"><button id="viewsMode" class="active">Database Views</button><button id="queryMode">ContextQL Explorer</button><button id="versionMode">Version Control</button></div>
+        <div class="right-mode-tabs" aria-label="ContextDB Explorer sections"><button id="viewsMode" class="active">Database Views</button><button id="queryMode">Query Explorer</button><button id="versionMode">Version Control</button></div>
       </div>
       <div id="databaseViewsPanel" class="right-pane">
         <div class="tabs view-groups" aria-label="Database Views">
@@ -354,6 +387,8 @@
               <div class="view-group-title">Context Loading &amp; Compression</div>
               <div class="view-group-buttons"><button data-view="summary">Context Digest</button><button data-view="current_prompt">Context Assembly</button></div>
             </div>
+          </div>
+          <div class="view-group-row">
             <div class="view-group">
               <div class="view-group-title">Success / Failure Patterns</div>
               <div class="view-group-buttons"><button data-view="failure_patterns">Failure Patterns</button><button data-view="success_patterns">Success Patterns</button><button data-view="repair_strategies">Repair Links</button></div>
@@ -362,30 +397,27 @@
           <div class="view-group-row">
             <div class="view-group">
               <div class="view-group-title">Skill Generation</div>
-              <div class="view-group-buttons"><button data-view="semantic_repair_judgments">Semantic Judge</button><button data-view="learned_skills">Learned Skills</button><button data-view="skill_library">Skill Library</button><button data-view="skill_application_trace">Application Trace</button></div>
-            </div>
-            <div class="view-group">
-              <div class="view-group-title">Training Data Export</div>
-              <div class="view-group-buttons"><button data-view="rl_dataset">RL Rows</button></div>
+              <div class="view-group-buttons"><button data-view="semantic_repair_judgments">Semantic Judge</button><button data-view="learned_skills">Learned Skills</button><button data-view="skill_application_trace">Application Trace</button></div>
             </div>
           </div>
         </div>
-        <div class="content"><div id="metrics" class="metrics"></div><div id="out" class="view-output"><div class="view-empty">Run the ContextDB demo, paste its trajectory_id, then load. Or click Seed demo to create a browser-side sample through the HTTP API.</div></div></div>
+        <div class="content"><div id="metrics" class="metrics"></div><div id="out" class="view-output"><div class="view-empty">Paste a trajectory_id, then load it to inspect its ContextDB data.</div></div></div>
       </div>
       <div id="contextQlPanel" class="right-pane hidden">
         <div class="contextql">
           <div class="nl-contextql">
-            <div class="nl-contextql-label-row"><label for="nlQuestion">Ask ContextDB in natural language</label><span id="sqlMeta" class="badge">read-only SQL</span></div>
+            <div class="nl-contextql-label-row"><label for="nlQuestion">Query in natural language</label><span id="sqlMeta" class="sr-only" aria-live="polite"></span></div>
             <textarea id="nlQuestion" spellcheck="true" placeholder="Example: Show failures and their likely causes on this trajectory."></textarea>
             <div class="nl-actions"><div class="nl-actions-left"><span class="muted">LLM profile</span><select id="nlProfile" aria-label="LLM profile"><option value="">Loading models...</option></select></div><button id="runNaturalLanguage" class="small-btn">Translate to SQL</button></div>
           </div>
+          <div class="sql-editor-hint">This SQL query can be prefilled by Database Views and remains editable</div>
           <textarea id="sqlInput" spellcheck="false">SELECT event_id, branch_id, event_type, actor, status, preview
 FROM events
 WHERE trajectory_id = :trajectory_id
 ORDER BY timestamp;</textarea>
-          <div class="sql-actions"><span class="muted">Generated SQL remains editable. Only one SELECT, WITH, or EXPLAIN statement is allowed.</span><button id="runSql" class="small-btn">Run SQL</button></div>
+          <div class="sql-actions"><button id="runSql" class="small-btn">Run SQL</button></div>
         </div>
-        <div class="content"><div id="sqlOut" class="view-output"><div class="view-empty">Choose a Database View to prefill its query, or write a ContextQL query here.</div></div></div>
+        <div class="content"><div id="sqlOut" class="view-output"><div class="view-empty">Choose a Database View to prefill the SQL query, or write a query here.</div></div></div>
       </div>
       <div id="versionControlPanel" class="right-pane hidden">
         <div class="version-control">
@@ -441,6 +473,12 @@ ORDER BY timestamp;</textarea>
       </div>
     </section>
   </div>
+  <main id="globalPage" class="page global-page hidden">
+    <section>
+      <div class="panel-head"><h2>Global ContextDB Overview</h2><button id="refreshGlobal" class="small-btn">Refresh</button></div>
+      <div id="globalOut" class="global-overview-content"><div class="view-empty">Load the global view to inspect all trajectories and the shared Skill Library.</div></div>
+    </section>
+  </main>
 <script>
 const $ = id => document.getElementById(id);
 let currentView = '';
@@ -458,6 +496,7 @@ let playbackDetailRequest = 0;
 let llmProfiles = [];
 let defaultLlmProfileId = '';
 let summaryProfileId = '';
+let globalOverviewData = null;
 const BRANCH_SCOPED_VIEWS = new Set(['current_prompt', 'summary', 'rl_dataset']);
 const viewBranches = {current_prompt: 'main', summary: 'main', rl_dataset: 'main'};
 const GRAPH_NODE_WIDTH = 210;
@@ -776,12 +815,114 @@ function drawGraph(data) {
 }
 function setMode(mode) {
   const trace = mode === 'trace';
+  const global = mode === 'global';
   $('tracePage').classList.toggle('hidden', !trace);
-  $('finalPage').classList.toggle('hidden', trace);
+  $('finalPage').classList.toggle('hidden', trace || global);
+  $('globalPage').classList.toggle('hidden', !global);
   $('traceMode').classList.toggle('active', trace);
-  $('finalMode').classList.toggle('active', !trace);
+  $('finalMode').classList.toggle('active', !trace && !global);
+  $('globalMode').classList.toggle('active', global);
   if (trace) drawPlayback();
+  else if (global) loadGlobalOverview();
   else if (graphData) requestAnimationFrame(() => drawGraph(graphData));
+}
+
+function globalGraphNode(node) {
+  const button = node.type === 'trajectory'
+    ? `<button onclick='openTrajectoryFromGlobal(${JSON.stringify(node.trajectory_id)})'>Open trajectory</button>`
+    : '';
+  return `<div class="global-graph-node ${escapeHtml(node.type)}" data-global-node="${escapeHtml(node.id)}"><b>${escapeHtml(node.label)}</b><span>${escapeHtml(node.detail || '')}</span>${button}</div>`;
+}
+
+function drawGlobalRelationshipGraph(graphData) {
+  const graph = document.querySelector('.global-relationship-graph');
+  const edges = document.getElementById('globalRelationshipEdges');
+  if (!graph || !edges) return;
+  const bounds = graph.getBoundingClientRect();
+  const width = Math.max(graph.scrollWidth, Math.ceil(bounds.width));
+  const height = Math.max(graph.scrollHeight, Math.ceil(bounds.height));
+  edges.setAttribute('width', width);
+  edges.setAttribute('height', height);
+  edges.setAttribute('viewBox', `0 0 ${width} ${height}`);
+  edges.innerHTML = '';
+  const byId = new Map([...graph.querySelectorAll('[data-global-node]')].map(node => [node.dataset.globalNode, node]));
+  for (const edge of graphData.edges || []) {
+    const source = byId.get(edge.source);
+    const target = byId.get(edge.target);
+    if (!source || !target) continue;
+    const sourceBox = source.getBoundingClientRect();
+    const targetBox = target.getBoundingClientRect();
+    const sourceRight = sourceBox.right - bounds.left + graph.scrollLeft;
+    const sourceLeft = sourceBox.left - bounds.left + graph.scrollLeft;
+    const targetRight = targetBox.right - bounds.left + graph.scrollLeft;
+    const targetLeft = targetBox.left - bounds.left + graph.scrollLeft;
+    const sourceCenterY = sourceBox.top - bounds.top + graph.scrollTop + sourceBox.height / 2;
+    const targetCenterY = targetBox.top - bounds.top + graph.scrollTop + targetBox.height / 2;
+    const forward = sourceLeft <= targetLeft;
+    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    line.setAttribute('x1', forward ? sourceRight : sourceLeft);
+    line.setAttribute('y1', sourceCenterY);
+    line.setAttribute('x2', forward ? targetLeft : targetRight);
+    line.setAttribute('y2', targetCenterY);
+    line.setAttribute('class', String(edge.kind || '').replaceAll('_', '-'));
+    line.setAttribute('stroke-width', Math.min(5, 1 + Number(edge.count || 1)));
+    edges.appendChild(line);
+  }
+}
+
+function renderGlobalOverview(data) {
+  globalOverviewData = data;
+  const trajectories = data.trajectories || [];
+  const skills = data.skills || [];
+  const graph = data.graph || {nodes: [], edges: []};
+  const nodes = graph.nodes || [];
+  const nodeGroups = {
+    trajectory: nodes.filter(node => node.type === 'trajectory'),
+    tool: nodes.filter(node => node.type === 'tool'),
+    skill: nodes.filter(node => node.type === 'skill'),
+  };
+  const trajectoryRows = trajectories.map(row => {
+    const tools = (row.tools || []).map(tool => `<span class="pill">${escapeHtml(tool.tool_name)} ${escapeHtml(tool.call_count)}</span>`).join('') || '<span class="muted">No tool calls</span>';
+    const relatedSkills = (row.associated_skills || []).map(skill => `<span class="pill ok">${escapeHtml(skill.name)} (${escapeHtml(skill.application_count)})</span>`).join('') || '<span class="muted">No skill-linked tool calls</span>';
+    return `<tr><td><b>${escapeHtml(row.title || '')}</b><div class="mono muted">${escapeHtml(row.trajectory_id)}</div><button class="small-btn secondary" onclick='openTrajectoryFromGlobal(${JSON.stringify(row.trajectory_id)})'>Open</button></td><td>${escapeHtml(row.agent_id || '')}<div class="muted">${escapeHtml(row.source_id || '')}</div></td><td>${escapeHtml(row.created_at || '')}<div class="muted">updated ${escapeHtml(row.updated_at || '')}</div></td><td>${escapeHtml(row.event_count)}</td><td>${tools}</td><td>${relatedSkills}</td></tr>`;
+  }).join('') || '<tr><td colspan="6" class="muted">No trajectories have been recorded.</td></tr>';
+  const skillRows = skills.map(skill => `<tr><td><b>${escapeHtml(skill.name)}</b><div class="mono muted">${escapeHtml(skill.skill_id)}</div></td><td><button class="small-btn secondary" onclick='openTrajectoryFromGlobal(${JSON.stringify(skill.source_trajectory_id)})'>${escapeHtml(skill.source_trajectory_id)}</button></td><td>${escapeHtml(skill.trigger_tool || '')}</td><td>${escapeHtml(skill.support_count || 0)}</td><td>${escapeHtml(skill.status || '')}</td></tr>`).join('') || '<tr><td colspan="5" class="muted">No learned skills are currently materialized.</td></tr>';
+  $('globalOut').innerHTML = `
+    <div class="global-metrics">
+      <div class="global-metric"><b>${escapeHtml(data.trajectory_count)}</b><span>trajectories</span></div>
+      <div class="global-metric"><b>${escapeHtml(data.tool_count)}</b><span>tools called</span></div>
+      <div class="global-metric"><b>${escapeHtml(data.skill_count)}</b><span>shared indexed skills</span></div>
+    </div>
+    <div class="summary-card"><h3>All Trajectories</h3><div class="table-wrap"><table><thead><tr><th>Trajectory</th><th>Creation agent / source</th><th>Created / updated</th><th>Events</th><th>Tool calls</th><th>Associated skills</th></tr></thead><tbody>${trajectoryRows}</tbody></table></div></div>
+    <div class="summary-card"><h3>Global Skill Library</h3><p class="muted">Skills are stored in one persistent vector collection and can be retrieved by every trajectory. Each entry retains the trajectory that produced it.</p><div class="table-wrap"><table><thead><tr><th>Skill</th><th>Source trajectory</th><th>Trigger tool</th><th>Evidence</th><th>Status</th></tr></thead><tbody>${skillRows}</tbody></table></div></div>
+    <div class="summary-card"><h3>Trajectory / Tool / Skill Relationships</h3><p class="muted">Solid links show tool calls. Dashed green links show a trajectory applying an indexed skill. Blue links connect a tool to the skill action that used it.</p>
+      <div class="global-relationship-graph"><svg id="globalRelationshipEdges" class="global-relationship-edges"></svg><div class="global-relationship-columns">
+        <div class="global-relationship-column"><h3>Trajectories</h3><div class="global-relationship-stack">${nodeGroups.trajectory.map(globalGraphNode).join('') || '<span class="muted">None</span>'}</div></div>
+        <div class="global-relationship-column"><h3>Tools</h3><div class="global-relationship-stack">${nodeGroups.tool.map(globalGraphNode).join('') || '<span class="muted">None</span>'}</div></div>
+        <div class="global-relationship-column"><h3>Shared Skills</h3><div class="global-relationship-stack">${nodeGroups.skill.map(globalGraphNode).join('') || '<span class="muted">None</span>'}</div></div>
+      </div></div>
+    </div>`;
+  requestAnimationFrame(() => drawGlobalRelationshipGraph(graph));
+}
+
+async function loadGlobalOverview() {
+  if (globalBusy) return;
+  setBusyControls(true);
+  $('globalOut').innerHTML = '<div class="loading-card"><div class="spinner" aria-hidden="true"></div><div class="loading-text"><b>Loading global ContextDB data</b><span>Scanning all trajectories and the shared Skill Library.</span><div class="progress"><div></div></div></div></div>';
+  try {
+    renderGlobalOverview(await api('/api/v1/global_overview'));
+  } catch (err) {
+    $('globalOut').innerHTML = `<div class="view-empty"><b>Global view unavailable</b><br>${escapeHtml(err.message)}</div>`;
+  } finally {
+    setBusyControls(false);
+  }
+}
+
+function openTrajectoryFromGlobal(trajectoryId) {
+  $('tid').value = trajectoryId;
+  setMode('final');
+  showDatabaseViewsPlaceholder();
+  loadAll().catch(err => { showError(err.message); $('graphMeta').textContent = 'load failed'; });
 }
 function playbackNodes() { return graphData ? graphData.nodes.slice(0, playbackStep + 1) : []; }
 function drawPlayback() {
@@ -863,7 +1004,6 @@ function escapeHtml(value) {
   return String(value ?? '').replace(/[&<>"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
 }
 function setOutput(html) { $('out').innerHTML = html; }
-function jsonBlock(data) { return `<pre class="json-block">${escapeHtml(JSON.stringify(data, null, 2))}</pre>`; }
 function viewLabel(view) {
   const labels = {
     current_prompt:'Context Assembly', summary:'Context Digest', context_budget:'Context Assembly', failures:'Failures', failure_patterns:'Failure Patterns',
@@ -874,7 +1014,7 @@ function viewLabel(view) {
 }
 function setBusyControls(busy) {
   globalBusy = busy;
-  document.querySelectorAll('.tabs button, #load, #seed, #runSql, #runNaturalLanguage, #nlProfile, #summaryProfile, #generateSummary, #viewsMode, #queryMode, #versionMode, #createSnapshot, #createBranch, #versionMessage, #versionBranchName, #versionBranch, [data-view-branch]').forEach(el => el.disabled = busy);
+  document.querySelectorAll('.tabs button, #load, #runSql, #runNaturalLanguage, #nlProfile, #summaryProfile, #generateSummary, #viewsMode, #queryMode, #versionMode, #createSnapshot, #createBranch, #versionMessage, #versionBranchName, #versionBranch, #traceMode, #finalMode, #globalMode, #refreshGlobal, [data-view-branch]').forEach(el => el.disabled = busy);
 }
 function setLoadingOutput(view, branch) {
   const label = viewLabel(view);
@@ -950,7 +1090,7 @@ function renderSqlResult(data) {
   const meta=document.createElement('div');meta.className='sql-result-meta';meta.innerHTML='<span class="pill ok">'+escapeHtml(data.row_count||0)+' rows</span><span class="pill">'+escapeHtml((data.highlight_event_ids||[]).length)+' evidence events</span><span class="pill rule">ContextQL</span>';card.appendChild(meta);card.appendChild(wrap);
   $('sqlOut').innerHTML='';$('sqlOut').appendChild(card);if((data.highlight_event_ids||[]).length)highlightGraph(data.highlight_event_ids,[]);
 }
-async function runSqlQuery(){const tid=getTid();if(!tid)return;const sql=$('sqlInput').value.trim();if(!sql)return;setBusyControls(true);$('sqlMeta').textContent='executing...';try{const data=await api('/api/v1/sql',{trajectory_id:tid,sql:sql});renderSqlResult(data);$('sqlMeta').textContent=String(data.row_count)+' rows';}catch(err){$('sqlMeta').textContent='query error';$('sqlOut').innerHTML='<div class="view-empty"><b>Query failed</b><br>'+escapeHtml(err.message)+'</div>';}finally{setBusyControls(false);}}
+async function runSqlQuery(){const tid=getTid();if(!tid)return;const sql=$('sqlInput').value.trim();if(!sql)return;setBusyControls(true);$('sqlMeta').textContent='executing...';$('sqlOut').innerHTML='<div class="loading-card"><div class="spinner" aria-hidden="true"></div><div><b>Running SQL query</b></div></div>';try{const data=await api('/api/v1/sql',{trajectory_id:tid,sql:sql});renderSqlResult(data);$('sqlMeta').textContent=String(data.row_count)+' rows';}catch(err){$('sqlMeta').textContent='query error';$('sqlOut').innerHTML='<div class="view-empty"><b>Query failed</b><br>'+escapeHtml(err.message)+'</div>';}finally{setBusyControls(false);}}
 async function loadLlmProfiles(){
   const select=$('nlProfile');
   try{
@@ -971,7 +1111,7 @@ async function loadLlmProfiles(){
   }
 }
 function modelExecutionMessage(execution, fallback){const requested=execution.requested_model||fallback||'selected model',actual=execution.response_model;if(execution.verified)return 'Confirmed by API response: '+actual+' (request id '+(execution.response_id||'unavailable')+').';if(actual)return 'API responded with '+actual+' although '+requested+' was requested.';return 'Translation completed, but the API did not return model metadata; the model cannot be independently confirmed.';}
-async function runNaturalLanguageQuery(){const tid=getTid(),question=$('nlQuestion').value.trim(),profileId=$('nlProfile').value;if(!tid||!question||!profileId)return;setBusyControls(true);$('sqlMeta').textContent='translating...';const profileLabel=$('nlProfile').selectedOptions[0]?.textContent||profileId;$('sqlOut').innerHTML='<div class="loading-card"><div class="spinner" aria-hidden="true"></div><div><b>Translating question with '+escapeHtml(profileLabel)+'</b><br><span class="muted">Review or edit the generated SQL, then use Run SQL.</span></div></div>';try{const data=await api('/api/v1/nl_sql',{trajectory_id:tid,question:question,profile_id:profileId});const translation=data.translation||{},execution=translation.execution||{};$('sqlInput').value=translation.sql||'';$('sqlMeta').textContent=execution.verified?'verified '+execution.response_model:'SQL translated';$('sqlOut').innerHTML='<div class="view-empty"><b>SQL ready for review.</b><br>'+escapeHtml(modelExecutionMessage(execution,translation.model))+'<br><span class="muted">'+escapeHtml(translation.reason||'Click Run SQL to execute the generated statement.')+'</span></div>';}catch(err){$('sqlMeta').textContent='translation error';$('sqlOut').innerHTML='<div class="view-empty"><b>Natural-language translation failed</b><br>'+escapeHtml(err.message)+'</div>';}finally{setBusyControls(false);}}
+async function runNaturalLanguageQuery(){const tid=getTid(),question=$('nlQuestion').value.trim(),profileId=$('nlProfile').value;if(!tid||!question||!profileId)return;setBusyControls(true);$('sqlMeta').textContent='translating...';const profileLabel=$('nlProfile').selectedOptions[0]?.textContent||profileId;$('sqlOut').innerHTML='<div class="loading-card"><div class="spinner" aria-hidden="true"></div><div><b>Translating query with '+escapeHtml(profileLabel)+'</b></div></div>';try{const data=await api('/api/v1/nl_sql',{trajectory_id:tid,question:question,profile_id:profileId});const translation=data.translation||{},execution=translation.execution||{};$('sqlInput').value=translation.sql||'';$('sqlMeta').textContent=execution.verified?'verified '+execution.response_model:'SQL translated';$('sqlOut').innerHTML='<div class="view-empty"><b>SQL ready for review.</b><br>'+escapeHtml(modelExecutionMessage(execution,translation.model))+'<br><span class="muted">'+escapeHtml(translation.reason||'Click Run SQL to execute the generated statement.')+'</span></div>';}catch(err){$('sqlMeta').textContent='translation error';$('sqlOut').innerHTML='<div class="view-empty"><b>Natural-language translation failed</b><br>'+escapeHtml(err.message)+'</div>';}finally{setBusyControls(false);}}
 
 function renderFailurePatterns(data) {
   const rows = Array.isArray(data.content) ? data.content : [];
@@ -1151,7 +1291,7 @@ function renderSkillMatchResult(data) {
       <p><button class="small-btn" onclick='highlightGraph(${JSON.stringify(m.highlight_event_ids || [])}, [])'>Highlight Evidence</button></p>
     </div>`;
   }).join('') : '<div class="view-empty">No matching skill found.</div>';
-  setOutput(`<div class="summary-card"><h3>Match Input</h3><p><span class="pill">${escapeHtml(input.tool)}</span><span class="mono">${escapeHtml(input.command)}</span></p><p>${escapeHtml(input.normalized_signature || input.error_signature || '')}</p></div>` + cards + jsonBlock(data));
+  setOutput(`<div class="summary-card"><h3>Match Input</h3><p><span class="pill">${escapeHtml(input.tool)}</span><span class="mono">${escapeHtml(input.command)}</span></p><p>${escapeHtml(input.normalized_signature || input.error_signature || '')}</p></div>` + cards);
 }
 function renderSkillLibrary(data) {
   const lib = data.content || {};
@@ -1165,7 +1305,7 @@ function renderSkillLibrary(data) {
     const actions = (s.recommended_actions || []).map(a => `<tr><td><b>${escapeHtml(a.name || '')}</b><div class="mono">${escapeHtml(a.canonical_command_template || a.command_template)}</div></td><td>${escapeHtml(a.strategy)}</td><td>${(a.support_events || []).map(e => `<span class="pill">${escapeHtml(e.success_event_id)}</span>`).join('')}</td></tr>`).join('');
     return `<div class="summary-card"><h3>${escapeHtml(s.name)}</h3><p><span class="pill rule">${escapeHtml(s.skill_id)}</span><span class="pill">${escapeHtml(s.status || 'candidate')}</span><span class="pill ok">${escapeHtml((s.confidence || {}).support_count || 0)} evidence refs</span></p><div class="table-wrap"><table><thead><tr><th>Action</th><th>Strategy</th><th>Support Events</th></tr></thead><tbody>${actions}</tbody></table></div><p><button class="small-btn" onclick='highlightGraph(${JSON.stringify(s.highlight_event_ids || [])}, [])'>Evidence Path</button></p></div>`;
   }).join('') || `<div class="view-empty">No materialized skills. Run the Learned Skills view first to generate and cache skills, then return to Skill Library.</div>`;
-  setOutput(toolbar + cards + jsonBlock(data));
+  setOutput(toolbar + cards);
 }
 function eventTypeDot(type) { return `timeline-dot dot-${String(type || 'system_event')}`; }
 function eventText(event) {
@@ -1188,26 +1328,30 @@ function matchPayloadDetails(matchEvent) {
     input: payload.input_failure || {},
     matched,
     skillId: payload.matched_skill_id || first.matched_skill_id || '',
-    reason: payload.match_reason || first.match_reason || (matched ? '' : 'No matching skill was found in the materialized Skill Library.'),
+    reason: payload.match_reason || first.match_reason || (matched ? '' : 'No matching skill was found in the Skill Library.'),
     actionName: payload.recommended_action || action.name || action.strategy || '',
     score: first.score
   };
 }
+function traceEventMeta(branchId, eventId, branchClass = 'excluded') {
+  if (!eventId) return '';
+  return `<span class="pill ${branchClass}">${escapeHtml(branchId || 'main')}</span><span class="pill mono">${escapeHtml(eventId)}</span>`;
+}
 function timelineStep(type, title, body, eventIds = [], meta = '') {
+  const highlightButton = eventIds.length ? `<button class="small-btn" onclick='highlightGraph(${JSON.stringify(eventIds)}, [])'>Highlight</button>` : '';
   return `<div class="timeline-step">
     <div class="timeline-mark"><span class="${eventTypeDot(type)}"></span></div>
     <div class="timeline-body">
-      <h4>${escapeHtml(title)}</h4>
-      <p>${body}</p>
+      <div class="timeline-title"><h4>${escapeHtml(title)}</h4>${highlightButton}</div>
+      ${body ? `<p>${body}</p>` : ''}
       ${meta ? `<div class="flow-meta">${meta}</div>` : ''}
-      ${eventIds.length ? `<button class="small-btn" onclick='highlightGraph(${JSON.stringify(eventIds)}, [])'>Highlight</button>` : ''}
     </div>
   </div>`;
 }
 function renderSkillApplicationTrace(data) {
   const rows = Array.isArray(data.content) ? data.content : [];
   renderMetrics(null);
-  if (!rows.length) return setOutput('<div class="view-empty">No skill application events yet. Use Skill Library -> Apply Skill.</div>' + jsonBlock(data));
+  if (!rows.length) return setOutput('<div class="view-empty">No skill application events yet.</div>');
   const byBranch = new Map();
   rows.forEach(e => {
     const branch = e.branch_id || 'main';
@@ -1221,33 +1365,52 @@ function renderSkillApplicationTrace(data) {
       const start = branchRows.indexOf(matchEvent);
       const next = branchRows.findIndex((e, i) => i > start && e.event_type === 'skill_match');
       const segment = branchRows.slice(start + 1, next === -1 ? branchRows.length : next);
-      const delivery = segment.find(e => e.event_type === 'skill_recommendation');
-      const decision = segment.find(e => e.event_type === 'skill_decision') || segment.find(e => e.event_type === 'assistant_message');
-      const call = segment.find(e => e.event_type === 'tool_call');
-      const result = segment.find(e => e.event_type === 'tool_result');
+      const linkedEvents = segment.filter(e => e.refs?.skill_match_event_id === matchEvent.event_id);
+      const delivery = linkedEvents.find(e => e.event_type === 'skill_recommendation');
+      const decision = linkedEvents.find(e => e.event_type === 'skill_decision');
+      const call = linkedEvents.find(e => e.event_type === 'tool_call');
+      const result = linkedEvents.find(e => e.event_type === 'tool_result');
       const details = matchPayloadDetails(matchEvent);
-      const inputBody = `<span class="mono">${escapeHtml(details.input.command || '')}</span><br><span class="muted">${escapeHtml(details.input.error_signature || details.input.normalized_signature || '')}</span>`;
-      const matchMeta = details.matched ? `<span class="pill rule">${escapeHtml(details.skillId)}</span>${details.score !== undefined ? `<span class="pill ok">score ${escapeHtml(details.score)}</span>` : ''}` : '<span class="pill excluded">no match</span>';
-      const eventIds = [matchEvent.event_id, delivery?.event_id, decision?.event_id, call?.event_id, result?.event_id].filter(Boolean);
+      const failureEventReference = matchEvent.refs?.failure_event_id || details.input.event_id || '';
+      const failureEvent = failureEventReference ? branchRows.find(e => e.event_id === failureEventReference) : null;
+      if (failureEvent?.event_type !== 'tool_result' || failureEvent.payload?.status !== 'failed') return;
+      const failureEventId = failureEvent.event_id;
+      const inputBody = `<span class="mono">${escapeHtml(details.input.command || 'unavailable')}</span>`;
+      const failureMeta = traceEventMeta(failureEvent.branch_id || branch, failureEventId, 'failed');
+      const matchMeta = `${traceEventMeta(matchEvent.branch_id || branch, matchEvent.event_id)}${details.matched ? `<span class="pill rule">Skill ID: ${escapeHtml(details.skillId)}</span>${details.score !== undefined ? `<span class="pill ok">score ${escapeHtml(details.score)}</span>` : ''}` : ''}`;
+      const matchBody = `<span class="trace-match-reason">${escapeHtml(String(details.reason || 'ContextDB returned a matching skill.').replace(/\bmaterialized\s+/gi, ''))}</span>`;
+      const eventIds = [...new Set([failureEventId, matchEvent.event_id, delivery?.event_id, decision?.event_id, call?.event_id, result?.event_id].filter(Boolean))];
       const steps = [
-        timelineStep('tool_result', 'New Failure Observed', inputBody, []),
-        timelineStep('skill_match', details.matched ? 'Skill Matched' : 'Skill Match Attempted', escapeHtml(details.reason || 'ContextDB returned a matching skill.'), [matchEvent.event_id], matchMeta)
+        timelineStep('tool_result', 'New Failure Observed', inputBody, [failureEventId], failureMeta),
+        timelineStep('skill_match', details.matched ? 'Skill Matched' : 'Skill Match Attempted', matchBody, [matchEvent.event_id], matchMeta)
       ];
       if (details.matched) {
-        steps.push(timelineStep('skill_recommendation', 'Recommendation Delivered To Agent', escapeHtml(eventText(delivery) || details.actionName || 'ContextDB made the selected action available to the Agent.'), delivery ? [delivery.event_id] : []));
-        steps.push(timelineStep('skill_decision', 'Agent Decision', escapeHtml(eventText(decision) || 'No decision was reported.'), decision ? [decision.event_id] : []));
-        if (call) steps.push(timelineStep('tool_call', 'Agent-Executed Skill Action', `<span class="mono">${escapeHtml(eventText(call))}</span>`, [call.event_id]));
+        const recommendationText = String(eventText(delivery) || details.actionName || 'ContextDB made the selected action available to the Agent.').replace(/\bsuggestion\b/gi, 'recommendation');
+        const recommendationBody = `<span class="trace-secondary-detail">${escapeHtml(recommendationText)}</span>`;
+        steps.push(timelineStep('skill_recommendation', 'Recommendation Delivered To Agent', recommendationBody, delivery ? [delivery.event_id] : [], traceEventMeta(delivery?.branch_id || matchEvent.branch_id || branch, delivery?.event_id)));
+        if (decision) {
+          const decisionBody = `<span class="trace-secondary-detail">${escapeHtml(eventText(decision))}</span>`;
+          steps.push(timelineStep('skill_decision', 'Agent Decision', decisionBody, [decision.event_id], traceEventMeta(decision.branch_id || matchEvent.branch_id || branch, decision.event_id)));
+        } else {
+          steps.push(timelineStep('skill_decision', 'Agent Decision', '<span class="trace-secondary-detail">No agent decision.</span>'));
+        }
+        if (call) steps.push(timelineStep('tool_call', 'Agent-Executed Skill Action', `<span class="mono">${escapeHtml(eventText(call))}</span>`, [call.event_id], traceEventMeta(call.branch_id || matchEvent.branch_id || branch, call.event_id)));
+      } else {
+        steps.push(timelineStep('skill_recommendation', 'Recommendation Delivery Attempted', '<span class="trace-secondary-detail">No matching skill delivered to agent.</span>', delivery ? [delivery.event_id] : [], traceEventMeta(delivery?.branch_id || matchEvent.branch_id || branch, delivery?.event_id)));
       }
-      if (result) steps.push(timelineStep('tool_result', details.matched ? 'Execution Outcome' : 'No Skill Applied', escapeHtml(eventText(result)), [result.event_id]));
+      if (result && details.matched) {
+        const resultStatus = result.payload?.status;
+        const resultMeta = traceEventMeta(result.branch_id || branch, result.event_id, resultStatus === 'ok' ? 'ok' : resultStatus === 'failed' ? 'failed' : '');
+        steps.push(timelineStep('tool_result', details.matched ? 'Execution Outcome' : 'No Skill Applied', '', [result.event_id], resultMeta));
+      }
       cards.push(`<div class="summary-card app-flow">
-        <h3>Skill Application ${cards.length + 1}</h3>
-        <p><span class="pill">${escapeHtml(branch)}</span><span class="pill ${details.matched ? 'ok' : 'excluded'}">${details.matched ? 'failure -> match -> deliver -> decide -> execute -> outcome' : 'failure -> match attempted -> no skill applied'}</span></p>
+        <div class="app-flow-title"><h3>Skill Application ${cards.length + 1}</h3><button class="small-btn" onclick='highlightGraph(${JSON.stringify(eventIds)}, [])'>Highlight Workflow</button></div>
+        <p class="app-flow-status"><span class="pill ${details.matched && result ? 'ok' : 'excluded'}">${details.matched ? ['failure', 'match', 'recommend', ...(decision ? ['decide'] : []), ...(call ? ['execute'] : []), ...(result ? ['outcome'] : [])].join(' -> ') : 'failure -> match attempted -> recommend attempted'}</span></p>
         <div class="timeline">${steps.join('')}</div>
-        <p><button class="small-btn" onclick='highlightGraph(${JSON.stringify(eventIds)}, [])'>Highlight Workflow</button></p>
       </div>`);
     });
   });
-  setOutput((cards.join('') || '<div class="view-empty">No skill_match workflow found.</div>') + jsonBlock(data));
+  setOutput(cards.join('') || '<div class="view-empty">No skill-match workflow found.</div>');
 }
 
 function contextEvidenceButton(ids, label = 'Source event IDs') {
@@ -1430,7 +1593,7 @@ function renderView(view, data) {
   if (view === 'skill_library') return renderSkillLibrary(data);
   if (view === 'skill_application_trace') return renderSkillApplicationTrace(data);
   if (view === 'rl_dataset') return renderRlDataset(data);
-  $('out').innerHTML = jsonBlock(data);
+  $('out').innerHTML = '<div class="view-empty">This view has no dashboard presentation.</div>';
 }
 
 async function loadView(options = {}) {
@@ -1484,34 +1647,6 @@ async function loadAll() {
     if (!$('versionControlPanel').classList.contains('hidden')) await loadVersionControl();
   } finally {
     if (!alreadyBusy) setBusyControls(false);
-  }
-}
-async function seedDemo() {
-  setBusyControls(true);
-  $('graphMeta').textContent = 'seeding...';
-  showDatabaseViewsPlaceholder();
-  try {
-  const traj = await api('/api/v1/trajectories', {title:'Browser seeded rollback demo', agent_id:'codex', source_id:'dashboard'});
-  const tid = traj.trajectory_id; $('tid').value = tid;
-  await api('/api/v1/events', {trajectory_id:tid, event_type:'user_message', actor:'user', payload:{text:'Build a versioned agent context service.'}});
-  await api('/api/v1/events', {trajectory_id:tid, event_type:'tool_result', actor:'tool', payload:{status:'ok', preview:'environment inspected'}});
-  const snap = await api('/api/v1/snapshots', {trajectory_id:tid, message:'clean environment snapshot'});
-  await api('/api/v1/events', {trajectory_id:tid, event_type:'assistant_message', payload:{text:'Try native build first.'}});
-  await api('/api/v1/events', {trajectory_id:tid, event_type:'tool_result', actor:'tool', payload:{status:'failed', preview:'compiler mismatch'}});
-  await api('/api/v1/rollback', {trajectory_id:tid, snapshot_id:snap.snapshot_id, target_branch_id:'rollback-clean'});
-  const rollbackEvent = await api('/api/v1/events', {trajectory_id:tid, branch_id:'rollback-clean', event_type:'assistant_message', payload:{text:'Rollback to clean snapshot before safer repair.'}, metadata:{operation:'rollback', snapshot_id:snap.snapshot_id}});
-  await api('/api/v1/branches', {trajectory_id:tid, branch_id:'docker-attempt', base_event_id:rollbackEvent.event_id, from_branch:'rollback-clean'});
-  await api('/api/v1/events', {trajectory_id:tid, branch_id:'docker-attempt', event_type:'assistant_message', payload:{text:'Try isolated Docker build.'}});
-  await api('/api/v1/events', {trajectory_id:tid, branch_id:'docker-attempt', event_type:'tool_result', actor:'tool', payload:{status:'ok', preview:'service healthy'}});
-  await api('/api/v1/branches', {trajectory_id:tid, branch_id:'clang-attempt', base_event_id:rollbackEvent.event_id, from_branch:'rollback-clean'});
-  await api('/api/v1/events', {trajectory_id:tid, branch_id:'clang-attempt', event_type:'assistant_message', payload:{text:'Retry native build with clang.'}});
-  await api('/api/v1/events', {trajectory_id:tid, branch_id:'clang-attempt', event_type:'tool_result', actor:'tool', payload:{status:'ok', preview:'native service healthy'}});
-  await loadAll();
-  } catch (err) {
-    showError(err.message);
-    $('graphMeta').textContent = 'seed failed';
-  } finally {
-    setBusyControls(false);
   }
 }
 function versionOperationLabel(event) {
@@ -1638,13 +1773,19 @@ $('createSnapshot').onclick = () => { if (!globalBusy) createVersionSnapshot(); 
 $('createBranch').onclick = () => { if (!globalBusy) createVersionBranch(); };
 $('traceMode').onclick = () => setMode('trace');
 $('finalMode').onclick = () => setMode('final');
+$('globalMode').onclick = () => setMode('global');
+$('refreshGlobal').onclick = () => loadGlobalOverview();
 $('stepPrev').onclick = () => stepPlayback(-1);
 $('stepNext').onclick = () => stepPlayback(1);
 $('stepPlay').onclick = () => togglePlayback();
 $('stepSlider').oninput = e => { playbackStep = Number(e.target.value || 0); drawPlayback(); };
 $('load').onclick = () => { if (!globalBusy) { showDatabaseViewsPlaceholder(); loadAll().catch(err => { showError(err.message); $('graphMeta').textContent = 'load failed'; setBusyControls(false); }); } };
-$('seed').onclick = () => { if (!globalBusy) seedDemo(); };
 $('versionBranch').onchange = () => { if (!globalBusy && !$('versionControlPanel').classList.contains('hidden')) loadVersionControl(); };
+window.addEventListener('resize', () => {
+  if (!$('globalPage').classList.contains('hidden') && globalOverviewData) {
+    requestAnimationFrame(() => drawGlobalRelationshipGraph(globalOverviewData.graph || {}));
+  }
+});
 loadLlmProfiles();
 if (getTid()) { $('tid').value = getTid(); loadAll().catch(err => { showError(err.message); $('graphMeta').textContent = 'load failed'; setBusyControls(false); }); }
 </script>

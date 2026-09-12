@@ -83,6 +83,22 @@ class SQLiteVectorIndex:
         matches.sort(key=lambda item: (-item["score"], item["entry_id"]))
         return matches[:max(0, top_k)]
 
+    def list_entries(self, collection: str) -> List[Dict[str, Any]]:
+        """Return persisted entries for a collection without running a search."""
+        rows = self.conn.execute(
+            "SELECT entry_id, owner_id, document, metadata_json FROM vector_entries WHERE collection_name=? ORDER BY entry_id",
+            (collection,),
+        ).fetchall()
+        return [
+            {
+                "entry_id": row["entry_id"],
+                "owner_id": row["owner_id"],
+                "document": row["document"],
+                "metadata": json.loads(row["metadata_json"]),
+            }
+            for row in rows
+        ]
+
     def count(self, collection: Optional[str] = None) -> int:
         query = "SELECT COUNT(*) AS count FROM vector_entries" + (" WHERE collection_name=?" if collection else "")
         row = self.conn.execute(query, (collection,) if collection else ()).fetchone()

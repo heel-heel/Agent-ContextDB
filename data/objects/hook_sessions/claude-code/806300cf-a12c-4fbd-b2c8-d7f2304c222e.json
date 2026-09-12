@@ -1,0 +1,18 @@
+{
+  "schema_version": "contextdb.hook_session.v2",
+  "source": "claude-code",
+  "session_id": "806300cf-a12c-4fbd-b2c8-d7f2304c222e",
+  "agent_id": "claude-code",
+  "trajectory_id": "traj_e94d123eea16",
+  "created_at": "2026-09-12T02:04:52.966313+00:00",
+  "updated_at": "2026-09-12T02:04:52.970191+00:00",
+  "event_count": 1,
+  "pending_tools": {},
+  "last_skill_retrieval": null,
+  "last_skill_delivery": null,
+  "last_skill_decision": null,
+  "active_branch_id": "main",
+  "last_version_snapshot": null,
+  "last_repair_suggestion": null,
+  "last_version_decision": null
+}

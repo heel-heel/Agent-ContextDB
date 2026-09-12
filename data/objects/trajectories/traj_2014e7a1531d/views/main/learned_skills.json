@@ -48,7 +48,7 @@
               "primary_rule": "same_branch_first_success_after_failure",
               "judgment_label": "likely_repair",
               "confidence": 0.95,
-              "reason": "The failure was a PathNotFound error for '.\\assets\\settings.json'. The successful action used the exact same command but corrected the file path to '.\\examples\\live-path-demo\\assets\\settings.json', which resolved the issue.",
+              "reason": "The agent corrected the file path in the Get-Content command from a non-existent relative path to the correct nested path, resolving the PathNotFound error.",
               "vector_text": "shell powershell -NoProfile -Command \"Get-Content -Raw -LiteralPath '.\\examples\\live-path-demo\\assets\\settings.json'\""
             }
           ],
@@ -153,7 +153,7 @@
     "evt_c069de691612",
     "evt_a5b08a5df447"
   ],
-  "created_at": "2026-09-11T06:14:42.012570+00:00",
+  "created_at": "2026-09-12T06:59:40.135240+00:00",
   "metadata": {
     "event_count": 55
   }
