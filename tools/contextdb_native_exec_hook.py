@@ -9,6 +9,7 @@ It never executes a recommended action itself.
 """
 
 import argparse
+import locale
 import json
 import subprocess
 import sys
@@ -42,6 +43,27 @@ def _emit(text: str, stream: Any) -> None:
 
 def _command_text(command: List[str]) -> str:
     return subprocess.list2cmdline(command)
+
+
+def _decode_process_output(raw: bytes) -> str:
+    """Decode Windows child-process output without assuming one console code page."""
+    if not raw:
+        return ""
+    if raw.startswith((b"\xff\xfe", b"\xfe\xff")):
+        return raw.decode("utf-16", errors="replace")
+    if raw.count(b"\x00") > len(raw) // 8:
+        for encoding in ("utf-16-le", "utf-16-be"):
+            try:
+                return raw.decode(encoding)
+            except UnicodeDecodeError:
+                pass
+    encodings = ("utf-8-sig", locale.getpreferredencoding(False), "gb18030")
+    for encoding in dict.fromkeys(encodings):
+        try:
+            return raw.decode(encoding)
+        except UnicodeDecodeError:
+            continue
+    return raw.decode("utf-8", errors="replace")
 
 
 def _hook_event(base_url: str, source: str, session_id: str, event_id: str, event_type: str, payload: Dict[str, Any]) -> Dict[str, Any]:
@@ -112,8 +134,10 @@ def run_hooked_command(args: argparse.Namespace) -> int:
             }))
 
     try:
-        completed = subprocess.run(command, capture_output=True, text=True, errors="replace", cwd=args.cwd or None)
-        stdout, stderr, exit_code = completed.stdout or "", completed.stderr or "", completed.returncode
+        completed = subprocess.run(command, capture_output=True, cwd=args.cwd or None)
+        stdout = _decode_process_output(completed.stdout or b"")
+        stderr = _decode_process_output(completed.stderr or b"")
+        exit_code = completed.returncode
     except FileNotFoundError as exc:
         stdout, stderr, exit_code = "", str(exc), 127
     except OSError as exc:

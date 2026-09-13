@@ -6,7 +6,7 @@
   "payload": {
     "type": "contextdb_skill_recommendation",
     "matched": true,
-    "skill_id": "skill_file_not_found_specified_path_exit_code_get-content",
+    "skill_id": "skill_shell_file_not_found_get_content",
     "skill_name": "Repair file not found at specified path",
     "match_score": 0.573826,
     "match_reason": "vector cosine similarity over failure and learned trigger",
@@ -82,7 +82,7 @@
   "timestamp": "2026-09-01T01:03:56.377598+00:00",
   "refs": {
     "skill_match_event_id": "evt_55f1fea496ec",
-    "skill_id": "skill_file_not_found_specified_path_exit_code_get-content",
+    "skill_id": "skill_shell_file_not_found_get_content",
     "selected_action_id": "act_file_not_found_specified_path_exit_code_get-content_1"
   },
   "metadata": {

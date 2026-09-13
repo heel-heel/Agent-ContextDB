@@ -6,7 +6,7 @@
   "payload": {
     "decision": "accepted",
     "reason": "The recommended path repair is safe and directly addresses the failed relative-path read.",
-    "skill_id": "skill_file_not_found_specified_path_exit_code_get-content",
+    "skill_id": "skill_shell_file_not_found_get_content",
     "action_id": "act_file_not_found_specified_path_exit_code_get-content_1"
   },
   "parent_event_ids": [
@@ -16,7 +16,7 @@
   "timestamp": "2026-09-01T01:01:37.390152+00:00",
   "refs": {
     "skill_match_event_id": "evt_f3db9e8aec9e",
-    "skill_id": "skill_file_not_found_specified_path_exit_code_get-content",
+    "skill_id": "skill_shell_file_not_found_get_content",
     "selected_action_id": "act_file_not_found_specified_path_exit_code_get-content_1"
   },
   "metadata": {

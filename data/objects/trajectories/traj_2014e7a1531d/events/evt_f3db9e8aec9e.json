@@ -27,7 +27,7 @@
     "matches": [
       {
         "schema_version": "skill_match.v2",
-        "matched_skill_id": "skill_file_not_found_specified_path_exit_code_get-content",
+        "matched_skill_id": "skill_shell_file_not_found_get_content",
         "skill_name": "Repair file not found at specified path",
         "score": 0.967669,
         "match_reason": "vector cosine similarity over failure and learned trigger",

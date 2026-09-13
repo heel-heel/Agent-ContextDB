@@ -1451,9 +1451,148 @@ class ContextDB:
         )
 
     def _skill_key(self, failure: Dict[str, Any]) -> str:
-        base = " ".join(str(x or "") for x in [failure.get("likely_cause"), failure.get("normalized_signature"), failure.get("command")]).lower()
-        tokens = [part.strip("-_") for part in base.replace("/", " ").replace("=", " ").split() if len(part.strip("-_")) > 2]
-        return "skill_" + "_".join(tokens[:8] or ["agent_repair"])
+        """Return a stable semantic identity for a learned skill.
+
+        Error output is intentionally excluded: it varies across operating systems,
+        encodings, and individual runs, and must not create a new skill identity.
+        """
+        tool = self._skill_id_token(failure.get("tool") or failure.get("failed_tool"), "agent")
+        cause = self._canonical_failure_kind(failure)
+        command = self._command_family(failure.get("command") or failure.get("failed_command_pattern"))
+        return f"skill_{tool}_{cause}_{command}"
+
+    def _skill_trigger(self, failure: Dict[str, Any]) -> Dict[str, Any]:
+        """Build a readable trigger without carrying forward broken console text."""
+        likely_cause = str(failure.get("likely_cause") or "")
+        fallback_signature = self._canonical_failure_kind(failure).replace("_", " ")
+        normalized_signature = self._clean_skill_text(failure.get("normalized_signature"))
+        error_signature = self._clean_skill_text(failure.get("error_signature"))
+        return {
+            "failed_tool": failure.get("tool") or failure.get("failed_tool"),
+            "failed_command_pattern": failure.get("command") or failure.get("failed_command_pattern"),
+            "normalized_signature": normalized_signature or fallback_signature,
+            "error_signature": error_signature,
+            "likely_cause": likely_cause or fallback_signature,
+        }
+
+    @staticmethod
+    def _clean_skill_text(value: Any) -> str:
+        text = str(value or "")
+        # These markers are emitted when Windows console output was decoded
+        # through the wrong code page. Keep source events intact, but never
+        # propagate that noise into a reusable learned-skill artifact.
+        return "" if "\ufffd" in text or "锟" in text else text
+
+    def _canonical_failure_kind(self, failure: Dict[str, Any]) -> str:
+        text = " ".join(str(failure.get(key) or "") for key in (
+            "likely_cause", "normalized_signature", "error_signature",
+        )).lower()
+        if any(marker in text for marker in (
+            "directorynotfound", "directory not found", "missing parent directory",
+            "missing target directory", "parent path", "getcontentwriterdirectorynotfounderror",
+        )):
+            return "missing_parent_directory"
+        if any(marker in text for marker in (
+            "pathnotfound", "itemnotfound", "objectnotfound", "file not found",
+            "missing file", "missing path", "specified path",
+        )):
+            return "file_not_found"
+        return self._skill_id_token(failure.get("likely_cause"), "agent_failure")
+
+    def _command_family(self, command: Any) -> str:
+        text = str(command or "").lower()
+        known_commands = (
+            ("get-content", "get_content"), ("set-content", "set_content"),
+            ("add-content", "add_content"), ("apply_patch", "apply_patch"),
+            ("git ", "git"), ("pip ", "pip"), ("npm ", "npm"),
+        )
+        for marker, family in known_commands:
+            if marker in text:
+                return family
+        return self._skill_id_token(text, "agent_action")
+
+    @staticmethod
+    def _skill_id_token(value: Any, fallback: str) -> str:
+        tokens = re.findall(r"[a-z0-9]+", str(value or "").lower())
+        return "_".join(tokens[:4]) or fallback
+
+    def _skill_key_from_trigger(self, trigger: Dict[str, Any]) -> str:
+        return self._skill_key({
+            "tool": trigger.get("failed_tool") or trigger.get("tool"),
+            "command": trigger.get("failed_command_pattern") or trigger.get("command"),
+            "likely_cause": trigger.get("likely_cause"),
+            "normalized_signature": trigger.get("normalized_signature"),
+            "error_signature": trigger.get("error_signature"),
+        })
+
+    def _skill_id_aliases(self, trajectory_id: str, current_skills: List[Dict[str, Any]]) -> Dict[str, str]:
+        aliases: Dict[str, str] = {}
+
+        def add(skill_id: Any, trigger: Any) -> None:
+            if not isinstance(trigger, dict) or not skill_id:
+                return
+            canonical = self._skill_key_from_trigger(trigger)
+            if str(skill_id) != canonical:
+                aliases[str(skill_id)] = canonical
+
+        for key in self.store.list_objects(f"trajectories/{trajectory_id}/views"):
+            view = self.store.get_object(key) or {}
+            content = view.get("content")
+            if isinstance(content, list):
+                candidates = content
+            elif isinstance(content, dict):
+                candidates = content.get("skills", [])
+            else:
+                candidates = []
+            for skill in candidates if isinstance(candidates, list) else []:
+                if isinstance(skill, dict):
+                    add(skill.get("skill_id"), skill.get("trigger"))
+
+        for event in self._all_events(trajectory_id):
+            payload = event.get("payload") or {}
+            for match in payload.get("matches", []) if isinstance(payload.get("matches"), list) else []:
+                if isinstance(match, dict):
+                    add(match.get("matched_skill_id") or match.get("skill_id"), match.get("matched_trigger") or match.get("trigger"))
+
+        for skill in current_skills:
+            add(skill.get("skill_id"), skill.get("trigger"))
+        return aliases
+
+    def _rewrite_skill_ids(self, value: Any, aliases: Dict[str, str]) -> bool:
+        changed = False
+        if isinstance(value, dict):
+            for key, child in value.items():
+                if key in {"skill_id", "matched_skill_id"} and isinstance(child, str) and child in aliases:
+                    value[key] = aliases[child]
+                    changed = True
+                else:
+                    changed = self._rewrite_skill_ids(child, aliases) or changed
+        elif isinstance(value, list):
+            for child in value:
+                changed = self._rewrite_skill_ids(child, aliases) or changed
+        return changed
+
+    def _migrate_skill_references(self, trajectory_id: str, current_skills: List[Dict[str, Any]]) -> Dict[str, str]:
+        """Align mutable trace records with stable IDs without rewriting snapshots."""
+        aliases = self._skill_id_aliases(trajectory_id, current_skills)
+        if not aliases:
+            return aliases
+
+        for event in self._all_events(trajectory_id):
+            if self._rewrite_skill_ids(event, aliases):
+                self.store.put_object(uris.event_key(trajectory_id, event["event_id"]), event)
+
+        view_prefix = f"trajectories/{trajectory_id}/views"
+        for key in self.store.list_objects(view_prefix):
+            view = self.store.get_object(key)
+            if view and self._rewrite_skill_ids(view, aliases):
+                self.store.put_object(key, view)
+
+        for key in self.store.list_objects("hook_sessions"):
+            session = self.store.get_object(key)
+            if session and session.get("trajectory_id") == trajectory_id and self._rewrite_skill_ids(session, aliases):
+                self.store.put_object(key, session)
+        return aliases
 
     def _skill_name(self, failure: Dict[str, Any]) -> str:
         cause = failure.get("likely_cause") or "agent task failure"
@@ -2063,7 +2202,7 @@ def _vector_learned_skills(self, trajectory_id):
         refs = [{"trajectory_id": trajectory_id, "failure_event_id": event.get("failure_event_id"), "success_event_id": event.get("success_event_id"), "primary_rule": event.get("primary_rule"), "judgment_label": event.get("judgment_label")} for event in all_support]
         skill = {
             "schema_version": "learned_skill.v2", "skill_id": skill_id, "name": self._skill_name(first),
-            "trigger": {"failed_tool": first.get("tool"), "failed_command_pattern": first.get("command"), "normalized_signature": first.get("normalized_signature"), "error_signature": first.get("error_signature"), "likely_cause": first.get("likely_cause")},
+            "trigger": self._skill_trigger(first),
             "failure_grouping": {"method": "vector_cosine", "embedding": "hash-384", "threshold": .74, "failure_event_ids": ids, "group_size": len(ids)},
             "recommended_actions": actions, "avoid_actions": [], "evidence_refs": refs,
             "confidence": {"support_count": len(all_support), "max_llm_confidence": max([float(event.get("confidence", 0) or 0) for event in all_support] or [0]), "evidence_levels": ["structural"]},
@@ -2081,6 +2220,7 @@ def _vector_learned_skills(self, trajectory_id):
             "action_grouping": {"method": "vector_cosine", "embedding": "hash-384", "threshold": .78, "group_count": len(actions)},
         }
         skills.append(skill)
+    self._migrate_skill_references(trajectory_id, skills)
     entries = []
     for skill in skills:
         document = _vector_text([skill["name"], *skill["trigger"].values(), *[action["name"] for action in skill["recommended_actions"]]])

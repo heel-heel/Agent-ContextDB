@@ -15,7 +15,7 @@
   "timestamp": "2026-09-01T01:02:03.001215+00:00",
   "refs": {
     "skill_match_event_id": "evt_f3db9e8aec9e",
-    "skill_id": "skill_file_not_found_specified_path_exit_code_get-content",
+    "skill_id": "skill_shell_file_not_found_get_content",
     "selected_action_id": "act_file_not_found_specified_path_exit_code_get-content_1",
     "tool_call_event_id": "evt_2c9b891d3f7f"
   },

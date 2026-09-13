@@ -87,8 +87,12 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
     .repair-table .mono { white-space:pre-wrap; overflow-wrap:anywhere; }
     .learned-skill-card { border-color:#b9d5ec; border-left:4px solid #2364aa; background:#fbfdff; }
     .learned-skill-title { display:flex; align-items:center; gap:8px; margin:0 0 8px; }
+    .summary-card .learned-skill-title h3,
+    .nl-contextql label,
+    .sql-editor-hint { font-size:16px; font-weight:700; line-height:1.3; }
     .summary-card .learned-skill-title h3 { margin:0; }
     .skill-trigger { margin:10px 0; padding:8px 10px; border:1px solid #c9ddec; border-radius:6px; background:#f4f8fd; line-height:1.45; }
+    .skill-trigger > b { font-size:14px; }
     .skill-trigger > div { margin-top:2px; font-size:12px; }
     .skill-trigger .mono { font-size:12px; white-space:pre-wrap; overflow-wrap:anywhere; }
     .learned-skills-wrap { overflow-x:visible; }
@@ -311,34 +315,50 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
 .sql-actions { display:flex; justify-content:flex-end; align-items:center; gap:8px; }
 .nl-contextql { margin-bottom:12px; padding-bottom:12px; border-bottom:1px dashed var(--line); }
 .nl-contextql-label-row { display:flex; align-items:center; justify-content:space-between; gap:8px; margin:0 0 7px; }
-    .nl-contextql label { display:block; margin:0; color:#17202a; font-size:16px; font-weight:700; }
+.nl-contextql label { display:block; margin:0; color:#17202a; }
 .nl-contextql textarea { display:block; width:100%; min-height:108px; resize:vertical; border:1px solid var(--line); border-radius:6px; padding:9px; font:13px/1.4 ui-sans-serif, system-ui, sans-serif; color:var(--ink); background:#fff; }
     .nl-actions { display:flex; align-items:center; justify-content:flex-end; gap:8px; margin-top:8px; }
     .nl-actions-left { display:flex; align-items:center; gap:8px; padding:4px 7px; border:1px solid #c9def5; border-radius:6px; background:#f4f8fd; }
 .nl-actions-left .muted, .nl-actions select { font-size:14px; }
+.nl-actions-left .muted { font-weight:700; }
 .nl-actions select { height:30px; border:1px solid var(--line); border-radius:5px; color:#17324d; background:#fff; padding:0 6px; }
     .nl-actions #runNaturalLanguage { font-size:12px; }
-    .sql-editor-hint { margin:0 0 6px; color:#17202a; font-size:16px; font-weight:700; line-height:1.3; }
+    .sql-editor-hint { margin:0 0 6px; color:#17202a; }
 #sqlInput { display:block; width:100%; min-height:112px; resize:vertical; border:1px solid var(--line); border-radius:6px; padding:9px; font:12px/1.45 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; color:var(--ink); background:#fff; }
 .sql-actions { margin-top:8px; } .sql-actions .muted { font-size:11px; }
 .sql-result-meta { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px; }
+.sql-translation-detail { font-size:13px; line-height:1.45; }
+#sqlOut .query-result-card { border-color:#c9def5; border-top:3px solid #2364aa; background:#f8fbff; }
+#sqlOut .query-result-card h3 { margin:0 0 8px; color:#17202a; font-size:16px; font-weight:700; line-height:1.3; }
 .sql-table tbody tr { cursor:pointer; } .sql-table tbody tr:hover { background:#f7faff; }
 .version-control { padding:14px; display:flex; flex-direction:column; gap:14px; }
 .version-control h3 { margin:0 0 7px; font-size:13px; }
 .version-toolbar { display:flex; flex-direction:column; gap:8px; padding-bottom:12px; border-bottom:1px dashed var(--line); }
 .version-action-row { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:8px; align-items:center; }
 .version-action-row input { min-width:0; width:100%; }
-.version-summary { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; }
-.version-stat { padding:9px 0; border-bottom:1px solid var(--line); min-width:0; }
-.version-stat b { display:block; font-size:12px; overflow-wrap:anywhere; }
-.version-stat span { color:var(--muted); font-size:11px; }
-.version-section { border-top:1px solid var(--line); padding-top:12px; }
+.context-stat-grid.version-summary { grid-template-columns:repeat(3,minmax(0,1fr)); }
+.version-section { border:1px solid #c9def5; border-radius:7px; padding:8px 12px 10px; background:#fbfdff; }
+.version-section h3 { margin:0 0 7px; color:#17202a; font-size:16px; font-weight:700; line-height:1.3; }
+.version-section .table-wrap { border:1px solid #d4e3f1; border-radius:6px; background:#fff; }
+.version-section .version-table { min-width:820px; }
+.version-section .version-table thead { background:#eef6ff; }
+.version-section .version-table th { color:#17324d; }
+.version-section .version-table tbody tr:hover { background:#f5faff; }
+.version-section .version-table td:last-child { text-align:right; }
 .version-note { border:1px dashed #d5a94a; background:#fffaf0; color:#6b4b09; padding:10px; border-radius:6px; font-size:12px; line-height:1.45; }
 .version-table { min-width:820px; }
-.version-event { padding:9px 0; border-bottom:1px solid var(--line); display:grid; grid-template-columns:130px 1fr auto; gap:10px; align-items:start; font-size:12px; }
+.version-timeline { display:grid; gap:0; }
+.version-event { position:relative; padding:10px 0 10px 18px; border-bottom:1px solid #d8e6f2; display:grid; grid-template-columns:minmax(0,1fr) auto; gap:12px; align-items:center; font-size:12px; }
+.version-event::before { content:""; position:absolute; left:4px; top:16px; width:7px; height:7px; border-radius:50%; background:#2364aa; box-shadow:0 0 0 3px #dcecff; }
+.version-event::after { content:""; position:absolute; left:7px; top:26px; bottom:-10px; width:1px; background:#bcd6ef; }
 .version-event:last-child { border-bottom:0; }
+.version-event:last-child::after { display:none; }
+.version-event-meta { display:flex; align-items:center; gap:7px; flex-wrap:wrap; margin-bottom:4px; }
+.version-event-operation { color:#17202a; font-size:14px; font-weight:400; line-height:1.3; }
+.version-event-time { color:#58708a; font-size:11px; }
+.version-event-identity { display:flex; align-items:center; gap:7px; flex-wrap:wrap; }
 .version-event p { margin:3px 0 0; color:#4b5e70; overflow-wrap:anywhere; }
-@media (max-width:900px) { .view-groups { overflow-x:auto; } .view-group-row { min-width:max-content; } .version-action-row { grid-template-columns:1fr; } .version-summary { grid-template-columns:1fr; } .version-event { grid-template-columns:1fr; gap:4px; } .global-metrics { grid-template-columns:1fr; } }
+@media (max-width:900px) { .view-groups { overflow-x:auto; } .view-group-row { min-width:max-content; } .version-action-row { grid-template-columns:1fr; } .context-stat-grid.version-summary { grid-template-columns:repeat(2,minmax(0,1fr)); } .version-event { grid-template-columns:1fr; gap:7px; } .version-event .small-btn { justify-self:start; } .global-metrics { grid-template-columns:1fr; } }
 
     @media (max-width: 1200px) { main { grid-template-columns:1fr; } }
     @media (max-width: 900px) { main, .playback-layout { grid-template-columns:1fr; } input { min-width: 160px; width:100%; } header { height:auto; gap:10px; align-items:flex-start; flex-direction:column; padding:12px; } .controls { width:100%; flex-wrap:wrap; } .playback-progress { flex-basis:100%; } }
@@ -417,25 +437,11 @@ WHERE trajectory_id = :trajectory_id
 ORDER BY timestamp;</textarea>
           <div class="sql-actions"><button id="runSql" class="small-btn">Run SQL</button></div>
         </div>
-        <div class="content"><div id="sqlOut" class="view-output"><div class="view-empty">Choose a Database View to prefill the SQL query, or write a query here.</div></div></div>
+        <div class="content"><div id="sqlOut" class="view-output"><div class="view-empty">Write a query here, or choose a Database View to prefill the SQL query.</div></div></div>
       </div>
       <div id="versionControlPanel" class="right-pane hidden">
         <div class="version-control">
-          <div class="version-toolbar">
-            <div class="version-action-row">
-              <label for="versionBranch">Branch</label>
-              <select id="versionBranch"><option>main</option></select>
-            </div>
-            <div class="version-action-row">
-              <input id="versionMessage" aria-label="Snapshot message" placeholder="Checkpoint message (optional)">
-              <button id="createSnapshot" class="small-btn">Snapshot</button>
-            </div>
-            <div class="version-action-row">
-              <input id="versionBranchName" aria-label="Repair branch name" placeholder="Optional repair branch name; otherwise ContextDB chooses one">
-              <button id="createBranch" class="small-btn secondary">Create Repair Branch</button>
-            </div>
-          </div>
-          <div id="versionOut"><div class="view-empty">Load a trajectory to inspect its logical snapshots and branches.</div></div>
+          <div id="versionOut"><div class="view-empty">Load a trajectory to inspect its branches and snapshots.</div></div>
         </div>
       </div>
     </section>
@@ -475,7 +481,6 @@ ORDER BY timestamp;</textarea>
   </div>
   <main id="globalPage" class="page global-page hidden">
     <section>
-      <div class="panel-head"><h2>Global ContextDB Overview</h2><button id="refreshGlobal" class="small-btn">Refresh</button></div>
       <div id="globalOut" class="global-overview-content"><div class="view-empty">Load the global view to inspect all trajectories and the shared Skill Library.</div></div>
     </section>
   </main>
@@ -487,7 +492,6 @@ let contextAssemblySegments = [];
 let contextBudgetLoadTimer = null;
 let contextBudgetRange = null;
 let graphData = null;
-let versionData = null;
 let viewRequestSeq = 0;
 let globalBusy = false;
 let playbackStep = 0;
@@ -578,13 +582,6 @@ function bindViewBranchSelector(view) {
     viewBranches[view] = select.value;
     if (!globalBusy && currentView === view) loadView();
   };
-}
-function populateVersionBranchSelector() {
-  const select = $('versionBranch');
-  if (!select) return;
-  const current = select.value;
-  const selected = availableBranchIds().includes(current) ? current : defaultBranchId();
-  select.innerHTML = branchOptions(selected);
 }
 function escapeRegExp(value) {
   return String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -811,7 +808,6 @@ function drawGraph(data) {
     edges.appendChild(line);
   });
   $('graphMeta').textContent = `${data.nodes.length} events, ${data.branches.length} branches`;
-  populateVersionBranchSelector();
 }
 function setMode(mode) {
   const trace = mode === 'trace';
@@ -1014,7 +1010,7 @@ function viewLabel(view) {
 }
 function setBusyControls(busy) {
   globalBusy = busy;
-  document.querySelectorAll('.tabs button, #load, #runSql, #runNaturalLanguage, #nlProfile, #summaryProfile, #generateSummary, #viewsMode, #queryMode, #versionMode, #createSnapshot, #createBranch, #versionMessage, #versionBranchName, #versionBranch, #traceMode, #finalMode, #globalMode, #refreshGlobal, [data-view-branch]').forEach(el => el.disabled = busy);
+  document.querySelectorAll('.tabs button, #load, #runSql, #runNaturalLanguage, #nlProfile, #summaryProfile, #generateSummary, #viewsMode, #queryMode, #versionMode, #traceMode, #finalMode, #globalMode, [data-view-branch]').forEach(el => el.disabled = busy);
 }
 function setLoadingOutput(view, branch) {
   const label = viewLabel(view);
@@ -1086,8 +1082,8 @@ function renderSqlResult(data) {
   if(!rows.length){const tr=document.createElement('tr'),td=document.createElement('td');td.colSpan=Math.max(columns.length,1);td.className='muted';td.textContent='No rows returned.';tr.appendChild(td);tbody.appendChild(tr);}
   rows.forEach(row=>{const tr=document.createElement('tr');columns.forEach(c=>{const td=document.createElement('td');const value=c==='event_type'?displayEventType(row[c]):row[c];td.textContent=value===null||value===undefined?'null':String(value);if(String(row[c]||'').startsWith('evt_')||String(row[c]||'').startsWith('skill_'))td.className='mono';tr.appendChild(td);});tr.onclick=()=>highlightGraph(contextQlEventIds(row),[]);tbody.appendChild(tr);});
   table.appendChild(tbody); const wrap=document.createElement('div');wrap.className='table-wrap';wrap.appendChild(table);
-  const card=document.createElement('div');card.className='summary-card'; const title=document.createElement('h3');title.textContent='Query Result';card.appendChild(title);
-  const meta=document.createElement('div');meta.className='sql-result-meta';meta.innerHTML='<span class="pill ok">'+escapeHtml(data.row_count||0)+' rows</span><span class="pill">'+escapeHtml((data.highlight_event_ids||[]).length)+' evidence events</span><span class="pill rule">ContextQL</span>';card.appendChild(meta);card.appendChild(wrap);
+  const card=document.createElement('div');card.className='summary-card query-result-card'; const title=document.createElement('h3');title.textContent='Query Result';card.appendChild(title);
+  const resultCount=Number(data.row_count||0);const meta=document.createElement('div');meta.className='sql-result-meta';meta.innerHTML='<span class="pill ok">'+escapeHtml(resultCount)+' '+(resultCount===1?'result':'results')+'</span>';card.appendChild(meta);card.appendChild(wrap);
   $('sqlOut').innerHTML='';$('sqlOut').appendChild(card);if((data.highlight_event_ids||[]).length)highlightGraph(data.highlight_event_ids,[]);
 }
 async function runSqlQuery(){const tid=getTid();if(!tid)return;const sql=$('sqlInput').value.trim();if(!sql)return;setBusyControls(true);$('sqlMeta').textContent='executing...';$('sqlOut').innerHTML='<div class="loading-card"><div class="spinner" aria-hidden="true"></div><div><b>Running SQL query</b></div></div>';try{const data=await api('/api/v1/sql',{trajectory_id:tid,sql:sql});renderSqlResult(data);$('sqlMeta').textContent=String(data.row_count)+' rows';}catch(err){$('sqlMeta').textContent='query error';$('sqlOut').innerHTML='<div class="view-empty"><b>Query failed</b><br>'+escapeHtml(err.message)+'</div>';}finally{setBusyControls(false);}}
@@ -1111,7 +1107,7 @@ async function loadLlmProfiles(){
   }
 }
 function modelExecutionMessage(execution, fallback){const requested=execution.requested_model||fallback||'selected model',actual=execution.response_model;if(execution.verified)return 'Confirmed by API response: '+actual+' (request id '+(execution.response_id||'unavailable')+').';if(actual)return 'API responded with '+actual+' although '+requested+' was requested.';return 'Translation completed, but the API did not return model metadata; the model cannot be independently confirmed.';}
-async function runNaturalLanguageQuery(){const tid=getTid(),question=$('nlQuestion').value.trim(),profileId=$('nlProfile').value;if(!tid||!question||!profileId)return;setBusyControls(true);$('sqlMeta').textContent='translating...';const profileLabel=$('nlProfile').selectedOptions[0]?.textContent||profileId;$('sqlOut').innerHTML='<div class="loading-card"><div class="spinner" aria-hidden="true"></div><div><b>Translating query with '+escapeHtml(profileLabel)+'</b></div></div>';try{const data=await api('/api/v1/nl_sql',{trajectory_id:tid,question:question,profile_id:profileId});const translation=data.translation||{},execution=translation.execution||{};$('sqlInput').value=translation.sql||'';$('sqlMeta').textContent=execution.verified?'verified '+execution.response_model:'SQL translated';$('sqlOut').innerHTML='<div class="view-empty"><b>SQL ready for review.</b><br>'+escapeHtml(modelExecutionMessage(execution,translation.model))+'<br><span class="muted">'+escapeHtml(translation.reason||'Click Run SQL to execute the generated statement.')+'</span></div>';}catch(err){$('sqlMeta').textContent='translation error';$('sqlOut').innerHTML='<div class="view-empty"><b>Natural-language translation failed</b><br>'+escapeHtml(err.message)+'</div>';}finally{setBusyControls(false);}}
+async function runNaturalLanguageQuery(){const tid=getTid(),question=$('nlQuestion').value.trim(),profileId=$('nlProfile').value;if(!tid||!question||!profileId)return;setBusyControls(true);$('sqlMeta').textContent='translating...';const profileLabel=$('nlProfile').selectedOptions[0]?.textContent||profileId;$('sqlOut').innerHTML='<div class="loading-card"><div class="spinner" aria-hidden="true"></div><div><b>Translating query with '+escapeHtml(profileLabel)+'</b></div></div>';try{const data=await api('/api/v1/nl_sql',{trajectory_id:tid,question:question,profile_id:profileId});const translation=data.translation||{},execution=translation.execution||{};$('sqlInput').value=translation.sql||'';$('sqlMeta').textContent=execution.verified?'verified '+execution.response_model:'SQL translated';$('sqlOut').innerHTML='<div class="view-empty"><b>SQL ready for review.</b><br><span class="sql-translation-detail">'+escapeHtml(modelExecutionMessage(execution,translation.model))+'</span><br><span class="muted sql-translation-detail">'+escapeHtml(translation.reason||'Click Run SQL to execute the generated statement.')+'</span></div>';}catch(err){$('sqlMeta').textContent='translation error';$('sqlOut').innerHTML='<div class="view-empty"><b>Natural-language translation failed</b><br>'+escapeHtml(err.message)+'</div>';}finally{setBusyControls(false);}}
 
 function renderFailurePatterns(data) {
   const rows = Array.isArray(data.content) ? data.content : [];
@@ -1651,96 +1647,58 @@ async function loadAll() {
 }
 function versionOperationLabel(event) {
   const operation = event?.metadata?.operation || event?.event_type || 'version event';
-  return operation.replace(/^version_/, '').replaceAll('_', ' ');
+  return operation.replace(/^version_/, '').replaceAll('_', ' ').replace(/\bsuggested\b/g, 'recommended');
 }
 function versionEventText(event) {
   const payload = event?.payload || {};
-  return payload.text || payload.reason || JSON.stringify(payload);
+  return String(payload.text || payload.reason || JSON.stringify(payload))
+    .replace(/\blogical\s+(?=rollback|snapshot|checkpoint|repair path)/gi, '')
+    .replace(/\bContextDB suggests\b/gi, 'ContextDB recommends');
 }
 function branchVersionOrigin(branch) {
   const meta = branch?.metadata || {};
-  if (meta.rollback_from) return 'logical rollback';
-  if (meta.version_origin) return meta.version_origin;
-  return meta.from_branch ? `from ${meta.from_branch}` : 'root';
+  return !meta.rollback_from && !meta.version_origin && !meta.from_branch ? 'root' : '';
+}
+function displayVersionTimestamp(value) {
+  const match = String(value || '').match(/^(\d{4}-\d{2}-\d{2})T(\d{2}:\d{2}:\d{2})(?:\.\d+)?(Z|[+-]\d{2}:\d{2})?$/);
+  if (!match) return String(value || '');
+  const zone = match[3] === 'Z' || match[3] === '+00:00' ? ' UTC' : (match[3] ? ` UTC${match[3]}` : '');
+  return `${match[1]} ${match[2]}${zone}`;
 }
 function renderVersionControl(data) {
-  versionData = data;
-  populateVersionBranchSelector();
   const branches = data.branches || [];
   const snapshots = data.snapshots || [];
   const events = data.version_events || [];
-  const active = $('versionBranch').value || defaultBranchId();
-  const branchRows = branches.map(b => `<tr>
-    <td><b>${escapeHtml(b.branch_id)}</b><div class="muted">${escapeHtml(branchVersionOrigin(b))}</div></td>
+  const branchRows = branches.map(b => { const origin = branchVersionOrigin(b); return `<tr>
+    <td><b>${escapeHtml(b.branch_id)}</b>${origin ? `<div class="muted">${escapeHtml(origin)}</div>` : ''}</td>
     <td class="mono">${escapeHtml(b.base_event_id || '')}</td>
     <td class="mono">${escapeHtml(b.head_event_id || '')}</td>
     <td>${escapeHtml(b.snapshot_id || '')}</td>
     <td><button class="small-btn" onclick='highlightGraph([], [${JSON.stringify(b.branch_id)}])'>Highlight</button></td>
-  </tr>`).join('') || '<tr><td colspan="5" class="muted">No branches.</td></tr>';
+  </tr>`; }).join('') || '<tr><td colspan="5" class="muted">No branches.</td></tr>';
   const snapshotRows = snapshots.map(s => `<tr>
-    <td><b>${escapeHtml(s.snapshot_id)}</b><div class="muted">${escapeHtml(s.created_at || '')}</div></td>
+    <td><b>${escapeHtml(s.snapshot_id)}</b><div class="muted">${escapeHtml(displayVersionTimestamp(s.created_at))}</div></td>
     <td>${escapeHtml(s.branch_id || '')}</td><td class="mono">${escapeHtml(s.event_id || '')}</td>
     <td>${escapeHtml(s.message || '')}</td>
-    <td><button class="small-btn" onclick='rollbackSnapshot(${JSON.stringify(s.snapshot_id)})'>Logical Rollback</button></td>
+    <td><button class="small-btn" aria-label="Highlight snapshot ${escapeHtml(s.snapshot_id || '')}" onclick='highlightGraph([${JSON.stringify(s.event_id)}], [])'>Highlight</button></td>
   </tr>`).join('') || '<tr><td colspan="5" class="muted">No snapshots.</td></tr>';
   const lifecycle = events.slice().reverse().map(e => `<div class="version-event">
-    <div><span class="pill rule">${escapeHtml(versionOperationLabel(e))}</span><div class="muted">${escapeHtml(e.timestamp || '')}</div></div>
-    <div><b>${escapeHtml(e.branch_id || 'main')}</b><p>${escapeHtml(versionEventText(e))}</p></div>
-    <button class="small-btn" onclick='highlightGraph([${JSON.stringify(e.event_id)}], [])'>Highlight</button>
+    <div><div class="version-event-meta"><span class="version-event-operation">${escapeHtml(versionOperationLabel(e))}</span><span class="version-event-time">${escapeHtml(displayVersionTimestamp(e.timestamp))}</span></div><div class="version-event-identity">${traceEventMeta(e.branch_id || 'main', e.event_id, 'excluded')}</div><p>${escapeHtml(versionEventText(e))}</p></div>
+    <button class="small-btn" aria-label="Highlight version event ${escapeHtml(e.event_id || '')}" onclick='highlightGraph([${JSON.stringify(e.event_id)}], [])'>Highlight</button>
   </div>`).join('') || '<div class="view-empty">No version lifecycle events yet. Hook snapshots and Agent decisions will appear here.</div>';
-  $('versionOut').innerHTML = `<div class="version-summary">
-    <div class="version-stat"><b>${escapeHtml(active)}</b><span>selected branch</span></div>
-    <div class="version-stat"><b>${escapeHtml(snapshots.length)}</b><span>logical snapshots</span></div>
-    <div class="version-stat"><b>${escapeHtml(events.length)}</b><span>version events</span></div>
+  $('versionOut').innerHTML = `<div class="context-stat-grid version-summary">
+    <div class="context-stat"><b>${escapeHtml(branches.length)}</b><span>branches</span></div>
+    <div class="context-stat"><b>${escapeHtml(snapshots.length)}</b><span>logical snapshots</span></div>
+    <div class="context-stat"><b>${escapeHtml(events.length)}</b><span>version events</span></div>
   </div>
-  <div class="version-section"><h3>Branch Registry</h3><div class="table-wrap"><table class="version-table"><thead><tr><th>Branch</th><th>Base Event</th><th>Head Event</th><th>Snapshot</th><th></th></tr></thead><tbody>${branchRows}</tbody></table></div></div>
+  <div class="version-section"><h3>Branches</h3><div class="table-wrap"><table class="version-table"><thead><tr><th>Branch</th><th>Base Event</th><th>Head Event</th><th>Latest Snapshot</th><th></th></tr></thead><tbody>${branchRows}</tbody></table></div></div>
   <div class="version-section"><h3>Snapshots</h3><div class="table-wrap"><table class="version-table"><thead><tr><th>Snapshot</th><th>Branch</th><th>Checkpoint Event</th><th>Message</th><th></th></tr></thead><tbody>${snapshotRows}</tbody></table></div></div>
-  <div class="version-section"><h3>Decision Timeline</h3><div>${lifecycle}</div></div>`;
+  <div class="version-section"><h3>Version History</h3><div class="version-timeline">${lifecycle}</div></div>`;
 }
 async function loadVersionControl() {
   const tid = getTid(); if (!tid) return;
   const data = await api('/api/v1/version_status?trajectory_id=' + encodeURIComponent(tid));
   renderVersionControl(data);
-}
-async function createVersionSnapshot() {
-  const tid = getTid(); if (!tid) return;
-  setBusyControls(true);
-  try {
-    await api('/api/v1/version/snapshot', {
-      trajectory_id:tid, branch_id:$('versionBranch').value || defaultBranchId(), message:$('versionMessage').value.trim(),
-      reason:'Manual dashboard checkpoint.', origin:'manual_ui', actor:'user',
-    });
-    await loadAll(); await loadVersionControl();
-  } catch (err) { $('versionOut').innerHTML='<div class="view-empty"><b>Snapshot failed</b><br>'+escapeHtml(err.message)+'</div>'; }
-  finally { setBusyControls(false); }
-}
-async function createVersionBranch() {
-  const tid = getTid(); if (!tid) return;
-  const fromBranch = $('versionBranch').value || defaultBranchId();
-  const branchId = $('versionBranchName').value.trim() || `repair-${Date.now().toString(36)}`;
-  setBusyControls(true);
-  try {
-    await api('/api/v1/version/branch', {
-      trajectory_id:tid, branch_id:branchId, from_branch:fromBranch,
-      reason:'Manual dashboard repair branch.', origin:'manual_ui',
-    });
-    $('versionBranchName').value=''; await loadAll(); $('versionBranch').value=branchId; await loadVersionControl();
-  } catch (err) { $('versionOut').innerHTML='<div class="view-empty"><b>Branch creation failed</b><br>'+escapeHtml(err.message)+'</div>'; }
-  finally { setBusyControls(false); }
-}
-async function rollbackSnapshot(snapshotId) {
-  const tid = getTid(); if (!tid) return;
-  if (!window.confirm('Create a logical rollback branch from this snapshot? Workspace files will not be changed.')) return;
-  setBusyControls(true);
-  try {
-    const target = `rollback-${String(snapshotId).split('_').pop().slice(0,6)}-${Date.now().toString(36).slice(-4)}`;
-    await api('/api/v1/version/rollback', {
-      trajectory_id:tid, snapshot_id:snapshotId, target_branch_id:target,
-      reason:'Manual dashboard logical rollback.', origin:'manual_ui',
-    });
-    await loadAll(); $('versionBranch').value=target; await loadVersionControl();
-  } catch (err) { $('versionOut').innerHTML='<div class="view-empty"><b>Logical rollback failed</b><br>'+escapeHtml(err.message)+'</div>'; }
-  finally { setBusyControls(false); }
 }
 document.querySelectorAll('.tabs button').forEach(btn => btn.onclick = () => {
   if (globalBusy) return;
@@ -1769,18 +1727,14 @@ function setRightPanel(mode) {
 $('viewsMode').onclick = () => setRightPanel('views');
 $('queryMode').onclick = () => setRightPanel('query');
 $('versionMode').onclick = () => setRightPanel('version');
-$('createSnapshot').onclick = () => { if (!globalBusy) createVersionSnapshot(); };
-$('createBranch').onclick = () => { if (!globalBusy) createVersionBranch(); };
 $('traceMode').onclick = () => setMode('trace');
 $('finalMode').onclick = () => setMode('final');
 $('globalMode').onclick = () => setMode('global');
-$('refreshGlobal').onclick = () => loadGlobalOverview();
 $('stepPrev').onclick = () => stepPlayback(-1);
 $('stepNext').onclick = () => stepPlayback(1);
 $('stepPlay').onclick = () => togglePlayback();
 $('stepSlider').oninput = e => { playbackStep = Number(e.target.value || 0); drawPlayback(); };
 $('load').onclick = () => { if (!globalBusy) { showDatabaseViewsPlaceholder(); loadAll().catch(err => { showError(err.message); $('graphMeta').textContent = 'load failed'; setBusyControls(false); }); } };
-$('versionBranch').onchange = () => { if (!globalBusy && !$('versionControlPanel').classList.contains('hidden')) loadVersionControl(); };
 window.addEventListener('resize', () => {
   if (!$('globalPage').classList.contains('hidden') && globalOverviewData) {
     requestAnimationFrame(() => drawGlobalRelationshipGraph(globalOverviewData.graph || {}));

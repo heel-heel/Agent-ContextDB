@@ -5,13 +5,13 @@
   "content": [
     {
       "schema_version": "learned_skill.v2",
-      "skill_id": "skill_missing_file_specified_path_exit_code_get-content_锟揭诧拷锟斤拷路锟斤拷锟斤拷",
+      "skill_id": "skill_shell_file_not_found_get_content",
       "name": "Repair missing file at specified path",
       "trigger": {
         "failed_tool": "shell",
         "failed_command_pattern": "powershell -NoProfile -Command \"Get-Content -Raw -LiteralPath '.\\assets\\settings.json'\"",
-        "normalized_signature": "exit code get-content 锟揭诧拷锟斤拷路锟斤拷锟斤拷 assets settings.json锟斤拷锟斤拷锟斤拷为锟斤拷路锟斤拷锟斤拷锟斤拷锟节★拷 锟斤拷锟斤拷位锟斤拷 锟斤拷 锟街凤拷 + get-content -raw -literalpath ' assets settings.json' + ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ + categoryinfo objectnotfound  assets settings.json",
-        "error_signature": "Exit code 1\nGet-Content : 锟揭诧拷锟斤拷路锟斤拷锟斤拷.\\assets\\settings.json锟斤拷锟斤拷锟斤拷为锟斤拷路锟斤拷锟斤拷锟斤拷锟节★拷\r\n锟斤拷锟斤拷位锟斤拷 锟斤拷:1 锟街凤拷: 1\r\n+ Get-Content -Raw -LiteralPath '.\\assets\\settings.json'\r\n+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\n    + CategoryInfo          : ObjectNotFound: (.\\assets\\settings.json:String) [Get-Content], ItemNotFoundException\r\n    + FullyQualifiedErrorId : PathNotFound,Microsoft.PowerShell.Commands.GetContentCommand",
+        "normalized_signature": "file not found",
+        "error_signature": "",
         "likely_cause": "missing file at specified path"
       },
       "failure_grouping": {
@@ -25,7 +25,7 @@
       },
       "recommended_actions": [
         {
-          "action_id": "act_missing_file_specified_path_exit_code_get-content_锟揭诧拷锟斤拷路锟斤拷锟斤拷_1",
+          "action_id": "act_shell_file_not_found_get_content_1",
           "name": "Apply powershell -NoProfile -Command \"Get-Content -Raw -LiteralPath '.\\examples\\live-path-demo\\assets\\settings.json'\"",
           "canonical_tool": "shell",
           "canonical_command_template": "powershell -NoProfile -Command \"Get-Content -Raw -LiteralPath '.\\examples\\live-path-demo\\assets\\settings.json'\"",
@@ -153,7 +153,7 @@
     "evt_c069de691612",
     "evt_a5b08a5df447"
   ],
-  "created_at": "2026-09-12T09:44:46.986798+00:00",
+  "created_at": "2026-09-13T04:58:38.415512+00:00",
   "metadata": {
     "event_count": 55
   }

@@ -279,7 +279,7 @@
         "matches": [
           {
             "schema_version": "skill_match.v2",
-            "matched_skill_id": "skill_file_not_found_specified_path_exit_code_get-content",
+            "matched_skill_id": "skill_shell_file_not_found_get_content",
             "skill_name": "Repair file not found at specified path",
             "score": 0.967669,
             "match_reason": "vector cosine similarity over failure and learned trigger",
@@ -368,7 +368,7 @@
       "payload": {
         "type": "contextdb_skill_recommendation",
         "matched": true,
-        "skill_id": "skill_file_not_found_specified_path_exit_code_get-content",
+        "skill_id": "skill_shell_file_not_found_get_content",
         "skill_name": "Repair file not found at specified path",
         "match_score": 0.967669,
         "match_reason": "vector cosine similarity over failure and learned trigger",
@@ -431,7 +431,7 @@
       "timestamp": "2026-09-01T01:01:24.542604+00:00",
       "refs": {
         "skill_match_event_id": "evt_f3db9e8aec9e",
-        "skill_id": "skill_file_not_found_specified_path_exit_code_get-content",
+        "skill_id": "skill_shell_file_not_found_get_content",
         "selected_action_id": "act_file_not_found_specified_path_exit_code_get-content_1"
       },
       "metadata": {
@@ -448,7 +448,7 @@
       "payload": {
         "decision": "accepted",
         "reason": "The recommended path repair is safe and directly addresses the failed relative-path read.",
-        "skill_id": "skill_file_not_found_specified_path_exit_code_get-content",
+        "skill_id": "skill_shell_file_not_found_get_content",
         "action_id": "act_file_not_found_specified_path_exit_code_get-content_1"
       },
       "parent_event_ids": [
@@ -458,7 +458,7 @@
       "timestamp": "2026-09-01T01:01:37.390152+00:00",
       "refs": {
         "skill_match_event_id": "evt_f3db9e8aec9e",
-        "skill_id": "skill_file_not_found_specified_path_exit_code_get-content",
+        "skill_id": "skill_shell_file_not_found_get_content",
         "selected_action_id": "act_file_not_found_specified_path_exit_code_get-content_1"
       },
       "metadata": {
@@ -483,7 +483,7 @@
       "timestamp": "2026-09-01T01:02:02.997542+00:00",
       "refs": {
         "skill_match_event_id": "evt_f3db9e8aec9e",
-        "skill_id": "skill_file_not_found_specified_path_exit_code_get-content",
+        "skill_id": "skill_shell_file_not_found_get_content",
         "selected_action_id": "act_file_not_found_specified_path_exit_code_get-content_1"
       },
       "metadata": {
@@ -510,7 +510,7 @@
       "timestamp": "2026-09-01T01:02:03.001215+00:00",
       "refs": {
         "skill_match_event_id": "evt_f3db9e8aec9e",
-        "skill_id": "skill_file_not_found_specified_path_exit_code_get-content",
+        "skill_id": "skill_shell_file_not_found_get_content",
         "selected_action_id": "act_file_not_found_specified_path_exit_code_get-content_1",
         "tool_call_event_id": "evt_2c9b891d3f7f"
       },
@@ -635,7 +635,7 @@
         "matches": [
           {
             "schema_version": "skill_match.v2",
-            "matched_skill_id": "skill_file_not_found_specified_path_exit_code_get-content",
+            "matched_skill_id": "skill_shell_file_not_found_get_content",
             "skill_name": "Repair file not found at specified path",
             "score": 0.573826,
             "match_reason": "vector cosine similarity over failure and learned trigger",
@@ -724,7 +724,7 @@
       "payload": {
         "type": "contextdb_skill_recommendation",
         "matched": true,
-        "skill_id": "skill_file_not_found_specified_path_exit_code_get-content",
+        "skill_id": "skill_shell_file_not_found_get_content",
         "skill_name": "Repair file not found at specified path",
         "match_score": 0.573826,
         "match_reason": "vector cosine similarity over failure and learned trigger",
@@ -800,7 +800,7 @@
       "timestamp": "2026-09-01T01:03:56.377598+00:00",
       "refs": {
         "skill_match_event_id": "evt_55f1fea496ec",
-        "skill_id": "skill_file_not_found_specified_path_exit_code_get-content",
+        "skill_id": "skill_shell_file_not_found_get_content",
         "selected_action_id": "act_file_not_found_specified_path_exit_code_get-content_1"
       },
       "metadata": {
@@ -923,7 +923,7 @@
         "matches": [
           {
             "schema_version": "skill_match.v2",
-            "matched_skill_id": "skill_file_not_found_specified_path_exit_code_get-content",
+            "matched_skill_id": "skill_shell_file_not_found_get_content",
             "skill_name": "Repair file not found at specified path",
             "score": 0.569839,
             "match_reason": "vector cosine similarity over failure and learned trigger",
@@ -1012,7 +1012,7 @@
       "payload": {
         "type": "contextdb_skill_recommendation",
         "matched": true,
-        "skill_id": "skill_file_not_found_specified_path_exit_code_get-content",
+        "skill_id": "skill_shell_file_not_found_get_content",
         "skill_name": "Repair file not found at specified path",
         "match_score": 0.569839,
         "match_reason": "vector cosine similarity over failure and learned trigger",
@@ -1093,7 +1093,7 @@
       "timestamp": "2026-09-01T01:08:29.606447+00:00",
       "refs": {
         "skill_match_event_id": "evt_7970eb79855c",
-        "skill_id": "skill_file_not_found_specified_path_exit_code_get-content",
+        "skill_id": "skill_shell_file_not_found_get_content",
         "selected_action_id": "act_file_not_found_specified_path_exit_code_get-content_1"
       },
       "metadata": {
@@ -1160,7 +1160,7 @@
     "evt_c069de691612",
     "evt_a5b08a5df447"
   ],
-  "created_at": "2026-09-12T09:44:48.345479+00:00",
+  "created_at": "2026-09-13T03:49:53.682530+00:00",
   "metadata": {
     "event_count": 55
   }
