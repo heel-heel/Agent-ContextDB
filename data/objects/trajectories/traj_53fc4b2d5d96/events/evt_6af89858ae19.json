@@ -1,0 +1,44 @@
+{
+  "event_id": "evt_6af89858ae19",
+  "trajectory_id": "traj_53fc4b2d5d96",
+  "branch_id": "main",
+  "event_type": "tool_result",
+  "payload": {
+    "status": "ok",
+    "exit_code": null,
+    "preview": "Obtaining file:///marshmallow-code__marshmallow\n  Installing build dependencies: started\n  Installing build dependencies: finished with status 'done'\n  Checking if build backend supports build_editable: started\n  Checking if build backend supports build_editable: finished with status 'done'\n  Getting requirements to build editable: started\n  Getting requirements to build editable: finished with status 'done'\n  Preparing editable metadata (pyproject.toml): started\n  Preparing editable metadata (p",
+    "raw_preview_truncated": true
+  },
+  "parent_event_ids": [
+    "evt_cd4959bcd812"
+  ],
+  "actor": "tool",
+  "timestamp": "2026-09-13T05:58:08.521228+00:00",
+  "refs": {
+    "swe_step": 3,
+    "source_line": 11
+  },
+  "metadata": {
+    "observation_chars": 6923,
+    "adapter_status": "ok",
+    "swe_state": {
+      "open_file": "/marshmallow-code__marshmallow/setup.py",
+      "working_dir": "/marshmallow-code__marshmallow"
+    },
+    "llm_trace_annotation": {
+      "enabled": true,
+      "provider": "openai-compatible",
+      "model": "deepseek-flash",
+      "status": "ok",
+      "confidence": 0.99,
+      "error_signature": "",
+      "reason": "The pip install command completed the editable build steps successfully and all listed dependencies were already satisfied.",
+      "evidence": "Installing build dependencies: finished with status 'done'; Preparing editable metadata (pyproject.toml): finished with status 'done'; Requirement already satisfied: pytest ..."
+    },
+    "status_resolution": "adapter_confirmed_or_low_confidence",
+    "normalized_from": "D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB\\examples\\swe_agent\\marshmallow-code__marshmallow-1867.traj",
+    "normalizer_source": "swe-agent-traj-llm",
+    "normalizer_event_index": 11,
+    "agent_id": "swe-agent"
+  }
+}

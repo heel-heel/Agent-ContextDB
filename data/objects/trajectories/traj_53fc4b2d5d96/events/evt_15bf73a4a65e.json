@@ -1,0 +1,44 @@
+{
+  "event_id": "evt_15bf73a4a65e",
+  "trajectory_id": "traj_53fc4b2d5d96",
+  "branch_id": "main",
+  "event_type": "tool_result",
+  "payload": {
+    "status": "ok",
+    "exit_code": null,
+    "preview": "AUTHORS.rst\nCHANGELOG.rst\nCODE_OF_CONDUCT.md\nCONTRIBUTING.rst\nLICENSE\nMANIFEST.in\nNOTICE\nREADME.rst\nRELEASING.md\nazure-pipelines.yml\ndocs/\nexamples/\nperformance/\npyproject.toml\nreproduce.py\nsetup.cfg\nsetup.py\nsrc/\ntests/\ntox.ini",
+    "raw_preview_truncated": false
+  },
+  "parent_event_ids": [
+    "evt_71bc7ae4bd8c"
+  ],
+  "actor": "tool",
+  "timestamp": "2026-09-13T05:58:08.558055+00:00",
+  "refs": {
+    "swe_step": 7,
+    "source_line": 23
+  },
+  "metadata": {
+    "observation_chars": 228,
+    "adapter_status": "ok",
+    "swe_state": {
+      "open_file": "/marshmallow-code__marshmallow/reproduce.py",
+      "working_dir": "/marshmallow-code__marshmallow"
+    },
+    "llm_trace_annotation": {
+      "enabled": true,
+      "provider": "openai-compatible",
+      "model": "deepseek-flash",
+      "status": "ok",
+      "confidence": 0.98,
+      "error_signature": "",
+      "reason": "Directory listing completed and returned the expected repository contents with no error output.",
+      "evidence": "ls -F output shows files and directories (e.g., AUTHORS.rst, docs/, src/, tests/, tox.ini) with no error or nonzero-exit indication."
+    },
+    "status_resolution": "adapter_confirmed_or_low_confidence",
+    "normalized_from": "D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB\\examples\\swe_agent\\marshmallow-code__marshmallow-1867.traj",
+    "normalizer_source": "swe-agent-traj-llm",
+    "normalizer_event_index": 23,
+    "agent_id": "swe-agent"
+  }
+}

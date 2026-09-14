@@ -1,0 +1,44 @@
+{
+  "event_id": "evt_ede15dabc57f",
+  "trajectory_id": "traj_53fc4b2d5d96",
+  "branch_id": "main",
+  "event_type": "tool_result",
+  "payload": {
+    "status": "ok",
+    "exit_code": null,
+    "preview": "[File: /marshmallow-code__marshmallow/reproduce.py (9 lines total)]\n1:from marshmallow.fields import TimeDelta\n2:from datetime import timedelta\n3:\n4:td_field = TimeDelta(precision=\"milliseconds\")\n5:\n6:obj = dict()\n7:obj[\"td_field\"] = timedelta(milliseconds=345)\n8:\n9:print(td_field.serialize(\"td_field\", obj))\nFile updated. Please review the changes and make sure they are correct (correct indentation, no duplicate lines, etc). Edit the file again if necessary.",
+    "raw_preview_truncated": false
+  },
+  "parent_event_ids": [
+    "evt_a8947aa89f54"
+  ],
+  "actor": "tool",
+  "timestamp": "2026-09-13T05:58:08.539265+00:00",
+  "refs": {
+    "swe_step": 5,
+    "source_line": 17
+  },
+  "metadata": {
+    "observation_chars": 462,
+    "adapter_status": "ok",
+    "swe_state": {
+      "open_file": "/marshmallow-code__marshmallow/reproduce.py",
+      "working_dir": "/marshmallow-code__marshmallow"
+    },
+    "llm_trace_annotation": {
+      "enabled": true,
+      "provider": "openai-compatible",
+      "model": "deepseek-flash",
+      "status": "ok",
+      "confidence": 0.99,
+      "error_signature": "",
+      "reason": "The file edit completed successfully and the observation confirms the file was updated.",
+      "evidence": "File updated. Please review the changes and make sure they are correct..."
+    },
+    "status_resolution": "adapter_confirmed_or_low_confidence",
+    "normalized_from": "D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB\\examples\\swe_agent\\marshmallow-code__marshmallow-1867.traj",
+    "normalizer_source": "swe-agent-traj-llm",
+    "normalizer_event_index": 17,
+    "agent_id": "swe-agent"
+  }
+}

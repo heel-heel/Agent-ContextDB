@@ -1,0 +1,44 @@
+{
+  "event_id": "evt_1c8f2a5e98cf",
+  "trajectory_id": "traj_3aa583622a74",
+  "branch_id": "main",
+  "event_type": "tool_result",
+  "payload": {
+    "status": "failed",
+    "preview": "fatal: path 'assets/settings.json' does not exist in 'HEAD'\n",
+    "exit_code": 1
+  },
+  "parent_event_ids": [
+    "evt_5c5327d5c975"
+  ],
+  "actor": "tool",
+  "timestamp": "2026-09-14T02:52:41.257931+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "codex",
+    "hook_adapter": "generic",
+    "hook_session_id": "codex-path-repair-001",
+    "tool_call_event_id": "evt_5c5327d5c975"
+  },
+  "metadata": {
+    "agent_id": "codex",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-14T02:52:41.257757+00:00",
+    "adapter": "generic-hook",
+    "likely_cause_judgment": {
+      "enabled": true,
+      "provider": "openai-compatible",
+      "model": "deepseek-flash",
+      "likely_cause": "file path missing from git HEAD revision",
+      "confidence": 0.95,
+      "reason": "The git show HEAD:assets/settings.json command failed with 'fatal: path ... does not exist in HEAD', indicating the specified file is not tracked at that path in the current HEAD commit.",
+      "input": {
+        "failed_tool": "powershell",
+        "failed_command": "powershell -NoProfile -Command \"$env:LC_ALL=\\\"C\\\"; $env:LANG=\\\"C\\\"; git show HEAD:assets/settings.json\"",
+        "error_signature": "fatal: path 'assets/settings.json' does not exist in 'HEAD'\n",
+        "preceding_action": ""
+      }
+    }
+  }
+}

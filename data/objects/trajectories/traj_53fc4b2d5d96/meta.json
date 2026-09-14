@@ -1,0 +1,15 @@
+{
+  "trajectory_id": "traj_53fc4b2d5d96",
+  "title": "SWE-agent trajectory demo on SWE-bench task marshmallow-code__marshmallow-1867",
+  "agent_id": "swe-agent",
+  "source_id": "generic-jsonl",
+  "default_branch": "main",
+  "head_event_id": "evt_445a8f8e92f2",
+  "created_at": "2026-09-13T05:58:08.485053+00:00",
+  "updated_at": "2026-09-13T05:58:08.626780+00:00",
+  "metadata": {
+    "import_path": "D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB\\data\\swe_agent\\marshmallow-code__marshmallow-1867.contextdb.jsonl",
+    "adapter": "generic-jsonl",
+    "replay": true
+  }
+}

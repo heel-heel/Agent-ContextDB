@@ -1,0 +1,30 @@
+{
+  "event_id": "evt_8920a28e42bb",
+  "trajectory_id": "traj_3aa583622a74",
+  "branch_id": "main",
+  "event_type": "tool_result",
+  "payload": {
+    "status": "ok",
+    "preview": "{\n  \"mode\": \"clean-path-skill-demo\",\n  \"source\": \"project-fixture\",\n  \"purpose\": \"real file-path repair and skill-reuse demonstration\"\n}\n",
+    "exit_code": 0
+  },
+  "parent_event_ids": [
+    "evt_7721d6d651fb"
+  ],
+  "actor": "tool",
+  "timestamp": "2026-09-14T02:54:14.581219+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "codex",
+    "hook_adapter": "generic",
+    "hook_session_id": "codex-path-repair-001",
+    "tool_call_event_id": "evt_7721d6d651fb"
+  },
+  "metadata": {
+    "agent_id": "codex",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-14T02:54:14.581054+00:00",
+    "adapter": "generic-hook"
+  }
+}

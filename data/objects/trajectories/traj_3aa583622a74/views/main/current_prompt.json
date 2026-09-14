@@ -1,0 +1,594 @@
+{
+  "view_name": "current_prompt",
+  "trajectory_id": "traj_3aa583622a74",
+  "branch_id": "main",
+  "content": {
+    "schema_version": "context_assembly.v1",
+    "trajectory_id": "traj_3aa583622a74",
+    "branch_id": "main",
+    "head_event_id": "evt_ba42493cacb9",
+    "token_budget": 1200,
+    "selected_tokens": 661,
+    "max_selectable_tokens": 661,
+    "remaining_tokens": 539,
+    "estimated_full_history_tokens": 3597,
+    "estimated_loaded_tokens": 661,
+    "estimated_saved_tokens": 2936,
+    "estimated_saved_percent": 81.6,
+    "loading_policy": "priority budget packing over current task, recent causal trace, version state, retrieved memory, matched skills, and semantic digest",
+    "segments": [
+      {
+        "segment_id": "current_task",
+        "priority": "P0",
+        "title": "Current Task",
+        "text": "No user request has been recorded on this branch.",
+        "token_cost": 12,
+        "source_event_ids": [],
+        "selection_reason": "Latest user request on the selected branch.",
+        "included": true,
+        "loaded_text": "No user request has been recorded on this branch.",
+        "loaded_token_cost": 12,
+        "selection_status": "included",
+        "omission_reason": ""
+      },
+      {
+        "segment_id": "recent_causal_trace",
+        "priority": "P1",
+        "title": "Recent Causal Trace",
+        "text": "- skill_match:{'schema_version': 'skill_match_result.v2', 'trajectory_id': 'traj_3aa583622a74', 'input_failure': {'tool': 'powershell', 'command': 'powershell -NoProfile -Command \"$env:LC_ALL=\\\\\"C\\\\\"; $env:LANG=\\\\\"C\\\\\"; git show HEAD:assets/settings.json\"', 'error_signature': \"fatal: path 'assets/settings.json' does not exist in 'HEAD'\\n\", 'normalized_signature': \"fatal path 'assets settings.json' does not exist in 'head'\"}, 'm...\n- skill_recommendation:{'type': 'contextdb_skill_recommendation', 'matched': False, 'instruction': 'No reusable ContextDB skill matched this failure. Continue with normal diagnosis.', 'version_context': {'active_branch_id': 'main', 'latest_snapshot': None, 'repair_branch_suggestion': None, 'last_version_decision': None, 'workspace_restore': {'supported': False, 'instruction': 'ContextDB records logical branch and rollback state only. Re...\n- tool_call:powershell -NoProfile -Command \"$env:LC_ALL=\\\"C\\\"; $env:LANG=\\\"C\\\"; git show HEAD:examples/live-path-demo/assets/settings.json\"\n- tool_result:{\n  \"mode\": \"clean-path-skill-demo\",\n  \"source\": \"project-fixture\",\n  \"purpose\": \"real file-path repair and skill-reuse demonstration\"\n}\n\n- tool_call:powershell -NoProfile -Command \"$env:LC_ALL=\\\"C\\\"; $env:LANG=\\\"C\\\"; git show HEAD:assets/settings.json\"\n- tool_result:fatal: path 'assets/settings.json' does not exist in 'HEAD'\n\n- skill_match:{'schema_version': 'skill_match_result.v2', 'trajectory_id': 'traj_3aa583622a74', 'input_failure': {'tool': 'powershell', 'command': 'powershell -NoProfile -Command \"$env:LC_ALL=\\\\\"C\\\\\"; $env:LANG=\\\\\"C\\\\\"; git show HEAD:assets/settings.json\"', 'error_signature': \"fatal: path 'assets/settings.json' does not exist in 'HEAD'\\n\", 'normalized_signature': \"fatal path 'assets settings.json' does not exist in 'head'\"}, 'm...\n- skill_recommendation:{'type': 'contextdb_skill_recommendation', 'matched': True, 'skill_id': 'skill_powershell_file_path_missing_from_git', 'skill_name': 'Repair file path missing from git HEAD revision', 'match_score': 0.892203, 'match_reason': 'vector cosine similarity over failure and learned trigger', 'selected_action': {'action_id': 'act_powershell_file_path_missing_from_git_1', 'name': 'Apply powershell -NoProfile -Command \"$env...",
+        "token_cost": 560,
+        "source_event_ids": [
+          "evt_a8625f340531",
+          "evt_b4a53845af37",
+          "evt_7721d6d651fb",
+          "evt_8920a28e42bb",
+          "evt_bf5ab31a306d",
+          "evt_348c78aba15b",
+          "evt_30b620b47250",
+          "evt_ba42493cacb9"
+        ],
+        "selection_reason": "Short-term causal window: recent user, assistant, tool-call, and tool-result events.",
+        "included": true,
+        "loaded_text": "- skill_match:{'schema_version': 'skill_match_result.v2', 'trajectory_id': 'traj_3aa583622a74', 'input_failure': {'tool': 'powershell', 'command': 'powershell -NoProfile -Command \"$env:LC_ALL=\\\\\"C\\\\\"; $env:LANG=\\\\\"C\\\\\"; git show HEAD:assets/settings.json\"', 'error_signature': \"fatal: path 'assets/settings.json' does not exist in 'HEAD'\\n\", 'normalized_signature': \"fatal path 'assets settings.json' does not exist in 'head'\"}, 'm...\n- skill_recommendation:{'type': 'contextdb_skill_recommendation', 'matched': False, 'instruction': 'No reusable ContextDB skill matched this failure. Continue with normal diagnosis.', 'version_context': {'active_branch_id': 'main', 'latest_snapshot': None, 'repair_branch_suggestion': None, 'last_version_decision': None, 'workspace_restore': {'supported': False, 'instruction': 'ContextDB records logical branch and rollback state only. Re...\n- tool_call:powershell -NoProfile -Command \"$env:LC_ALL=\\\"C\\\"; $env:LANG=\\\"C\\\"; git show HEAD:examples/live-path-demo/assets/settings.json\"\n- tool_result:{\n  \"mode\": \"clean-path-skill-demo\",\n  \"source\": \"project-fixture\",\n  \"purpose\": \"real file-path repair and skill-reuse demonstration\"\n}\n\n- tool_call:powershell -NoProfile -Command \"$env:LC_ALL=\\\"C\\\"; $env:LANG=\\\"C\\\"; git show HEAD:assets/settings.json\"\n- tool_result:fatal: path 'assets/settings.json' does not exist in 'HEAD'\n\n- skill_match:{'schema_version': 'skill_match_result.v2', 'trajectory_id': 'traj_3aa583622a74', 'input_failure': {'tool': 'powershell', 'command': 'powershell -NoProfile -Command \"$env:LC_ALL=\\\\\"C\\\\\"; $env:LANG=\\\\\"C\\\\\"; git show HEAD:assets/settings.json\"', 'error_signature': \"fatal: path 'assets/settings.json' does not exist in 'HEAD'\\n\", 'normalized_signature': \"fatal path 'assets settings.json' does not exist in 'head'\"}, 'm...\n- skill_recommendation:{'type': 'contextdb_skill_recommendation', 'matched': True, 'skill_id': 'skill_powershell_file_path_missing_from_git', 'skill_name': 'Repair file path missing from git HEAD revision', 'match_score': 0.892203, 'match_reason': 'vector cosine similarity over failure and learned trigger', 'selected_action': {'action_id': 'act_powershell_file_path_missing_from_git_1', 'name': 'Apply powershell -NoProfile -Command \"$env...",
+        "loaded_token_cost": 560,
+        "selection_status": "included",
+        "omission_reason": ""
+      },
+      {
+        "segment_id": "branch_version_state",
+        "priority": "P2",
+        "title": "Branch / Version State",
+        "text": "Active branch: main\nHead: evt_ba42493cacb9",
+        "token_cost": 10,
+        "source_event_ids": [
+          "evt_ba42493cacb9"
+        ],
+        "selection_reason": "Active branch head and the latest snapshot/version transition.",
+        "included": true,
+        "loaded_text": "Active branch: main\nHead: evt_ba42493cacb9",
+        "loaded_token_cost": 10,
+        "selection_status": "included",
+        "omission_reason": ""
+      },
+      {
+        "segment_id": "retrieved_memory",
+        "priority": "P3",
+        "title": "Retrieved Memory",
+        "text": "",
+        "token_cost": 0,
+        "source_event_ids": [],
+        "selection_reason": "Top memory_update records ranked by vector relevance to the current task, with recency as a tie-break.",
+        "included": false,
+        "loaded_token_cost": 0,
+        "selection_status": "not_available",
+        "omission_reason": "No eligible context was available for this segment."
+      },
+      {
+        "segment_id": "matched_skills",
+        "priority": "P4",
+        "title": "Matched Skills",
+        "text": "- Use this as a suggestion. The Agent must decide whether it is safe and appropriate before executing it.",
+        "token_cost": 26,
+        "source_event_ids": [
+          "evt_ba42493cacb9"
+        ],
+        "selection_reason": "Latest ContextDB skill recommendation events on the selected branch.",
+        "included": true,
+        "loaded_text": "- Use this as a suggestion. The Agent must decide whether it is safe and appropriate before executing it.",
+        "loaded_token_cost": 26,
+        "selection_status": "included",
+        "omission_reason": ""
+      },
+      {
+        "segment_id": "earlier_trajectory_digest",
+        "priority": "P5",
+        "title": "Earlier Trajectory Digest",
+        "text": "The agent attempted to retrieve assets/settings.json from the current Git HEAD using `git show HEAD:assets/settings.json` with LC_ALL and LANG set to C. The command failed because that path does not exist in HEAD.",
+        "token_cost": 53,
+        "source_event_ids": [
+          "evt_5c5327d5c975",
+          "evt_1c8f2a5e98cf"
+        ],
+        "selection_reason": "LLM-generated incremental semantic digest of the earlier completed trajectory prefix.",
+        "included": true,
+        "loaded_text": "The agent attempted to retrieve assets/settings.json from the current Git HEAD using `git show HEAD:assets/settings.json` with LC_ALL and LANG set to C. The command failed because that path does not exist in HEAD.",
+        "loaded_token_cost": 53,
+        "selection_status": "included",
+        "omission_reason": ""
+      }
+    ],
+    "rendered_agent_context": "## Current Task\nNo user request has been recorded on this branch.\n\n## Recent Causal Trace\n- skill_match:{'schema_version': 'skill_match_result.v2', 'trajectory_id': 'traj_3aa583622a74', 'input_failure': {'tool': 'powershell', 'command': 'powershell -NoProfile -Command \"$env:LC_ALL=\\\\\"C\\\\\"; $env:LANG=\\\\\"C\\\\\"; git show HEAD:assets/settings.json\"', 'error_signature': \"fatal: path 'assets/settings.json' does not exist in 'HEAD'\\n\", 'normalized_signature': \"fatal path 'assets settings.json' does not exist in 'head'\"}, 'm...\n- skill_recommendation:{'type': 'contextdb_skill_recommendation', 'matched': False, 'instruction': 'No reusable ContextDB skill matched this failure. Continue with normal diagnosis.', 'version_context': {'active_branch_id': 'main', 'latest_snapshot': None, 'repair_branch_suggestion': None, 'last_version_decision': None, 'workspace_restore': {'supported': False, 'instruction': 'ContextDB records logical branch and rollback state only. Re...\n- tool_call:powershell -NoProfile -Command \"$env:LC_ALL=\\\"C\\\"; $env:LANG=\\\"C\\\"; git show HEAD:examples/live-path-demo/assets/settings.json\"\n- tool_result:{\n  \"mode\": \"clean-path-skill-demo\",\n  \"source\": \"project-fixture\",\n  \"purpose\": \"real file-path repair and skill-reuse demonstration\"\n}\n\n- tool_call:powershell -NoProfile -Command \"$env:LC_ALL=\\\"C\\\"; $env:LANG=\\\"C\\\"; git show HEAD:assets/settings.json\"\n- tool_result:fatal: path 'assets/settings.json' does not exist in 'HEAD'\n\n- skill_match:{'schema_version': 'skill_match_result.v2', 'trajectory_id': 'traj_3aa583622a74', 'input_failure': {'tool': 'powershell', 'command': 'powershell -NoProfile -Command \"$env:LC_ALL=\\\\\"C\\\\\"; $env:LANG=\\\\\"C\\\\\"; git show HEAD:assets/settings.json\"', 'error_signature': \"fatal: path 'assets/settings.json' does not exist in 'HEAD'\\n\", 'normalized_signature': \"fatal path 'assets settings.json' does not exist in 'head'\"}, 'm...\n- skill_recommendation:{'type': 'contextdb_skill_recommendation', 'matched': True, 'skill_id': 'skill_powershell_file_path_missing_from_git', 'skill_name': 'Repair file path missing from git HEAD revision', 'match_score': 0.892203, 'match_reason': 'vector cosine similarity over failure and learned trigger', 'selected_action': {'action_id': 'act_powershell_file_path_missing_from_git_1', 'name': 'Apply powershell -NoProfile -Command \"$env...\n\n## Branch / Version State\nActive branch: main\nHead: evt_ba42493cacb9\n\n## Matched Skills\n- Use this as a suggestion. The Agent must decide whether it is safe and appropriate before executing it.\n\n## Earlier Trajectory Digest\nThe agent attempted to retrieve assets/settings.json from the current Git HEAD using `git show HEAD:assets/settings.json` with LC_ALL and LANG set to C. The command failed because that path does not exist in HEAD.",
+    "summary": {
+      "schema_version": "semantic_summary.v1",
+      "trajectory_id": "traj_3aa583622a74",
+      "branch_id": "main",
+      "summary": "The agent attempted to retrieve assets/settings.json from the current Git HEAD using `git show HEAD:assets/settings.json` with LC_ALL and LANG set to C. The command failed because that path does not exist in HEAD.",
+      "key_facts": [
+        "Attempted command: powershell -NoProfile -Command with environment variables LC_ALL=C and LANG=C, then `git show HEAD:assets/settings.json`.",
+        "Tool result: `fatal: path 'assets/settings.json' does not exist in 'HEAD'`.",
+        "The file assets/settings.json is not present at HEAD."
+      ],
+      "open_items": [
+        "Determine the correct path or Git ref for the desired settings.json file, if it exists elsewhere."
+      ],
+      "status": "ready",
+      "method": "incremental_llm_semantic_summary",
+      "scope": {
+        "start_event_id": "evt_5c5327d5c975",
+        "end_event_id": "evt_1c8f2a5e98cf",
+        "source_event_count": 2
+      },
+      "source_event_ids": [
+        "evt_5c5327d5c975",
+        "evt_1c8f2a5e98cf"
+      ],
+      "source_event_timeline": [
+        {
+          "event_id": "evt_5c5327d5c975",
+          "event_type": "tool_call",
+          "branch_id": "main",
+          "text": "tool_call:powershell -NoProfile -Command \"$env:LC_ALL=\\\"C\\\"; $env:LANG=\\\"C\\\"; git show HEAD:assets/settings.json\""
+        },
+        {
+          "event_id": "evt_1c8f2a5e98cf",
+          "event_type": "tool_result",
+          "branch_id": "main",
+          "text": "tool_result:fatal: path 'assets/settings.json' does not exist in 'HEAD'\n"
+        }
+      ],
+      "raw_tokens": 518,
+      "compressed_tokens": 53,
+      "compression_ratio": 89.8,
+      "materialization": {
+        "cache_hit": false,
+        "generation_mode": "full",
+        "previous_covered_event_count": 0,
+        "profile_id": "background-deepseek-flash"
+      },
+      "llm": {
+        "enabled": true,
+        "profile_id": "background-deepseek-flash",
+        "provider": "openai-compatible",
+        "model": "deepseek-flash",
+        "reason": "LLM generated a factual semantic trajectory digest.",
+        "error": null,
+        "execution": {
+          "profile_id": "background-deepseek-flash",
+          "provider": "openai-compatible",
+          "requested_model": "deepseek-flash",
+          "response_model": "deepseek-flash",
+          "response_id": "1db52107-efd0-4c5d-8680-6aa26c3f392d",
+          "verified": true
+        }
+      }
+    },
+    "recent_events": [
+      {
+        "event_id": "evt_a8625f340531",
+        "trajectory_id": "traj_3aa583622a74",
+        "branch_id": "main",
+        "event_type": "skill_match",
+        "payload": {
+          "schema_version": "skill_match_result.v2",
+          "trajectory_id": "traj_3aa583622a74",
+          "input_failure": {
+            "tool": "powershell",
+            "command": "powershell -NoProfile -Command \"$env:LC_ALL=\\\"C\\\"; $env:LANG=\\\"C\\\"; git show HEAD:assets/settings.json\"",
+            "error_signature": "fatal: path 'assets/settings.json' does not exist in 'HEAD'\n",
+            "normalized_signature": "fatal path 'assets settings.json' does not exist in 'head'"
+          },
+          "match_engine": {
+            "type": "sqlite-vector-index",
+            "embedding": "hash-384",
+            "similarity": "cosine",
+            "threshold": 0.32,
+            "indexed_skill_count": 1
+          },
+          "match_judge": {
+            "enabled": false,
+            "provider": "replaced_by_vector_index",
+            "reason": "Skill matching uses vector retrieval."
+          },
+          "matches": [],
+          "materialized": true,
+          "source_views": []
+        },
+        "parent_event_ids": [
+          "evt_1c8f2a5e98cf"
+        ],
+        "actor": "contextdb",
+        "timestamp": "2026-09-14T02:52:41.262540+00:00",
+        "refs": {
+          "failure_event_id": "evt_1c8f2a5e98cf"
+        },
+        "metadata": {
+          "operation": "online_skill_retrieval",
+          "match_engine": "sqlite-vector-index"
+        }
+      },
+      {
+        "event_id": "evt_b4a53845af37",
+        "trajectory_id": "traj_3aa583622a74",
+        "branch_id": "main",
+        "event_type": "skill_recommendation",
+        "payload": {
+          "type": "contextdb_skill_recommendation",
+          "matched": false,
+          "instruction": "No reusable ContextDB skill matched this failure. Continue with normal diagnosis.",
+          "version_context": {
+            "active_branch_id": "main",
+            "latest_snapshot": null,
+            "repair_branch_suggestion": null,
+            "last_version_decision": null,
+            "workspace_restore": {
+              "supported": false,
+              "instruction": "ContextDB records logical branch and rollback state only. Restore files through the Agent workspace after an explicit decision."
+            }
+          }
+        },
+        "parent_event_ids": [
+          "evt_a8625f340531"
+        ],
+        "actor": "contextdb",
+        "timestamp": "2026-09-14T02:52:41.269208+00:00",
+        "refs": {
+          "skill_match_event_id": "evt_a8625f340531"
+        },
+        "metadata": {
+          "operation": "skill_recommendation_delivery",
+          "delivery_channel": "native-exec-hook",
+          "online": true
+        }
+      },
+      {
+        "event_id": "evt_7721d6d651fb",
+        "trajectory_id": "traj_3aa583622a74",
+        "branch_id": "main",
+        "event_type": "tool_call",
+        "payload": {
+          "tool_name": "powershell",
+          "command": "powershell -NoProfile -Command \"$env:LC_ALL=\\\"C\\\"; $env:LANG=\\\"C\\\"; git show HEAD:examples/live-path-demo/assets/settings.json\""
+        },
+        "parent_event_ids": [
+          "evt_b4a53845af37"
+        ],
+        "actor": "agent",
+        "timestamp": "2026-09-14T02:54:13.952148+00:00",
+        "refs": {
+          "hook_protocol": "contextdb.agent_hook.v1",
+          "hook_source": "codex",
+          "hook_adapter": "generic",
+          "hook_session_id": "codex-path-repair-001"
+        },
+        "metadata": {
+          "agent_id": "codex",
+          "online": true,
+          "integration": "agent-hook.v1",
+          "hook_received_at": "2026-09-14T02:54:13.951924+00:00",
+          "adapter": "generic-hook"
+        }
+      },
+      {
+        "event_id": "evt_8920a28e42bb",
+        "trajectory_id": "traj_3aa583622a74",
+        "branch_id": "main",
+        "event_type": "tool_result",
+        "payload": {
+          "status": "ok",
+          "preview": "{\n  \"mode\": \"clean-path-skill-demo\",\n  \"source\": \"project-fixture\",\n  \"purpose\": \"real file-path repair and skill-reuse demonstration\"\n}\n",
+          "exit_code": 0
+        },
+        "parent_event_ids": [
+          "evt_7721d6d651fb"
+        ],
+        "actor": "tool",
+        "timestamp": "2026-09-14T02:54:14.581219+00:00",
+        "refs": {
+          "hook_protocol": "contextdb.agent_hook.v1",
+          "hook_source": "codex",
+          "hook_adapter": "generic",
+          "hook_session_id": "codex-path-repair-001",
+          "tool_call_event_id": "evt_7721d6d651fb"
+        },
+        "metadata": {
+          "agent_id": "codex",
+          "online": true,
+          "integration": "agent-hook.v1",
+          "hook_received_at": "2026-09-14T02:54:14.581054+00:00",
+          "adapter": "generic-hook"
+        }
+      },
+      {
+        "event_id": "evt_bf5ab31a306d",
+        "trajectory_id": "traj_3aa583622a74",
+        "branch_id": "main",
+        "event_type": "tool_call",
+        "payload": {
+          "tool_name": "powershell",
+          "command": "powershell -NoProfile -Command \"$env:LC_ALL=\\\"C\\\"; $env:LANG=\\\"C\\\"; git show HEAD:assets/settings.json\""
+        },
+        "parent_event_ids": [
+          "evt_8920a28e42bb"
+        ],
+        "actor": "agent",
+        "timestamp": "2026-09-14T02:56:24.553163+00:00",
+        "refs": {
+          "hook_protocol": "contextdb.agent_hook.v1",
+          "hook_source": "codex",
+          "hook_adapter": "generic",
+          "hook_session_id": "codex-path-repair-001"
+        },
+        "metadata": {
+          "agent_id": "codex",
+          "online": true,
+          "integration": "agent-hook.v1",
+          "hook_received_at": "2026-09-14T02:56:24.552984+00:00",
+          "adapter": "generic-hook"
+        }
+      },
+      {
+        "event_id": "evt_348c78aba15b",
+        "trajectory_id": "traj_3aa583622a74",
+        "branch_id": "main",
+        "event_type": "tool_result",
+        "payload": {
+          "status": "failed",
+          "preview": "fatal: path 'assets/settings.json' does not exist in 'HEAD'\n",
+          "exit_code": 1
+        },
+        "parent_event_ids": [
+          "evt_bf5ab31a306d"
+        ],
+        "actor": "tool",
+        "timestamp": "2026-09-14T02:56:25.199158+00:00",
+        "refs": {
+          "hook_protocol": "contextdb.agent_hook.v1",
+          "hook_source": "codex",
+          "hook_adapter": "generic",
+          "hook_session_id": "codex-path-repair-001",
+          "tool_call_event_id": "evt_bf5ab31a306d"
+        },
+        "metadata": {
+          "agent_id": "codex",
+          "online": true,
+          "integration": "agent-hook.v1",
+          "hook_received_at": "2026-09-14T02:56:25.198972+00:00",
+          "adapter": "generic-hook"
+        }
+      },
+      {
+        "event_id": "evt_30b620b47250",
+        "trajectory_id": "traj_3aa583622a74",
+        "branch_id": "main",
+        "event_type": "skill_match",
+        "payload": {
+          "schema_version": "skill_match_result.v2",
+          "trajectory_id": "traj_3aa583622a74",
+          "input_failure": {
+            "tool": "powershell",
+            "command": "powershell -NoProfile -Command \"$env:LC_ALL=\\\"C\\\"; $env:LANG=\\\"C\\\"; git show HEAD:assets/settings.json\"",
+            "error_signature": "fatal: path 'assets/settings.json' does not exist in 'HEAD'\n",
+            "normalized_signature": "fatal path 'assets settings.json' does not exist in 'head'"
+          },
+          "match_engine": {
+            "type": "sqlite-vector-index",
+            "embedding": "hash-384",
+            "similarity": "cosine",
+            "threshold": 0.32,
+            "indexed_skill_count": 2
+          },
+          "match_judge": {
+            "enabled": false,
+            "provider": "replaced_by_vector_index",
+            "reason": "Skill matching uses vector retrieval."
+          },
+          "matches": [
+            {
+              "schema_version": "skill_match.v2",
+              "matched_skill_id": "skill_powershell_file_path_missing_from_git",
+              "skill_name": "Repair file path missing from git HEAD revision",
+              "score": 0.892203,
+              "match_reason": "vector cosine similarity over failure and learned trigger",
+              "matched_trigger": {
+                "failed_tool": "powershell",
+                "failed_command_pattern": "powershell -NoProfile -Command \"$env:LC_ALL=\\\"C\\\"; $env:LANG=\\\"C\\\"; git show HEAD:assets/settings.json\"",
+                "normalized_signature": "fatal path 'assets settings.json' does not exist in 'head'",
+                "error_signature": "fatal: path 'assets/settings.json' does not exist in 'HEAD'\n",
+                "likely_cause": "file path missing from git HEAD revision"
+              },
+              "recommended_actions": [
+                {
+                  "action_id": "act_powershell_file_path_missing_from_git_1",
+                  "name": "Apply powershell -NoProfile -Command \"$env:LC_ALL=\\\"C\\\"; $env:LANG=\\\"C\\\"; git show HEAD:examples/live-path-demo/assets/settings.json\"",
+                  "canonical_tool": "powershell",
+                  "canonical_command_template": "powershell -NoProfile -Command \"$env:LC_ALL=\\\"C\\\"; $env:LANG=\\\"C\\\"; git show HEAD:examples/live-path-demo/assets/settings.json\"",
+                  "strategy": "Apply powershell -NoProfile -Command \"$env:LC_ALL=\\\"C\\\"; $env:LANG=\\\"C\\\"; git show HEAD:examples/live-path-demo/assets/settings.json\"",
+                  "support_event_ids": [
+                    "evt_8920a28e42bb"
+                  ],
+                  "support_events": [
+                    {
+                      "trajectory_id": "traj_3aa583622a74",
+                      "failure_event_id": "evt_1c8f2a5e98cf",
+                      "success_event_id": "evt_8920a28e42bb",
+                      "branch_id": "main",
+                      "failure_tool_call_event_id": "evt_5c5327d5c975",
+                      "success_tool_call_event_id": "evt_7721d6d651fb",
+                      "tool": "powershell",
+                      "command": "powershell -NoProfile -Command \"$env:LC_ALL=\\\"C\\\"; $env:LANG=\\\"C\\\"; git show HEAD:examples/live-path-demo/assets/settings.json\"",
+                      "strategy": "",
+                      "outcome": "ok",
+                      "primary_rule": "same_branch_first_success_after_failure",
+                      "judgment_label": "likely_repair",
+                      "confidence": 0.85,
+                      "reason": "The failure was caused by a missing path 'assets/settings.json' in HEAD. The successful action re-ran the same git show command against 'examples/live-path-demo/assets/settings.json', i.e. the same file under a corrected repository path, so it plausibly resolves the path-missing error.",
+                      "vector_text": "powershell powershell -NoProfile -Command \"$env:LC_ALL=\\\"C\\\"; $env:LANG=\\\"C\\\"; git show HEAD:examples/live-path-demo/assets/settings.json\""
+                    }
+                  ],
+                  "confidence": {
+                    "max_llm_confidence": 0.85,
+                    "support_count": 1
+                  },
+                  "dedupe": {
+                    "method": "vector_cosine",
+                    "embedding": "hash-384",
+                    "threshold": 0.78,
+                    "group_size": 1
+                  }
+                }
+              ],
+              "skill_status": "candidate",
+              "highlight_event_ids": [
+                "evt_1c8f2a5e98cf",
+                "evt_5c5327d5c975",
+                "evt_8920a28e42bb",
+                "evt_7721d6d651fb"
+              ],
+              "source_trajectory_id": "traj_3aa583622a74"
+            }
+          ],
+          "materialized": true,
+          "source_views": [
+            {
+              "key": "trajectories/traj_3aa583622a74/views/main/learned_skills",
+              "branch_id": "main",
+              "created_at": "2026-09-14T02:54:45.553872+00:00",
+              "skill_count": 1
+            }
+          ]
+        },
+        "parent_event_ids": [
+          "evt_348c78aba15b"
+        ],
+        "actor": "contextdb",
+        "timestamp": "2026-09-14T02:56:25.204386+00:00",
+        "refs": {
+          "failure_event_id": "evt_348c78aba15b"
+        },
+        "metadata": {
+          "operation": "online_skill_retrieval",
+          "match_engine": "sqlite-vector-index"
+        }
+      },
+      {
+        "event_id": "evt_ba42493cacb9",
+        "trajectory_id": "traj_3aa583622a74",
+        "branch_id": "main",
+        "event_type": "skill_recommendation",
+        "payload": {
+          "type": "contextdb_skill_recommendation",
+          "matched": true,
+          "skill_id": "skill_powershell_file_path_missing_from_git",
+          "skill_name": "Repair file path missing from git HEAD revision",
+          "match_score": 0.892203,
+          "match_reason": "vector cosine similarity over failure and learned trigger",
+          "selected_action": {
+            "action_id": "act_powershell_file_path_missing_from_git_1",
+            "name": "Apply powershell -NoProfile -Command \"$env:LC_ALL=\\\"C\\\"; $env:LANG=\\\"C\\\"; git show HEAD:examples/live-path-demo/assets/settings.json\"",
+            "canonical_tool": "powershell",
+            "canonical_command_template": "powershell -NoProfile -Command \"$env:LC_ALL=\\\"C\\\"; $env:LANG=\\\"C\\\"; git show HEAD:examples/live-path-demo/assets/settings.json\"",
+            "strategy": "Apply powershell -NoProfile -Command \"$env:LC_ALL=\\\"C\\\"; $env:LANG=\\\"C\\\"; git show HEAD:examples/live-path-demo/assets/settings.json\"",
+            "support_event_ids": [
+              "evt_8920a28e42bb"
+            ],
+            "support_events": [
+              {
+                "trajectory_id": "traj_3aa583622a74",
+                "failure_event_id": "evt_1c8f2a5e98cf",
+                "success_event_id": "evt_8920a28e42bb",
+                "branch_id": "main",
+                "failure_tool_call_event_id": "evt_5c5327d5c975",
+                "success_tool_call_event_id": "evt_7721d6d651fb",
+                "tool": "powershell",
+                "command": "powershell -NoProfile -Command \"$env:LC_ALL=\\\"C\\\"; $env:LANG=\\\"C\\\"; git show HEAD:examples/live-path-demo/assets/settings.json\"",
+                "strategy": "",
+                "outcome": "ok",
+                "primary_rule": "same_branch_first_success_after_failure",
+                "judgment_label": "likely_repair",
+                "confidence": 0.85,
+                "reason": "The failure was caused by a missing path 'assets/settings.json' in HEAD. The successful action re-ran the same git show command against 'examples/live-path-demo/assets/settings.json', i.e. the same file under a corrected repository path, so it plausibly resolves the path-missing error.",
+                "vector_text": "powershell powershell -NoProfile -Command \"$env:LC_ALL=\\\"C\\\"; $env:LANG=\\\"C\\\"; git show HEAD:examples/live-path-demo/assets/settings.json\""
+              }
+            ],
+            "confidence": {
+              "max_llm_confidence": 0.85,
+              "support_count": 1
+            },
+            "dedupe": {
+              "method": "vector_cosine",
+              "embedding": "hash-384",
+              "threshold": 0.78,
+              "group_size": 1
+            }
+          },
+          "selected_action_index": 0,
+          "selected_action_score": 0.85,
+          "selection_policy": "highest max_llm_confidence; ties keep original action order",
+          "instruction": "Use this as a suggestion. The Agent must decide whether it is safe and appropriate before executing it.",
+          "version_context": {
+            "active_branch_id": "main",
+            "latest_snapshot": null,
+            "repair_branch_suggestion": null,
+            "last_version_decision": null,
+            "workspace_restore": {
+              "supported": false,
+              "instruction": "ContextDB records logical branch and rollback state only. Restore files through the Agent workspace after an explicit decision."
+            }
+          }
+        },
+        "parent_event_ids": [
+          "evt_30b620b47250"
+        ],
+        "actor": "contextdb",
+        "timestamp": "2026-09-14T02:56:25.233055+00:00",
+        "refs": {
+          "skill_match_event_id": "evt_30b620b47250",
+          "skill_id": "skill_powershell_file_path_missing_from_git",
+          "selected_action_id": "act_powershell_file_path_missing_from_git_1"
+        },
+        "metadata": {
+          "operation": "skill_recommendation_delivery",
+          "delivery_channel": "native-exec-hook",
+          "online": true
+        }
+      }
+    ],
+    "relevant_memory": []
+  },
+  "source_events": [
+    "evt_5c5327d5c975",
+    "evt_1c8f2a5e98cf",
+    "evt_a8625f340531",
+    "evt_b4a53845af37",
+    "evt_7721d6d651fb",
+    "evt_8920a28e42bb",
+    "evt_bf5ab31a306d",
+    "evt_348c78aba15b",
+    "evt_30b620b47250",
+    "evt_ba42493cacb9"
+  ],
+  "created_at": "2026-09-14T02:56:27.269630+00:00",
+  "metadata": {
+    "event_count": 10
+  }
+}

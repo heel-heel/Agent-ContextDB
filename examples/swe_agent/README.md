@@ -30,7 +30,7 @@ contextdb import-trace examples/swe_agent/marshmallow-code__marshmallow-1867.tra
 contextdb swe-demo --no-llm-annotate
 ```
 
-By default, `contextdb swe-demo` enables the LLM semantic annotation pass for ambiguous `tool_result` status and error signatures. If `CONTEXTDB_LLM_PROVIDER=qwen` and the API credentials/base URL are configured, this calls Qwen; otherwise the annotation result records that the LLM provider is disabled or unavailable.
+By default, `contextdb swe-demo` enables the LLM semantic annotation pass for ambiguous `tool_result` status and error signatures. It loads the dedicated background configuration from `_API/background_llm.env`; the bundled configuration uses `CONTEXTDB_BACKGROUND_LLM_PROVIDER=openai-compatible` and `CONTEXTDB_BACKGROUND_LLM_MODEL=deepseek-flash`. If those credentials are unavailable, the annotation result records that the provider is disabled or unavailable.
 
 ```bash
 export CONTEXTDB_LLM_PROVIDER=mock   # or qwen/openai-compatible with API credentials

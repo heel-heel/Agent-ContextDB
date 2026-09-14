@@ -1,0 +1,30 @@
+{
+  "event_id": "evt_71bc7ae4bd8c",
+  "trajectory_id": "traj_53fc4b2d5d96",
+  "branch_id": "main",
+  "event_type": "tool_call",
+  "payload": {
+    "tool_name": "shell",
+    "command": "ls -F"
+  },
+  "parent_event_ids": [
+    "evt_2c6ba6a4d95f"
+  ],
+  "actor": "agent",
+  "timestamp": "2026-09-13T05:58:08.554563+00:00",
+  "refs": {
+    "swe_step": 7,
+    "source_line": 22
+  },
+  "metadata": {
+    "action_kind": "shell",
+    "swe_state": {
+      "open_file": "/marshmallow-code__marshmallow/reproduce.py",
+      "working_dir": "/marshmallow-code__marshmallow"
+    },
+    "normalized_from": "D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB\\examples\\swe_agent\\marshmallow-code__marshmallow-1867.traj",
+    "normalizer_source": "swe-agent-traj-llm",
+    "normalizer_event_index": 22,
+    "agent_id": "swe-agent"
+  }
+}

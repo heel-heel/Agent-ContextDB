@@ -1,0 +1,27 @@
+{
+  "event_id": "evt_a6d687f6b6fc",
+  "trajectory_id": "traj_3aa583622a74",
+  "branch_id": "main",
+  "event_type": "skill_decision",
+  "payload": {
+    "decision": "accepted",
+    "reason": "Agent selected the ContextDB recommendation.",
+    "skill_id": "skill_powershell_file_path_missing_from_git",
+    "action_id": "act_powershell_file_path_missing_from_git_1"
+  },
+  "parent_event_ids": [
+    "evt_ba42493cacb9"
+  ],
+  "actor": "agent",
+  "timestamp": "2026-09-14T02:57:05.233831+00:00",
+  "refs": {
+    "skill_match_event_id": "evt_30b620b47250",
+    "skill_id": "skill_powershell_file_path_missing_from_git",
+    "selected_action_id": "act_powershell_file_path_missing_from_git_1"
+  },
+  "metadata": {
+    "operation": "skill_decision",
+    "online": true,
+    "integration": "agent-hook.v1"
+  }
+}

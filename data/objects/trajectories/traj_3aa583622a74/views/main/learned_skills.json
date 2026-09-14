@@ -1,0 +1,148 @@
+{
+  "view_name": "learned_skills",
+  "trajectory_id": "traj_3aa583622a74",
+  "branch_id": "main",
+  "content": [
+    {
+      "schema_version": "learned_skill.v2",
+      "skill_id": "skill_powershell_file_path_missing_from_git",
+      "name": "Repair file path missing from git HEAD revision",
+      "trigger": {
+        "failed_tool": "powershell",
+        "failed_command_pattern": "powershell -NoProfile -Command \"$env:LC_ALL=\\\"C\\\"; $env:LANG=\\\"C\\\"; git show HEAD:assets/settings.json\"",
+        "normalized_signature": "fatal path 'assets settings.json' does not exist in 'head'",
+        "error_signature": "fatal: path 'assets/settings.json' does not exist in 'HEAD'\n",
+        "likely_cause": "file path missing from git HEAD revision"
+      },
+      "failure_grouping": {
+        "method": "vector_cosine",
+        "embedding": "hash-384",
+        "threshold": 0.74,
+        "failure_event_ids": [
+          "evt_1c8f2a5e98cf",
+          "evt_348c78aba15b"
+        ],
+        "group_size": 2
+      },
+      "recommended_actions": [
+        {
+          "action_id": "act_powershell_file_path_missing_from_git_1",
+          "name": "Apply powershell -NoProfile -Command \"$env:LC_ALL=\\\"C\\\"; $env:LANG=\\\"C\\\"; git show HEAD:examples/live-path-demo/assets/settings.json\"",
+          "canonical_tool": "powershell",
+          "canonical_command_template": "powershell -NoProfile -Command \"$env:LC_ALL=\\\"C\\\"; $env:LANG=\\\"C\\\"; git show HEAD:examples/live-path-demo/assets/settings.json\"",
+          "strategy": "Apply powershell -NoProfile -Command \"$env:LC_ALL=\\\"C\\\"; $env:LANG=\\\"C\\\"; git show HEAD:examples/live-path-demo/assets/settings.json\"",
+          "support_event_ids": [
+            "evt_8920a28e42bb",
+            "evt_c3aebc788288"
+          ],
+          "support_events": [
+            {
+              "trajectory_id": "traj_3aa583622a74",
+              "failure_event_id": "evt_1c8f2a5e98cf",
+              "success_event_id": "evt_8920a28e42bb",
+              "branch_id": "main",
+              "failure_tool_call_event_id": "evt_5c5327d5c975",
+              "success_tool_call_event_id": "evt_7721d6d651fb",
+              "tool": "powershell",
+              "command": "powershell -NoProfile -Command \"$env:LC_ALL=\\\"C\\\"; $env:LANG=\\\"C\\\"; git show HEAD:examples/live-path-demo/assets/settings.json\"",
+              "strategy": "",
+              "outcome": "ok",
+              "primary_rule": "same_branch_first_success_after_failure",
+              "judgment_label": "likely_repair",
+              "confidence": 0.8,
+              "reason": "The successful command uses the same git show pattern but corrects the path to examples/live-path-demo/assets/settings.json, which is a valid settings.json location, directly addressing the earlier missing-path failure.",
+              "vector_text": "powershell powershell -NoProfile -Command \"$env:LC_ALL=\\\"C\\\"; $env:LANG=\\\"C\\\"; git show HEAD:examples/live-path-demo/assets/settings.json\""
+            },
+            {
+              "trajectory_id": "traj_3aa583622a74",
+              "failure_event_id": "evt_348c78aba15b",
+              "success_event_id": "evt_c3aebc788288",
+              "branch_id": "main",
+              "failure_tool_call_event_id": "evt_bf5ab31a306d",
+              "success_tool_call_event_id": "evt_97b495745dee",
+              "tool": "powershell",
+              "command": "powershell -NoProfile -Command \"$env:LC_ALL=\\\"C\\\"; $env:LANG=\\\"C\\\"; git show HEAD:examples/live-path-demo/assets/settings.json\"",
+              "strategy": "",
+              "outcome": "ok",
+              "primary_rule": "same_branch_first_success_after_failure",
+              "judgment_label": "likely_repair",
+              "confidence": 0.9,
+              "reason": "The successful command uses the same git show operation on the same branch but with a corrected path containing an additional directory prefix, which explains why the original path was reported missing in HEAD.",
+              "vector_text": "powershell powershell -NoProfile -Command \"$env:LC_ALL=\\\"C\\\"; $env:LANG=\\\"C\\\"; git show HEAD:examples/live-path-demo/assets/settings.json\""
+            }
+          ],
+          "confidence": {
+            "max_llm_confidence": 0.9,
+            "support_count": 2
+          },
+          "dedupe": {
+            "method": "vector_cosine",
+            "embedding": "hash-384",
+            "threshold": 0.78,
+            "group_size": 2
+          }
+        }
+      ],
+      "avoid_actions": [],
+      "evidence_refs": [
+        {
+          "trajectory_id": "traj_3aa583622a74",
+          "failure_event_id": "evt_1c8f2a5e98cf",
+          "success_event_id": "evt_8920a28e42bb",
+          "primary_rule": "same_branch_first_success_after_failure",
+          "judgment_label": "likely_repair"
+        },
+        {
+          "trajectory_id": "traj_3aa583622a74",
+          "failure_event_id": "evt_348c78aba15b",
+          "success_event_id": "evt_c3aebc788288",
+          "primary_rule": "same_branch_first_success_after_failure",
+          "judgment_label": "likely_repair"
+        }
+      ],
+      "confidence": {
+        "support_count": 2,
+        "max_llm_confidence": 0.9,
+        "evidence_levels": [
+          "structural"
+        ]
+      },
+      "status": "candidate",
+      "highlight_event_ids": [
+        "evt_1c8f2a5e98cf",
+        "evt_348c78aba15b",
+        "evt_5c5327d5c975",
+        "evt_bf5ab31a306d",
+        "evt_8920a28e42bb",
+        "evt_c3aebc788288",
+        "evt_7721d6d651fb",
+        "evt_97b495745dee"
+      ],
+      "action_grouping": {
+        "method": "vector_cosine",
+        "embedding": "hash-384",
+        "threshold": 0.78,
+        "group_count": 1
+      }
+    }
+  ],
+  "source_events": [
+    "evt_5c5327d5c975",
+    "evt_1c8f2a5e98cf",
+    "evt_a8625f340531",
+    "evt_b4a53845af37",
+    "evt_7721d6d651fb",
+    "evt_8920a28e42bb",
+    "evt_bf5ab31a306d",
+    "evt_348c78aba15b",
+    "evt_30b620b47250",
+    "evt_ba42493cacb9",
+    "evt_a6d687f6b6fc",
+    "evt_97b495745dee",
+    "evt_c3aebc788288"
+  ],
+  "created_at": "2026-09-14T03:00:29.853410+00:00",
+  "metadata": {
+    "event_count": 13
+  }
+}

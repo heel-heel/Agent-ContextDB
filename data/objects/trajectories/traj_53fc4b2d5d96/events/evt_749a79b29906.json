@@ -1,0 +1,44 @@
+{
+  "event_id": "evt_749a79b29906",
+  "trajectory_id": "traj_53fc4b2d5d96",
+  "branch_id": "main",
+  "event_type": "tool_result",
+  "payload": {
+    "status": "ok",
+    "exit_code": null,
+    "preview": "345",
+    "raw_preview_truncated": false
+  },
+  "parent_event_ids": [
+    "evt_fa34ae365283"
+  ],
+  "actor": "tool",
+  "timestamp": "2026-09-13T05:58:08.603204+00:00",
+  "refs": {
+    "swe_step": 12,
+    "source_line": 38
+  },
+  "metadata": {
+    "observation_chars": 3,
+    "adapter_status": "ok",
+    "swe_state": {
+      "open_file": "/marshmallow-code__marshmallow/src/marshmallow/fields.py",
+      "working_dir": "/marshmallow-code__marshmallow"
+    },
+    "llm_trace_annotation": {
+      "enabled": true,
+      "provider": "openai-compatible",
+      "model": "deepseek-flash",
+      "status": "ok",
+      "confidence": 0.8,
+      "error_signature": "",
+      "reason": "The shell command produced an output with no error or traceback and adapter status is ok.",
+      "evidence": "observation_preview: 345; adapter_status: ok"
+    },
+    "status_resolution": "adapter_confirmed_or_low_confidence",
+    "normalized_from": "D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB\\examples\\swe_agent\\marshmallow-code__marshmallow-1867.traj",
+    "normalizer_source": "swe-agent-traj-llm",
+    "normalizer_event_index": 38,
+    "agent_id": "swe-agent"
+  }
+}

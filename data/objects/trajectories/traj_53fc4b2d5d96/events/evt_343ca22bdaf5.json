@@ -1,0 +1,30 @@
+{
+  "event_id": "evt_343ca22bdaf5",
+  "trajectory_id": "traj_53fc4b2d5d96",
+  "branch_id": "main",
+  "event_type": "tool_call",
+  "payload": {
+    "tool_name": "swe-agent-submit",
+    "command": "submit"
+  },
+  "parent_event_ids": [
+    "evt_9298cf03cd4b"
+  ],
+  "actor": "agent",
+  "timestamp": "2026-09-13T05:58:08.616868+00:00",
+  "refs": {
+    "swe_step": 14,
+    "source_line": 43
+  },
+  "metadata": {
+    "action_kind": "submit",
+    "swe_state": {
+      "open_file": "/marshmallow-code__marshmallow/src/marshmallow/fields.py",
+      "working_dir": "/marshmallow-code__marshmallow"
+    },
+    "normalized_from": "D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB\\examples\\swe_agent\\marshmallow-code__marshmallow-1867.traj",
+    "normalizer_source": "swe-agent-traj-llm",
+    "normalizer_event_index": 43,
+    "agent_id": "swe-agent"
+  }
+}

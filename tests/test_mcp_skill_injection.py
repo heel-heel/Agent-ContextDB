@@ -88,6 +88,21 @@ def test_mcp_skill_delivery_decision_and_application_trace():
         server.db.store.conn.close()
 
 
+def test_prepare_context_does_not_record_an_empty_recommendation():
+    with TemporaryDirectory() as root:
+        server = ContextDBMCPServer(root)
+
+        prepared = server.dispatch("contextdb_prepare_context", {
+            "source": "codex", "session_id": "empty-context-session",
+        })
+
+        assert prepared["agent_context"]["matched"] is False
+        assert prepared["delivery_event_id"] is None
+        assert server.db.list_events(prepared["trajectory_id"]) == []
+        server.db.vector_index.conn.close()
+        server.db.store.conn.close()
+
+
 def test_mcp_records_pre_action_snapshot_and_agent_controlled_branch():
     with TemporaryDirectory() as root:
         server = ContextDBMCPServer(root)

@@ -243,6 +243,9 @@ def main():
         run_demo(args.root, args.trace)
         return
     if args.cmd == "swe-demo":
+        # SWE trace annotation is a background semantic task, so load its
+        # dedicated provider configuration before building the adapter.
+        _load_dashboard_environment()
         run_swe_demo(args.root, args.trace, args.llm_annotate, args.out)
         return
     if args.cmd == "import-transcript":

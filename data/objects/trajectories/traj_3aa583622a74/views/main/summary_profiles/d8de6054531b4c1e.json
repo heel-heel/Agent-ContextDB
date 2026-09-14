@@ -1,0 +1,78 @@
+{
+  "view_name": "summary",
+  "trajectory_id": "traj_3aa583622a74",
+  "branch_id": "main",
+  "content": {
+    "schema_version": "semantic_summary.v1",
+    "trajectory_id": "traj_3aa583622a74",
+    "branch_id": "main",
+    "summary": "The agent attempted to retrieve assets/settings.json from the current Git HEAD using `git show HEAD:assets/settings.json` with LC_ALL and LANG set to C. The command failed because that path does not exist in HEAD.",
+    "key_facts": [
+      "Attempted command: powershell -NoProfile -Command with environment variables LC_ALL=C and LANG=C, then `git show HEAD:assets/settings.json`.",
+      "Tool result: `fatal: path 'assets/settings.json' does not exist in 'HEAD'`.",
+      "The file assets/settings.json is not present at HEAD."
+    ],
+    "open_items": [
+      "Determine the correct path or Git ref for the desired settings.json file, if it exists elsewhere."
+    ],
+    "status": "ready",
+    "method": "incremental_llm_semantic_summary",
+    "scope": {
+      "start_event_id": "evt_5c5327d5c975",
+      "end_event_id": "evt_1c8f2a5e98cf",
+      "source_event_count": 2
+    },
+    "source_event_ids": [
+      "evt_5c5327d5c975",
+      "evt_1c8f2a5e98cf"
+    ],
+    "source_event_timeline": [
+      {
+        "event_id": "evt_5c5327d5c975",
+        "event_type": "tool_call",
+        "branch_id": "main",
+        "text": "tool_call:powershell -NoProfile -Command \"$env:LC_ALL=\\\"C\\\"; $env:LANG=\\\"C\\\"; git show HEAD:assets/settings.json\""
+      },
+      {
+        "event_id": "evt_1c8f2a5e98cf",
+        "event_type": "tool_result",
+        "branch_id": "main",
+        "text": "tool_result:fatal: path 'assets/settings.json' does not exist in 'HEAD'\n"
+      }
+    ],
+    "raw_tokens": 518,
+    "compressed_tokens": 53,
+    "compression_ratio": 89.8,
+    "materialization": {
+      "cache_hit": false,
+      "generation_mode": "full",
+      "previous_covered_event_count": 0,
+      "profile_id": "background-deepseek-flash"
+    },
+    "llm": {
+      "enabled": true,
+      "profile_id": "background-deepseek-flash",
+      "provider": "openai-compatible",
+      "model": "deepseek-flash",
+      "reason": "LLM generated a factual semantic trajectory digest.",
+      "error": null,
+      "execution": {
+        "profile_id": "background-deepseek-flash",
+        "provider": "openai-compatible",
+        "requested_model": "deepseek-flash",
+        "response_model": "deepseek-flash",
+        "response_id": "1db52107-efd0-4c5d-8680-6aa26c3f392d",
+        "verified": true
+      }
+    }
+  },
+  "source_events": [
+    "evt_5c5327d5c975",
+    "evt_1c8f2a5e98cf"
+  ],
+  "created_at": "2026-09-14T02:56:27.263438+00:00",
+  "metadata": {
+    "event_count": 2,
+    "semantic": true
+  }
+}

@@ -43,7 +43,7 @@ def _should_auto_snapshot(payload: Dict[str, Any]) -> bool:
     tool_name = str(payload.get('tool_name') or payload.get('tool') or '').strip().lower()
     if tool_name in _MUTATING_TOOL_NAMES:
         return True
-    if tool_name not in {'shell', 'exec', 'powershell', 'bash', 'terminal', 'command'}:
+    if tool_name not in {'shell', 'exec', 'powershell', 'bash', 'terminal', 'command', 'git', 'python'}:
         return False
     command = _text(payload.get('command') or payload.get('cmd') or '')
     return bool(_MUTATING_COMMAND.search(command))
@@ -590,9 +590,29 @@ class HookSessionBridge:
         session = self.status(source, session_id)['session']
         trajectory_id = session['trajectory_id']
         recommendation = self.agent_context(source, session_id)['agent_context']
+        retrieval = session.get('last_skill_retrieval') or {}
+
+        # Before any tool failure, prepare_context has no recommendation to
+        # deliver. Returning that empty state is useful to the Agent, but
+        # recording it as a skill_recommendation makes a DAG begin with a
+        # misleading recommendation node.
+        if not retrieval:
+            return {
+                'protocol_version': HOOK_PROTOCOL_VERSION,
+                'source': source,
+                'session_id': session_id,
+                'trajectory_id': trajectory_id,
+                'delivery_event_id': None,
+                'match_event_id': None,
+                'agent_context': recommendation,
+                'prompt_context': self.db.stream_context(
+                    trajectory_id, session.get('active_branch_id') or 'main', token_budget=token_budget,
+                ).get('content', {}),
+                'version_context': self._version_context(session),
+            }
         selected_action = recommendation.get('selected_action') or {}
         refs = {
-            'skill_match_event_id': (session.get('last_skill_retrieval') or {}).get('match_event_id'),
+            'skill_match_event_id': retrieval.get('match_event_id'),
             'skill_id': recommendation.get('skill_id'),
             'selected_action_id': selected_action.get('action_id'),
         }

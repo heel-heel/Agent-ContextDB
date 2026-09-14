@@ -1,0 +1,44 @@
+{
+  "event_id": "evt_bfeb871d6de5",
+  "trajectory_id": "traj_53fc4b2d5d96",
+  "branch_id": "main",
+  "event_type": "tool_result",
+  "payload": {
+    "status": "ok",
+    "exit_code": null,
+    "preview": "Found 1 matches for \"fields.py\" in /marshmallow-code__marshmallow/src:\n/marshmallow-code__marshmallow/src/marshmallow/fields.py",
+    "raw_preview_truncated": false
+  },
+  "parent_event_ids": [
+    "evt_adc524958250"
+  ],
+  "actor": "tool",
+  "timestamp": "2026-09-13T05:58:08.567506+00:00",
+  "refs": {
+    "swe_step": 8,
+    "source_line": 26
+  },
+  "metadata": {
+    "observation_chars": 127,
+    "adapter_status": "ok",
+    "swe_state": {
+      "open_file": "/marshmallow-code__marshmallow/reproduce.py",
+      "working_dir": "/marshmallow-code__marshmallow"
+    },
+    "llm_trace_annotation": {
+      "enabled": true,
+      "provider": "openai-compatible",
+      "model": "deepseek-flash",
+      "status": "ok",
+      "confidence": 0.99,
+      "error_signature": "",
+      "reason": "The find_file command succeeded and returned one matching file path.",
+      "evidence": "Found 1 matches for \"fields.py\" in /marshmallow-code__marshmallow/src:\n/marshmallow-code__marshmallow/src/marshmallow/fields.py"
+    },
+    "status_resolution": "adapter_confirmed_or_low_confidence",
+    "normalized_from": "D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB\\examples\\swe_agent\\marshmallow-code__marshmallow-1867.traj",
+    "normalizer_source": "swe-agent-traj-llm",
+    "normalizer_event_index": 26,
+    "agent_id": "swe-agent"
+  }
+}

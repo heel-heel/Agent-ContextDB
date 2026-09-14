@@ -1,0 +1,44 @@
+{
+  "event_id": "evt_bfb1dd8dcb0f",
+  "trajectory_id": "traj_53fc4b2d5d96",
+  "branch_id": "main",
+  "event_type": "tool_result",
+  "payload": {
+    "status": "ok",
+    "exit_code": null,
+    "preview": "diff --git a/src/marshmallow/fields.py b/src/marshmallow/fields.py\nindex ad388c7..20da768 100644\n--- a/src/marshmallow/fields.py\n+++ b/src/marshmallow/fields.py\n@@ -1472,7 +1472,7 @@ class TimeDelta(Field):\n         if value is None:\n             return None\n         base_unit = dt.timedelta(**{self.precision: 1})\n-        return int(value.total_seconds() / base_unit.total_seconds())\n+        return int(round(value.total_seconds() / base_unit.total_seconds()))  # round to nearest int\n \n     def ",
+    "raw_preview_truncated": true
+  },
+  "parent_event_ids": [
+    "evt_343ca22bdaf5"
+  ],
+  "actor": "tool",
+  "timestamp": "2026-09-13T05:58:08.619507+00:00",
+  "refs": {
+    "swe_step": 14,
+    "source_line": 44
+  },
+  "metadata": {
+    "observation_chars": 562,
+    "adapter_status": "ok",
+    "swe_state": {
+      "open_file": "/marshmallow-code__marshmallow/src/marshmallow/fields.py",
+      "working_dir": "/marshmallow-code__marshmallow"
+    },
+    "llm_trace_annotation": {
+      "enabled": true,
+      "provider": "openai-compatible",
+      "model": "deepseek-flash",
+      "status": "ok",
+      "confidence": 0.8,
+      "error_signature": "",
+      "reason": "Submission action returned a valid code diff and adapter status is ok; no failure evidence.",
+      "evidence": "diff --git a/src/marshmallow/fields.py ... + return int(round(value.total_seconds() / base_unit.total_seconds()))"
+    },
+    "status_resolution": "adapter_confirmed_or_low_confidence",
+    "normalized_from": "D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB\\examples\\swe_agent\\marshmallow-code__marshmallow-1867.traj",
+    "normalizer_source": "swe-agent-traj-llm",
+    "normalizer_event_index": 44,
+    "agent_id": "swe-agent"
+  }
+}

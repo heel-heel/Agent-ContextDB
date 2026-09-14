@@ -1,0 +1,44 @@
+{
+  "event_id": "evt_5729e3fb12f4",
+  "trajectory_id": "traj_53fc4b2d5d96",
+  "branch_id": "main",
+  "event_type": "tool_result",
+  "payload": {
+    "status": "ok",
+    "exit_code": null,
+    "preview": "[File: /marshmallow-code__marshmallow/reproduce.py (1 lines total)]\n1:",
+    "raw_preview_truncated": false
+  },
+  "parent_event_ids": [
+    "evt_f71304bee758"
+  ],
+  "actor": "tool",
+  "timestamp": "2026-09-13T05:58:08.529620+00:00",
+  "refs": {
+    "swe_step": 4,
+    "source_line": 14
+  },
+  "metadata": {
+    "observation_chars": 70,
+    "adapter_status": "ok",
+    "swe_state": {
+      "open_file": "/marshmallow-code__marshmallow/setup.py",
+      "working_dir": "/marshmallow-code__marshmallow"
+    },
+    "llm_trace_annotation": {
+      "enabled": true,
+      "provider": "openai-compatible",
+      "model": "deepseek-flash",
+      "status": "ok",
+      "confidence": 0.95,
+      "error_signature": "",
+      "reason": "The file edit tool reports the reproduce.py file with 1 line total and no error indication.",
+      "evidence": "[File: /marshmallow-code__marshmallow/reproduce.py (1 lines total)]"
+    },
+    "status_resolution": "adapter_confirmed_or_low_confidence",
+    "normalized_from": "D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB\\examples\\swe_agent\\marshmallow-code__marshmallow-1867.traj",
+    "normalizer_source": "swe-agent-traj-llm",
+    "normalizer_event_index": 14,
+    "agent_id": "swe-agent"
+  }
+}

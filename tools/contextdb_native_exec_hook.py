@@ -11,6 +11,8 @@ It never executes a recommended action itself.
 import argparse
 import locale
 import json
+from pathlib import Path
+import re
 import subprocess
 import sys
 from typing import Any, Dict, List
@@ -43,6 +45,40 @@ def _emit(text: str, stream: Any) -> None:
 
 def _command_text(command: List[str]) -> str:
     return subprocess.list2cmdline(command)
+
+
+def _infer_tool_name(command: List[str]) -> str:
+    """Classify common CLI executables when no explicit tool name is supplied."""
+    if not command:
+        return "shell"
+    executable = Path(str(command[0])).name.lower()
+    if executable in {"git", "git.exe"}:
+        return "git"
+    if executable in {"python", "python.exe", "py", "py.exe"}:
+        return "python"
+    if executable in {"powershell", "powershell.exe", "pwsh", "pwsh.exe"}:
+        return _powershell_tool_name(command)
+    return "shell"
+
+
+def _powershell_tool_name(command: List[str]) -> str:
+    """Expose a single nested CLI when PowerShell only supplies its environment."""
+    lowered = [str(arg).lower() for arg in command]
+    try:
+        command_index = lowered.index("-command")
+    except ValueError:
+        return "powershell"
+    script = str(command[command_index + 1]) if len(command) > command_index + 1 else ""
+    clauses = [clause.strip() for clause in script.split(";") if clause.strip()]
+    non_environment_clauses = [
+        clause for clause in clauses
+        if not re.match(r"^\$env:[a-z_][a-z0-9_]*\s*=", clause, re.IGNORECASE)
+    ]
+    if non_environment_clauses and all(re.match(r"^(?:&\s*)?git(?:\.exe)?\b", clause, re.IGNORECASE) for clause in non_environment_clauses):
+        return "git"
+    if non_environment_clauses and all(re.match(r"^(?:&\s*)?(?:python|py)(?:\.exe)?\b", clause, re.IGNORECASE) for clause in non_environment_clauses):
+        return "python"
+    return "powershell"
 
 
 def _decode_process_output(raw: bytes) -> str:
@@ -112,6 +148,7 @@ def run_hooked_command(args: argparse.Namespace) -> int:
     if not command:
         raise ValueError("provide the real command after --")
     command_text = _command_text(command)
+    tool_name = args.tool_name or _infer_tool_name(command)
     call_id = "native_exec_%s" % __import__("uuid").uuid4().hex
 
     if args.apply_skill:
@@ -126,11 +163,11 @@ def run_hooked_command(args: argparse.Namespace) -> int:
         # Hook policy to create a logical pre-action snapshot for an accepted
         # skill that may change state, without duplicating the call later.
         _best_effort("record skill tool call", lambda: _hook_event(args.base_url, args.source, args.session_id, call_id, "tool_call", {
-                "tool_name": args.tool_name, "command": command_text,
+                "tool_name": tool_name, "command": command_text,
             }))
     else:
         _best_effort("record tool call", lambda: _hook_event(args.base_url, args.source, args.session_id, call_id, "tool_call", {
-                "tool_name": args.tool_name, "command": command_text,
+                "tool_name": tool_name, "command": command_text,
             }))
 
     try:
@@ -150,7 +187,7 @@ def run_hooked_command(args: argparse.Namespace) -> int:
     if args.apply_skill:
         result = _best_effort("record skill application", lambda: post_json(args.base_url, "/api/v1/hooks/skill_application", {
                 "source": args.source, "session_id": args.session_id,
-                "tool_name": args.tool_name, "command": command_text, "status": status,
+                "tool_name": tool_name, "command": command_text, "status": status,
                 "preview": preview, "exit_code": exit_code,
                 "skill_match_event_id": args.skill_match_event_id,
                 "skill_id": args.skill_id,
@@ -163,7 +200,7 @@ def run_hooked_command(args: argparse.Namespace) -> int:
                 _print_recommendation(context)
     else:
         result = _best_effort("record tool result", lambda: _hook_event(args.base_url, args.source, args.session_id, call_id, "tool_result", {
-                "tool_name": args.tool_name, "command": command_text, "status": status,
+                "tool_name": tool_name, "command": command_text, "status": status,
                 "preview": preview, "exit_code": exit_code,
             })) or {}
         if result.get("skill_retrievals"):
@@ -178,7 +215,7 @@ def main() -> int:
     parser.add_argument("--base-url", default="http://127.0.0.1:8765")
     parser.add_argument("--source", default="codex")
     parser.add_argument("--session-id", required=True)
-    parser.add_argument("--tool-name", default="shell")
+    parser.add_argument("--tool-name", default=None)
     parser.add_argument("--cwd", default=None)
     parser.add_argument("--apply-skill", action="store_true")
     parser.add_argument("--skill-match-event-id", default=None)

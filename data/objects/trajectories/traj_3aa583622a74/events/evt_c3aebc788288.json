@@ -1,0 +1,28 @@
+{
+  "event_id": "evt_c3aebc788288",
+  "trajectory_id": "traj_3aa583622a74",
+  "branch_id": "main",
+  "event_type": "tool_result",
+  "payload": {
+    "status": "ok",
+    "preview": "{\n  \"mode\": \"clean-path-skill-demo\",\n  \"source\": \"project-fixture\",\n  \"purpose\": \"real file-path repair and skill-reuse demonstration\"\n}\n",
+    "exit_code": 0
+  },
+  "parent_event_ids": [
+    "evt_97b495745dee"
+  ],
+  "actor": "tool",
+  "timestamp": "2026-09-14T02:57:05.832476+00:00",
+  "refs": {
+    "skill_match_event_id": "evt_30b620b47250",
+    "skill_id": "skill_powershell_file_path_missing_from_git",
+    "selected_action_id": "act_powershell_file_path_missing_from_git_1",
+    "tool_call_event_id": "evt_97b495745dee"
+  },
+  "metadata": {
+    "agent_id": "codex",
+    "online": true,
+    "operation": "skill_application",
+    "integration": "agent-hook.v1"
+  }
+}

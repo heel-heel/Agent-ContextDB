@@ -1,0 +1,30 @@
+{
+  "event_id": "evt_0f8637566b5f",
+  "trajectory_id": "traj_53fc4b2d5d96",
+  "branch_id": "main",
+  "event_type": "tool_call",
+  "payload": {
+    "tool_name": "swe-agent-file-edit",
+    "command": "edit 1475:1475\nreturn int(round(value.total_seconds() / base_unit.total_seconds()))  # round to nearest int\nend_of_edit"
+  },
+  "parent_event_ids": [
+    "evt_dcf35231861f"
+  ],
+  "actor": "agent",
+  "timestamp": "2026-09-13T05:58:08.582689+00:00",
+  "refs": {
+    "swe_step": 10,
+    "source_line": 31
+  },
+  "metadata": {
+    "action_kind": "file_edit",
+    "swe_state": {
+      "open_file": "/marshmallow-code__marshmallow/src/marshmallow/fields.py",
+      "working_dir": "/marshmallow-code__marshmallow"
+    },
+    "normalized_from": "D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB\\examples\\swe_agent\\marshmallow-code__marshmallow-1867.traj",
+    "normalizer_source": "swe-agent-traj-llm",
+    "normalizer_event_index": 31,
+    "agent_id": "swe-agent"
+  }
+}
