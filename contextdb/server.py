@@ -23,11 +23,17 @@ def make_handler(db: ContextDB):
                 data = payload.encode("utf-8")
             else:
                 data = payload
-            self.send_response(status)
-            self.send_header("Content-Type", content_type)
-            self.send_header("Content-Length", str(len(data)))
-            self.end_headers()
-            self.wfile.write(data)
+            try:
+                self.send_response(status)
+                self.send_header("Content-Type", content_type)
+                self.send_header("Content-Length", str(len(data)))
+                self.end_headers()
+                self.wfile.write(data)
+            except (BrokenPipeError, ConnectionAbortedError, ConnectionResetError):
+                # MCP clients may abandon a slow request before ContextDB sends
+                # its response. The completed operation remains valid; there is
+                # no peer left to receive either a success or an error payload.
+                return
 
         def _body(self):
             length = int(self.headers.get("Content-Length", "0") or 0)
@@ -112,6 +118,7 @@ def make_handler(db: ContextDB):
                         body["source"], body["session_id"],
                         int(body.get("token_budget", 1200)),
                         str(body.get("delivery_channel", "http-hook")),
+                        bool(body.get("include_prompt_context", True)),
                     ))
                 elif parsed.path == "/api/v1/hooks/skill_decision":
                     self._send(200, HookSessionBridge(db).record_skill_decision(

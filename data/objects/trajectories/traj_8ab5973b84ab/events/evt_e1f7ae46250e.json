@@ -1,0 +1,57 @@
+{
+  "event_id": "evt_e1f7ae46250e",
+  "trajectory_id": "traj_8ab5973b84ab",
+  "branch_id": "main",
+  "event_type": "tool_result",
+  "payload": {
+    "tool_name": "python",
+    "command": "python -c \"import jsonn\"",
+    "status": "failed",
+    "preview": "Exit code 1\nTraceback (most recent call last):\r\n  File \"<string>\", line 1, in <module>\r\n    import jsonn\r\nModuleNotFoundError: No module named 'jsonn'",
+    "exit_code": null,
+    "transport_tool_name": "bash",
+    "tool_chain": [
+      "bash",
+      "python"
+    ],
+    "invoked_tool": "python",
+    "failure_tool_name": "python"
+  },
+  "parent_event_ids": [
+    "evt_5007033ea499"
+  ],
+  "actor": "tool",
+  "timestamp": "2026-09-15T09:26:09.166189+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "claude-code",
+    "hook_adapter": "generic",
+    "hook_session_id": "aa4b6b19-4b6a-42cb-a059-40a5420fd398",
+    "tool_call_event_id": "evt_5007033ea499"
+  },
+  "metadata": {
+    "agent_id": "claude-code",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T09:26:09.166000+00:00",
+    "adapter": "claude-code-hooks",
+    "claude_hook_event": "PostToolUseFailure",
+    "claude_tool_name": "Bash",
+    "claude_cwd": "D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB",
+    "claude_transcript_path": "C:\\Users\\lenovo\\.claude\\projects\\d--software-Pycharm-SelfCode-Agent-ContextDB\\aa4b6b19-4b6a-42cb-a059-40a5420fd398.jsonl",
+    "likely_cause_judgment": {
+      "enabled": true,
+      "provider": "openai-compatible",
+      "model": "deepseek-flash",
+      "likely_cause": "typo in module name causes import failure",
+      "confidence": 0.99,
+      "reason": "The command imports 'jsonn', while the standard library module is 'json', resulting in ModuleNotFoundError.",
+      "input": {
+        "failed_tool": "python",
+        "failed_command": "python -c \"import jsonn\"",
+        "error_signature": "Exit code 1\nTraceback (most recent call last):\r\n  File \"<string>\", line 1, in <module>\r\n    import jsonn\r\nModuleNotFoundError: No module named 'jsonn'",
+        "preceding_action": "Complete raw output:\n\n```\njson\n```"
+      }
+    }
+  }
+}

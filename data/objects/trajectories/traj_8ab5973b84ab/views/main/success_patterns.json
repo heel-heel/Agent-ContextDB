@@ -1,0 +1,462 @@
+{
+  "view_name": "success_patterns",
+  "trajectory_id": "traj_8ab5973b84ab",
+  "branch_id": "main",
+  "content": [
+    {
+      "schema_version": "experience_mining.v1",
+      "pattern_id": "sp_1f55a8699f13",
+      "success_event_id": "evt_1f55a8699f13",
+      "branch_id": "main",
+      "successful_tool": "powershell",
+      "successful_command": "powershell -NoProfile -Command '$sessionFile = Get-ChildItem -LiteralPath \".\\data\\objects\\hook_sessions\\claude-code\" -Filter \"*.json\" | Sort-Object LastWriteTime -Descending | Select-Object -First 1; $session = Get-Content -Raw -LiteralPath $sessionFile.FullName | ConvertFrom-Json; Write-Output $session.session_id'",
+      "strategy": "",
+      "outcome": "ok",
+      "result_preview": "",
+      "is_first_success_on_branch": true,
+      "source_event_ids": [
+        "evt_89fc04d4e7d8"
+      ],
+      "evidence_event_ids": [
+        "evt_89fc04d4e7d8",
+        "evt_1f55a8699f13"
+      ],
+      "highlight_event_ids": [
+        "evt_1f55a8699f13"
+      ]
+    },
+    {
+      "schema_version": "experience_mining.v1",
+      "pattern_id": "sp_684d65a183b7",
+      "success_event_id": "evt_684d65a183b7",
+      "branch_id": "main",
+      "successful_tool": "python",
+      "successful_command": "python -c \"import json; print(json.__name__)\"",
+      "strategy": "Complete raw output:\n\n```\nExit code 1\nTraceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n    import jsonn\nModuleNotFoundError: No module named 'jsonn'\n```\n\nThe command failed because there is no module named `jsonn` (likely a typo of `json`).",
+      "outcome": "ok",
+      "result_preview": "",
+      "is_first_success_on_branch": false,
+      "source_event_ids": [
+        "evt_d7b1d401f8b6"
+      ],
+      "evidence_event_ids": [
+        "evt_494e39039b47",
+        "evt_d7b1d401f8b6",
+        "evt_684d65a183b7"
+      ],
+      "highlight_event_ids": [
+        "evt_684d65a183b7"
+      ]
+    },
+    {
+      "schema_version": "experience_mining.v1",
+      "pattern_id": "sp_b77bc2c6b000",
+      "success_event_id": "evt_b77bc2c6b000",
+      "branch_id": "main",
+      "successful_tool": "contextdb_get_recommendation",
+      "successful_command": "{\"session_id\": \"aa4b6b19-4b6a-42cb-a059-40a5420fd398\", \"source\": \"claude-code\"}",
+      "strategy": "Complete raw output:\n\n```\nExit code 1\nTraceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n    import jsonn\nModuleNotFoundError: No module named 'jsonn'\n```\n\nThe command failed: no module named `jsonn`. ContextDB surfaced a reusable skill suggesting the fix `import json` (typo of `json`), which is safe — but I'll only apply it if you want me to.",
+      "outcome": "ok",
+      "result_preview": "{\n  \"skill_match_event_id\": \"evt_be61da0ac785\",\n  \"matched\": true,\n  \"skill_id\": \"skill_python_misspelled_python_module_name_python_c_import_jsonn\",\n  \"action_id\": \"act_python_misspelled_python_module_name_python_c_import_jsonn_1\",\n  \"proposed_action\": \"python -c \\\"import json; print(json.__name__)\\\"\"\n}",
+      "is_first_success_on_branch": false,
+      "source_event_ids": [
+        "evt_f45e303f7e01"
+      ],
+      "evidence_event_ids": [
+        "evt_24be22a143e5",
+        "evt_f45e303f7e01",
+        "evt_b77bc2c6b000"
+      ],
+      "highlight_event_ids": [
+        "evt_b77bc2c6b000"
+      ]
+    },
+    {
+      "schema_version": "experience_mining.v1",
+      "pattern_id": "sp_34d565687615",
+      "success_event_id": "evt_34d565687615",
+      "branch_id": "main",
+      "successful_tool": "contextdb_record_skill_decision",
+      "successful_command": "{\"action_id\": \"act_python_misspelled_python_module_name_python_c_import_jsonn_1\", \"decision\": \"accepted\", \"reason\": \"The corrected Python import name (json instead of jsonn) will be used for the repair.\", \"session_id\": \"aa4b6b19-4b6a-42cb-a059-40a5420fd398\", \"skill_id\": \"skill_python_misspelled_python_module_name_python_c_import_jsonn\", \"skill_match_event_id\": \"evt_be61da0ac785\", \"source\": \"claude-code\"}",
+      "strategy": "The matched recommendation:\n\n- **skill match event id:** `evt_be61da0ac785`\n- **skill id:** `skill_python_misspelled_python_module_name_python_c_import_jsonn`\n- **action id:** `act_python_misspelled_python_module_name_python_c_import_jsonn_1`\n- **proposed action:** `python -c \"import json; print(json.__name__)\"`",
+      "outcome": "ok",
+      "result_preview": "{\"source\":\"claude-code\",\"session_id\":\"aa4b6b19-4b6a-42cb-a059-40a5420fd398\",\"trajectory_id\":\"traj_8ab5973b84ab\",\"decision_event_id\":\"evt_e8c685d7adb6\",\"decision\":\"accepted\"}",
+      "is_first_success_on_branch": false,
+      "source_event_ids": [
+        "evt_f518fb4d8c01"
+      ],
+      "evidence_event_ids": [
+        "evt_66cdc9b64d63",
+        "evt_f518fb4d8c01",
+        "evt_34d565687615"
+      ],
+      "highlight_event_ids": [
+        "evt_34d565687615"
+      ]
+    },
+    {
+      "schema_version": "experience_mining.v1",
+      "pattern_id": "sp_69fefdf7c746",
+      "success_event_id": "evt_69fefdf7c746",
+      "branch_id": "main",
+      "successful_tool": "python",
+      "successful_command": "python -c \"import json; print(json.__name__)\"",
+      "strategy": "Recorded an accepted skill decision:\n\n- **decision:** `accepted`\n- **skill id:** `skill_python_misspelled_python_module_name_python_c_import_jsonn`\n- **skill match event id:** `evt_be61da0ac785`\n- **action id:** `act_python_misspelled_python_module_name_python_c_import_jsonn_1`\n- **reason:** The corrected Python import name (`json` instead of `jsonn`) will be used for the repair.\n- **decision event id:** `evt_e8c685d7adb6` (trajectory `traj_8ab5973b84ab`)\n\nNo Python command was executed this turn.",
+      "outcome": "ok",
+      "result_preview": "",
+      "is_first_success_on_branch": false,
+      "source_event_ids": [
+        "evt_ec14c9a612a7"
+      ],
+      "evidence_event_ids": [
+        "evt_4eb0a8448501",
+        "evt_ec14c9a612a7",
+        "evt_69fefdf7c746"
+      ],
+      "highlight_event_ids": [
+        "evt_69fefdf7c746"
+      ]
+    },
+    {
+      "schema_version": "experience_mining.v1",
+      "pattern_id": "sp_51a26612fa4e",
+      "success_event_id": "evt_51a26612fa4e",
+      "branch_id": "main",
+      "successful_tool": "python",
+      "successful_command": "python -c \"import json; print(json.__name__)\"",
+      "strategy": "Complete raw output:\n\n```\njson\n```",
+      "outcome": "ok",
+      "result_preview": "json",
+      "is_first_success_on_branch": false,
+      "source_event_ids": [
+        "evt_57c43c8c1cd1"
+      ],
+      "evidence_event_ids": [
+        "evt_3b86cd08c6df",
+        "evt_57c43c8c1cd1",
+        "evt_51a26612fa4e"
+      ],
+      "highlight_event_ids": [
+        "evt_51a26612fa4e"
+      ]
+    },
+    {
+      "schema_version": "experience_mining.v1",
+      "pattern_id": "sp_778f08754851",
+      "success_event_id": "evt_778f08754851",
+      "branch_id": "main",
+      "successful_tool": "python",
+      "successful_command": "python -c \"import json; print(json.__name__)\"",
+      "strategy": "Complete raw output:\n\n```\njson\n```",
+      "outcome": "ok",
+      "result_preview": "{\"source\":\"claude-code\",\"session_id\":\"aa4b6b19-4b6a-42cb-a059-40a5420fd398\",\"trajectory_id\":\"traj_8ab5973b84ab\",\"tool_call_event_id\":\"evt_57c43c8c1cd1\",\"tool_result_event_id\":\"evt_51a26612fa4e\",\"status\":\"ok\",\"next_skill_match_event_id\":null,\"repair_branch_suggestion\":null,\"version_context\":{\"active_branch_id\":\"main\",\"latest_snapshot\":null,\"repair_branch_suggestion\":null,\"last_version_decision\":null,\"workspace_restore\":{\"supported\":false,\"instruction\":\"ContextDB records branch and rollback state only. Restore files through the Agent workspace after an explicit decision.\"}}}",
+      "is_first_success_on_branch": false,
+      "source_event_ids": [
+        "evt_57c43c8c1cd1"
+      ],
+      "evidence_event_ids": [
+        "evt_3b86cd08c6df",
+        "evt_57c43c8c1cd1",
+        "evt_778f08754851"
+      ],
+      "highlight_event_ids": [
+        "evt_778f08754851"
+      ]
+    },
+    {
+      "schema_version": "experience_mining.v1",
+      "pattern_id": "sp_e977ec5b39e5",
+      "success_event_id": "evt_e977ec5b39e5",
+      "branch_id": "main",
+      "successful_tool": "read",
+      "successful_command": "D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB\\examples\\live-path-demo\\assets\\settings.json",
+      "strategy": "Recorded the successful skill application:\n\n- **status:** `ok`\n- **tool name:** `Bash`\n- **command:** `python -c \"import json; print(json.__name__)\"`\n- **output preview:** `json`\n- **exit code:** `0`\n- **skill match event id:** `evt_be61da0ac785`\n- **skill id:** `skill_python_misspelled_python_module_name_python_c_import_jsonn`\n- **action id:** `act_python_misspelled_python_module_name_python_c_import_jsonn_1`\n- **tool call event id:** `evt_57c43c8c1cd1`\n- **tool result event id:** `evt_51a26612fa4e`\n\nNo further recommendation was returned (`next_skill_match_event_id: null`) and no repair branch was suggested.",
+      "outcome": "ok",
+      "result_preview": "{\"type\": \"text\", \"file\": {\"filePath\": \"D:\\\\software\\\\Pycharm\\\\SelfCode\\\\Agent-ContextDB\\\\examples\\\\live-path-demo\\\\assets\\\\settings.json\", \"content\": \"{\\n  \\\"mode\\\": \\\"clean-path-skill-demo\\\",\\n  \\\"source\\\": \\\"project-fixture\\\",\\n  \\\"purpose\\\": \\\"real file-path repair and skill-reuse demonstration\\\"\\n}\\n\", \"numLines\": 6, \"startLine\": 1, \"totalLines\": 6}}",
+      "is_first_success_on_branch": false,
+      "source_event_ids": [
+        "evt_37bb16461f28"
+      ],
+      "evidence_event_ids": [
+        "evt_32e5a43f41a9",
+        "evt_37bb16461f28",
+        "evt_e977ec5b39e5"
+      ],
+      "highlight_event_ids": [
+        "evt_e977ec5b39e5"
+      ]
+    },
+    {
+      "schema_version": "experience_mining.v1",
+      "pattern_id": "sp_d310fa17b9d6",
+      "success_event_id": "evt_d310fa17b9d6",
+      "branch_id": "main",
+      "successful_tool": "glob",
+      "successful_command": "examples/live-path-demo/**",
+      "strategy": "The file [examples/live-path-demo/assets/settings.json](examples/live-path-demo/assets/settings.json) contains:\n\n```json\n{\n  \"mode\": \"clean-path-skill-demo\",\n  \"source\": \"project-fixture\",\n  \"purpose\": \"real file-path repair and skill-reuse demonstration\"\n}\n```\n\n5 lines, valid JSON.",
+      "outcome": "ok",
+      "result_preview": "{\"filenames\": [\"examples\\\\live-path-demo\\\\README.md\", \"examples\\\\live-path-demo\\\\assets\\\\settings.json\"], \"durationMs\": 176, \"numFiles\": 2, \"truncated\": false, \"totalMatches\": 2, \"countIsComplete\": true}",
+      "is_first_success_on_branch": false,
+      "source_event_ids": [
+        "evt_ff489e516529"
+      ],
+      "evidence_event_ids": [
+        "evt_ff1ad0adb2f1",
+        "evt_ff489e516529",
+        "evt_d310fa17b9d6"
+      ],
+      "highlight_event_ids": [
+        "evt_d310fa17b9d6"
+      ]
+    },
+    {
+      "schema_version": "experience_mining.v1",
+      "pattern_id": "sp_9c32b0f82546",
+      "success_event_id": "evt_9c32b0f82546",
+      "branch_id": "main",
+      "successful_tool": "contextdb_get_version_status",
+      "successful_command": "{\"session_id\": \"aa4b6b19-4b6a-42cb-a059-40a5420fd398\", \"source\": \"claude-code\"}",
+      "strategy": "Complete raw output:\n\n```\nExit code 1\nnode:fs:2483\n    return binding.writeFileUtf8(\n                   ^\n\nError: ENOENT: no such file or directory, open 'D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB\\contextdb-version-first-parent-absent\\note.txt'\n    at Object.writeFileSync (node:fs:2483:20)\n    at [eval]:1:15\n    at runScriptInThisContext (node:internal/vm:219:10)\n    at node:internal/process/execution:451:12\n    at [eval]-wrapper:6:24\n    at runScriptInContext (node:internal/process/execution:449:60)\n    at evalFunction (node:internal/process/execution:283:30)\n    at evalTypeScript (node:internal/process/execution:295:3)\n    at node:internal/main/eval_string:71:3 {\n  errno: -4058,\n  code: 'ENOENT',\n  syscall: 'open',\n  path: 'D:\\\\software\\\\Pycharm\\\\SelfCode\\\\Agent-ContextDB\\\\contextdb-version-first-parent-absent\\\\note.txt'\n}\n\nNode.js v24.20.0\n```\n\nThe command failed with `ENOENT` because the parent directory `contextdb-version-first-parent-absent/` does not exist. ContextDB found no reusable skill for this failure.",
+      "outcome": "ok",
+      "result_preview": "{\"schema_version\":\"contextdb.mcp.version_status.v1\",\"source\":\"claude-code\",\"session_id\":\"aa4b6b19-4b6a-42cb-a059-40a5420fd398\",\"trajectory_id\":\"traj_8ab5973b84ab\",\"active_branch_id\":\"main\",\"latest_snapshot\":{\"snapshot_id\":\"snap_b118fd51a324\",\"branch_id\":\"main\",\"checkpoint_event_id\":\"evt_8b616cee22c0\",\"message\":\"Before state-changing bash\",\"created_at\":\"2026-09-15T09:27:24.173533+00:00\"},\"repair_branch_suggestion\":{\"suggestion_event_id\":\"evt_ef20a5c44017\",\"failure_event_id\":\"evt_1743a98478a3\",\"snapshot_id\":\"snap_b118fd51a324\",\"suggested_branch_id\":\"repair-1743a984\",\"source_branch_id\":\"main\",\"created_at\":\"2026-09-15T09:27:26.828668+00:00\"},\"last_version_decision\":null,\"branches\":[{\"branch_id\":\"main\",\"base_event_id\":null,\"head_event_id\":\"evt_a2aa61f49d8a\",\"snapshot_id\":\"snap_b118fd51a324\"}],\"recent_snapshots\":[{\"snapshot_id\":\"snap_b118fd51a324\",\"branch_id\":\"main\",\"checkpoint_event_id\":\"evt_8b616cee22c0\",\"message\":\"Before state-changing bash\",\"created_at\":\"2026-09-15T09:27:24.173533+00:00\"}],\"recent_version_events\":[{\"event_id\":\"evt_8b616cee22c0\",\"event_type\":\"system_event\",\"branch_id\":\"main\",\"timestamp\":\"2026-09-15T09:27:24.168974+00:00\",\"operation\":\"version_snapshot_created\",\"action\":null,\"decision\":null,\"reason\":\"Hook policy detected a potentially state-changing action: node -e \\\"require('fs').writeFileSync('contextdb-version-first-parent-absent/note.txt', 'first note')\\\"\",\"snapshot_id\":\"snap_b118fd51a324\",\"suggested_branch_id\":null},{\"event_id\":\"evt_ef20a5c44017\",\"event_type\":\"system_event\",\"branch_id\":\"main\",\"timestamp\":\"2026-09-15T09:27:26.826303+00:00\",\"operation\":\"version_repair_branch_suggested\",\"action\":null,\"decision\":null,\"reason\":null,\"snapshot_id\":\"snap_b118fd51a324\",\"suggested_branch_id\":\"repair-1743a984\"}],\"workspace_restore\":{\"supported\":false,\"status\":\"not_connected\",\"message\":\"ContextDB rollback creates a trajectory branch only; it never restores local workspace files automatically.\"}}",
+      "is_first_success_on_branch": false,
+      "source_event_ids": [
+        "evt_a2aa61f49d8a"
+      ],
+      "evidence_event_ids": [
+        "evt_7805b74af961",
+        "evt_a2aa61f49d8a",
+        "evt_9c32b0f82546"
+      ],
+      "highlight_event_ids": [
+        "evt_9c32b0f82546"
+      ]
+    },
+    {
+      "schema_version": "experience_mining.v1",
+      "pattern_id": "sp_8e55999c4748",
+      "success_event_id": "evt_8e55999c4748",
+      "branch_id": "main",
+      "successful_tool": "contextdb_record_version_decision",
+      "successful_command": "{\"action\": \"create_repair_branch\", \"decision\": \"rejected\", \"reason\": \"Keep this first invalid Git checkout on main for diagnosis.\", \"session_id\": \"aa4b6b19-4b6a-42cb-a059-40a5420fd398\", \"source\": \"claude-code\", \"suggestion_event_id\": \"evt_ef20a5c44017\"}",
+      "strategy": "A repair-branch suggestion is present. Here's what it means:\n\nContextDB detected that the `node ... writeFileSync(...)` command was potentially state-changing, so its hook automatically created a snapshot (`snap_b118fd51a324`) before the command ran. The command then failed (`ENOENT`), and ContextDB is now suggesting a repair branch to branch the trajectory away from the failure point.\n\nRepair-branch suggestion details:\n\n- **suggested branch id:** `repair-1743a984`\n- **source snapshot id:** `snap_b118fd51a324`\n- **source branch id:** `main`\n- **suggestion event id:** `evt_ef20a5c44017`\n- **failure event id:** `evt_1743a98478a3`\n\nAdditional context:\n\n- **active branch:** `main` (head event `evt_a2aa61f49d8a`)\n- **latest snapshot:** `snap_b118fd51a324` (\"Before state-changing bash\")\n- **last version decision:** `null` (none recorded yet)\n- **workspace restore:** not supported — ContextDB rollback only creates a trajectory branch; it never restores local workspace files.\n\nI have not acted on this suggestion — I'm only reporting it.",
+      "outcome": "ok",
+      "result_preview": "{\"source\":\"claude-code\",\"session_id\":\"aa4b6b19-4b6a-42cb-a059-40a5420fd398\",\"trajectory_id\":\"traj_8ab5973b84ab\",\"decision_event_id\":\"evt_f03aea4c51e1\",\"action\":\"create_repair_branch\",\"decision\":\"rejected\",\"version_context\":{\"active_branch_id\":\"main\",\"latest_snapshot\":{\"snapshot_id\":\"snap_b118fd51a324\",\"branch_id\":\"main\",\"checkpoint_event_id\":\"evt_8b616cee22c0\",\"message\":\"Before state-changing bash\",\"created_at\":\"2026-09-15T09:27:24.173533+00:00\"},\"repair_branch_suggestion\":{\"suggestion_event_id\":\"evt_ef20a5c44017\",\"failure_event_id\":\"evt_1743a98478a3\",\"snapshot_id\":\"snap_b118fd51a324\",\"suggested_branch_id\":\"repair-1743a984\",\"source_branch_id\":\"main\",\"created_at\":\"2026-09-15T09:27:26.828668+00:00\"},\"last_version_decision\":{\"event_id\":\"evt_f03aea4c51e1\",\"action\":\"create_repair_branch\",\"decision\":\"rejected\",\"at\":\"2026-09-15T09:27:49.851932+00:00\"},\"workspace_restore\":{\"supported\":false,\"instruction\":\"ContextDB records branch and rollback state only. Restore files through the Agent workspace after an explicit decision.\"}}}",
+      "is_first_success_on_branch": false,
+      "source_event_ids": [
+        "evt_f85e44632b6c"
+      ],
+      "evidence_event_ids": [
+        "evt_2629cfcfa680",
+        "evt_f85e44632b6c",
+        "evt_8e55999c4748"
+      ],
+      "highlight_event_ids": [
+        "evt_8e55999c4748"
+      ]
+    },
+    {
+      "schema_version": "experience_mining.v1",
+      "pattern_id": "sp_4a29092c00c4",
+      "success_event_id": "evt_4a29092c00c4",
+      "branch_id": "main",
+      "successful_tool": "contextdb_get_version_status",
+      "successful_command": "{\"session_id\": \"aa4b6b19-4b6a-42cb-a059-40a5420fd398\", \"source\": \"claude-code\"}",
+      "strategy": "Complete raw output:\n\n```\nExit code 1\nnode:fs:2483\n    return binding.writeFileUtf8(\n                   ^\n\nError: ENOENT: no such file or directory, open 'D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB\\contextdb-version-second-parent-absent\\note.txt'\n    at Object.writeFileSync (node:fs:2483:20)\n    at [eval]:1:15\n    at runScriptInThisContext (node:internal/vm:219:10)\n    at node:internal/process/execution:451:12\n    at [eval]-wrapper:6:24\n    at runScriptInContext (node:internal/process/execution:449:60)\n    at evalFunction (node:internal/process/execution:283:30)\n    at evalTypeScript (node:internal/process/execution:295:3)\n    at node:internal/main/eval_string:71:3 {\n  errno: -4058,\n  code: 'ENOENT',\n  syscall: 'open',\n  path: 'D:\\\\software\\\\Pycharm\\\\SelfCode\\\\Agent-ContextDB\\\\contextdb-version-second-parent-absent\\\\note.txt'\n}\n\nNode.js v24.20.0\n```\n\nThe command failed again with `ENOENT` — the parent directory `contextdb-version-second-parent-absent/` does not exist. No reusable skill matched this failure.",
+      "outcome": "ok",
+      "result_preview": "{\"schema_version\":\"contextdb.mcp.version_status.v1\",\"source\":\"claude-code\",\"session_id\":\"aa4b6b19-4b6a-42cb-a059-40a5420fd398\",\"trajectory_id\":\"traj_8ab5973b84ab\",\"active_branch_id\":\"main\",\"latest_snapshot\":{\"snapshot_id\":\"snap_47880e0c36e3\",\"branch_id\":\"main\",\"checkpoint_event_id\":\"evt_ac97c5c2e645\",\"message\":\"Before state-changing bash\",\"created_at\":\"2026-09-15T09:27:56.112259+00:00\"},\"repair_branch_suggestion\":{\"suggestion_event_id\":\"evt_e7d38da7de08\",\"failure_event_id\":\"evt_ffa6eccf3b85\",\"snapshot_id\":\"snap_47880e0c36e3\",\"suggested_branch_id\":\"repair-ffa6eccf\",\"source_branch_id\":\"main\",\"created_at\":\"2026-09-15T09:27:58.529154+00:00\"},\"last_version_decision\":{\"event_id\":\"evt_f03aea4c51e1\",\"action\":\"create_repair_branch\",\"decision\":\"rejected\",\"at\":\"2026-09-15T09:27:49.851932+00:00\"},\"branches\":[{\"branch_id\":\"main\",\"base_event_id\":null,\"head_event_id\":\"evt_4bc01422cee2\",\"snapshot_id\":\"snap_47880e0c36e3\"}],\"recent_snapshots\":[{\"snapshot_id\":\"snap_b118fd51a324\",\"branch_id\":\"main\",\"checkpoint_event_id\":\"evt_8b616cee22c0\",\"message\":\"Before state-changing bash\",\"created_at\":\"2026-09-15T09:27:24.173533+00:00\"},{\"snapshot_id\":\"snap_47880e0c36e3\",\"branch_id\":\"main\",\"checkpoint_event_id\":\"evt_ac97c5c2e645\",\"message\":\"Before state-changing bash\",\"created_at\":\"2026-09-15T09:27:56.112259+00:00\"}],\"recent_version_events\":[{\"event_id\":\"evt_8b616cee22c0\",\"event_type\":\"system_event\",\"branch_id\":\"main\",\"timestamp\":\"2026-09-15T09:27:24.168974+00:00\",\"operation\":\"version_snapshot_created\",\"action\":null,\"decision\":null,\"reason\":\"Hook policy detected a potentially state-changing action: node -e \\\"require('fs').writeFileSync('contextdb-version-first-parent-absent/note.txt', 'first note')\\\"\",\"snapshot_id\":\"snap_b118fd51a324\",\"suggested_branch_id\":null},{\"event_id\":\"evt_ef20a5c44017\",\"event_type\":\"system_event\",\"branch_id\":\"main\",\"timestamp\":\"2026-09-15T09:27:26.826303+00:00\",\"operation\":\"version_repair_branch_suggested\",\"action\":null,\"decision\":null,\"reason\":null,\"snapshot_id\":\"snap_b118fd51a324\",\"suggested_branch_id\":\"repair-1743a984\"},{\"event_id\":\"evt_f03aea4c51e1\",\"event_type\":\"version_decision\",\"branch_id\":\"main\",\"timestamp\":\"2026-09-15T09:27:49.847370+00:00\",\"operation\":\"version_decision\",\"action\":\"create_repair_branch\",\"decision\":\"rejected\",\"reason\":\"Keep this first invalid Git checkout on main for diagnosis.\",\"snapshot_id\":null,\"suggested_branch_id\":null},{\"event_id\":\"evt_ac97c5c2e645\",\"event_type\":\"system_event\",\"branch_id\":\"main\",\"timestamp\":\"2026-09-15T09:27:56.108753+00:00\",\"operation\":\"version_snapshot_created\",\"action\":null,\"decision\":null,\"reason\":\"Hook policy detected a potentially state-changing action: node -e \\\"require('fs').writeFileSync('contextdb-version-second-parent-absent/note.txt', 'second note')\\\"\",\"snapshot_id\":\"snap_47880e0c36e3\",\"suggested_branch_id\":null},{\"event_id\":\"evt_e7d38da7de08\",\"event_type\":\"system_event\",\"branch_id\":\"main\",\"timestamp\":\"2026-09-15T09:27:58.526677+00:00\",\"operation\":\"version_repair_branch_suggested\",\"action\":null,\"decision\":null,\"reason\":null,\"snapshot_id\":\"snap_47880e0c36e3\",\"suggested_branch_id\":\"repair-ffa6eccf\"}],\"workspace_restore\":{\"supported\":false,\"status\":\"not_connected\",\"message\":\"ContextDB rollback creates a trajectory branch only; it never restores local workspace files automatically.\"}}",
+      "is_first_success_on_branch": false,
+      "source_event_ids": [
+        "evt_4bc01422cee2"
+      ],
+      "evidence_event_ids": [
+        "evt_b39bef0a0032",
+        "evt_4bc01422cee2",
+        "evt_4a29092c00c4"
+      ],
+      "highlight_event_ids": [
+        "evt_4a29092c00c4"
+      ]
+    },
+    {
+      "schema_version": "experience_mining.v1",
+      "pattern_id": "sp_64122f90f8aa",
+      "success_event_id": "evt_64122f90f8aa",
+      "branch_id": "main",
+      "successful_tool": "contextdb_create_repair_branch",
+      "successful_command": "{\"branch_id\": \"repair-ffa6eccf\", \"reason\": \"Preserve the second invalid Git checkout and inspect a separate repair path.\", \"session_id\": \"aa4b6b19-4b6a-42cb-a059-40a5420fd398\", \"snapshot_id\": \"snap_47880e0c36e3\", \"source\": \"claude-code\"}",
+      "strategy": "A new repair-branch suggestion is present for this second failure:\n\n- **suggested branch id:** `repair-ffa6eccf`\n- **source snapshot id:** `snap_47880e0c36e3`\n- **source branch id:** `main`\n- **suggestion event id:** `evt_e7d38da7de08`\n- **failure event id:** `evt_ffa6eccf3b85`\n\nContext:\n\n- **active branch:** `main` (head event `evt_4bc01422cee2`)\n- **latest snapshot:** `snap_47880e0c36e3` (\"Before state-changing bash\", for the second write attempt)\n- **last version decision:** `create_repair_branch` → `rejected` (for the first failure, `evt_f03aea4c51e1`)\n\nNote this is a distinct suggestion from the earlier one (`repair-1743a984`), tied to the second failed `writeFileSync` command. I'm only reporting it, not acting on it.",
+      "outcome": "ok",
+      "result_preview": "{\"source\":\"claude-code\",\"session_id\":\"aa4b6b19-4b6a-42cb-a059-40a5420fd398\",\"trajectory_id\":\"traj_8ab5973b84ab\",\"branch_id\":\"repair-ffa6eccf\",\"source_snapshot_id\":\"snap_47880e0c36e3\",\"decision_event_id\":\"evt_ce471573bd80\",\"branch_created_event_id\":\"evt_051829eddddd\",\"version_context\":{\"active_branch_id\":\"repair-ffa6eccf\",\"latest_snapshot\":{\"snapshot_id\":\"snap_47880e0c36e3\",\"branch_id\":\"main\",\"checkpoint_event_id\":\"evt_ac97c5c2e645\",\"message\":\"Before state-changing bash\",\"created_at\":\"2026-09-15T09:27:56.112259+00:00\"},\"repair_branch_suggestion\":null,\"last_version_decision\":{\"event_id\":\"evt_ce471573bd80\",\"action\":\"create_repair_branch\",\"decision\":\"accepted\",\"at\":\"2026-09-15T09:28:17.954091+00:00\"},\"workspace_restore\":{\"supported\":false,\"instruction\":\"ContextDB records branch and rollback state only. Restore files through the Agent workspace after an explicit decision.\"}}}",
+      "is_first_success_on_branch": false,
+      "source_event_ids": [
+        "evt_c21f04435432"
+      ],
+      "evidence_event_ids": [
+        "evt_5d798396ef33",
+        "evt_c21f04435432",
+        "evt_64122f90f8aa"
+      ],
+      "highlight_event_ids": [
+        "evt_64122f90f8aa"
+      ]
+    },
+    {
+      "schema_version": "experience_mining.v1",
+      "pattern_id": "sp_541156e604d5",
+      "success_event_id": "evt_541156e604d5",
+      "branch_id": "repair-ffa6eccf",
+      "successful_tool": "read",
+      "successful_command": "D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB\\AGENTS.md",
+      "strategy": "Repair branch created:\n\n- **created repair branch id:** `repair-ffa6eccf`\n- **source snapshot id:** `snap_47880e0c36e3`\n- **decision event id:** `evt_ce471573bd80`\n- **branch created event id:** `evt_051829eddddd`\n- **reason:** \"Preserve the second invalid Git checkout and inspect a separate repair path.\"\n\nThe active branch is now `repair-ffa6eccf`. The previous repair-branch suggestion has been consumed (`repair_branch_suggestion: null`).",
+      "outcome": "ok",
+      "result_preview": "{\"type\": \"text\", \"file\": {\"filePath\": \"D:\\\\software\\\\Pycharm\\\\SelfCode\\\\Agent-ContextDB\\\\AGENTS.md\", \"content\": \"# ContextDB Live Integration Modes\\n\\nWhen a user explicitly asks to test or run a live ContextDB integration, use\\none source/session pair consistently for the full Agent session. Do not mix\\nthe watcher and native-exec wrapper for one trajectory.\\n\\n## Codex Desktop Full-DAG Demonstrations\\n\\nFor a Codex Desktop demonstration that must show user messages, assistant\\nmessages, native tools, and MCP calls in the DAG, use\\n`tools\\\\windows_codex_session_watcher.py`. The watcher observes the Codex App\\nrollout log and records the real conversation under:\\n\\n```text\\nsource = codex-session\\nsession_id = rollout-<timestamp>-<id>\\n```\\n\\nStart the watcher before creating the new Codex conversation. Use the rollout\\nfilename reported by the watcher as the session id for ContextDB MCP calls.\\nThe watcher already records real tool calls and results, so do not call\\n`contextdb_record_tool_call` or `contextdb_record_tool_result` for those same\\nnative tools.\\n\\nWhen a skill matches, retrieve or prepare its recommendation explicitly,\\nrecord an accepted/rejected/deferred skill decision, execute the repair through\\nCodex's ordinary native tool, and record the observed outcome with\\n`contextdb_record_skill_application`. Do not use the wrapper's `--apply-skill`\\noption in watcher mode.\\n\\n## Native-Exec Wrapper Compatibility Mode\\n\\nUse `tools\\\\contextdb_native_exec_hook.py` only when an explicitly controlled\\nCLI demonstration needs a caller-selected source/session id or same-turn\\nrecommendation output. It records only the child command that it wraps; it\\ndoes not observe native Codex messages, Read/Glob/apply-patch calls, or direct\\nMCP calls. In this mode, run real commands through the wrapper rather than\\nmocking their results:\\n\\n```powershell\\n& 'D:\\\\software\\\\Anaconda\\\\ProgramFile\\\\envs\\\\contextdb_env\\\\python.exe' `\\n  'D:\\\\software\\\\Pycharm\\\\SelfCode\\\\Agent-ContextDB\\\\tools\\\\contextdb_native_exec_hook.py' `\\n  --source codex --session-id <session_id> -- <real command and arguments>\\n```\\n\\nThe wrapper returns the real child output and exit code, and may append a\\n`CONTEXTDB_RECOMMENDATION` object. Applying an accepted action with\\n`--apply-skill` is supported only in this wrapper mode.\\n\\nOutside an explicit live integration request, use normal project commands.\\n\", \"numLines\": 51, \"startLine\": 1, \"totalLines\": 51}}",
+      "is_first_success_on_branch": true,
+      "source_event_ids": [
+        "evt_7f0c630fd0da"
+      ],
+      "evidence_event_ids": [
+        "evt_3ebf0227015d",
+        "evt_7f0c630fd0da",
+        "evt_541156e604d5"
+      ],
+      "highlight_event_ids": [
+        "evt_541156e604d5"
+      ]
+    },
+    {
+      "schema_version": "experience_mining.v1",
+      "pattern_id": "sp_5809cc2ee0c2",
+      "success_event_id": "evt_5809cc2ee0c2",
+      "branch_id": "repair-ffa6eccf",
+      "successful_tool": "contextdb_get_version_status",
+      "successful_command": "{\"session_id\": \"aa4b6b19-4b6a-42cb-a059-40a5420fd398\", \"source\": \"claude-code\"}",
+      "strategy": "The file [AGENTS.md](AGENTS.md) describes ContextDB's live integration modes:\n\n1. **Codex Desktop Full-DAG Demonstrations** — uses `tools\\windows_codex_session_watcher.py` to observe the Codex App rollout log and record a real conversation under `source = codex-session` with `session_id = rollout-<timestamp>-<id>`. In watcher mode, do not call `contextdb_record_tool_call`/`contextdb_record_tool_result` (the watcher already records them), and do not use the wrapper's `--apply-skill`.\n\n2. **Native-Exec Wrapper Compatibility Mode** — uses `tools\\contextdb_native_exec_hook.py` only for explicitly controlled CLI demos needing a caller-selected source/session id or same-turn recommendation output. It records only the wrapped child command, not native messages/Read/Glob/apply-patch/MCP calls. `--apply-skill` is supported only in this mode.\n\nIt also notes: use one source/session pair consistently for a full session, and outside an explicit live integration request, use normal project commands.\n\n51 lines total.",
+      "outcome": "ok",
+      "result_preview": "{\"schema_version\":\"contextdb.mcp.version_status.v1\",\"source\":\"claude-code\",\"session_id\":\"aa4b6b19-4b6a-42cb-a059-40a5420fd398\",\"trajectory_id\":\"traj_8ab5973b84ab\",\"active_branch_id\":\"repair-ffa6eccf\",\"latest_snapshot\":{\"snapshot_id\":\"snap_47880e0c36e3\",\"branch_id\":\"main\",\"checkpoint_event_id\":\"evt_ac97c5c2e645\",\"message\":\"Before state-changing bash\",\"created_at\":\"2026-09-15T09:27:56.112259+00:00\"},\"repair_branch_suggestion\":null,\"last_version_decision\":{\"event_id\":\"evt_ce471573bd80\",\"action\":\"create_repair_branch\",\"decision\":\"accepted\",\"at\":\"2026-09-15T09:28:17.954091+00:00\"},\"branches\":[{\"branch_id\":\"main\",\"base_event_id\":null,\"head_event_id\":\"evt_64122f90f8aa\",\"snapshot_id\":\"snap_47880e0c36e3\"},{\"branch_id\":\"repair-ffa6eccf\",\"base_event_id\":\"evt_ac97c5c2e645\",\"head_event_id\":\"evt_a8631f4e5fff\",\"snapshot_id\":null}],\"recent_snapshots\":[{\"snapshot_id\":\"snap_b118fd51a324\",\"branch_id\":\"main\",\"checkpoint_event_id\":\"evt_8b616cee22c0\",\"message\":\"Before state-changing bash\",\"created_at\":\"2026-09-15T09:27:24.173533+00:00\"},{\"snapshot_id\":\"snap_47880e0c36e3\",\"branch_id\":\"main\",\"checkpoint_event_id\":\"evt_ac97c5c2e645\",\"message\":\"Before state-changing bash\",\"created_at\":\"2026-09-15T09:27:56.112259+00:00\"}],\"recent_version_events\":[{\"event_id\":\"evt_8b616cee22c0\",\"event_type\":\"system_event\",\"branch_id\":\"main\",\"timestamp\":\"2026-09-15T09:27:24.168974+00:00\",\"operation\":\"version_snapshot_created\",\"action\":null,\"decision\":null,\"reason\":\"Hook policy detected a potentially state-changing action: node -e \\\"require('fs').writeFileSync('contextdb-version-first-parent-absent/note.txt', 'first note')\\\"\",\"snapshot_id\":\"snap_b118fd51a324\",\"suggested_branch_id\":null},{\"event_id\":\"evt_ef20a5c44017\",\"event_type\":\"system_event\",\"branch_id\":\"main\",\"timestamp\":\"2026-09-15T09:27:26.826303+00:00\",\"operation\":\"version_repair_branch_suggested\",\"action\":null,\"decision\":null,\"reason\":null,\"snapshot_id\":\"snap_b118fd51a324\",\"suggested_branch_id\":\"repair-1743a984\"},{\"event_id\":\"evt_f03aea4c51e1\",\"event_type\":\"version_decision\",\"branch_id\":\"main\",\"timestamp\":\"2026-09-15T09:27:49.847370+00:00\",\"operation\":\"version_decision\",\"action\":\"create_repair_branch\",\"decision\":\"rejected\",\"reason\":\"Keep this first invalid Git checkout on main for diagnosis.\",\"snapshot_id\":null,\"suggested_branch_id\":null},{\"event_id\":\"evt_ac97c5c2e645\",\"event_type\":\"system_event\",\"branch_id\":\"main\",\"timestamp\":\"2026-09-15T09:27:56.108753+00:00\",\"operation\":\"version_snapshot_created\",\"action\":null,\"decision\":null,\"reason\":\"Hook policy detected a potentially state-changing action: node -e \\\"require('fs').writeFileSync('contextdb-version-second-parent-absent/note.txt', 'second note')\\\"\",\"snapshot_id\":\"snap_47880e0c36e3\",\"suggested_branch_id\":null},{\"event_id\":\"evt_e7d38da7de08\",\"event_type\":\"system_event\",\"branch_id\":\"main\",\"timestamp\":\"2026-09-15T09:27:58.526677+00:00\",\"operation\":\"version_repair_branch_suggested\",\"action\":null,\"decision\":null,\"reason\":null,\"snapshot_id\":\"snap_47880e0c36e3\",\"suggested_branch_id\":\"repair-ffa6eccf\"},{\"event_id\":\"evt_ce471573bd80\",\"event_type\":\"version_decision\",\"branch_id\":\"main\",\"timestamp\":\"2026-09-15T09:28:17.950452+00:00\",\"operation\":\"version_decision\",\"action\":\"create_repair_branch\",\"decision\":\"accepted\",\"reason\":\"Preserve the second invalid Git checkout and inspect a separate repair path.\",\"snapshot_id\":\"snap_47880e0c36e3\",\"suggested_branch_id\":null},{\"event_id\":\"evt_051829eddddd\",\"event_type\":\"system_event\",\"branch_id\":\"repair-ffa6eccf\",\"timestamp\":\"2026-09-15T09:28:17.955326+00:00\",\"operation\":\"version_branch_created\",\"action\":null,\"decision\":null,\"reason\":\"Preserve the second invalid Git checkout and inspect a separate repair path.\",\"snapshot_id\":\"snap_47880e0c36e3\",\"suggested_branch_id\":null}],\"workspace_restore\":{\"supported\":false,\"status\":\"not_connected\",\"message\":\"ContextDB rollback creates a trajectory branch only; it never restores local workspace files automatically.\"}}",
+      "is_first_success_on_branch": false,
+      "source_event_ids": [
+        "evt_a8631f4e5fff"
+      ],
+      "evidence_event_ids": [
+        "evt_a6b9aafecd52",
+        "evt_a8631f4e5fff",
+        "evt_5809cc2ee0c2"
+      ],
+      "highlight_event_ids": [
+        "evt_5809cc2ee0c2"
+      ]
+    },
+    {
+      "schema_version": "experience_mining.v1",
+      "pattern_id": "sp_384b7d2d461d",
+      "success_event_id": "evt_384b7d2d461d",
+      "branch_id": "repair-ffa6eccf",
+      "successful_tool": "contextdb_rollback_context",
+      "successful_command": "{\"reason\": \"The repair branch was inspected. Continue from the most recent checkpoint.\", \"session_id\": \"aa4b6b19-4b6a-42cb-a059-40a5420fd398\", \"snapshot_id\": \"snap_47880e0c36e3\", \"source\": \"claude-code\"}",
+      "strategy": "The most recent snapshot is:\n\n- **snapshot id:** `snap_47880e0c36e3`\n- **branch id:** `main`\n- **checkpoint event id:** `evt_ac97c5c2e645`\n- **timestamp:** `2026-09-15T09:27:56.112259+00:00`\n- **message:** \"Before state-changing bash\"\n\nAdditional context:\n\n- **active branch:** `repair-ffa6eccf` (head event `evt_a8631f4e5fff`)\n- **repair branch suggestion:** `null` (none outstanding)\n- **last version decision:** `create_repair_branch` → `accepted`\n- The repair branch `repair-ffa6eccf` was created with base event `evt_ac97c5c2e645` (the snapshot checkpoint).",
+      "outcome": "ok",
+      "result_preview": "{\"source\":\"claude-code\",\"session_id\":\"aa4b6b19-4b6a-42cb-a059-40a5420fd398\",\"trajectory_id\":\"traj_8ab5973b84ab\",\"branch_id\":\"rollback-47880e\",\"snapshot_id\":\"snap_47880e0c36e3\",\"decision_event_id\":\"evt_f0d6f61f7d2f\",\"rollback_event_id\":\"evt_7ba4e119a38e\",\"version_context\":{\"active_branch_id\":\"rollback-47880e\",\"latest_snapshot\":{\"snapshot_id\":\"snap_47880e0c36e3\",\"branch_id\":\"main\",\"checkpoint_event_id\":\"evt_ac97c5c2e645\",\"message\":\"Before state-changing bash\",\"created_at\":\"2026-09-15T09:27:56.112259+00:00\"},\"repair_branch_suggestion\":null,\"last_version_decision\":{\"event_id\":\"evt_f0d6f61f7d2f\",\"action\":\"rollback_context\",\"decision\":\"accepted\",\"at\":\"2026-09-15T09:28:48.994278+00:00\"},\"workspace_restore\":{\"supported\":false,\"instruction\":\"ContextDB records branch and rollback state only. Restore files through the Agent workspace after an explicit decision.\"}}}",
+      "is_first_success_on_branch": false,
+      "source_event_ids": [
+        "evt_f45074325722"
+      ],
+      "evidence_event_ids": [
+        "evt_494789b3e58c",
+        "evt_f45074325722",
+        "evt_384b7d2d461d"
+      ],
+      "highlight_event_ids": [
+        "evt_384b7d2d461d"
+      ]
+    }
+  ],
+  "source_events": [
+    "evt_e53db2ae128d",
+    "evt_21991157c589",
+    "evt_89fc04d4e7d8",
+    "evt_1f55a8699f13",
+    "evt_54781e4291af",
+    "evt_2dc84cd8781a",
+    "evt_2bcf3c1543ee",
+    "evt_3493949bf720",
+    "evt_edc73486ea71",
+    "evt_bb36474b579b",
+    "evt_494e39039b47",
+    "evt_928724d75b27",
+    "evt_d7b1d401f8b6",
+    "evt_684d65a183b7",
+    "evt_7f63f7faeb7b",
+    "evt_907671f025b8",
+    "evt_5007033ea499",
+    "evt_e1f7ae46250e",
+    "evt_be61da0ac785",
+    "evt_713b7638a318",
+    "evt_24be22a143e5",
+    "evt_b88b32c08cc1",
+    "evt_f45e303f7e01",
+    "evt_1bed31fc63db",
+    "evt_b77bc2c6b000",
+    "evt_66cdc9b64d63",
+    "evt_2484acccdcd6",
+    "evt_f518fb4d8c01",
+    "evt_e8c685d7adb6",
+    "evt_34d565687615",
+    "evt_4eb0a8448501",
+    "evt_ece46ee402c6",
+    "evt_ec14c9a612a7",
+    "evt_69fefdf7c746",
+    "evt_3b86cd08c6df",
+    "evt_6f30871c2f6b",
+    "evt_5ea7fee2b827",
+    "evt_57c43c8c1cd1",
+    "evt_51a26612fa4e",
+    "evt_778f08754851",
+    "evt_32e5a43f41a9",
+    "evt_79c767d2f493",
+    "evt_37bb16461f28",
+    "evt_e977ec5b39e5",
+    "evt_ff1ad0adb2f1",
+    "evt_bcd64de00141",
+    "evt_ff489e516529",
+    "evt_d310fa17b9d6",
+    "evt_5c7d2410933d",
+    "evt_6ee17c7d22f3",
+    "evt_8b616cee22c0",
+    "evt_725026722ff4",
+    "evt_1743a98478a3",
+    "evt_a9d8c601f095",
+    "evt_ef20a5c44017",
+    "evt_e4ddceee0a34",
+    "evt_7805b74af961",
+    "evt_35ba16276599",
+    "evt_a2aa61f49d8a",
+    "evt_9c32b0f82546",
+    "evt_2629cfcfa680",
+    "evt_cc61d09bfe87",
+    "evt_f85e44632b6c",
+    "evt_f03aea4c51e1",
+    "evt_8e55999c4748",
+    "evt_ceeee99007a0",
+    "evt_b766cd4a5a6d",
+    "evt_ac97c5c2e645",
+    "evt_9d1e56c93664",
+    "evt_ffa6eccf3b85",
+    "evt_4ad557169536",
+    "evt_e7d38da7de08",
+    "evt_ba441a52ba00",
+    "evt_b39bef0a0032",
+    "evt_de8568f1ec73",
+    "evt_4bc01422cee2",
+    "evt_4a29092c00c4",
+    "evt_5d798396ef33",
+    "evt_16447cf7460a",
+    "evt_c21f04435432",
+    "evt_ce471573bd80",
+    "evt_64122f90f8aa"
+  ],
+  "created_at": "2026-09-15T09:29:41.752812+00:00",
+  "metadata": {
+    "event_count": 82
+  }
+}

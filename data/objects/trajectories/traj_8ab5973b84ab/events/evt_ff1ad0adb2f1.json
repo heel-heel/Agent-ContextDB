@@ -1,0 +1,30 @@
+{
+  "event_id": "evt_ff1ad0adb2f1",
+  "trajectory_id": "traj_8ab5973b84ab",
+  "branch_id": "main",
+  "event_type": "assistant_message",
+  "payload": {
+    "text": "The file [examples/live-path-demo/assets/settings.json](examples/live-path-demo/assets/settings.json) contains:\n\n```json\n{\n  \"mode\": \"clean-path-skill-demo\",\n  \"source\": \"project-fixture\",\n  \"purpose\": \"real file-path repair and skill-reuse demonstration\"\n}\n```\n\n5 lines, valid JSON."
+  },
+  "parent_event_ids": [
+    "evt_e977ec5b39e5"
+  ],
+  "actor": "agent",
+  "timestamp": "2026-09-15T09:27:12.502844+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "claude-code",
+    "hook_adapter": "generic",
+    "hook_session_id": "aa4b6b19-4b6a-42cb-a059-40a5420fd398"
+  },
+  "metadata": {
+    "agent_id": "claude-code",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T09:27:12.502382+00:00",
+    "adapter": "claude-code-transcript",
+    "claude_transcript_path": "C:\\Users\\lenovo\\.claude\\projects\\d--software-Pycharm-SelfCode-Agent-ContextDB\\aa4b6b19-4b6a-42cb-a059-40a5420fd398.jsonl",
+    "claude_transcript_message_id": "b7331d4d-d7a8-4ce8-9d66-304335935034",
+    "claude_transcript_timestamp": "2026-09-15T09:27:12.191Z"
+  }
+}

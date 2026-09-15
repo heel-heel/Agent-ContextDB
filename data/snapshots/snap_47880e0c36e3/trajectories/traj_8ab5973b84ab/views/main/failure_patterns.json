@@ -1,0 +1,74 @@
+{
+  "view_name": "failure_patterns",
+  "trajectory_id": "traj_8ab5973b84ab",
+  "branch_id": "main",
+  "content": [
+    {
+      "schema_version": "experience_mining.v2",
+      "pattern_id": "fp_3493949bf720",
+      "failure_event_id": "evt_3493949bf720",
+      "branch_id": "main",
+      "failed_tool": "python",
+      "failed_command": "python -c \"import jsonn\"",
+      "error_signature": "Exit code 1\nTraceback (most recent call last):\r\n  File \"<string>\", line 1, in <module>\r\n    import jsonn\r\nModuleNotFoundError: No module named 'jsonn'",
+      "normalized_signature": "exit code traceback most recent call last file \"<string>\" line in <module> import jsonn modulenotfounderror no module named 'jsonn'",
+      "preceding_action": "The real ContextDB session id for this conversation is:\n\n```\naa4b6b19-4b6a-42cb-a059-40a5420fd398\n```\n\nI'll use this session id for all subsequent ContextDB MCP calls in this conversation.",
+      "likely_cause": "misspelled python module name in import statement",
+      "likely_cause_judgment": {
+        "enabled": true,
+        "provider": "openai-compatible",
+        "model": "deepseek-flash",
+        "likely_cause": "misspelled python module name in import statement",
+        "confidence": 0.98,
+        "reason": "The command imports 'jsonn', and Python reports ModuleNotFoundError for 'jsonn', indicating a typo likely for 'json'.",
+        "input": {
+          "failed_tool": "python",
+          "failed_command": "python -c \"import jsonn\"",
+          "error_signature": "Exit code 1\nTraceback (most recent call last):\r\n  File \"<string>\", line 1, in <module>\r\n    import jsonn\r\nModuleNotFoundError: No module named 'jsonn'",
+          "preceding_action": "The real ContextDB session id for this conversation is:\n\n```\naa4b6b19-4b6a-42cb-a059-40a5420fd398\n```\n\nI'll use this session id for all subsequent ContextDB MCP calls in this conversation."
+        }
+      },
+      "repair_status": "not_evaluated",
+      "repair_events_after_failure": [
+        {
+          "event_id": "evt_494e39039b47",
+          "event_type": "assistant_message",
+          "summary": "assistant_message:Complete raw output:\n\n```\nExit code 1\nTraceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n    i..."
+        },
+        {
+          "event_id": "evt_d7b1d401f8b6",
+          "event_type": "tool_call",
+          "summary": "tool_call:python -c \"import json; print(json.__name__)\""
+        },
+        {
+          "event_id": "evt_684d65a183b7",
+          "event_type": "tool_result",
+          "summary": "tool_result:python -c \"import json; print(json.__name__)\""
+        },
+        {
+          "event_id": "evt_7f63f7faeb7b",
+          "event_type": "assistant_message",
+          "summary": "assistant_message:Complete raw output:\n\n```\njson\n```"
+        }
+      ],
+      "source_event_ids": [
+        "evt_2bcf3c1543ee"
+      ],
+      "evidence_event_ids": [
+        "evt_54781e4291af",
+        "evt_2bcf3c1543ee",
+        "evt_3493949bf720"
+      ],
+      "highlight_event_ids": [
+        "evt_3493949bf720"
+      ]
+    }
+  ],
+  "source_events": [
+    "evt_2bcf3c1543ee"
+  ],
+  "created_at": "2026-09-15T09:25:45.693447+00:00",
+  "metadata": {
+    "event_count": 15
+  }
+}

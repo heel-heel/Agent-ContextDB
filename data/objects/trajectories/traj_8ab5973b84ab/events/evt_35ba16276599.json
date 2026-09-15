@@ -1,0 +1,31 @@
+{
+  "event_id": "evt_35ba16276599",
+  "trajectory_id": "traj_8ab5973b84ab",
+  "branch_id": "main",
+  "event_type": "user_message",
+  "payload": {
+    "text": "Use ContextDB MCP tool contextdb_get_version_status with source claude-code and the session id returned earlier.\n\nIf a repair-branch suggestion is present, explain it and report its suggested branch id, source snapshot id, and source branch id."
+  },
+  "parent_event_ids": [
+    "evt_7805b74af961"
+  ],
+  "actor": "user",
+  "timestamp": "2026-09-15T09:27:31.937987+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "claude-code",
+    "hook_adapter": "generic",
+    "hook_session_id": "aa4b6b19-4b6a-42cb-a059-40a5420fd398"
+  },
+  "metadata": {
+    "agent_id": "claude-code",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T09:27:31.937790+00:00",
+    "adapter": "claude-code-hooks",
+    "claude_hook_event": "UserPromptSubmit",
+    "claude_tool_name": "",
+    "claude_cwd": "D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB",
+    "claude_transcript_path": "C:\\Users\\lenovo\\.claude\\projects\\d--software-Pycharm-SelfCode-Agent-ContextDB\\aa4b6b19-4b6a-42cb-a059-40a5420fd398.jsonl"
+  }
+}

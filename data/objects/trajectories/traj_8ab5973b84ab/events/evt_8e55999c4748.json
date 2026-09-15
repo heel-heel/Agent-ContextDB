@@ -1,0 +1,40 @@
+{
+  "event_id": "evt_8e55999c4748",
+  "trajectory_id": "traj_8ab5973b84ab",
+  "branch_id": "main",
+  "event_type": "tool_result",
+  "payload": {
+    "tool_name": "contextdb_record_version_decision",
+    "command": "{\"action\": \"create_repair_branch\", \"decision\": \"rejected\", \"reason\": \"Keep this first invalid Git checkout on main for diagnosis.\", \"session_id\": \"aa4b6b19-4b6a-42cb-a059-40a5420fd398\", \"source\": \"claude-code\", \"suggestion_event_id\": \"evt_ef20a5c44017\"}",
+    "status": "ok",
+    "preview": "{\"source\":\"claude-code\",\"session_id\":\"aa4b6b19-4b6a-42cb-a059-40a5420fd398\",\"trajectory_id\":\"traj_8ab5973b84ab\",\"decision_event_id\":\"evt_f03aea4c51e1\",\"action\":\"create_repair_branch\",\"decision\":\"rejected\",\"version_context\":{\"active_branch_id\":\"main\",\"latest_snapshot\":{\"snapshot_id\":\"snap_b118fd51a324\",\"branch_id\":\"main\",\"checkpoint_event_id\":\"evt_8b616cee22c0\",\"message\":\"Before state-changing bash\",\"created_at\":\"2026-09-15T09:27:24.173533+00:00\"},\"repair_branch_suggestion\":{\"suggestion_event_id\":\"evt_ef20a5c44017\",\"failure_event_id\":\"evt_1743a98478a3\",\"snapshot_id\":\"snap_b118fd51a324\",\"suggested_branch_id\":\"repair-1743a984\",\"source_branch_id\":\"main\",\"created_at\":\"2026-09-15T09:27:26.828668+00:00\"},\"last_version_decision\":{\"event_id\":\"evt_f03aea4c51e1\",\"action\":\"create_repair_branch\",\"decision\":\"rejected\",\"at\":\"2026-09-15T09:27:49.851932+00:00\"},\"workspace_restore\":{\"supported\":false,\"instruction\":\"ContextDB records branch and rollback state only. Restore files through the Agent workspace after an explicit decision.\"}}}",
+    "exit_code": null,
+    "transport_tool_name": "contextdb_record_version_decision",
+    "tool_chain": [
+      "contextdb_record_version_decision"
+    ]
+  },
+  "parent_event_ids": [
+    "evt_f03aea4c51e1"
+  ],
+  "actor": "tool",
+  "timestamp": "2026-09-15T09:27:50.166030+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "claude-code",
+    "hook_adapter": "generic",
+    "hook_session_id": "aa4b6b19-4b6a-42cb-a059-40a5420fd398",
+    "tool_call_event_id": "evt_f85e44632b6c"
+  },
+  "metadata": {
+    "agent_id": "claude-code",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T09:27:50.165778+00:00",
+    "adapter": "claude-code-hooks",
+    "claude_hook_event": "PostToolUse",
+    "claude_tool_name": "mcp__contextdb__contextdb_record_version_decision",
+    "claude_cwd": "D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB",
+    "claude_transcript_path": "C:\\Users\\lenovo\\.claude\\projects\\d--software-Pycharm-SelfCode-Agent-ContextDB\\aa4b6b19-4b6a-42cb-a059-40a5420fd398.jsonl"
+  }
+}

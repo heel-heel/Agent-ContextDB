@@ -35,9 +35,14 @@ def _seed_skill(db: ContextDB) -> None:
     }])
 
 
-def _run_hook(hook: Path, base_url: str, event: str, payload: dict) -> subprocess.CompletedProcess[str]:
+def _run_hook(
+    hook: Path, base_url: str, event: str, payload: dict, state_dir: Path | None = None,
+) -> subprocess.CompletedProcess[str]:
+    command = [sys.executable, str(hook), "--base-url", base_url, "--event", event]
+    if state_dir is not None:
+        command.extend(["--transcript-state-dir", str(state_dir)])
     return subprocess.run(
-        [sys.executable, str(hook), "--base-url", base_url, "--event", event],
+        command,
         input=json.dumps(payload),
         text=True,
         capture_output=True,
@@ -161,6 +166,113 @@ def test_claude_code_hook_uses_codex_style_chains_and_canonical_contextdb_names(
             assert contextdb_call["payload"]["tool_chain"] == ["contextdb_get_version_status"]
             assert contextdb_result["payload"]["tool_chain"] == ["contextdb_get_version_status"]
             assert not any(event["event_type"] == "snapshot" for event in events)
+        finally:
+            httpd.shutdown()
+            httpd.server_close()
+            db.vector_index.conn.close()
+            db.store.conn.close()
+
+
+def test_claude_code_hook_syncs_new_assistant_messages_from_transcript():
+    with TemporaryDirectory() as root:
+        root_path = Path(root)
+        db = ContextDB(root_path / "db")
+        httpd = ThreadingHTTPServer(("127.0.0.1", 0), make_handler(db))
+        thread = Thread(target=httpd.serve_forever, daemon=True)
+        thread.start()
+        hook = Path(__file__).resolve().parents[1] / "tools" / "claude_code_hook.py"
+        base_url = "http://127.0.0.1:%s" % httpd.server_port
+        transcript = root_path / "claude.jsonl"
+        state_dir = root_path / "transcript-state"
+        first_assistant = {
+            "type": "assistant",
+            "uuid": "assistant-before-tool",
+            "timestamp": "2026-09-15T08:00:00Z",
+            "message": {"role": "assistant", "content": [
+                {"type": "thinking", "thinking": "internal"},
+                {"type": "text", "text": "I will inspect the fixture."},
+                {"type": "tool_use", "id": "toolu_1", "name": "Read", "input": {}},
+            ]},
+        }
+        final_assistant = {
+            "type": "assistant",
+            "uuid": "assistant-after-tool",
+            "timestamp": "2026-09-15T08:00:02Z",
+            "message": {"role": "assistant", "content": [{
+                "type": "text", "text": "The fixture was inspected."
+            }]},
+        }
+        transcript.write_text(json.dumps(first_assistant) + "\n", encoding="utf-8")
+        raw = {
+            "session_id": "claude-transcript-session",
+            "transcript_path": str(transcript),
+            "tool_name": "Read",
+            "tool_use_id": "toolu_1",
+            "tool_input": {"file_path": "fixture.json"},
+            "tool_response": "{}",
+        }
+        try:
+            assert _run_hook(hook, base_url, "PreToolUse", raw, state_dir).returncode == 0
+            assert _run_hook(hook, base_url, "PostToolUse", raw, state_dir).returncode == 0
+            with transcript.open("a", encoding="utf-8") as stream:
+                stream.write(json.dumps(final_assistant) + "\n")
+            stop_raw = {
+                "session_id": "claude-transcript-session",
+                "transcript_path": str(transcript),
+            }
+            assert _run_hook(hook, base_url, "Stop", stop_raw, state_dir).returncode == 0
+            # A later Stop hook must not replay earlier visible assistant output.
+            assert _run_hook(hook, base_url, "Stop", stop_raw, state_dir).returncode == 0
+
+            status = HookSessionBridge(db).status("claude-code", "claude-transcript-session")
+            events = db.list_events(status["trajectory"]["trajectory_id"])
+            assistant = [event for event in events if event["event_type"] == "assistant_message"]
+            assert [event["payload"]["text"] for event in assistant] == [
+                "I will inspect the fixture.",
+                "The fixture was inspected.",
+            ]
+            assert [event["event_type"] for event in events] == [
+                "assistant_message", "tool_call", "tool_result", "assistant_message",
+            ]
+        finally:
+            httpd.shutdown()
+            httpd.server_close()
+            db.vector_index.conn.close()
+            db.store.conn.close()
+
+
+def test_claude_code_hook_session_start_does_not_replay_existing_transcript():
+    with TemporaryDirectory() as root:
+        root_path = Path(root)
+        db = ContextDB(root_path / "db")
+        httpd = ThreadingHTTPServer(("127.0.0.1", 0), make_handler(db))
+        thread = Thread(target=httpd.serve_forever, daemon=True)
+        thread.start()
+        hook = Path(__file__).resolve().parents[1] / "tools" / "claude_code_hook.py"
+        base_url = "http://127.0.0.1:%s" % httpd.server_port
+        transcript = root_path / "claude.jsonl"
+        state_dir = root_path / "transcript-state"
+        old = {
+            "type": "assistant", "uuid": "old-assistant",
+            "message": {"role": "assistant", "content": [{"type": "text", "text": "Old reply."}]},
+        }
+        new = {
+            "type": "assistant", "uuid": "new-assistant",
+            "message": {"role": "assistant", "content": [{"type": "text", "text": "New reply."}]},
+        }
+        transcript.write_text(json.dumps(old) + "\n", encoding="utf-8")
+        raw = {"session_id": "claude-cursor-session", "transcript_path": str(transcript)}
+        try:
+            assert _run_hook(hook, base_url, "SessionStart", raw, state_dir).returncode == 0
+            assert _run_hook(hook, base_url, "Stop", raw, state_dir).returncode == 0
+            with transcript.open("a", encoding="utf-8") as stream:
+                stream.write(json.dumps(new) + "\n")
+            assert _run_hook(hook, base_url, "Stop", raw, state_dir).returncode == 0
+
+            status = HookSessionBridge(db).status("claude-code", "claude-cursor-session")
+            events = db.list_events(status["trajectory"]["trajectory_id"])
+            assistant = [event for event in events if event["event_type"] == "assistant_message"]
+            assert [event["payload"]["text"] for event in assistant] == ["New reply."]
         finally:
             httpd.shutdown()
             httpd.server_close()

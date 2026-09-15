@@ -1,0 +1,27 @@
+{
+  "event_id": "evt_f0d6f61f7d2f",
+  "trajectory_id": "traj_8ab5973b84ab",
+  "branch_id": "repair-ffa6eccf",
+  "event_type": "version_decision",
+  "payload": {
+    "action": "rollback_context",
+    "decision": "accepted",
+    "reason": "The repair branch was inspected. Continue from the most recent checkpoint.",
+    "logical_context_only": true
+  },
+  "parent_event_ids": [
+    "evt_f45074325722"
+  ],
+  "actor": "agent",
+  "timestamp": "2026-09-15T09:28:48.991440+00:00",
+  "refs": {
+    "snapshot_id": "snap_47880e0c36e3",
+    "target_branch_id": "rollback-47880e"
+  },
+  "metadata": {
+    "operation": "version_decision",
+    "origin": "agent",
+    "logical_context_only": true,
+    "online": true
+  }
+}

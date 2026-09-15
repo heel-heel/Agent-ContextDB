@@ -1,0 +1,257 @@
+{
+  "view_name": "failure_patterns",
+  "trajectory_id": "traj_8ab5973b84ab",
+  "branch_id": "main",
+  "content": [
+    {
+      "schema_version": "experience_mining.v2",
+      "pattern_id": "fp_3493949bf720",
+      "failure_event_id": "evt_3493949bf720",
+      "branch_id": "main",
+      "failed_tool": "python",
+      "failed_command": "python -c \"import jsonn\"",
+      "error_signature": "Exit code 1\nTraceback (most recent call last):\r\n  File \"<string>\", line 1, in <module>\r\n    import jsonn\r\nModuleNotFoundError: No module named 'jsonn'",
+      "normalized_signature": "exit code traceback most recent call last file \"<string>\" line in <module> import jsonn modulenotfounderror no module named 'jsonn'",
+      "preceding_action": "The real ContextDB session id for this conversation is:\n\n```\naa4b6b19-4b6a-42cb-a059-40a5420fd398\n```\n\nI'll use this session id for all subsequent ContextDB MCP calls in this conversation.",
+      "likely_cause": "misspelled python module name in import statement",
+      "likely_cause_judgment": {
+        "enabled": true,
+        "provider": "openai-compatible",
+        "model": "deepseek-flash",
+        "likely_cause": "misspelled python module name in import statement",
+        "confidence": 0.98,
+        "reason": "The command imports 'jsonn', and Python reports ModuleNotFoundError for 'jsonn', indicating a typo likely for 'json'.",
+        "input": {
+          "failed_tool": "python",
+          "failed_command": "python -c \"import jsonn\"",
+          "error_signature": "Exit code 1\nTraceback (most recent call last):\r\n  File \"<string>\", line 1, in <module>\r\n    import jsonn\r\nModuleNotFoundError: No module named 'jsonn'",
+          "preceding_action": "The real ContextDB session id for this conversation is:\n\n```\naa4b6b19-4b6a-42cb-a059-40a5420fd398\n```\n\nI'll use this session id for all subsequent ContextDB MCP calls in this conversation."
+        }
+      },
+      "repair_status": "not_evaluated",
+      "repair_events_after_failure": [
+        {
+          "event_id": "evt_494e39039b47",
+          "event_type": "assistant_message",
+          "summary": "assistant_message:Complete raw output:\n\n```\nExit code 1\nTraceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n    i..."
+        },
+        {
+          "event_id": "evt_d7b1d401f8b6",
+          "event_type": "tool_call",
+          "summary": "tool_call:python -c \"import json; print(json.__name__)\""
+        },
+        {
+          "event_id": "evt_684d65a183b7",
+          "event_type": "tool_result",
+          "summary": "tool_result:python -c \"import json; print(json.__name__)\""
+        },
+        {
+          "event_id": "evt_7f63f7faeb7b",
+          "event_type": "assistant_message",
+          "summary": "assistant_message:Complete raw output:\n\n```\njson\n```"
+        }
+      ],
+      "source_event_ids": [
+        "evt_2bcf3c1543ee"
+      ],
+      "evidence_event_ids": [
+        "evt_54781e4291af",
+        "evt_2bcf3c1543ee",
+        "evt_3493949bf720"
+      ],
+      "highlight_event_ids": [
+        "evt_3493949bf720"
+      ]
+    },
+    {
+      "schema_version": "experience_mining.v2",
+      "pattern_id": "fp_e1f7ae46250e",
+      "failure_event_id": "evt_e1f7ae46250e",
+      "branch_id": "main",
+      "failed_tool": "python",
+      "failed_command": "python -c \"import jsonn\"",
+      "error_signature": "Exit code 1\nTraceback (most recent call last):\r\n  File \"<string>\", line 1, in <module>\r\n    import jsonn\r\nModuleNotFoundError: No module named 'jsonn'",
+      "normalized_signature": "exit code traceback most recent call last file \"<string>\" line in <module> import jsonn modulenotfounderror no module named 'jsonn'",
+      "preceding_action": "Complete raw output:\n\n```\njson\n```",
+      "likely_cause": "typo in module name causes import failure",
+      "likely_cause_judgment": {
+        "enabled": true,
+        "provider": "openai-compatible",
+        "model": "deepseek-flash",
+        "likely_cause": "typo in module name causes import failure",
+        "confidence": 0.99,
+        "reason": "The command imports 'jsonn', while the standard library module is 'json', resulting in ModuleNotFoundError.",
+        "input": {
+          "failed_tool": "python",
+          "failed_command": "python -c \"import jsonn\"",
+          "error_signature": "Exit code 1\nTraceback (most recent call last):\r\n  File \"<string>\", line 1, in <module>\r\n    import jsonn\r\nModuleNotFoundError: No module named 'jsonn'",
+          "preceding_action": "Complete raw output:\n\n```\njson\n```"
+        }
+      },
+      "repair_status": "not_evaluated",
+      "repair_events_after_failure": [
+        {
+          "event_id": "evt_24be22a143e5",
+          "event_type": "assistant_message",
+          "summary": "assistant_message:Complete raw output:\n\n```\nExit code 1\nTraceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n    i..."
+        },
+        {
+          "event_id": "evt_f45e303f7e01",
+          "event_type": "tool_call",
+          "summary": "tool_call:{\"session_id\": \"aa4b6b19-4b6a-42cb-a059-40a5420fd398\", \"source\": \"claude-code\"}"
+        },
+        {
+          "event_id": "evt_b77bc2c6b000",
+          "event_type": "tool_result",
+          "summary": "tool_result:{\"session_id\": \"aa4b6b19-4b6a-42cb-a059-40a5420fd398\", \"source\": \"claude-code\"}"
+        },
+        {
+          "event_id": "evt_66cdc9b64d63",
+          "event_type": "assistant_message",
+          "summary": "assistant_message:The matched recommendation:\n\n- **skill match event id:** `evt_be61da0ac785`\n- **skill id:** `skill_python_misspelled_..."
+        }
+      ],
+      "source_event_ids": [
+        "evt_5007033ea499"
+      ],
+      "evidence_event_ids": [
+        "evt_7f63f7faeb7b",
+        "evt_5007033ea499",
+        "evt_e1f7ae46250e"
+      ],
+      "highlight_event_ids": [
+        "evt_e1f7ae46250e"
+      ]
+    },
+    {
+      "schema_version": "experience_mining.v2",
+      "pattern_id": "fp_1743a98478a3",
+      "failure_event_id": "evt_1743a98478a3",
+      "branch_id": "main",
+      "failed_tool": "node",
+      "failed_command": "node -e \"require('fs').writeFileSync('contextdb-version-first-parent-absent/note.txt', 'first note')\"",
+      "error_signature": "Exit code 1\nnode:fs:2483\r\n    return binding.writeFileUtf8(\r\n                   ^\r\n\r\nError: ENOENT: no such file or directory, open 'D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB\\contextdb-version-first-parent-absent\\note.txt'\r\n    at Object.writeFileSync (node:fs:2483:20)\r\n    at [eval]:1:15\r\n    at runScriptInThisContext (node:internal/vm:219:10)\r\n    at node:internal/process/execution:451:12\r\n    at [eval]-wrapper:6:24\r\n    at runScriptInContext (node:internal/process/execution:449:60)\r\n    at",
+      "normalized_signature": "exit code node fs return ^ error enoent no such file or directory open 'd software pycharm selfcode agent-contextdb contextdb-version-first-parent-absent note.txt' at object.writefilesync node",
+      "preceding_action": "The `examples/live-path-demo` directory contains:\n\n- [examples/live-path-demo/README.md](examples/live-path-demo/README.md)\n- [examples/live-path-demo/assets/settings.json](examples/live-path-demo/assets/settings.json)",
+      "likely_cause": "missing parent directory before file write",
+      "likely_cause_judgment": {
+        "enabled": true,
+        "provider": "openai-compatible",
+        "model": "deepseek-flash",
+        "likely_cause": "missing parent directory before file write",
+        "confidence": 0.95,
+        "reason": "The node writeFileSync call failed with ENOENT for contextdb-version-first-parent-absent/note.txt, indicating the target directory did not exist before writing the file.",
+        "input": {
+          "failed_tool": "node",
+          "failed_command": "node -e \"require('fs').writeFileSync('contextdb-version-first-parent-absent/note.txt', 'first note')\"",
+          "error_signature": "Exit code 1\nnode:fs:2483\r\n    return binding.writeFileUtf8(\r\n                   ^\r\n\r\nError: ENOENT: no such file or directory, open 'D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB\\contextdb-version-first-parent-absent\\note.txt'\r\n    at Object.writeFileSync (node:fs:2483:20)\r\n    at [eval]:1:15\r\n    at runScriptInThisContext (node:internal/vm:219:10)\r\n    at node:internal/process/execution:451:12\r\n    at [eval]-wrapper:6:24\r\n    at runScriptInContext (node:internal/process/execution:449:60)\r\n    at",
+          "preceding_action": "The `examples/live-path-demo` directory contains:\n\n- [examples/live-path-demo/README.md](examples/live-path-demo/README.md)\n- [examples/live-path-demo/assets/settings.json](examples/live-path-demo/assets/settings.json)"
+        }
+      },
+      "repair_status": "not_evaluated",
+      "repair_events_after_failure": [
+        {
+          "event_id": "evt_7805b74af961",
+          "event_type": "assistant_message",
+          "summary": "assistant_message:Complete raw output:\n\n```\nExit code 1\nnode:fs:2483\n    return binding.writeFileUtf8(\n                   ^\n\nError: ENO..."
+        },
+        {
+          "event_id": "evt_a2aa61f49d8a",
+          "event_type": "tool_call",
+          "summary": "tool_call:{\"session_id\": \"aa4b6b19-4b6a-42cb-a059-40a5420fd398\", \"source\": \"claude-code\"}"
+        },
+        {
+          "event_id": "evt_9c32b0f82546",
+          "event_type": "tool_result",
+          "summary": "tool_result:{\"session_id\": \"aa4b6b19-4b6a-42cb-a059-40a5420fd398\", \"source\": \"claude-code\"}"
+        },
+        {
+          "event_id": "evt_2629cfcfa680",
+          "event_type": "assistant_message",
+          "summary": "assistant_message:A repair-branch suggestion is present. Here's what it means:\n\nContextDB detected that the `node ... writeFileSync(......"
+        }
+      ],
+      "source_event_ids": [
+        "evt_725026722ff4"
+      ],
+      "evidence_event_ids": [
+        "evt_5c7d2410933d",
+        "evt_725026722ff4",
+        "evt_1743a98478a3"
+      ],
+      "highlight_event_ids": [
+        "evt_1743a98478a3"
+      ]
+    },
+    {
+      "schema_version": "experience_mining.v2",
+      "pattern_id": "fp_ffa6eccf3b85",
+      "failure_event_id": "evt_ffa6eccf3b85",
+      "branch_id": "main",
+      "failed_tool": "node",
+      "failed_command": "node -e \"require('fs').writeFileSync('contextdb-version-second-parent-absent/note.txt', 'second note')\"",
+      "error_signature": "Exit code 1\nnode:fs:2483\r\n    return binding.writeFileUtf8(\r\n                   ^\r\n\r\nError: ENOENT: no such file or directory, open 'D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB\\contextdb-version-second-parent-absent\\note.txt'\r\n    at Object.writeFileSync (node:fs:2483:20)\r\n    at [eval]:1:15\r\n    at runScriptInThisContext (node:internal/vm:219:10)\r\n    at node:internal/process/execution:451:12\r\n    at [eval]-wrapper:6:24\r\n    at runScriptInContext (node:internal/process/execution:449:60)\r\n    a",
+      "normalized_signature": "exit code node fs return ^ error enoent no such file or directory open 'd software pycharm selfcode agent-contextdb contextdb-version-second-parent-absent note.txt' at object.writefilesync node",
+      "preceding_action": "Recorded the version decision:\n\n- **action:** `create_repair_branch`\n- **decision:** `rejected`\n- **reason:** \"Keep this first invalid Git checkout on main for diagnosis.\"\n- **decision event id:** `evt_f03aea4c51e1`\n\nThe **active branch** remains `main` (head event `evt_a2aa61f49d8a`). The repair-branch suggestion for `repair-1743a984` is now recorded as rejected, and no branch was created.",
+      "likely_cause": "missing parent directory for file write",
+      "likely_cause_judgment": {
+        "enabled": true,
+        "provider": "openai-compatible",
+        "model": "deepseek-flash",
+        "likely_cause": "missing parent directory for file write",
+        "confidence": 0.98,
+        "reason": "Node writeFileSync failed with ENOENT when opening the note.txt path because the target directory did not exist.",
+        "input": {
+          "failed_tool": "node",
+          "failed_command": "node -e \"require('fs').writeFileSync('contextdb-version-second-parent-absent/note.txt', 'second note')\"",
+          "error_signature": "Exit code 1\nnode:fs:2483\r\n    return binding.writeFileUtf8(\r\n                   ^\r\n\r\nError: ENOENT: no such file or directory, open 'D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB\\contextdb-version-second-parent-absent\\note.txt'\r\n    at Object.writeFileSync (node:fs:2483:20)\r\n    at [eval]:1:15\r\n    at runScriptInThisContext (node:internal/vm:219:10)\r\n    at node:internal/process/execution:451:12\r\n    at [eval]-wrapper:6:24\r\n    at runScriptInContext (node:internal/process/execution:449:60)\r\n    a",
+          "preceding_action": "Recorded the version decision:\n\n- **action:** `create_repair_branch`\n- **decision:** `rejected`\n- **reason:** \"Keep this first invalid Git checkout on main for diagnosis.\"\n- **decision event id:** `evt_f03aea4c51e1`\n\nThe **active branch** remains `main` (head event `evt_a2aa61f49d8a`). The repair-branch suggestion for `repair-1743a984` is now recorded as rejected, and no branch was created."
+        }
+      },
+      "repair_status": "not_evaluated",
+      "repair_events_after_failure": [
+        {
+          "event_id": "evt_b39bef0a0032",
+          "event_type": "assistant_message",
+          "summary": "assistant_message:Complete raw output:\n\n```\nExit code 1\nnode:fs:2483\n    return binding.writeFileUtf8(\n                   ^\n\nError: ENO..."
+        },
+        {
+          "event_id": "evt_4bc01422cee2",
+          "event_type": "tool_call",
+          "summary": "tool_call:{\"session_id\": \"aa4b6b19-4b6a-42cb-a059-40a5420fd398\", \"source\": \"claude-code\"}"
+        },
+        {
+          "event_id": "evt_4a29092c00c4",
+          "event_type": "tool_result",
+          "summary": "tool_result:{\"session_id\": \"aa4b6b19-4b6a-42cb-a059-40a5420fd398\", \"source\": \"claude-code\"}"
+        },
+        {
+          "event_id": "evt_5d798396ef33",
+          "event_type": "assistant_message",
+          "summary": "assistant_message:A new repair-branch suggestion is present for this second failure:\n\n- **suggested branch id:** `repair-ffa6eccf`\n- **..."
+        }
+      ],
+      "source_event_ids": [
+        "evt_9d1e56c93664"
+      ],
+      "evidence_event_ids": [
+        "evt_ceeee99007a0",
+        "evt_9d1e56c93664",
+        "evt_ffa6eccf3b85"
+      ],
+      "highlight_event_ids": [
+        "evt_ffa6eccf3b85"
+      ]
+    }
+  ],
+  "source_events": [
+    "evt_2bcf3c1543ee",
+    "evt_5007033ea499",
+    "evt_725026722ff4",
+    "evt_9d1e56c93664"
+  ],
+  "created_at": "2026-09-15T09:29:40.011663+00:00",
+  "metadata": {
+    "event_count": 82
+  }
+}

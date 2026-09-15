@@ -1,0 +1,30 @@
+{
+  "event_id": "evt_3ebf0227015d",
+  "trajectory_id": "traj_8ab5973b84ab",
+  "branch_id": "repair-ffa6eccf",
+  "event_type": "assistant_message",
+  "payload": {
+    "text": "Repair branch created:\n\n- **created repair branch id:** `repair-ffa6eccf`\n- **source snapshot id:** `snap_47880e0c36e3`\n- **decision event id:** `evt_ce471573bd80`\n- **branch created event id:** `evt_051829eddddd`\n- **reason:** \"Preserve the second invalid Git checkout and inspect a separate repair path.\"\n\nThe active branch is now `repair-ffa6eccf`. The previous repair-branch suggestion has been consumed (`repair_branch_suggestion: null`)."
+  },
+  "parent_event_ids": [
+    "evt_051829eddddd"
+  ],
+  "actor": "agent",
+  "timestamp": "2026-09-15T09:28:20.678996+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "claude-code",
+    "hook_adapter": "generic",
+    "hook_session_id": "aa4b6b19-4b6a-42cb-a059-40a5420fd398"
+  },
+  "metadata": {
+    "agent_id": "claude-code",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T09:28:20.678836+00:00",
+    "adapter": "claude-code-transcript",
+    "claude_transcript_path": "C:\\Users\\lenovo\\.claude\\projects\\d--software-Pycharm-SelfCode-Agent-ContextDB\\aa4b6b19-4b6a-42cb-a059-40a5420fd398.jsonl",
+    "claude_transcript_message_id": "3e3ac0fd-351c-4638-b134-c730836832e3",
+    "claude_transcript_timestamp": "2026-09-15T09:28:20.377Z"
+  }
+}

@@ -29,12 +29,17 @@ _MUTATING_TOOL_NAMES = {'write', 'edit', 'file_edit', 'apply_patch'}
 _COMMAND_TOOL_NAMES = {
     'shell', 'exec', 'powershell', 'bash', 'terminal', 'command', 'git',
     'python', 'functions.exec', 'functions.exec_command', 'exec_command',
+    'ordinary native terminal', 'native terminal',
 }
 _MUTATING_COMMAND = re.compile(
     r"(?:^|\s|[\"'])(?:set-content|add-content|new-item|remove-item|move-item|copy-item|"
     r"mkdir|rmdir|rm|mv|cp|touch|git\s+(?:checkout|reset|clean|apply|commit)|"
     r"pip\s+(?:install|uninstall)|npm\s+(?:install|uninstall|update)|"
-    r"cargo\s+(?:add|update))(?:\s|$)|(?<![<>=])>(?!>)",
+    r"cargo\s+(?:add|update))(?:\s|$)|"
+    r"\.(?:write_text|write_bytes)\s*\(|"
+    r"\.(?:writefilesync|appendfilesync)\s*\(|"
+    r"\bopen\s*\([^,\n]+,\s*[\"'](?:w|a|x)[\"']|"
+    r"(?<![<>=])>(?!>)",
     re.IGNORECASE,
 )
 _NESTED_EXEC_TOOL = re.compile(
@@ -97,7 +102,12 @@ def _canonical_tool_name(tool_name: Any) -> str:
 
 
 def _should_auto_snapshot(payload: Dict[str, Any]) -> bool:
-    """Return whether a Hook tool call merits a pre-action snapshot."""
+    """Return whether a Hook tool call merits a pre-action snapshot.
+
+    Python and Node.js one-liners that open a file for writing are included
+    because they are common in live-agent runs and mutate the workspace just
+    as a shell ``Set-Content`` call would.
+    """
     if _is_contextdb_tool_call(payload):
         return False
     explicit = payload.get('contextdb_snapshot')

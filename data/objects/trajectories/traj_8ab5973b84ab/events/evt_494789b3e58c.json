@@ -1,0 +1,30 @@
+{
+  "event_id": "evt_494789b3e58c",
+  "trajectory_id": "traj_8ab5973b84ab",
+  "branch_id": "repair-ffa6eccf",
+  "event_type": "assistant_message",
+  "payload": {
+    "text": "The most recent snapshot is:\n\n- **snapshot id:** `snap_47880e0c36e3`\n- **branch id:** `main`\n- **checkpoint event id:** `evt_ac97c5c2e645`\n- **timestamp:** `2026-09-15T09:27:56.112259+00:00`\n- **message:** \"Before state-changing bash\"\n\nAdditional context:\n\n- **active branch:** `repair-ffa6eccf` (head event `evt_a8631f4e5fff`)\n- **repair branch suggestion:** `null` (none outstanding)\n- **last version decision:** `create_repair_branch` → `accepted`\n- The repair branch `repair-ffa6eccf` was created with base event `evt_ac97c5c2e645` (the snapshot checkpoint)."
+  },
+  "parent_event_ids": [
+    "evt_5809cc2ee0c2"
+  ],
+  "actor": "agent",
+  "timestamp": "2026-09-15T09:28:41.426823+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "claude-code",
+    "hook_adapter": "generic",
+    "hook_session_id": "aa4b6b19-4b6a-42cb-a059-40a5420fd398"
+  },
+  "metadata": {
+    "agent_id": "claude-code",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T09:28:41.426660+00:00",
+    "adapter": "claude-code-transcript",
+    "claude_transcript_path": "C:\\Users\\lenovo\\.claude\\projects\\d--software-Pycharm-SelfCode-Agent-ContextDB\\aa4b6b19-4b6a-42cb-a059-40a5420fd398.jsonl",
+    "claude_transcript_message_id": "695b0733-ebe1-4c96-acf0-cddf974e9456",
+    "claude_transcript_timestamp": "2026-09-15T09:28:41.150Z"
+  }
+}

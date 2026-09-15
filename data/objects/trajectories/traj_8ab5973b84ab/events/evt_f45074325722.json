@@ -1,0 +1,44 @@
+{
+  "event_id": "evt_f45074325722",
+  "trajectory_id": "traj_8ab5973b84ab",
+  "branch_id": "repair-ffa6eccf",
+  "event_type": "tool_call",
+  "payload": {
+    "tool_chain": [
+      "contextdb_rollback_context"
+    ],
+    "command": "{\"reason\": \"The repair branch was inspected. Continue from the most recent checkpoint.\", \"session_id\": \"aa4b6b19-4b6a-42cb-a059-40a5420fd398\", \"snapshot_id\": \"snap_47880e0c36e3\", \"source\": \"claude-code\"}",
+    "arguments": {
+      "reason": "The repair branch was inspected. Continue from the most recent checkpoint.",
+      "session_id": "aa4b6b19-4b6a-42cb-a059-40a5420fd398",
+      "snapshot_id": "snap_47880e0c36e3",
+      "source": "claude-code"
+    },
+    "agent_tool_name": "mcp__contextdb__contextdb_rollback_context",
+    "status": "ok",
+    "result_tool_name": "contextdb_rollback_context",
+    "result_event_id": "evt_384b7d2d461d"
+  },
+  "parent_event_ids": [
+    "evt_7f1478c690aa"
+  ],
+  "actor": "agent",
+  "timestamp": "2026-09-15T09:28:46.309644+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "claude-code",
+    "hook_adapter": "generic",
+    "hook_session_id": "aa4b6b19-4b6a-42cb-a059-40a5420fd398"
+  },
+  "metadata": {
+    "agent_id": "claude-code",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T09:28:46.309442+00:00",
+    "adapter": "claude-code-hooks",
+    "claude_hook_event": "PreToolUse",
+    "claude_tool_name": "mcp__contextdb__contextdb_rollback_context",
+    "claude_cwd": "D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB",
+    "claude_transcript_path": "C:\\Users\\lenovo\\.claude\\projects\\d--software-Pycharm-SelfCode-Agent-ContextDB\\aa4b6b19-4b6a-42cb-a059-40a5420fd398.jsonl"
+  }
+}

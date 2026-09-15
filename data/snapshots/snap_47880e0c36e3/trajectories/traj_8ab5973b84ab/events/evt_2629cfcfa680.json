@@ -1,0 +1,30 @@
+{
+  "event_id": "evt_2629cfcfa680",
+  "trajectory_id": "traj_8ab5973b84ab",
+  "branch_id": "main",
+  "event_type": "assistant_message",
+  "payload": {
+    "text": "A repair-branch suggestion is present. Here's what it means:\n\nContextDB detected that the `node ... writeFileSync(...)` command was potentially state-changing, so its hook automatically created a snapshot (`snap_b118fd51a324`) before the command ran. The command then failed (`ENOENT`), and ContextDB is now suggesting a repair branch to branch the trajectory away from the failure point.\n\nRepair-branch suggestion details:\n\n- **suggested branch id:** `repair-1743a984`\n- **source snapshot id:** `snap_b118fd51a324`\n- **source branch id:** `main`\n- **suggestion event id:** `evt_ef20a5c44017`\n- **failure event id:** `evt_1743a98478a3`\n\nAdditional context:\n\n- **active branch:** `main` (head event `evt_a2aa61f49d8a`)\n- **latest snapshot:** `snap_b118fd51a324` (\"Before state-changing bash\")\n- **last version decision:** `null` (none recorded yet)\n- **workspace restore:** not supported — ContextDB rollback only creates a trajectory branch; it never restores local workspace files.\n\nI have not acted on this suggestion — I'm only reporting it."
+  },
+  "parent_event_ids": [
+    "evt_9c32b0f82546"
+  ],
+  "actor": "agent",
+  "timestamp": "2026-09-15T09:27:41.533456+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "claude-code",
+    "hook_adapter": "generic",
+    "hook_session_id": "aa4b6b19-4b6a-42cb-a059-40a5420fd398"
+  },
+  "metadata": {
+    "agent_id": "claude-code",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T09:27:41.533305+00:00",
+    "adapter": "claude-code-transcript",
+    "claude_transcript_path": "C:\\Users\\lenovo\\.claude\\projects\\d--software-Pycharm-SelfCode-Agent-ContextDB\\aa4b6b19-4b6a-42cb-a059-40a5420fd398.jsonl",
+    "claude_transcript_message_id": "1ed55ef4-1dd2-4f04-bcfb-a061b9d24004",
+    "claude_transcript_timestamp": "2026-09-15T09:27:41.254Z"
+  }
+}

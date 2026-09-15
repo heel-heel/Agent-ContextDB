@@ -1,0 +1,30 @@
+{
+  "event_id": "evt_a6b9aafecd52",
+  "trajectory_id": "traj_8ab5973b84ab",
+  "branch_id": "repair-ffa6eccf",
+  "event_type": "assistant_message",
+  "payload": {
+    "text": "The file [AGENTS.md](AGENTS.md) describes ContextDB's live integration modes:\n\n1. **Codex Desktop Full-DAG Demonstrations** — uses `tools\\windows_codex_session_watcher.py` to observe the Codex App rollout log and record a real conversation under `source = codex-session` with `session_id = rollout-<timestamp>-<id>`. In watcher mode, do not call `contextdb_record_tool_call`/`contextdb_record_tool_result` (the watcher already records them), and do not use the wrapper's `--apply-skill`.\n\n2. **Native-Exec Wrapper Compatibility Mode** — uses `tools\\contextdb_native_exec_hook.py` only for explicitly controlled CLI demos needing a caller-selected source/session id or same-turn recommendation output. It records only the wrapped child command, not native messages/Read/Glob/apply-patch/MCP calls. `--apply-skill` is supported only in this mode.\n\nIt also notes: use one source/session pair consistently for a full session, and outside an explicit live integration request, use normal project commands.\n\n51 lines total."
+  },
+  "parent_event_ids": [
+    "evt_541156e604d5"
+  ],
+  "actor": "agent",
+  "timestamp": "2026-09-15T09:28:27.362746+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "claude-code",
+    "hook_adapter": "generic",
+    "hook_session_id": "aa4b6b19-4b6a-42cb-a059-40a5420fd398"
+  },
+  "metadata": {
+    "agent_id": "claude-code",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T09:28:27.362588+00:00",
+    "adapter": "claude-code-transcript",
+    "claude_transcript_path": "C:\\Users\\lenovo\\.claude\\projects\\d--software-Pycharm-SelfCode-Agent-ContextDB\\aa4b6b19-4b6a-42cb-a059-40a5420fd398.jsonl",
+    "claude_transcript_message_id": "0e7f5a85-b817-4b8b-90ca-a19a1444cdfd",
+    "claude_transcript_timestamp": "2026-09-15T09:28:27.085Z"
+  }
+}

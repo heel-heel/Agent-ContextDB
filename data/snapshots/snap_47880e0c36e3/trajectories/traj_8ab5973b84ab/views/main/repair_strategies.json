@@ -1,0 +1,148 @@
+{
+  "view_name": "repair_strategies",
+  "trajectory_id": "traj_8ab5973b84ab",
+  "branch_id": "main",
+  "content": [
+    {
+      "schema_version": "experience_mining.v1",
+      "failure": {
+        "failure_event_id": "evt_3493949bf720",
+        "tool_call_event_id": "evt_2bcf3c1543ee",
+        "branch_id": "main",
+        "command": "python -c \"import jsonn\"",
+        "tool": "python",
+        "error_signature": "Exit code 1\nTraceback (most recent call last):\r\n  File \"<string>\", line 1, in <module>\r\n    import jsonn\r\nModuleNotFoundError: No module named 'jsonn'",
+        "normalized_signature": "exit code traceback most recent call last file \"<string>\" line in <module> import jsonn modulenotfounderror no module named 'jsonn'",
+        "preceding_action": "The real ContextDB session id for this conversation is:\n\n```\naa4b6b19-4b6a-42cb-a059-40a5420fd398\n```\n\nI'll use this session id for all subsequent ContextDB MCP calls in this conversation.",
+        "likely_cause": "misspelled python module name in import statement",
+        "evidence_event_ids": [
+          "evt_54781e4291af",
+          "evt_2bcf3c1543ee",
+          "evt_3493949bf720"
+        ],
+        "highlight_event_ids": [
+          "evt_3493949bf720"
+        ]
+      },
+      "repair_status": "resolved_candidate",
+      "candidate_count": 1,
+      "repair_candidates": [
+        {
+          "schema_version": "experience_mining.v1",
+          "branch_id": "main",
+          "success_event_id": "evt_684d65a183b7",
+          "tool_call_event_id": "evt_d7b1d401f8b6",
+          "strategy": "Complete raw output:\n\n```\nExit code 1\nTraceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n    import jsonn\nModuleNotFoundError: No module named 'jsonn'\n```\n\nThe command failed because there is no module named `jsonn` (likely a typo of `json`).",
+          "tool": "python",
+          "command": "python -c \"import json; print(json.__name__)\"",
+          "outcome": "ok",
+          "primary_rule": "same_branch_first_success_after_failure",
+          "link_type": "same_branch_first_success_after_failure",
+          "strength": "structural",
+          "why_linked": "The success is the first successful tool result after the failure on the same branch.",
+          "evidence": [
+            {
+              "rule": "same_branch_first_success_after_failure",
+              "strength": "structural",
+              "evidence_level": "primary_structural",
+              "branch_id": "main",
+              "failure_event_id": "evt_3493949bf720",
+              "success_event_id": "evt_684d65a183b7"
+            },
+            {
+              "rule": "same_tool_command_variant",
+              "strength": "supporting",
+              "evidence_level": "supporting",
+              "failed_command": "python -c \"import jsonn\"",
+              "successful_command": "python -c \"import json; print(json.__name__)\""
+            }
+          ],
+          "evidence_event_ids": [
+            "evt_3493949bf720",
+            "evt_684d65a183b7"
+          ],
+          "highlight_event_ids": [
+            "evt_3493949bf720",
+            "evt_684d65a183b7"
+          ],
+          "highlight_branch_ids": []
+        }
+      ],
+      "repairs": [
+        {
+          "schema_version": "experience_mining.v1",
+          "branch_id": "main",
+          "success_event_id": "evt_684d65a183b7",
+          "tool_call_event_id": "evt_d7b1d401f8b6",
+          "strategy": "Complete raw output:\n\n```\nExit code 1\nTraceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n    import jsonn\nModuleNotFoundError: No module named 'jsonn'\n```\n\nThe command failed because there is no module named `jsonn` (likely a typo of `json`).",
+          "tool": "python",
+          "command": "python -c \"import json; print(json.__name__)\"",
+          "outcome": "ok",
+          "primary_rule": "same_branch_first_success_after_failure",
+          "link_type": "same_branch_first_success_after_failure",
+          "strength": "structural",
+          "why_linked": "The success is the first successful tool result after the failure on the same branch.",
+          "evidence": [
+            {
+              "rule": "same_branch_first_success_after_failure",
+              "strength": "structural",
+              "evidence_level": "primary_structural",
+              "branch_id": "main",
+              "failure_event_id": "evt_3493949bf720",
+              "success_event_id": "evt_684d65a183b7"
+            },
+            {
+              "rule": "same_tool_command_variant",
+              "strength": "supporting",
+              "evidence_level": "supporting",
+              "failed_command": "python -c \"import jsonn\"",
+              "successful_command": "python -c \"import json; print(json.__name__)\""
+            }
+          ],
+          "evidence_event_ids": [
+            "evt_3493949bf720",
+            "evt_684d65a183b7"
+          ],
+          "highlight_event_ids": [
+            "evt_3493949bf720",
+            "evt_684d65a183b7"
+          ],
+          "highlight_branch_ids": []
+        }
+      ],
+      "excluded_successes": [],
+      "highlight_event_ids": [
+        "evt_3493949bf720",
+        "evt_684d65a183b7"
+      ],
+      "highlight_branch_ids": [
+        "main"
+      ],
+      "semantic_judge": {
+        "enabled": false,
+        "label": "not_evaluated"
+      }
+    }
+  ],
+  "source_events": [
+    "evt_e53db2ae128d",
+    "evt_21991157c589",
+    "evt_89fc04d4e7d8",
+    "evt_1f55a8699f13",
+    "evt_54781e4291af",
+    "evt_2dc84cd8781a",
+    "evt_2bcf3c1543ee",
+    "evt_3493949bf720",
+    "evt_edc73486ea71",
+    "evt_bb36474b579b",
+    "evt_494e39039b47",
+    "evt_928724d75b27",
+    "evt_d7b1d401f8b6",
+    "evt_684d65a183b7",
+    "evt_7f63f7faeb7b"
+  ],
+  "created_at": "2026-09-15T09:25:49.143241+00:00",
+  "metadata": {
+    "event_count": 15
+  }
+}

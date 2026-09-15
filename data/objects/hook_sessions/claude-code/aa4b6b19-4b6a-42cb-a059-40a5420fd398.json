@@ -1,0 +1,74 @@
+{
+  "schema_version": "contextdb.hook_session.v2",
+  "source": "claude-code",
+  "session_id": "aa4b6b19-4b6a-42cb-a059-40a5420fd398",
+  "agent_id": "claude-code",
+  "trajectory_id": "traj_8ab5973b84ab",
+  "created_at": "2026-09-15T09:24:52.598461+00:00",
+  "updated_at": "2026-09-15T09:28:52.559495+00:00",
+  "event_count": 94,
+  "pending_tools": {},
+  "last_skill_retrieval": {
+    "match_event_id": "evt_4ad557169536",
+    "matched": false,
+    "agent_context": {
+      "type": "contextdb_skill_recommendation",
+      "matched": false,
+      "instruction": "No reusable ContextDB skill matched this failure. Continue with normal diagnosis.",
+      "version_context": {
+        "active_branch_id": "main",
+        "latest_snapshot": {
+          "snapshot_id": "snap_47880e0c36e3",
+          "branch_id": "main",
+          "event_id": "evt_ac97c5c2e645",
+          "message": "Before state-changing bash",
+          "created_at": "2026-09-15T09:27:56.112259+00:00"
+        },
+        "repair_branch_suggestion": {
+          "suggestion_event_id": "evt_e7d38da7de08",
+          "failure_event_id": "evt_ffa6eccf3b85",
+          "snapshot_id": "snap_47880e0c36e3",
+          "suggested_branch_id": "repair-ffa6eccf",
+          "source_branch_id": "main",
+          "created_at": "2026-09-15T09:27:58.529154+00:00"
+        },
+        "last_version_decision": {
+          "event_id": "evt_f03aea4c51e1",
+          "action": "create_repair_branch",
+          "decision": "rejected",
+          "at": "2026-09-15T09:27:49.851932+00:00"
+        },
+        "workspace_restore": {
+          "supported": false,
+          "instruction": "ContextDB records branch and rollback state only. Restore files through the Agent workspace after an explicit decision."
+        }
+      }
+    }
+  },
+  "last_skill_delivery": {
+    "delivery_event_id": "evt_ba441a52ba00",
+    "match_event_id": "evt_4ad557169536",
+    "matched": false,
+    "delivered_at": "2026-09-15T09:27:58.569832+00:00"
+  },
+  "last_skill_decision": {
+    "event_id": "evt_e8c685d7adb6",
+    "decision": "accepted",
+    "at": "2026-09-15T09:26:28.847728+00:00"
+  },
+  "active_branch_id": "rollback-47880e",
+  "last_version_snapshot": {
+    "snapshot_id": "snap_47880e0c36e3",
+    "branch_id": "main",
+    "event_id": "evt_ac97c5c2e645",
+    "message": "Before state-changing bash",
+    "created_at": "2026-09-15T09:27:56.112259+00:00"
+  },
+  "last_repair_suggestion": null,
+  "last_version_decision": {
+    "event_id": "evt_f0d6f61f7d2f",
+    "action": "rollback_context",
+    "decision": "accepted",
+    "at": "2026-09-15T09:28:48.994278+00:00"
+  }
+}

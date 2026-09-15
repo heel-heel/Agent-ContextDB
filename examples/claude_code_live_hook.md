@@ -1,6 +1,6 @@
 # Claude Code Live Hook
 
-ContextDB uses Claude Code project hooks to record user prompts and Bash tool
+ContextDB uses Claude Code project hooks to record user prompts and tool
 lifecycle events in real time. The hooks call the agent-neutral
 `contextdb.agent_hook.v1` HTTP protocol already used by Codex.
 
@@ -22,8 +22,16 @@ claude
 ```
 
 Claude Code loads the project-local `.claude/settings.json`. Run `/hooks` to
-confirm the five ContextDB hooks. The hook input `session_id` becomes the
+confirm the six ContextDB hooks. The hook input `session_id` becomes the
 ContextDB session id, so each Claude Code session creates one trajectory.
+
+`SessionStart` initializes a cursor, while `PreToolUse` and `Stop` wake
+`tools/claude_code_hook.py` to read only the new JSONL records in Claude's
+supplied `transcript_path`. Visible assistant text is recorded as
+`assistant_message`; thinking, tool-use blocks, and tool results are excluded.
+The hook persists its per-session cursor and UUID deduplication state under
+`data/claude-transcript-sync`, so it is a hook-triggered incremental
+transcript reader rather than a resident watcher.
 
 ## What is shared with Codex
 
@@ -37,6 +45,10 @@ or claim that Claude accepted it. A later explicit decision/application bridge
 can use the existing `/api/v1/hooks/skill_decision` and
 `/api/v1/hooks/skill_application` endpoints.
 
+The failed-tool hook requests only the recommendation, not a full prompt
+digest. This keeps `PostToolUseFailure` bounded while still persisting the
+`skill_match` and `skill_recommendation` audit events.
+
 ## Verify
 
 Use a failing Bash command in Claude Code, then run:
@@ -46,9 +58,10 @@ Use a failing Bash command in Claude Code, then run:
   -m contextdb.cli --root data hook-status claude-code <Claude-session-id>
 ```
 
-The resulting trajectory contains `user_message`, `tool_call`, `tool_result`,
-`skill_match`, and `skill_recommendation` events. When a historical Codex skill
-matches, the Claude hook's `additionalContext` contains its selected action.
+The resulting trajectory contains `user_message`, `assistant_message`,
+`tool_call`, `tool_result`, `skill_match`, and `skill_recommendation` events.
+When a historical Codex skill matches, the Claude hook's `additionalContext`
+contains its selected action.
 
 ## Version-Control Fixture
 
@@ -58,17 +71,17 @@ failure when the trajectory already contains a Git repair Skill: vector
 retrieval can correctly identify the common tool, but that makes the version
 control demonstration noisy.
 
-For the two version-control failures, use these real PowerShell write attempts
+For the two version-control failures, use these real Node.js write attempts
 from the project root. Their parent directories do not exist, so each command
-fails without creating workspace files. `Set-Content` is state-changing and
-therefore triggers the ContextDB pre-action snapshot policy.
+fails without creating workspace files. Writing a file through Node.js is
+state-changing and therefore triggers the ContextDB pre-action snapshot policy.
 
 ```powershell
-powershell -NoProfile -Command '[System.Threading.Thread]::CurrentThread.CurrentCulture = [System.Globalization.CultureInfo]::GetCultureInfo("en-US"); [System.Threading.Thread]::CurrentThread.CurrentUICulture = [System.Globalization.CultureInfo]::GetCultureInfo("en-US"); $ErrorActionPreference = "Stop"; Set-Content -LiteralPath ".\_contextdb_claude_version_first_missing_\first-note.txt" -Value "first note"'
+node -e "require('fs').writeFileSync('contextdb-version-first-parent-absent/note.txt', 'first note')"
 ```
 
 ```powershell
-powershell -NoProfile -Command '[System.Threading.Thread]::CurrentThread.CurrentCulture = [System.Globalization.CultureInfo]::GetCultureInfo("en-US"); [System.Threading.Thread]::CurrentThread.CurrentUICulture = [System.Globalization.CultureInfo]::GetCultureInfo("en-US"); $ErrorActionPreference = "Stop"; Set-Content -LiteralPath ".\_contextdb_claude_version_second_missing_\second-note.txt" -Value "second note"'
+node -e "require('fs').writeFileSync('contextdb-version-second-parent-absent/note.txt', 'second note')"
 ```
 
 Use the first failure to reject its repair-branch suggestion, then use the

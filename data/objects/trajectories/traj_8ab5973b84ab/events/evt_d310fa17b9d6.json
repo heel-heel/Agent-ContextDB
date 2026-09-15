@@ -1,0 +1,40 @@
+{
+  "event_id": "evt_d310fa17b9d6",
+  "trajectory_id": "traj_8ab5973b84ab",
+  "branch_id": "main",
+  "event_type": "tool_result",
+  "payload": {
+    "tool_name": "glob",
+    "command": "examples/live-path-demo/**",
+    "status": "ok",
+    "preview": "{\"filenames\": [\"examples\\\\live-path-demo\\\\README.md\", \"examples\\\\live-path-demo\\\\assets\\\\settings.json\"], \"durationMs\": 176, \"numFiles\": 2, \"truncated\": false, \"totalMatches\": 2, \"countIsComplete\": true}",
+    "exit_code": null,
+    "transport_tool_name": "glob",
+    "tool_chain": [
+      "glob"
+    ]
+  },
+  "parent_event_ids": [
+    "evt_ff489e516529"
+  ],
+  "actor": "tool",
+  "timestamp": "2026-09-15T09:27:17.234208+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "claude-code",
+    "hook_adapter": "generic",
+    "hook_session_id": "aa4b6b19-4b6a-42cb-a059-40a5420fd398",
+    "tool_call_event_id": "evt_ff489e516529"
+  },
+  "metadata": {
+    "agent_id": "claude-code",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T09:27:17.234021+00:00",
+    "adapter": "claude-code-hooks",
+    "claude_hook_event": "PostToolUse",
+    "claude_tool_name": "Glob",
+    "claude_cwd": "D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB",
+    "claude_transcript_path": "C:\\Users\\lenovo\\.claude\\projects\\d--software-Pycharm-SelfCode-Agent-ContextDB\\aa4b6b19-4b6a-42cb-a059-40a5420fd398.jsonl"
+  }
+}

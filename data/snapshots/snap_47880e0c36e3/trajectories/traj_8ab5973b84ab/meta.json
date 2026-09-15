@@ -1,0 +1,16 @@
+{
+  "trajectory_id": "traj_8ab5973b84ab",
+  "title": "claude-code live hook session aa4b6b19-4b6a-42cb-a059-40a5420fd398",
+  "agent_id": "claude-code",
+  "source_id": "hook:claude-code",
+  "default_branch": "main",
+  "head_event_id": "evt_ac97c5c2e645",
+  "created_at": "2026-09-15T09:24:52.593982+00:00",
+  "updated_at": "2026-09-15T09:27:56.111288+00:00",
+  "metadata": {
+    "integration": "agent-hook.v1",
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "claude-code",
+    "hook_session_id": "aa4b6b19-4b6a-42cb-a059-40a5420fd398"
+  }
+}

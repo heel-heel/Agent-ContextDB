@@ -1,0 +1,30 @@
+{
+  "event_id": "evt_7f63f7faeb7b",
+  "trajectory_id": "traj_8ab5973b84ab",
+  "branch_id": "main",
+  "event_type": "assistant_message",
+  "payload": {
+    "text": "Complete raw output:\n\n```\njson\n```"
+  },
+  "parent_event_ids": [
+    "evt_684d65a183b7"
+  ],
+  "actor": "agent",
+  "timestamp": "2026-09-15T09:25:31.933970+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "claude-code",
+    "hook_adapter": "generic",
+    "hook_session_id": "aa4b6b19-4b6a-42cb-a059-40a5420fd398"
+  },
+  "metadata": {
+    "agent_id": "claude-code",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T09:25:31.933810+00:00",
+    "adapter": "claude-code-transcript",
+    "claude_transcript_path": "C:\\Users\\lenovo\\.claude\\projects\\d--software-Pycharm-SelfCode-Agent-ContextDB\\aa4b6b19-4b6a-42cb-a059-40a5420fd398.jsonl",
+    "claude_transcript_message_id": "006587cc-f3ab-4d83-9315-ee4104e8efa4",
+    "claude_transcript_timestamp": "2026-09-15T09:25:31.641Z"
+  }
+}

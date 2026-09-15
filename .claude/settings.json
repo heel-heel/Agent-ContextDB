@@ -66,6 +66,20 @@
           }
         ]
       }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "shell": "powershell",
+            "command": "& 'D:\\software\\Anaconda\\ProgramFile\\envs\\contextdb_env\\python.exe' \"$env:CLAUDE_PROJECT_DIR\\tools\\claude_code_hook.py\" --event Stop",
+            "timeout": 20,
+            "statusMessage": "Synchronizing Claude Code response with ContextDB"
+          }
+        ]
+      }
     ]
   }
 }

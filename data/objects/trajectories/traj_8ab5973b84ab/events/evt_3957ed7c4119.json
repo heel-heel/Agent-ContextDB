@@ -1,0 +1,30 @@
+{
+  "event_id": "evt_3957ed7c4119",
+  "trajectory_id": "traj_8ab5973b84ab",
+  "branch_id": "rollback-47880e",
+  "event_type": "assistant_message",
+  "payload": {
+    "text": "Rollback recorded:\n\n- **resulting active branch id:** `rollback-47880e`\n- **snapshot id:** `snap_47880e0c36e3`\n- **decision event id:** `evt_f0d6f61f7d2f`\n- **rollback event id:** `evt_7ba4e119a38e`\n- **reason:** \"The repair branch was inspected. Continue from the most recent checkpoint.\"\n\nConfirmed: **no workspace files or Git state were restored.** The tool's `workspace_restore` flag is `supported: false`, and its instruction states ContextDB records branch and rollback state only — it never restores local workspace files automatically. The rollback created a new trajectory branch (`rollback-47880e`) only."
+  },
+  "parent_event_ids": [
+    "evt_7ba4e119a38e"
+  ],
+  "actor": "agent",
+  "timestamp": "2026-09-15T09:28:52.555415+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "claude-code",
+    "hook_adapter": "generic",
+    "hook_session_id": "aa4b6b19-4b6a-42cb-a059-40a5420fd398"
+  },
+  "metadata": {
+    "agent_id": "claude-code",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T09:28:52.555259+00:00",
+    "adapter": "claude-code-transcript",
+    "claude_transcript_path": "C:\\Users\\lenovo\\.claude\\projects\\d--software-Pycharm-SelfCode-Agent-ContextDB\\aa4b6b19-4b6a-42cb-a059-40a5420fd398.jsonl",
+    "claude_transcript_message_id": "e71299a2-ec83-4f10-9498-1683d5d973f3",
+    "claude_transcript_timestamp": "2026-09-15T09:28:52.277Z"
+  }
+}

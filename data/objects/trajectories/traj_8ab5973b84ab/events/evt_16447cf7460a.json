@@ -1,0 +1,31 @@
+{
+  "event_id": "evt_16447cf7460a",
+  "trajectory_id": "traj_8ab5973b84ab",
+  "branch_id": "main",
+  "event_type": "user_message",
+  "payload": {
+    "text": "Use ContextDB MCP tool contextdb_create_repair_branch with source claude-code and the session id returned earlier.\n\nAccept the identified repair-branch suggestion with this reason:\n\nPreserve the second invalid Git checkout and inspect a separate repair path.\n\nReport the created repair branch id. Do not call other ContextDB MCP tools in this turn."
+  },
+  "parent_event_ids": [
+    "evt_5d798396ef33"
+  ],
+  "actor": "user",
+  "timestamp": "2026-09-15T09:28:13.374017+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "claude-code",
+    "hook_adapter": "generic",
+    "hook_session_id": "aa4b6b19-4b6a-42cb-a059-40a5420fd398"
+  },
+  "metadata": {
+    "agent_id": "claude-code",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T09:28:13.373854+00:00",
+    "adapter": "claude-code-hooks",
+    "claude_hook_event": "UserPromptSubmit",
+    "claude_tool_name": "",
+    "claude_cwd": "D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB",
+    "claude_transcript_path": "C:\\Users\\lenovo\\.claude\\projects\\d--software-Pycharm-SelfCode-Agent-ContextDB\\aa4b6b19-4b6a-42cb-a059-40a5420fd398.jsonl"
+  }
+}

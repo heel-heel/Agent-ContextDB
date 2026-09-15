@@ -1,0 +1,187 @@
+{
+  "view_name": "learned_skills",
+  "trajectory_id": "traj_8ab5973b84ab",
+  "branch_id": "main",
+  "content": [
+    {
+      "schema_version": "learned_skill.v2",
+      "skill_id": "skill_python_misspelled_python_module_name_python_c_import_jsonn",
+      "name": "Repair misspelled python module name in import statement",
+      "trigger": {
+        "failed_tool": "python",
+        "failed_command_pattern": "python -c \"import jsonn\"",
+        "normalized_signature": "exit code traceback most recent call last file \"<string>\" line in <module> import jsonn modulenotfounderror no module named 'jsonn'",
+        "error_signature": "Exit code 1\nTraceback (most recent call last):\r\n  File \"<string>\", line 1, in <module>\r\n    import jsonn\r\nModuleNotFoundError: No module named 'jsonn'",
+        "likely_cause": "misspelled python module name in import statement"
+      },
+      "failure_grouping": {
+        "method": "vector_cosine",
+        "embedding": "hash-384",
+        "threshold": 0.74,
+        "failure_event_ids": [
+          "evt_3493949bf720"
+        ],
+        "group_size": 1
+      },
+      "recommended_actions": [
+        {
+          "action_id": "act_python_misspelled_python_module_name_python_c_import_jsonn_1",
+          "name": "Complete raw output:\n\n```\nExit code 1\nTraceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n    import jsonn\nModuleNotFoundError: No module ",
+          "canonical_tool": "python",
+          "canonical_command_template": "python -c \"import json; print(json.__name__)\"",
+          "strategy": "Complete raw output:\n\n```\nExit code 1\nTraceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n    import jsonn\nModuleNotFoundError: No module named 'jsonn'\n```\n\nThe command failed because there is no module named `jsonn` (likely a typo of `json`).",
+          "support_event_ids": [
+            "evt_684d65a183b7"
+          ],
+          "support_events": [
+            {
+              "trajectory_id": "traj_8ab5973b84ab",
+              "failure_event_id": "evt_3493949bf720",
+              "success_event_id": "evt_684d65a183b7",
+              "branch_id": "main",
+              "failure_tool_call_event_id": "evt_2bcf3c1543ee",
+              "success_tool_call_event_id": "evt_d7b1d401f8b6",
+              "tool": "python",
+              "command": "python -c \"import json; print(json.__name__)\"",
+              "strategy": "Complete raw output:\n\n```\nExit code 1\nTraceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n    import jsonn\nModuleNotFoundError: No module named 'jsonn'\n```\n\nThe command failed because there is no module named `jsonn` (likely a typo of `json`).",
+              "outcome": "ok",
+              "primary_rule": "same_branch_first_success_after_failure",
+              "judgment_label": "likely_repair",
+              "confidence": 0.95,
+              "reason": "The failed command imported the misspelled module `jsonn`, while the successful command imports the correct module `json`, directly addressing the ModuleNotFoundError.",
+              "vector_text": "python python -c \"import json; print(json.__name__)\" Complete raw output:\n\n```\nExit code 1\nTraceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n    import jsonn\nModuleNotFoundError: No module named 'jsonn'\n```\n\nThe command failed because there is no module named `jsonn` (likely a typo of `json`)."
+            }
+          ],
+          "confidence": {
+            "max_llm_confidence": 0.95,
+            "support_count": 1
+          },
+          "dedupe": {
+            "method": "vector_cosine",
+            "embedding": "hash-384",
+            "threshold": 0.78,
+            "group_size": 1
+          }
+        }
+      ],
+      "avoid_actions": [],
+      "evidence_refs": [
+        {
+          "trajectory_id": "traj_8ab5973b84ab",
+          "failure_event_id": "evt_3493949bf720",
+          "success_event_id": "evt_684d65a183b7",
+          "primary_rule": "same_branch_first_success_after_failure",
+          "judgment_label": "likely_repair"
+        }
+      ],
+      "confidence": {
+        "support_count": 1,
+        "max_llm_confidence": 0.95,
+        "evidence_levels": [
+          "structural"
+        ]
+      },
+      "status": "candidate",
+      "highlight_event_ids": [
+        "evt_3493949bf720",
+        "evt_2bcf3c1543ee",
+        "evt_684d65a183b7",
+        "evt_d7b1d401f8b6"
+      ],
+      "action_grouping": {
+        "method": "vector_cosine",
+        "embedding": "hash-384",
+        "threshold": 0.78,
+        "group_count": 1
+      }
+    }
+  ],
+  "source_events": [
+    "evt_e53db2ae128d",
+    "evt_21991157c589",
+    "evt_89fc04d4e7d8",
+    "evt_1f55a8699f13",
+    "evt_54781e4291af",
+    "evt_2dc84cd8781a",
+    "evt_2bcf3c1543ee",
+    "evt_3493949bf720",
+    "evt_edc73486ea71",
+    "evt_bb36474b579b",
+    "evt_494e39039b47",
+    "evt_928724d75b27",
+    "evt_d7b1d401f8b6",
+    "evt_684d65a183b7",
+    "evt_7f63f7faeb7b",
+    "evt_907671f025b8",
+    "evt_5007033ea499",
+    "evt_e1f7ae46250e",
+    "evt_be61da0ac785",
+    "evt_713b7638a318",
+    "evt_24be22a143e5",
+    "evt_b88b32c08cc1",
+    "evt_f45e303f7e01",
+    "evt_1bed31fc63db",
+    "evt_b77bc2c6b000",
+    "evt_66cdc9b64d63",
+    "evt_2484acccdcd6",
+    "evt_f518fb4d8c01",
+    "evt_e8c685d7adb6",
+    "evt_34d565687615",
+    "evt_4eb0a8448501",
+    "evt_ece46ee402c6",
+    "evt_ec14c9a612a7",
+    "evt_69fefdf7c746",
+    "evt_3b86cd08c6df",
+    "evt_6f30871c2f6b",
+    "evt_5ea7fee2b827",
+    "evt_57c43c8c1cd1",
+    "evt_51a26612fa4e",
+    "evt_778f08754851",
+    "evt_32e5a43f41a9",
+    "evt_79c767d2f493",
+    "evt_37bb16461f28",
+    "evt_e977ec5b39e5",
+    "evt_ff1ad0adb2f1",
+    "evt_bcd64de00141",
+    "evt_ff489e516529",
+    "evt_d310fa17b9d6",
+    "evt_5c7d2410933d",
+    "evt_6ee17c7d22f3",
+    "evt_8b616cee22c0",
+    "evt_725026722ff4",
+    "evt_1743a98478a3",
+    "evt_a9d8c601f095",
+    "evt_ef20a5c44017",
+    "evt_e4ddceee0a34",
+    "evt_7805b74af961",
+    "evt_35ba16276599",
+    "evt_a2aa61f49d8a",
+    "evt_9c32b0f82546",
+    "evt_2629cfcfa680",
+    "evt_cc61d09bfe87",
+    "evt_f85e44632b6c",
+    "evt_f03aea4c51e1",
+    "evt_8e55999c4748",
+    "evt_ceeee99007a0",
+    "evt_b766cd4a5a6d",
+    "evt_ac97c5c2e645",
+    "evt_9d1e56c93664",
+    "evt_ffa6eccf3b85",
+    "evt_4ad557169536",
+    "evt_e7d38da7de08",
+    "evt_ba441a52ba00",
+    "evt_b39bef0a0032",
+    "evt_de8568f1ec73",
+    "evt_4bc01422cee2",
+    "evt_4a29092c00c4",
+    "evt_5d798396ef33",
+    "evt_16447cf7460a",
+    "evt_c21f04435432",
+    "evt_ce471573bd80",
+    "evt_64122f90f8aa"
+  ],
+  "created_at": "2026-09-15T09:30:44.031563+00:00",
+  "metadata": {
+    "event_count": 82
+  }
+}

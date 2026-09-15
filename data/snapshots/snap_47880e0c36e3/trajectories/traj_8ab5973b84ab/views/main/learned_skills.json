@@ -1,0 +1,120 @@
+{
+  "view_name": "learned_skills",
+  "trajectory_id": "traj_8ab5973b84ab",
+  "branch_id": "main",
+  "content": [
+    {
+      "schema_version": "learned_skill.v2",
+      "skill_id": "skill_python_misspelled_python_module_name_python_c_import_jsonn",
+      "name": "Repair misspelled python module name in import statement",
+      "trigger": {
+        "failed_tool": "python",
+        "failed_command_pattern": "python -c \"import jsonn\"",
+        "normalized_signature": "exit code traceback most recent call last file \"<string>\" line in <module> import jsonn modulenotfounderror no module named 'jsonn'",
+        "error_signature": "Exit code 1\nTraceback (most recent call last):\r\n  File \"<string>\", line 1, in <module>\r\n    import jsonn\r\nModuleNotFoundError: No module named 'jsonn'",
+        "likely_cause": "misspelled python module name in import statement"
+      },
+      "failure_grouping": {
+        "method": "vector_cosine",
+        "embedding": "hash-384",
+        "threshold": 0.74,
+        "failure_event_ids": [
+          "evt_3493949bf720"
+        ],
+        "group_size": 1
+      },
+      "recommended_actions": [
+        {
+          "action_id": "act_python_misspelled_python_module_name_python_c_import_jsonn_1",
+          "name": "Complete raw output:\n\n```\nExit code 1\nTraceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n    import jsonn\nModuleNotFoundError: No module ",
+          "canonical_tool": "python",
+          "canonical_command_template": "python -c \"import json; print(json.__name__)\"",
+          "strategy": "Complete raw output:\n\n```\nExit code 1\nTraceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n    import jsonn\nModuleNotFoundError: No module named 'jsonn'\n```\n\nThe command failed because there is no module named `jsonn` (likely a typo of `json`).",
+          "support_event_ids": [
+            "evt_684d65a183b7"
+          ],
+          "support_events": [
+            {
+              "trajectory_id": "traj_8ab5973b84ab",
+              "failure_event_id": "evt_3493949bf720",
+              "success_event_id": "evt_684d65a183b7",
+              "branch_id": "main",
+              "failure_tool_call_event_id": "evt_2bcf3c1543ee",
+              "success_tool_call_event_id": "evt_d7b1d401f8b6",
+              "tool": "python",
+              "command": "python -c \"import json; print(json.__name__)\"",
+              "strategy": "Complete raw output:\n\n```\nExit code 1\nTraceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n    import jsonn\nModuleNotFoundError: No module named 'jsonn'\n```\n\nThe command failed because there is no module named `jsonn` (likely a typo of `json`).",
+              "outcome": "ok",
+              "primary_rule": "same_branch_first_success_after_failure",
+              "judgment_label": "likely_repair",
+              "confidence": 0.95,
+              "reason": "The failure was caused by importing the misspelled module `jsonn`. The successful command imports the correct module `json`, directly correcting the likely typo and producing a successful outcome.",
+              "vector_text": "python python -c \"import json; print(json.__name__)\" Complete raw output:\n\n```\nExit code 1\nTraceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n    import jsonn\nModuleNotFoundError: No module named 'jsonn'\n```\n\nThe command failed because there is no module named `jsonn` (likely a typo of `json`)."
+            }
+          ],
+          "confidence": {
+            "max_llm_confidence": 0.95,
+            "support_count": 1
+          },
+          "dedupe": {
+            "method": "vector_cosine",
+            "embedding": "hash-384",
+            "threshold": 0.78,
+            "group_size": 1
+          }
+        }
+      ],
+      "avoid_actions": [],
+      "evidence_refs": [
+        {
+          "trajectory_id": "traj_8ab5973b84ab",
+          "failure_event_id": "evt_3493949bf720",
+          "success_event_id": "evt_684d65a183b7",
+          "primary_rule": "same_branch_first_success_after_failure",
+          "judgment_label": "likely_repair"
+        }
+      ],
+      "confidence": {
+        "support_count": 1,
+        "max_llm_confidence": 0.95,
+        "evidence_levels": [
+          "structural"
+        ]
+      },
+      "status": "candidate",
+      "highlight_event_ids": [
+        "evt_3493949bf720",
+        "evt_2bcf3c1543ee",
+        "evt_684d65a183b7",
+        "evt_d7b1d401f8b6"
+      ],
+      "action_grouping": {
+        "method": "vector_cosine",
+        "embedding": "hash-384",
+        "threshold": 0.78,
+        "group_count": 1
+      }
+    }
+  ],
+  "source_events": [
+    "evt_e53db2ae128d",
+    "evt_21991157c589",
+    "evt_89fc04d4e7d8",
+    "evt_1f55a8699f13",
+    "evt_54781e4291af",
+    "evt_2dc84cd8781a",
+    "evt_2bcf3c1543ee",
+    "evt_3493949bf720",
+    "evt_edc73486ea71",
+    "evt_bb36474b579b",
+    "evt_494e39039b47",
+    "evt_928724d75b27",
+    "evt_d7b1d401f8b6",
+    "evt_684d65a183b7",
+    "evt_7f63f7faeb7b"
+  ],
+  "created_at": "2026-09-15T09:25:53.564599+00:00",
+  "metadata": {
+    "event_count": 15
+  }
+}

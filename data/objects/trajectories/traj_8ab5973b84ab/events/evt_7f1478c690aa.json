@@ -1,0 +1,31 @@
+{
+  "event_id": "evt_7f1478c690aa",
+  "trajectory_id": "traj_8ab5973b84ab",
+  "branch_id": "repair-ffa6eccf",
+  "event_type": "user_message",
+  "payload": {
+    "text": "Use ContextDB MCP tool contextdb_rollback_context with source claude-code and the session id returned earlier.\n\nIf a most recent snapshot was reported, roll back to that snapshot with this reason:\n\nThe repair branch was inspected. Continue from the most recent checkpoint.\n\nReport the resulting active branch id and confirm that no workspace files or Git state were restored."
+  },
+  "parent_event_ids": [
+    "evt_494789b3e58c"
+  ],
+  "actor": "user",
+  "timestamp": "2026-09-15T09:28:43.484932+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "claude-code",
+    "hook_adapter": "generic",
+    "hook_session_id": "aa4b6b19-4b6a-42cb-a059-40a5420fd398"
+  },
+  "metadata": {
+    "agent_id": "claude-code",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T09:28:43.484755+00:00",
+    "adapter": "claude-code-hooks",
+    "claude_hook_event": "UserPromptSubmit",
+    "claude_tool_name": "",
+    "claude_cwd": "D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB",
+    "claude_transcript_path": "C:\\Users\\lenovo\\.claude\\projects\\d--software-Pycharm-SelfCode-Agent-ContextDB\\aa4b6b19-4b6a-42cb-a059-40a5420fd398.jsonl"
+  }
+}

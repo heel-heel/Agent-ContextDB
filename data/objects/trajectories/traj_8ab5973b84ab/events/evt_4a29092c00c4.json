@@ -1,0 +1,40 @@
+{
+  "event_id": "evt_4a29092c00c4",
+  "trajectory_id": "traj_8ab5973b84ab",
+  "branch_id": "main",
+  "event_type": "tool_result",
+  "payload": {
+    "tool_name": "contextdb_get_version_status",
+    "command": "{\"session_id\": \"aa4b6b19-4b6a-42cb-a059-40a5420fd398\", \"source\": \"claude-code\"}",
+    "status": "ok",
+    "preview": "{\"schema_version\":\"contextdb.mcp.version_status.v1\",\"source\":\"claude-code\",\"session_id\":\"aa4b6b19-4b6a-42cb-a059-40a5420fd398\",\"trajectory_id\":\"traj_8ab5973b84ab\",\"active_branch_id\":\"main\",\"latest_snapshot\":{\"snapshot_id\":\"snap_47880e0c36e3\",\"branch_id\":\"main\",\"checkpoint_event_id\":\"evt_ac97c5c2e645\",\"message\":\"Before state-changing bash\",\"created_at\":\"2026-09-15T09:27:56.112259+00:00\"},\"repair_branch_suggestion\":{\"suggestion_event_id\":\"evt_e7d38da7de08\",\"failure_event_id\":\"evt_ffa6eccf3b85\",\"snapshot_id\":\"snap_47880e0c36e3\",\"suggested_branch_id\":\"repair-ffa6eccf\",\"source_branch_id\":\"main\",\"created_at\":\"2026-09-15T09:27:58.529154+00:00\"},\"last_version_decision\":{\"event_id\":\"evt_f03aea4c51e1\",\"action\":\"create_repair_branch\",\"decision\":\"rejected\",\"at\":\"2026-09-15T09:27:49.851932+00:00\"},\"branches\":[{\"branch_id\":\"main\",\"base_event_id\":null,\"head_event_id\":\"evt_4bc01422cee2\",\"snapshot_id\":\"snap_47880e0c36e3\"}],\"recent_snapshots\":[{\"snapshot_id\":\"snap_b118fd51a324\",\"branch_id\":\"main\",\"checkpoint_event_id\":\"evt_8b616cee22c0\",\"message\":\"Before state-changing bash\",\"created_at\":\"2026-09-15T09:27:24.173533+00:00\"},{\"snapshot_id\":\"snap_47880e0c36e3\",\"branch_id\":\"main\",\"checkpoint_event_id\":\"evt_ac97c5c2e645\",\"message\":\"Before state-changing bash\",\"created_at\":\"2026-09-15T09:27:56.112259+00:00\"}],\"recent_version_events\":[{\"event_id\":\"evt_8b616cee22c0\",\"event_type\":\"system_event\",\"branch_id\":\"main\",\"timestamp\":\"2026-09-15T09:27:24.168974+00:00\",\"operation\":\"version_snapshot_created\",\"action\":null,\"decision\":null,\"reason\":\"Hook policy detected a potentially state-changing action: node -e \\\"require('fs').writeFileSync('contextdb-version-first-parent-absent/note.txt', 'first note')\\\"\",\"snapshot_id\":\"snap_b118fd51a324\",\"suggested_branch_id\":null},{\"event_id\":\"evt_ef20a5c44017\",\"event_type\":\"system_event\",\"branch_id\":\"main\",\"timestamp\":\"2026-09-15T09:27:26.826303+00:00\",\"operation\":\"version_repair_branch_suggested\",\"action\":null,\"decision\":null,\"reason\":null,\"snapshot_id\":\"snap_b118fd51a324\",\"suggested_branch_id\":\"repair-1743a984\"},{\"event_id\":\"evt_f03aea4c51e1\",\"event_type\":\"version_decision\",\"branch_id\":\"main\",\"timestamp\":\"2026-09-15T09:27:49.847370+00:00\",\"operation\":\"version_decision\",\"action\":\"create_repair_branch\",\"decision\":\"rejected\",\"reason\":\"Keep this first invalid Git checkout on main for diagnosis.\",\"snapshot_id\":null,\"suggested_branch_id\":null},{\"event_id\":\"evt_ac97c5c2e645\",\"event_type\":\"system_event\",\"branch_id\":\"main\",\"timestamp\":\"2026-09-15T09:27:56.108753+00:00\",\"operation\":\"version_snapshot_created\",\"action\":null,\"decision\":null,\"reason\":\"Hook policy detected a potentially state-changing action: node -e \\\"require('fs').writeFileSync('contextdb-version-second-parent-absent/note.txt', 'second note')\\\"\",\"snapshot_id\":\"snap_47880e0c36e3\",\"suggested_branch_id\":null},{\"event_id\":\"evt_e7d38da7de08\",\"event_type\":\"system_event\",\"branch_id\":\"main\",\"timestamp\":\"2026-09-15T09:27:58.526677+00:00\",\"operation\":\"version_repair_branch_suggested\",\"action\":null,\"decision\":null,\"reason\":null,\"snapshot_id\":\"snap_47880e0c36e3\",\"suggested_branch_id\":\"repair-ffa6eccf\"}],\"workspace_restore\":{\"supported\":false,\"status\":\"not_connected\",\"message\":\"ContextDB rollback creates a trajectory branch only; it never restores local workspace files automatically.\"}}",
+    "exit_code": null,
+    "transport_tool_name": "contextdb_get_version_status",
+    "tool_chain": [
+      "contextdb_get_version_status"
+    ]
+  },
+  "parent_event_ids": [
+    "evt_4bc01422cee2"
+  ],
+  "actor": "tool",
+  "timestamp": "2026-09-15T09:28:08.657892+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "claude-code",
+    "hook_adapter": "generic",
+    "hook_session_id": "aa4b6b19-4b6a-42cb-a059-40a5420fd398",
+    "tool_call_event_id": "evt_4bc01422cee2"
+  },
+  "metadata": {
+    "agent_id": "claude-code",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T09:28:08.657717+00:00",
+    "adapter": "claude-code-hooks",
+    "claude_hook_event": "PostToolUse",
+    "claude_tool_name": "mcp__contextdb__contextdb_get_version_status",
+    "claude_cwd": "D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB",
+    "claude_transcript_path": "C:\\Users\\lenovo\\.claude\\projects\\d--software-Pycharm-SelfCode-Agent-ContextDB\\aa4b6b19-4b6a-42cb-a059-40a5420fd398.jsonl"
+  }
+}

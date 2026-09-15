@@ -1,0 +1,29 @@
+{
+  "event_id": "evt_e53db2ae128d",
+  "trajectory_id": "traj_8ab5973b84ab",
+  "branch_id": "main",
+  "event_type": "system_event",
+  "payload": {
+    "text": "Claude Code session started."
+  },
+  "parent_event_ids": [],
+  "actor": "system",
+  "timestamp": "2026-09-15T09:24:52.599527+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "claude-code",
+    "hook_adapter": "generic",
+    "hook_session_id": "aa4b6b19-4b6a-42cb-a059-40a5420fd398"
+  },
+  "metadata": {
+    "agent_id": "claude-code",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T09:24:52.599333+00:00",
+    "adapter": "claude-code-hooks",
+    "claude_hook_event": "SessionStart",
+    "claude_tool_name": "",
+    "claude_cwd": "d:\\software\\Pycharm\\SelfCode\\Agent-ContextDB",
+    "claude_transcript_path": "C:\\Users\\lenovo\\.claude\\projects\\d--software-Pycharm-SelfCode-Agent-ContextDB\\aa4b6b19-4b6a-42cb-a059-40a5420fd398.jsonl"
+  }
+}
