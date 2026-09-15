@@ -1,0 +1,45 @@
+{
+  "event_id": "evt_1a4c061f1739",
+  "trajectory_id": "traj_eac5bceaf2ff",
+  "branch_id": "main",
+  "event_type": "tool_call",
+  "payload": {
+    "tool_chain": [
+      "contextdb_create_repair_branch"
+    ],
+    "command": "{\"branch_id\": \"repair-3e70d313\", \"reason\": \"Preserve the second invalid Git checkout and inspect a separate repair path.\", \"session_id\": \"87bcf17d-ac16-45e4-b19e-f18d257b44fa\", \"snapshot_id\": \"snap_946c23e7d770\", \"source\": \"claude-code\"}",
+    "arguments": {
+      "source": "claude-code",
+      "session_id": "87bcf17d-ac16-45e4-b19e-f18d257b44fa",
+      "branch_id": "repair-3e70d313",
+      "snapshot_id": "snap_946c23e7d770",
+      "reason": "Preserve the second invalid Git checkout and inspect a separate repair path."
+    },
+    "agent_tool_name": "mcp__contextdb__contextdb_create_repair_branch",
+    "status": "ok",
+    "result_tool_name": "contextdb_create_repair_branch",
+    "result_event_id": "evt_d331f07ea7f0"
+  },
+  "parent_event_ids": [
+    "evt_3395c47757b3"
+  ],
+  "actor": "agent",
+  "timestamp": "2026-09-15T07:56:54.905069+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "claude-code",
+    "hook_adapter": "generic",
+    "hook_session_id": "87bcf17d-ac16-45e4-b19e-f18d257b44fa"
+  },
+  "metadata": {
+    "agent_id": "claude-code",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T07:56:54.904852+00:00",
+    "adapter": "claude-code-hooks",
+    "claude_hook_event": "PreToolUse",
+    "claude_tool_name": "mcp__contextdb__contextdb_create_repair_branch",
+    "claude_cwd": "D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB",
+    "claude_transcript_path": "C:\\Users\\lenovo\\.claude\\projects\\d--software-Pycharm-SelfCode-Agent-ContextDB\\87bcf17d-ac16-45e4-b19e-f18d257b44fa.jsonl"
+  }
+}

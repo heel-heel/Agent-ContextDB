@@ -1,0 +1,27 @@
+{
+  "event_id": "evt_44c91adac331",
+  "trajectory_id": "traj_eac5bceaf2ff",
+  "branch_id": "main",
+  "event_type": "skill_decision",
+  "payload": {
+    "decision": "accepted",
+    "reason": "The corrected Python import name (json instead of jsonn) will be used for the repair.",
+    "skill_id": "skill_python_typo_in_python_module_python_c_import_jsonn",
+    "action_id": "act_python_typo_in_python_module_python_c_import_jsonn_1"
+  },
+  "parent_event_ids": [
+    "evt_6556ec497633"
+  ],
+  "actor": "agent",
+  "timestamp": "2026-09-15T07:54:18.798529+00:00",
+  "refs": {
+    "skill_match_event_id": "evt_8a4dd6eb93f6",
+    "skill_id": "skill_python_typo_in_python_module_python_c_import_jsonn",
+    "selected_action_id": "act_python_typo_in_python_module_python_c_import_jsonn_1"
+  },
+  "metadata": {
+    "operation": "skill_decision",
+    "online": true,
+    "integration": "agent-hook.v1"
+  }
+}

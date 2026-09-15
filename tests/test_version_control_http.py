@@ -24,7 +24,7 @@ def _get(base_url: str, path: str) -> dict:
         return json.loads(response.read().decode('utf-8'))
 
 
-def test_version_control_http_endpoints_are_logical_only():
+def test_version_control_http_endpoints_are_context_only():
     with TemporaryDirectory() as root:
         db = ContextDB(root)
         httpd = ThreadingHTTPServer(('127.0.0.1', 0), make_handler(db))

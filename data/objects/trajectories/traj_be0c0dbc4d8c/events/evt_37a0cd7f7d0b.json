@@ -1,0 +1,31 @@
+{
+  "event_id": "evt_37a0cd7f7d0b",
+  "trajectory_id": "traj_be0c0dbc4d8c",
+  "branch_id": "main",
+  "event_type": "assistant_message",
+  "payload": {
+    "text": "A repair-branch suggestion is present:\n\n- Suggested branch ID: `repair-4fe2e341`\n- Source snapshot ID: `snap_3bd350fbed87`\n- Source branch ID: `main`"
+  },
+  "parent_event_ids": [
+    "evt_149ca23c1b9d"
+  ],
+  "actor": "agent",
+  "timestamp": "2026-09-15T06:41:54.715953+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "codex-session",
+    "hook_adapter": "codex-session",
+    "hook_session_id": "rollout-2026-09-15T14-34-56-01a0a3c6-9648-70a2-af08-291576bfda30"
+  },
+  "metadata": {
+    "agent_id": "codex",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T06:41:54.715796+00:00",
+    "adapter": "codex-desktop-session-jsonl",
+    "codex_session_record_type": "response_item",
+    "codex_session_timestamp": "2026-09-15T06:41:54.211Z",
+    "codex_item_type": "message",
+    "codex_item_id": "msg_05db448112a60cc5016aa8e8b17a9887d0a4fe9dc71f37a466"
+  }
+}

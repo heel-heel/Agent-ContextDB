@@ -1,0 +1,117 @@
+{
+  "view_name": "learned_skills",
+  "trajectory_id": "traj_eac5bceaf2ff",
+  "branch_id": "main",
+  "content": [
+    {
+      "schema_version": "learned_skill.v2",
+      "skill_id": "skill_python_typo_in_python_module_python_c_import_jsonn",
+      "name": "Repair typo in python module import name",
+      "trigger": {
+        "failed_tool": "python",
+        "failed_command_pattern": "python -c \"import jsonn\"",
+        "normalized_signature": "exit code traceback most recent call last file \"<string>\" line in <module> import jsonn modulenotfounderror no module named 'jsonn'",
+        "error_signature": "Exit code 1\nTraceback (most recent call last):\r\n  File \"<string>\", line 1, in <module>\r\n    import jsonn\r\nModuleNotFoundError: No module named 'jsonn'",
+        "likely_cause": "typo in python module import name"
+      },
+      "failure_grouping": {
+        "method": "vector_cosine",
+        "embedding": "hash-384",
+        "threshold": 0.74,
+        "failure_event_ids": [
+          "evt_24e390f15243"
+        ],
+        "group_size": 1
+      },
+      "recommended_actions": [
+        {
+          "action_id": "act_python_typo_in_python_module_python_c_import_jsonn_1",
+          "name": "Apply python -c \"import json; print(json.__name__)\"",
+          "canonical_tool": "python",
+          "canonical_command_template": "python -c \"import json; print(json.__name__)\"",
+          "strategy": "Apply python -c \"import json; print(json.__name__)\"",
+          "support_event_ids": [
+            "evt_75d3208ba9c8"
+          ],
+          "support_events": [
+            {
+              "trajectory_id": "traj_eac5bceaf2ff",
+              "failure_event_id": "evt_24e390f15243",
+              "success_event_id": "evt_75d3208ba9c8",
+              "branch_id": "main",
+              "failure_tool_call_event_id": "evt_7ed15ee53671",
+              "success_tool_call_event_id": "evt_94109dacc646",
+              "tool": "python",
+              "command": "python -c \"import json; print(json.__name__)\"",
+              "strategy": "",
+              "outcome": "ok",
+              "primary_rule": "same_branch_first_success_after_failure",
+              "judgment_label": "likely_repair",
+              "confidence": 0.95,
+              "reason": "The failed command imported nonexistent module 'jsonn' due to a typo; the successful action imports the correct standard module 'json' and prints its name, directly addressing the typo.",
+              "vector_text": "python python -c \"import json; print(json.__name__)\""
+            }
+          ],
+          "confidence": {
+            "max_llm_confidence": 0.95,
+            "support_count": 1
+          },
+          "dedupe": {
+            "method": "vector_cosine",
+            "embedding": "hash-384",
+            "threshold": 0.78,
+            "group_size": 1
+          }
+        }
+      ],
+      "avoid_actions": [],
+      "evidence_refs": [
+        {
+          "trajectory_id": "traj_eac5bceaf2ff",
+          "failure_event_id": "evt_24e390f15243",
+          "success_event_id": "evt_75d3208ba9c8",
+          "primary_rule": "same_branch_first_success_after_failure",
+          "judgment_label": "likely_repair"
+        }
+      ],
+      "confidence": {
+        "support_count": 1,
+        "max_llm_confidence": 0.95,
+        "evidence_levels": [
+          "structural"
+        ]
+      },
+      "status": "candidate",
+      "highlight_event_ids": [
+        "evt_24e390f15243",
+        "evt_7ed15ee53671",
+        "evt_75d3208ba9c8",
+        "evt_94109dacc646"
+      ],
+      "action_grouping": {
+        "method": "vector_cosine",
+        "embedding": "hash-384",
+        "threshold": 0.78,
+        "group_count": 1
+      }
+    }
+  ],
+  "source_events": [
+    "evt_ec2f9d9e964d",
+    "evt_a069f155fd0f",
+    "evt_a52361b358ac",
+    "evt_80b12b587558",
+    "evt_d0b34ded8ea6",
+    "evt_7ed15ee53671",
+    "evt_24e390f15243",
+    "evt_efa0bdffdfb1",
+    "evt_123c1051b328",
+    "evt_af7985dc26b9",
+    "evt_94109dacc646",
+    "evt_75d3208ba9c8"
+  ],
+  "created_at": "2026-09-15T07:53:05.818686+00:00",
+  "metadata": {
+    "event_count": 12
+  }
+}

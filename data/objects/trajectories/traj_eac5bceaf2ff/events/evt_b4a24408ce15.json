@@ -1,0 +1,100 @@
+{
+  "event_id": "evt_b4a24408ce15",
+  "trajectory_id": "traj_eac5bceaf2ff",
+  "branch_id": "main",
+  "event_type": "skill_recommendation",
+  "payload": {
+    "type": "contextdb_skill_recommendation",
+    "matched": true,
+    "skill_id": "skill_git_file_path_absent_from_git",
+    "skill_name": "Repair file path absent from git head revision",
+    "match_score": 0.46136,
+    "match_reason": "vector cosine similarity over failure and learned trigger",
+    "selected_action": {
+      "action_id": "act_git_file_path_absent_from_git_1",
+      "name": "I’ll run the specified command from the project root and return the raw result.",
+      "canonical_tool": "git",
+      "canonical_command_template": "powershell -NoProfile -Command '[Environment]::SetEnvironmentVariable((\"LC\" + [char]95 + \"ALL\"), \"C\", \"Process\"); $env:LANG=\"C\"; git show HEAD:examples/live-path-demo/assets/settings.json; exit $LASTEXITCODE'",
+      "strategy": "I’ll run the specified command from the project root and return the raw result.",
+      "support_event_ids": [
+        "evt_a857da5b756d"
+      ],
+      "support_events": [
+        {
+          "trajectory_id": "traj_be0c0dbc4d8c",
+          "failure_event_id": "evt_fd443155ff7e",
+          "success_event_id": "evt_a857da5b756d",
+          "branch_id": "main",
+          "failure_tool_call_event_id": "evt_533104e9f50a",
+          "success_tool_call_event_id": "evt_be680e000fa1",
+          "tool": "git",
+          "command": "powershell -NoProfile -Command '[Environment]::SetEnvironmentVariable((\"LC\" + [char]95 + \"ALL\"), \"C\", \"Process\"); $env:LANG=\"C\"; git show HEAD:examples/live-path-demo/assets/settings.json; exit $LASTEXITCODE'",
+          "strategy": "I’ll run the specified command from the project root and return the raw result.",
+          "outcome": "ok",
+          "primary_rule": "same_branch_first_success_after_failure",
+          "judgment_label": "likely_repair",
+          "confidence": 0.9,
+          "reason": "The failure was caused by the path 'assets/settings.json' not existing in HEAD. The successful action uses the same git show structure but changes the path to 'examples/live-path-demo/assets/settings.json', which directly addresses the missing-path failure.",
+          "vector_text": "git powershell -NoProfile -Command '[Environment]::SetEnvironmentVariable((\"LC\" + [char]95 + \"ALL\"), \"C\", \"Process\"); $env:LANG=\"C\"; git show HEAD:examples/live-path-demo/assets/settings.json; exit $LASTEXITCODE' I’ll run the specified command from the project root and return the raw result."
+        }
+      ],
+      "confidence": {
+        "max_llm_confidence": 0.9,
+        "support_count": 1
+      },
+      "dedupe": {
+        "method": "vector_cosine",
+        "embedding": "hash-384",
+        "threshold": 0.78,
+        "group_size": 1
+      }
+    },
+    "selected_action_index": 0,
+    "selected_action_score": 0.9,
+    "selection_policy": "highest max_llm_confidence; ties keep original action order",
+    "instruction": "Use this as a suggestion. The Agent must decide whether it is safe and appropriate before executing it.",
+    "version_context": {
+      "active_branch_id": "main",
+      "latest_snapshot": {
+        "snapshot_id": "snap_946c23e7d770",
+        "branch_id": "main",
+        "event_id": "evt_500e0f0fbc7f",
+        "message": "Before state-changing bash",
+        "created_at": "2026-09-15T07:56:13.488662+00:00"
+      },
+      "repair_branch_suggestion": {
+        "suggestion_event_id": "evt_530c57f341e6",
+        "failure_event_id": "evt_3e70d3132b49",
+        "snapshot_id": "snap_946c23e7d770",
+        "suggested_branch_id": "repair-3e70d313",
+        "source_branch_id": "main",
+        "created_at": "2026-09-15T07:56:18.427708+00:00"
+      },
+      "last_version_decision": {
+        "event_id": "evt_0dfd5a4ffa0d",
+        "action": "create_repair_branch",
+        "decision": "rejected",
+        "at": "2026-09-15T07:56:04.370987+00:00"
+      },
+      "workspace_restore": {
+        "supported": false,
+        "instruction": "ContextDB records branch and rollback state only. Restore files through the Agent workspace after an explicit decision."
+      }
+    }
+  },
+  "parent_event_ids": [
+    "evt_530c57f341e6"
+  ],
+  "actor": "contextdb",
+  "timestamp": "2026-09-15T07:56:18.463326+00:00",
+  "refs": {
+    "skill_match_event_id": "evt_005141a50ad7",
+    "skill_id": "skill_git_file_path_absent_from_git",
+    "selected_action_id": "act_git_file_path_absent_from_git_1"
+  },
+  "metadata": {
+    "operation": "skill_recommendation_delivery",
+    "delivery_channel": "claude-code-post-tool-failure",
+    "online": true
+  }
+}

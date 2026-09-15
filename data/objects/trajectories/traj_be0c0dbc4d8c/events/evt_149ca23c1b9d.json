@@ -1,0 +1,42 @@
+{
+  "event_id": "evt_149ca23c1b9d",
+  "trajectory_id": "traj_be0c0dbc4d8c",
+  "branch_id": "main",
+  "event_type": "tool_result",
+  "payload": {
+    "tool_name": "contextdb_get_version_status",
+    "command": "const r = await tools.mcp__contextdb__contextdb_get_version_status({source:\"codex-session\",session_id:\"rollout-2026-09-15T14-34-56-01a0a3c6-9648-70a2-af08-291576bfda30\"});\ntext(JSON.stringify(r));",
+    "status": "ok",
+    "preview": "Script completed\nWall time 2.9 seconds\nOutput:\n\n{\"content\":[{\"type\":\"text\",\"text\":\"{\\n  \\\"schema_version\\\": \\\"contextdb.mcp.version_status.v1\\\",\\n  \\\"source\\\": \\\"codex-session\\\",\\n  \\\"session_id\\\": \\\"rollout-2026-09-15T14-34-56-01a0a3c6-9648-70a2-af08-291576bfda30\\\",\\n  \\\"trajectory_id\\\": \\\"traj_be0c0dbc4d8c\\\",\\n  \\\"active_branch_id\\\": \\\"main\\\",\\n  \\\"latest_snapshot\\\": {\\n    \\\"snapshot_id\\\": \\\"snap_3bd350fbed87\\\",\\n    \\\"branch_id\\\": \\\"main\\\",\\n    \\\"checkpoint_event_id\\\": \\\"evt_6730ddedd61a\\\",\\n    \\\"message\\\": \\\"Before state-changing exec\\\",\\n    \\\"created_at\\\": \\\"2026-09-15T06:41:31.358629+00:00\\\"\\n  },\\n  \\\"repair_branch_suggestion\\\": {\\n    \\\"suggestion_event_id\\\": \\\"evt_d473c1ef9a6d\\\",\\n    \\\"failure_event_id\\\": \\\"evt_4fe2e341ff93\\\",\\n    \\\"snapshot_id\\\": \\\"snap_3bd350fbed87\\\",\\n    \\\"suggested_branch_id\\\": \\\"repair-4fe2e341\\\",\\n    \\\"source_branch_id\\\": \\\"main\\\",\\n    \\\"created_at\\\": \\\"2026-09-15T06:41:32.932706+00:00\\\"\\n  },\\n  \\\"last_version_decision\\\": {\\n    \\\"event_id\\\": \\\"evt_e1bfc74f99c0\\\",\\n    \\\"action\\\": \\\"create_repair_branch\\\",\\n    \\\"decision\\\": \\\"rejected\\\",\\n    \\\"at\\\": \\\"2026-09-15T06:41:16.124178+00:00\\\"\\n  },\\n  \\\"branches\\\": [\\n    {\\n      \\\"branch_id\\\": \\\"main\\\",\\n      \\\"base_event_id\\\": null,\\n      \\\"head_event_id\\\": \\\"evt_03bcc12e4d53\\\",\\n      \\\"snapshot_id\\\": \\\"snap_3bd350fbed87\\\"\\n    }\\n  ],\\n  \\\"recent_snapshots\\\": [\\n    {\\n      \\\"snapshot_id\\\": \\\"snap_ddea743135a2\\\",\\n      \\\"branch_id\\\": \\\"main\\\",\\n      \\\"checkpoint_event_id\\\": \\\"evt_192373f04076\\\",\\n      \\\"message\\\": \\\"Before state-changing exec\\\",\\n      \\\"created_at\\\": \\\"2026-09-15T06:40:45.200278+00:00\\\"\\n    },\\n    {\\n      \\\"snapshot_id\\\": \\\"snap_3bd350fbed87\\\",\\n      \\\"branch_id\\\": \\\"main\\\",\\n      \\\"checkpoint_event_id\\\": \\\"evt_6730ddedd61a\\\",\\n      \\\"message\\\": \\\"Before state-changing exec\\\",\\n      \\\"created_at\\\": \\\"2026-09-15T06:41:31.358629+00:00\\\"\\n    }\\n  ],\\n  \\\"recent_version_events\\\": [\\n    {\\n      \\\"event_id\\\": \\\"evt_192373f04076\\\",\\n      \\\"event_type\\\": \\\"system_event\\\",\\n      \\\"branch_id\\\": \\\"main\\\",\\n      \\\"timestamp\\\": \\\"2026-09-15T06:40:45.195891+00:00\\\",\\n      \\\"operation\\\": \\\"version_snapshot_created\\\",\\n      \\\"action\\\": null,\\n      \\\"decision\\\": null,\\n      \\\"reason\\\": \\\"Hook policy detected a potentially state-changing action: powershell -NoProfile -Command '$env:LC\\\\\\\\_ALL=\\\\\\\"C\\\\\\\"; $env:LANG=\\\\\\\"C\\\\\\\"; git checkout --detach contextdb-demo-codex-path-first-001'\\\",\\n      \\\"snapshot_id\\\": \\\"snap_ddea743135a2\\\",\\n      \\\"suggested_branch_id\\\": null\\n    },\\n    {\\n      \\\"event_id\\\": \\\"evt_911b478b1126\\\",\\n      \\\"event_type\\\": \\\"system_event\\\",\\n      \\\"branch_id\\\": \\\"main\\\",\\n      \\\"timestamp\\\": \\\"2026-09-15T06:40:46.726783+00:00\\\",\\n      \\\"operation\\\": \\\"version_repair_branch_suggested\\\",\\n      \\\"action\\\": null,\\n      \\\"decision\\\": null,\\n      \\\"reason\\\": null,\\n      \\\"snapshot_id\\\": \\\"snap_ddea743135a2\\\",\\n      \\\"suggested_branch_id\\\": \\\"repair-edd17504\\\"\\n    },\\n    {\\n      \\\"event_id\\\": \\\"evt_e1bfc74f99c0\\\",\\n      \\\"event_type\\\": \\\"version_decision\\\",\\n      \\\"branch_id\\\": \\\"main\\\",\\n      \\\"timestamp\\\": \\\"2026-09-15T06:41:16.119844+00:00\\\",\\n      \\\"operation\\\": \\\"version_decision\\\",\\n      \\\"action\\\": \\\"create_repair_branch\\\",\\n      \\\"decision\\\": \\\"rejected\\\",\\n      \\\"reason\\\": \\\"Keep this first invalid Git checkout on main for diagnosis.\\\",\\n      \\\"snapshot_id\\\": null,\\n      \\\"suggested_branch_id\\\": null\\n    },\\n    {\\n      \\\"event_id\\\": \\\"evt_6730ddedd61a\\\",\\n      \\\"event_type\\\": \\\"system_event\\\",\\n      \\\"branch_id\\\": \\\"main\\\",\\n      \\\"timestamp\\\": \\\"2026-09-15T06:41:31.354589+00:00\\\",\\n      \\\"operation\\\": \\\"version_snapshot_created\\\",\\n      \\\"action\\\": null,\\n      \\\"decision\\\": null,\\n      \\\"reason\\\": \\\"Hook policy detected a potentially state-changing action: powershell -NoProfile -Command '$env:LC\\\\\\\\_ALL=\\\\\\\"C\\\\\\\"; $env:LANG=\\\\\\\"C\\\\\\\"; git checkout --detach contextdb-demo-codex-path-second-001'\\\",\\n      \\\"snapshot_id\\\": \\\"snap_3bd350fbed87\\\",\\n      \\\"sugge",
+    "exit_code": null,
+    "transport_tool_name": "exec",
+    "tool_chain": [
+      "exec",
+      "contextdb_get_version_status"
+    ],
+    "invoked_tool": "contextdb_get_version_status"
+  },
+  "parent_event_ids": [
+    "evt_03bcc12e4d53"
+  ],
+  "actor": "tool",
+  "timestamp": "2026-09-15T06:41:46.815520+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "codex-session",
+    "hook_adapter": "codex-session",
+    "hook_session_id": "rollout-2026-09-15T14-34-56-01a0a3c6-9648-70a2-af08-291576bfda30",
+    "tool_call_event_id": "evt_03bcc12e4d53"
+  },
+  "metadata": {
+    "agent_id": "codex",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T06:41:46.815269+00:00",
+    "adapter": "codex-desktop-session-jsonl",
+    "codex_session_record_type": "response_item",
+    "codex_session_timestamp": "2026-09-15T06:41:46.587Z",
+    "codex_item_type": "custom_tool_call_output",
+    "codex_item_id": "ctco_01a0a3cc-da5b-7c93-a6cd-ece3d32add5a"
+  }
+}

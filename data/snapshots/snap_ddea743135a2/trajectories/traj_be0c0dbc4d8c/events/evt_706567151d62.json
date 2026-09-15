@@ -1,0 +1,31 @@
+{
+  "event_id": "evt_706567151d62",
+  "trajectory_id": "traj_be0c0dbc4d8c",
+  "branch_id": "main",
+  "event_type": "assistant_message",
+  "payload": {
+    "text": "I’ll run the supplied command exactly from the project root and return the complete raw output."
+  },
+  "parent_event_ids": [
+    "evt_b4ae190418d2"
+  ],
+  "actor": "agent",
+  "timestamp": "2026-09-15T06:40:43.752125+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "codex-session",
+    "hook_adapter": "codex-session",
+    "hook_session_id": "rollout-2026-09-15T14-34-56-01a0a3c6-9648-70a2-af08-291576bfda30"
+  },
+  "metadata": {
+    "agent_id": "codex",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T06:40:43.751871+00:00",
+    "adapter": "codex-desktop-session-jsonl",
+    "codex_session_record_type": "response_item",
+    "codex_session_timestamp": "2026-09-15T06:40:43.413Z",
+    "codex_item_type": "message",
+    "codex_item_id": "msg_05db448112a60cc5016aa8e86bb6c487d0ba7b39734cfa7df3"
+  }
+}

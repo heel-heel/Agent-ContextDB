@@ -1,0 +1,40 @@
+{
+  "event_id": "evt_be680e000fa1",
+  "trajectory_id": "traj_be0c0dbc4d8c",
+  "branch_id": "main",
+  "event_type": "tool_call",
+  "payload": {
+    "tool_chain": [
+      "exec",
+      "powershell",
+      "git"
+    ],
+    "command": "powershell -NoProfile -Command '[Environment]::SetEnvironmentVariable((\"LC\" + [char]95 + \"ALL\"), \"C\", \"Process\"); $env:LANG=\"C\"; git show HEAD:examples/live-path-demo/assets/settings.json; exit $LASTEXITCODE'",
+    "arguments": null,
+    "status": "ok",
+    "result_tool_name": "git",
+    "result_event_id": "evt_a857da5b756d"
+  },
+  "parent_event_ids": [
+    "evt_0b2baa63fb91"
+  ],
+  "actor": "agent",
+  "timestamp": "2026-09-15T06:37:34.516746+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "codex-session",
+    "hook_adapter": "codex-session",
+    "hook_session_id": "rollout-2026-09-15T14-34-56-01a0a3c6-9648-70a2-af08-291576bfda30"
+  },
+  "metadata": {
+    "agent_id": "codex",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T06:37:34.516552+00:00",
+    "adapter": "codex-desktop-session-jsonl",
+    "codex_session_record_type": "response_item",
+    "codex_session_timestamp": "2026-09-15T06:37:34.122Z",
+    "codex_item_type": "custom_tool_call",
+    "codex_item_id": "ctc_05db448112a60cc5016aa8e7aca87087d0a908bcc3a71ebbe2"
+  }
+}

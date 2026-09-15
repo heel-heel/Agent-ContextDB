@@ -1,0 +1,42 @@
+{
+  "event_id": "evt_daddc2c59ca9",
+  "trajectory_id": "traj_be0c0dbc4d8c",
+  "branch_id": "main",
+  "event_type": "tool_result",
+  "payload": {
+    "tool_name": "contextdb_get_recommendation",
+    "command": "const r = await tools.mcp__contextdb__contextdb_get_recommendation({source:\"codex-session\",session_id:\"rollout-2026-09-15T14-34-56-01a0a3c6-9648-70a2-af08-291576bfda30\"});\ntext(JSON.stringify(r));",
+    "status": "ok",
+    "preview": "Script completed\nWall time 2.8 seconds\nOutput:\n\n{\"content\":[{\"type\":\"text\",\"text\":\"{\\n  \\\"skill_match_event_id\\\": \\\"evt_8aa3b8425265\\\",\\n  \\\"matched\\\": true,\\n  \\\"skill_id\\\": \\\"skill_git_file_path_absent_from_git\\\",\\n  \\\"action_id\\\": \\\"act_git_file_path_absent_from_git_1\\\",\\n  \\\"proposed_action\\\": \\\"powershell -NoProfile -Command '[Environment]::SetEnvironmentVariable((\\\\\\\"LC\\\\\\\" + [char]95 + \\\\\\\"ALL\\\\\\\"), \\\\\\\"C\\\\\\\", \\\\\\\"Process\\\\\\\"); $env:LANG=\\\\\\\"C\\\\\\\"; git show HEAD:examples/live-path-demo/assets/settings.json; exit $LASTEXITCODE'\\\"\\n}\"}],\"isError\":false}",
+    "exit_code": null,
+    "transport_tool_name": "exec",
+    "tool_chain": [
+      "exec",
+      "contextdb_get_recommendation"
+    ],
+    "invoked_tool": "contextdb_get_recommendation"
+  },
+  "parent_event_ids": [
+    "evt_0aef55864b7a"
+  ],
+  "actor": "tool",
+  "timestamp": "2026-09-15T06:38:52.640210+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "codex-session",
+    "hook_adapter": "codex-session",
+    "hook_session_id": "rollout-2026-09-15T14-34-56-01a0a3c6-9648-70a2-af08-291576bfda30",
+    "tool_call_event_id": "evt_4ee012c1c5d9"
+  },
+  "metadata": {
+    "agent_id": "codex",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T06:38:52.639968+00:00",
+    "adapter": "codex-desktop-session-jsonl",
+    "codex_session_record_type": "response_item",
+    "codex_session_timestamp": "2026-09-15T06:38:52.526Z",
+    "codex_item_type": "custom_tool_call_output",
+    "codex_item_id": "ctco_01a0a3ca-326e-7912-ba17-ff1f6536140e"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "branch_id": "repair-4fe2e341",
+  "trajectory_id": "traj_be0c0dbc4d8c",
+  "base_event_id": "evt_6730ddedd61a",
+  "head_event_id": "evt_d5e9d913ac56",
+  "snapshot_id": null,
+  "created_at": "2026-09-15T06:42:06.796962+00:00",
+  "metadata": {
+    "from_branch": "main",
+    "version_origin": "agent",
+    "created_from_snapshot": "snap_3bd350fbed87",
+    "reason": "Preserve the second invalid Git checkout and inspect a separate repair path."
+  }
+}

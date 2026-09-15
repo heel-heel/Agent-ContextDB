@@ -1,0 +1,58 @@
+{
+  "event_id": "evt_fd443155ff7e",
+  "trajectory_id": "traj_be0c0dbc4d8c",
+  "branch_id": "main",
+  "event_type": "tool_result",
+  "payload": {
+    "tool_name": "git",
+    "command": "powershell -NoProfile -Command '[Environment]::SetEnvironmentVariable((\"LC\" + [char]95 + \"ALL\"), \"C\", \"Process\"); $env:LANG=\"C\"; git show HEAD:assets/settings.json; exit $LASTEXITCODE'",
+    "status": "failed",
+    "preview": "Script completed\nWall time 1.5 seconds\nOutput:\n\n{\"chunk_id\":\"d6494b\",\"wall_time_seconds\":0.8181257,\"exit_code\":1,\"original_token_count\":15,\"output\":\"fatal: path 'assets/settings.json' does not exist in 'HEAD'\\n\"}",
+    "exit_code": 1,
+    "transport_tool_name": "exec",
+    "tool_chain": [
+      "exec",
+      "powershell",
+      "git"
+    ],
+    "invoked_tool": "git",
+    "failure_tool_name": "git"
+  },
+  "parent_event_ids": [
+    "evt_533104e9f50a"
+  ],
+  "actor": "tool",
+  "timestamp": "2026-09-15T06:37:22.134672+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "codex-session",
+    "hook_adapter": "codex-session",
+    "hook_session_id": "rollout-2026-09-15T14-34-56-01a0a3c6-9648-70a2-af08-291576bfda30",
+    "tool_call_event_id": "evt_533104e9f50a"
+  },
+  "metadata": {
+    "agent_id": "codex",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T06:37:22.134470+00:00",
+    "adapter": "codex-desktop-session-jsonl",
+    "codex_session_record_type": "response_item",
+    "codex_session_timestamp": "2026-09-15T06:37:21.715Z",
+    "codex_item_type": "custom_tool_call_output",
+    "codex_item_id": "ctco_01a0a3c8-cfb3-78a2-8ba4-d0bb8429b653",
+    "likely_cause_judgment": {
+      "enabled": true,
+      "provider": "openai-compatible",
+      "model": "deepseek-flash",
+      "likely_cause": "file path absent from git head revision",
+      "confidence": 0.96,
+      "reason": "git show failed with \"fatal: path 'assets/settings.json' does not exist in 'HEAD'\", indicating the requested file is not present in the HEAD commit.",
+      "input": {
+        "failed_tool": "git",
+        "failed_command": "powershell -NoProfile -Command '[Environment]::SetEnvironmentVariable((\"LC\" + [char]95 + \"ALL\"), \"C\", \"Process\"); $env:LANG=\"C\"; git show HEAD:assets/settings.json; exit $LASTEXITCODE'",
+        "error_signature": "Script completed\nWall time 1.5 seconds\nOutput:\n\n{\"chunk_id\":\"d6494b\",\"wall_time_seconds\":0.8181257,\"exit_code\":1,\"original_token_count\":15,\"output\":\"fatal: path 'assets/settings.json' does not exist in 'HEAD'\\n\"}",
+        "preceding_action": "I’ll run that command from the project root and return its output verbatim."
+      }
+    }
+  }
+}

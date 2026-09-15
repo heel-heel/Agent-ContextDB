@@ -1,0 +1,42 @@
+{
+  "event_id": "evt_d5e9d913ac56",
+  "trajectory_id": "traj_be0c0dbc4d8c",
+  "branch_id": "repair-4fe2e341",
+  "event_type": "tool_result",
+  "payload": {
+    "tool_name": "contextdb_rollback_context",
+    "command": "const r = await tools.mcp__contextdb__contextdb_rollback_context({source:\"codex-session\",session_id:\"rollout-2026-09-15T14-34-56-01a0a3c6-9648-70a2-af08-291576bfda30\",snapshot_id:\"snap_3bd350fbed87\",reason:\"The repair branch was inspected. Continue from the most recent checkpoint.\"});\ntext(JSON.stringify(r));",
+    "status": "ok",
+    "preview": "Script completed\nWall time 4.1 seconds\nOutput:\n\n{\"content\":[{\"type\":\"text\",\"text\":\"{\\n  \\\"source\\\": \\\"codex-session\\\",\\n  \\\"session_id\\\": \\\"rollout-2026-09-15T14-34-56-01a0a3c6-9648-70a2-af08-291576bfda30\\\",\\n  \\\"trajectory_id\\\": \\\"traj_be0c0dbc4d8c\\\",\\n  \\\"branch_id\\\": \\\"rollback-3bd350\\\",\\n  \\\"snapshot_id\\\": \\\"snap_3bd350fbed87\\\",\\n  \\\"decision_event_id\\\": \\\"evt_ad16bf00b5f1\\\",\\n  \\\"rollback_event_id\\\": \\\"evt_cb369f04cc79\\\",\\n  \\\"version_context\\\": {\\n    \\\"active_branch_id\\\": \\\"rollback-3bd350\\\",\\n    \\\"latest_snapshot\\\": {\\n      \\\"snapshot_id\\\": \\\"snap_3bd350fbed87\\\",\\n      \\\"branch_id\\\": \\\"main\\\",\\n      \\\"checkpoint_event_id\\\": \\\"evt_6730ddedd61a\\\",\\n      \\\"message\\\": \\\"Before state-changing exec\\\",\\n      \\\"created_at\\\": \\\"2026-09-15T06:41:31.358629+00:00\\\"\\n    },\\n    \\\"repair_branch_suggestion\\\": null,\\n    \\\"last_version_decision\\\": {\\n      \\\"event_id\\\": \\\"evt_ad16bf00b5f1\\\",\\n      \\\"action\\\": \\\"rollback_context\\\",\\n      \\\"decision\\\": \\\"accepted\\\",\\n      \\\"at\\\": \\\"2026-09-15T06:43:12.813061+00:00\\\"\\n    },\\n    \\\"workspace_restore\\\": {\\n      \\\"supported\\\": false,\\n      \\\"instruction\\\": \\\"ContextDB records branch and rollback state only. Restore files through the Agent workspace after an explicit decision.\\\"\\n    }\\n  }\\n}\"}],\"structuredContent\":{\"source\":\"codex-session\",\"session_id\":\"rollout-2026-09-15T14-34-56-01a0a3c6-9648-70a2-af08-291576bfda30\",\"trajectory_id\":\"traj_be0c0dbc4d8c\",\"branch_id\":\"rollback-3bd350\",\"snapshot_id\":\"snap_3bd350fbed87\",\"decision_event_id\":\"evt_ad16bf00b5f1\",\"rollback_event_id\":\"evt_cb369f04cc79\",\"version_context\":{\"active_branch_id\":\"rollback-3bd350\",\"latest_snapshot\":{\"snapshot_id\":\"snap_3bd350fbed87\",\"branch_id\":\"main\",\"checkpoint_event_id\":\"evt_6730ddedd61a\",\"message\":\"Before state-changing exec\",\"created_at\":\"2026-09-15T06:41:31.358629+00:00\"},\"repair_branch_suggestion\":null,\"last_version_decision\":{\"event_id\":\"evt_ad16bf00b5f1\",\"action\":\"rollback_context\",\"decision\":\"accepted\",\"at\":\"2026-09-15T06:43:12.813061+00:00\"},\"workspace_restore\":{\"supported\":false,\"instruction\":\"ContextDB records branch and rollback state only. Restore files through the Agent workspace after an explicit decision.\"}}},\"isError\":false}",
+    "exit_code": null,
+    "transport_tool_name": "exec",
+    "tool_chain": [
+      "exec",
+      "contextdb_rollback_context"
+    ],
+    "invoked_tool": "contextdb_rollback_context"
+  },
+  "parent_event_ids": [
+    "evt_ad16bf00b5f1"
+  ],
+  "actor": "tool",
+  "timestamp": "2026-09-15T06:43:13.298639+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "codex-session",
+    "hook_adapter": "codex-session",
+    "hook_session_id": "rollout-2026-09-15T14-34-56-01a0a3c6-9648-70a2-af08-291576bfda30",
+    "tool_call_event_id": "evt_40bd2f59706d"
+  },
+  "metadata": {
+    "agent_id": "codex",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T06:43:13.298389+00:00",
+    "adapter": "codex-desktop-session-jsonl",
+    "codex_session_record_type": "response_item",
+    "codex_session_timestamp": "2026-09-15T06:43:12.831Z",
+    "codex_item_type": "custom_tool_call_output",
+    "codex_item_id": "ctco_01a0a3ce-2b3f-77f1-9a92-f2e31f459cac"
+  }
+}

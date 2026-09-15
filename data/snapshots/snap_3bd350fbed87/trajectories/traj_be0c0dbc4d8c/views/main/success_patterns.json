@@ -1,0 +1,77 @@
+{
+  "view_name": "success_patterns",
+  "trajectory_id": "traj_be0c0dbc4d8c",
+  "branch_id": "main",
+  "content": [
+    {
+      "schema_version": "experience_mining.v1",
+      "pattern_id": "sp_5309f7769dca",
+      "success_event_id": "evt_5309f7769dca",
+      "branch_id": "main",
+      "successful_tool": "powershell",
+      "successful_command": "powershell -NoProfile -Command '$pointer = \".\\data\\codex-watcher-current-session.json\"; $deadline = (Get-Date).AddSeconds(10); do { if (Test-Path -LiteralPath $pointer) { $session = Get-Content -Raw -LiteralPath $pointer | ConvertFrom-Json; $field = \"session\" + [char]95 + \"id\"; $id = $session.PSObject.Properties[$field].Value; if ($session.source -eq \"codex-session\" -and $id) { Write-Output $id; exit 0 } }; Start-Sleep -Milliseconds 250 } while ((Get-Date) -lt $deadline); [Console]::Error.WriteLine(\"ContextDB watcher session was not available within 10 seconds.\"); exit 1'",
+      "strategy": "I’ll read the watcher’s current-session pointer once from the project root and retain that rollout ID for this conversation.",
+      "outcome": "ok",
+      "result_preview": "Script completed\nWall time 1.8 seconds\nOutput:\n\n{\"chunk_id\":\"d646dc\",\"wall_time_seconds\":1.1031835,\"exit_code\":0,\"original_token_count\":17,\"output\":\"rollout-2026-09-15T14-34-56-01a0a3c6-9648-70a2-af08-291576bfda30\\r\\n\"}",
+      "is_first_success_on_branch": true,
+      "source_event_ids": [
+        "evt_7fac3291a48c"
+      ],
+      "evidence_event_ids": [
+        "evt_66c7d6ed2956",
+        "evt_7fac3291a48c",
+        "evt_5309f7769dca"
+      ],
+      "highlight_event_ids": [
+        "evt_5309f7769dca"
+      ]
+    },
+    {
+      "schema_version": "experience_mining.v1",
+      "pattern_id": "sp_a857da5b756d",
+      "success_event_id": "evt_a857da5b756d",
+      "branch_id": "main",
+      "successful_tool": "git",
+      "successful_command": "powershell -NoProfile -Command '[Environment]::SetEnvironmentVariable((\"LC\" + [char]95 + \"ALL\"), \"C\", \"Process\"); $env:LANG=\"C\"; git show HEAD:examples/live-path-demo/assets/settings.json; exit $LASTEXITCODE'",
+      "strategy": "I’ll run the specified command from the project root and return the raw result.",
+      "outcome": "ok",
+      "result_preview": "Script completed\nWall time 3.4 seconds\nOutput:\n\n{\"chunk_id\":\"f1689f\",\"wall_time_seconds\":2.7808261,\"exit_code\":0,\"original_token_count\":35,\"output\":\"{\\n  \\\"mode\\\": \\\"clean-path-skill-demo\\\",\\n  \\\"source\\\": \\\"project-fixture\\\",\\n  \\\"purpose\\\": \\\"real file-path repair and skill-reuse demonstration\\\"\\n}\\n\"}",
+      "is_first_success_on_branch": false,
+      "source_event_ids": [
+        "evt_be680e000fa1"
+      ],
+      "evidence_event_ids": [
+        "evt_0b2baa63fb91",
+        "evt_be680e000fa1",
+        "evt_a857da5b756d"
+      ],
+      "highlight_event_ids": [
+        "evt_a857da5b756d"
+      ]
+    }
+  ],
+  "source_events": [
+    "evt_a7455668ad35",
+    "evt_c0a70d25d650",
+    "evt_d50f76fcf193",
+    "evt_66c7d6ed2956",
+    "evt_7fac3291a48c",
+    "evt_5309f7769dca",
+    "evt_2e416f1e7c15",
+    "evt_793b7c5bba8b",
+    "evt_e41ee52e2e87",
+    "evt_533104e9f50a",
+    "evt_fd443155ff7e",
+    "evt_c9633d3eb51f",
+    "evt_6b33bd706689",
+    "evt_028686d10ba4",
+    "evt_0b2baa63fb91",
+    "evt_be680e000fa1",
+    "evt_a857da5b756d",
+    "evt_24058ec3d41b"
+  ],
+  "created_at": "2026-09-15T06:37:57.870607+00:00",
+  "metadata": {
+    "event_count": 18
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "event_id": "evt_23caa75dc07d",
+  "trajectory_id": "traj_be0c0dbc4d8c",
+  "branch_id": "main",
+  "event_type": "assistant_message",
+  "payload": {
+    "text": "```text\nAt line:1 char:8\n+ $env:LC\\_ALL=\"C\"; $env:LANG=\"C\"; git checkout --detach contextdb-demo ...\n+        ~~~~~~~~~\nUnexpected token '\\_ALL=\"C\"' in expression or statement.\n    + CategoryInfo          : ParserError: (:) [], ParentContainsErrorRecordException\n    + FullyQualifiedErrorId : UnexpectedToken\n```"
+  },
+  "parent_event_ids": [
+    "evt_911b478b1126"
+  ],
+  "actor": "agent",
+  "timestamp": "2026-09-15T06:40:51.093038+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "codex-session",
+    "hook_adapter": "codex-session",
+    "hook_session_id": "rollout-2026-09-15T14-34-56-01a0a3c6-9648-70a2-af08-291576bfda30"
+  },
+  "metadata": {
+    "agent_id": "codex",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T06:40:51.092767+00:00",
+    "adapter": "codex-desktop-session-jsonl",
+    "codex_session_record_type": "response_item",
+    "codex_session_timestamp": "2026-09-15T06:40:50.731Z",
+    "codex_item_type": "message",
+    "codex_item_id": "msg_05db448112a60cc5016aa8e87184b087d08c5b4ef63dfa4fa6"
+  }
+}

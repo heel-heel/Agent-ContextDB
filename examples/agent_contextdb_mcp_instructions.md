@@ -3,6 +3,12 @@
 Use ContextDB as an advisory context and skill service. Do not execute a
 ContextDB recommendation automatically.
 
+For a Codex Desktop session collected by
+`tools\windows_codex_session_watcher.py`, the watcher already records native
+user messages and tool calls/results. In that mode, do not perform step 2 for
+those native events; use steps 1 and 3 through 5 with `source=codex-session`
+and the watcher-derived rollout session id.
+
 1. At the start of a new turn, call `contextdb_prepare_context` with the stable
    Agent `source` and `session_id`. Use its returned `prompt_context` and
    `agent_context` only when relevant to the current task.

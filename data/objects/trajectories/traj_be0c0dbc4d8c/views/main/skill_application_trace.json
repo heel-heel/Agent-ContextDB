@@ -1,0 +1,173 @@
+{
+  "view_name": "skill_application_trace",
+  "trajectory_id": "traj_be0c0dbc4d8c",
+  "branch_id": "main",
+  "content": [
+    {
+      "event_id": "evt_533104e9f50a",
+      "trajectory_id": "traj_be0c0dbc4d8c",
+      "branch_id": "main",
+      "event_type": "tool_call",
+      "payload": {
+        "tool_chain": [
+          "exec",
+          "powershell",
+          "git"
+        ],
+        "command": "powershell -NoProfile -Command '[Environment]::SetEnvironmentVariable((\"LC\" + [char]95 + \"ALL\"), \"C\", \"Process\"); $env:LANG=\"C\"; git show HEAD:assets/settings.json; exit $LASTEXITCODE'",
+        "arguments": null,
+        "status": "failed",
+        "result_tool_name": "git",
+        "result_event_id": "evt_fd443155ff7e",
+        "failure_tool_name": "git"
+      },
+      "parent_event_ids": [
+        "evt_e41ee52e2e87"
+      ],
+      "actor": "agent",
+      "timestamp": "2026-09-15T06:37:20.637235+00:00",
+      "refs": {
+        "hook_protocol": "contextdb.agent_hook.v1",
+        "hook_source": "codex-session",
+        "hook_adapter": "codex-session",
+        "hook_session_id": "rollout-2026-09-15T14-34-56-01a0a3c6-9648-70a2-af08-291576bfda30"
+      },
+      "metadata": {
+        "agent_id": "codex",
+        "online": true,
+        "integration": "agent-hook.v1",
+        "hook_received_at": "2026-09-15T06:37:20.636893+00:00",
+        "adapter": "codex-desktop-session-jsonl",
+        "codex_session_record_type": "response_item",
+        "codex_session_timestamp": "2026-09-15T06:37:20.156Z",
+        "codex_item_type": "custom_tool_call",
+        "codex_item_id": "ctc_05db448112a60cc5016aa8e79f102887d097b7159f3f66ed1e"
+      }
+    },
+    {
+      "event_id": "evt_fd443155ff7e",
+      "trajectory_id": "traj_be0c0dbc4d8c",
+      "branch_id": "main",
+      "event_type": "tool_result",
+      "payload": {
+        "tool_name": "git",
+        "command": "powershell -NoProfile -Command '[Environment]::SetEnvironmentVariable((\"LC\" + [char]95 + \"ALL\"), \"C\", \"Process\"); $env:LANG=\"C\"; git show HEAD:assets/settings.json; exit $LASTEXITCODE'",
+        "status": "failed",
+        "preview": "Script completed\nWall time 1.5 seconds\nOutput:\n\n{\"chunk_id\":\"d6494b\",\"wall_time_seconds\":0.8181257,\"exit_code\":1,\"original_token_count\":15,\"output\":\"fatal: path 'assets/settings.json' does not exist in 'HEAD'\\n\"}",
+        "exit_code": 1,
+        "transport_tool_name": "exec",
+        "tool_chain": [
+          "exec",
+          "powershell",
+          "git"
+        ],
+        "invoked_tool": "git",
+        "failure_tool_name": "git"
+      },
+      "parent_event_ids": [
+        "evt_533104e9f50a"
+      ],
+      "actor": "tool",
+      "timestamp": "2026-09-15T06:37:22.134672+00:00",
+      "refs": {
+        "hook_protocol": "contextdb.agent_hook.v1",
+        "hook_source": "codex-session",
+        "hook_adapter": "codex-session",
+        "hook_session_id": "rollout-2026-09-15T14-34-56-01a0a3c6-9648-70a2-af08-291576bfda30",
+        "tool_call_event_id": "evt_533104e9f50a"
+      },
+      "metadata": {
+        "agent_id": "codex",
+        "online": true,
+        "integration": "agent-hook.v1",
+        "hook_received_at": "2026-09-15T06:37:22.134470+00:00",
+        "adapter": "codex-desktop-session-jsonl",
+        "codex_session_record_type": "response_item",
+        "codex_session_timestamp": "2026-09-15T06:37:21.715Z",
+        "codex_item_type": "custom_tool_call_output",
+        "codex_item_id": "ctco_01a0a3c8-cfb3-78a2-8ba4-d0bb8429b653",
+        "likely_cause_judgment": {
+          "enabled": true,
+          "provider": "openai-compatible",
+          "model": "deepseek-flash",
+          "likely_cause": "file path absent from git head revision",
+          "confidence": 0.96,
+          "reason": "git show failed with \"fatal: path 'assets/settings.json' does not exist in 'HEAD'\", indicating the requested file is not present in the HEAD commit.",
+          "input": {
+            "failed_tool": "git",
+            "failed_command": "powershell -NoProfile -Command '[Environment]::SetEnvironmentVariable((\"LC\" + [char]95 + \"ALL\"), \"C\", \"Process\"); $env:LANG=\"C\"; git show HEAD:assets/settings.json; exit $LASTEXITCODE'",
+            "error_signature": "Script completed\nWall time 1.5 seconds\nOutput:\n\n{\"chunk_id\":\"d6494b\",\"wall_time_seconds\":0.8181257,\"exit_code\":1,\"original_token_count\":15,\"output\":\"fatal: path 'assets/settings.json' does not exist in 'HEAD'\\n\"}",
+            "preceding_action": "I’ll run that command from the project root and return its output verbatim."
+          }
+        }
+      }
+    },
+    {
+      "event_id": "evt_c9633d3eb51f",
+      "trajectory_id": "traj_be0c0dbc4d8c",
+      "branch_id": "main",
+      "event_type": "skill_match",
+      "payload": {
+        "schema_version": "skill_match_result.v2",
+        "trajectory_id": "traj_be0c0dbc4d8c",
+        "input_failure": {
+          "tool": "git",
+          "command": "powershell -NoProfile -Command '[Environment]::SetEnvironmentVariable((\"LC\" + [char]95 + \"ALL\"), \"C\", \"Process\"); $env:LANG=\"C\"; git show HEAD:assets/settings.json; exit $LASTEXITCODE'",
+          "error_signature": "Script completed\nWall time 1.5 seconds\nOutput:\n\n{\"chunk_id\":\"d6494b\",\"wall_time_seconds\":0.8181257,\"exit_code\":1,\"original_token_count\":15,\"output\":\"fatal: path 'assets/settings.json' does not exist in 'HEAD'\\n\"}",
+          "normalized_signature": "script completed wall time seconds output \"chunk_id\" \"fatal path 'assets settings.json' does not exist in 'head' n\""
+        },
+        "match_engine": {
+          "type": "sqlite-vector-index",
+          "embedding": "hash-384",
+          "similarity": "cosine",
+          "threshold": 0.32,
+          "indexed_skill_count": 1
+        },
+        "match_judge": {
+          "enabled": false,
+          "provider": "replaced_by_vector_index",
+          "reason": "Skill matching uses vector retrieval."
+        },
+        "matches": [],
+        "materialized": true,
+        "source_views": []
+      },
+      "parent_event_ids": [
+        "evt_fd443155ff7e"
+      ],
+      "actor": "contextdb",
+      "timestamp": "2026-09-15T06:37:22.139787+00:00",
+      "refs": {
+        "failure_event_id": "evt_fd443155ff7e"
+      },
+      "metadata": {
+        "operation": "online_skill_retrieval",
+        "match_engine": "sqlite-vector-index"
+      }
+    }
+  ],
+  "source_events": [
+    "evt_a7455668ad35",
+    "evt_c0a70d25d650",
+    "evt_d50f76fcf193",
+    "evt_66c7d6ed2956",
+    "evt_7fac3291a48c",
+    "evt_5309f7769dca",
+    "evt_2e416f1e7c15",
+    "evt_793b7c5bba8b",
+    "evt_e41ee52e2e87",
+    "evt_533104e9f50a",
+    "evt_fd443155ff7e",
+    "evt_c9633d3eb51f",
+    "evt_6b33bd706689",
+    "evt_028686d10ba4",
+    "evt_0b2baa63fb91",
+    "evt_be680e000fa1",
+    "evt_a857da5b756d",
+    "evt_24058ec3d41b"
+  ],
+  "created_at": "2026-09-15T06:38:04.486453+00:00",
+  "metadata": {
+    "event_count": 18
+  }
+}

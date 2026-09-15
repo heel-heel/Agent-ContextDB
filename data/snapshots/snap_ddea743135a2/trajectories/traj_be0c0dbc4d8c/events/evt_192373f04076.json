@@ -1,0 +1,31 @@
+{
+  "event_id": "evt_192373f04076",
+  "trajectory_id": "traj_be0c0dbc4d8c",
+  "branch_id": "main",
+  "event_type": "system_event",
+  "payload": {
+    "text": "ContextDB created a snapshot before a versioned action.",
+    "message": "Before state-changing exec",
+    "reason": "Hook policy detected a potentially state-changing action: powershell -NoProfile -Command '$env:LC\\_ALL=\"C\"; $env:LANG=\"C\"; git checkout --detach contextdb-demo-codex-path-first-001'",
+    "origin": "hook_policy",
+    "logical_context_only": true
+  },
+  "parent_event_ids": [
+    "evt_706567151d62"
+  ],
+  "actor": "contextdb",
+  "timestamp": "2026-09-15T06:40:45.195891+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "codex-session",
+    "hook_adapter": "codex-session",
+    "hook_session_id": "rollout-2026-09-15T14-34-56-01a0a3c6-9648-70a2-af08-291576bfda30",
+    "planned_tool_name": "exec",
+    "planned_command": "powershell -NoProfile -Command '$env:LC\\_ALL=\"C\"; $env:LANG=\"C\"; git checkout --detach contextdb-demo-codex-path-first-001'"
+  },
+  "metadata": {
+    "operation": "version_snapshot_created",
+    "origin": "hook_policy",
+    "logical_context_only": true
+  }
+}

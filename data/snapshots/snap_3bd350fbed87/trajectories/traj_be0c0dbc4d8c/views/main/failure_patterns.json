@@ -1,0 +1,74 @@
+{
+  "view_name": "failure_patterns",
+  "trajectory_id": "traj_be0c0dbc4d8c",
+  "branch_id": "main",
+  "content": [
+    {
+      "schema_version": "experience_mining.v2",
+      "pattern_id": "fp_fd443155ff7e",
+      "failure_event_id": "evt_fd443155ff7e",
+      "branch_id": "main",
+      "failed_tool": "git",
+      "failed_command": "powershell -NoProfile -Command '[Environment]::SetEnvironmentVariable((\"LC\" + [char]95 + \"ALL\"), \"C\", \"Process\"); $env:LANG=\"C\"; git show HEAD:assets/settings.json; exit $LASTEXITCODE'",
+      "error_signature": "Script completed\nWall time 1.5 seconds\nOutput:\n\n{\"chunk_id\":\"d6494b\",\"wall_time_seconds\":0.8181257,\"exit_code\":1,\"original_token_count\":15,\"output\":\"fatal: path 'assets/settings.json' does not exist in 'HEAD'\\n\"}",
+      "normalized_signature": "script completed wall time seconds output \"chunk_id\" \"fatal path 'assets settings.json' does not exist in 'head' n\"",
+      "preceding_action": "I’ll run that command from the project root and return its output verbatim.",
+      "likely_cause": "file path absent from git head revision",
+      "likely_cause_judgment": {
+        "enabled": true,
+        "provider": "openai-compatible",
+        "model": "deepseek-flash",
+        "likely_cause": "file path absent from git head revision",
+        "confidence": 0.96,
+        "reason": "git show failed with \"fatal: path 'assets/settings.json' does not exist in 'HEAD'\", indicating the requested file is not present in the HEAD commit.",
+        "input": {
+          "failed_tool": "git",
+          "failed_command": "powershell -NoProfile -Command '[Environment]::SetEnvironmentVariable((\"LC\" + [char]95 + \"ALL\"), \"C\", \"Process\"); $env:LANG=\"C\"; git show HEAD:assets/settings.json; exit $LASTEXITCODE'",
+          "error_signature": "Script completed\nWall time 1.5 seconds\nOutput:\n\n{\"chunk_id\":\"d6494b\",\"wall_time_seconds\":0.8181257,\"exit_code\":1,\"original_token_count\":15,\"output\":\"fatal: path 'assets/settings.json' does not exist in 'HEAD'\\n\"}",
+          "preceding_action": "I’ll run that command from the project root and return its output verbatim."
+        }
+      },
+      "repair_status": "not_evaluated",
+      "repair_events_after_failure": [
+        {
+          "event_id": "evt_6b33bd706689",
+          "event_type": "assistant_message",
+          "summary": "assistant_message:```text\nfatal: path 'assets/settings.json' does not exist in 'HEAD'\n```"
+        },
+        {
+          "event_id": "evt_0b2baa63fb91",
+          "event_type": "assistant_message",
+          "summary": "assistant_message:I’ll run the specified command from the project root and return the raw result."
+        },
+        {
+          "event_id": "evt_be680e000fa1",
+          "event_type": "tool_call",
+          "summary": "tool_call:powershell -NoProfile -Command '[Environment]::SetEnvironmentVariable((\"LC\" + [char]95 + \"ALL\"), \"C\", \"Process\"); $en..."
+        },
+        {
+          "event_id": "evt_a857da5b756d",
+          "event_type": "tool_result",
+          "summary": "tool_result:powershell -NoProfile -Command '[Environment]::SetEnvironmentVariable((\"LC\" + [char]95 + \"ALL\"), \"C\", \"Process\"); $en..."
+        }
+      ],
+      "source_event_ids": [
+        "evt_533104e9f50a"
+      ],
+      "evidence_event_ids": [
+        "evt_e41ee52e2e87",
+        "evt_533104e9f50a",
+        "evt_fd443155ff7e"
+      ],
+      "highlight_event_ids": [
+        "evt_fd443155ff7e"
+      ]
+    }
+  ],
+  "source_events": [
+    "evt_533104e9f50a"
+  ],
+  "created_at": "2026-09-15T06:37:56.865192+00:00",
+  "metadata": {
+    "event_count": 18
+  }
+}

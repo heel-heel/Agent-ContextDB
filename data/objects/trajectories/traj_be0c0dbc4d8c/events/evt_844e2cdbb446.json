@@ -1,0 +1,30 @@
+{
+  "event_id": "evt_844e2cdbb446",
+  "trajectory_id": "traj_be0c0dbc4d8c",
+  "branch_id": "repair-4fe2e341",
+  "event_type": "system_event",
+  "payload": {
+    "text": "ContextDB created repair branch repair-4fe2e341.",
+    "branch_id": "repair-4fe2e341",
+    "from_branch": "main",
+    "snapshot_id": "snap_3bd350fbed87",
+    "reason": "Preserve the second invalid Git checkout and inspect a separate repair path.",
+    "origin": "agent",
+    "logical_context_only": true
+  },
+  "parent_event_ids": [
+    "evt_6730ddedd61a"
+  ],
+  "actor": "contextdb",
+  "timestamp": "2026-09-15T06:42:06.798312+00:00",
+  "refs": {
+    "version_decision_event_id": "evt_b5aaa11b108c",
+    "suggestion_event_id": "evt_d473c1ef9a6d",
+    "snapshot_id": "snap_3bd350fbed87"
+  },
+  "metadata": {
+    "operation": "version_branch_created",
+    "origin": "agent",
+    "logical_context_only": true
+  }
+}

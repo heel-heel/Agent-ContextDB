@@ -20,9 +20,16 @@ class AgentContextBridge:
             refs=refs, metadata={'agent_id': self.agent_id, 'online': True, **(metadata or {})},
         )
 
-    def record_tool_result(self, trajectory_id: str, tool: str, command: Any, status: str, preview: str = '', branch_id: str = 'main', exit_code: Optional[int] = None, refs: Optional[Dict[str, Any]] = None, metadata: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    def record_tool_result(self, trajectory_id: str, tool: str, command: Any, status: str, preview: str = '', branch_id: str = 'main', exit_code: Optional[int] = None, refs: Optional[Dict[str, Any]] = None, metadata: Optional[Dict[str, Any]] = None, extra_payload: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         result = self.record(
-            trajectory_id, 'tool_result', {'status': status, 'preview': preview, 'exit_code': exit_code},
+            trajectory_id, 'tool_result', {
+                'tool_name': tool,
+                'command': command,
+                'status': status,
+                'preview': preview,
+                'exit_code': exit_code,
+                **(extra_payload or {}),
+            },
             branch_id, 'tool', refs=refs, metadata=metadata,
         )
         retrieval = None

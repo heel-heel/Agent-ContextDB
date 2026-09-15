@@ -22,31 +22,214 @@ from .service import ContextDB
 
 HOOK_PROTOCOL_VERSION = 'contextdb.agent_hook.v1'
 
-# These are deliberately conservative.  A snapshot is a ContextDB logical
+# These are deliberately conservative. A snapshot is a ContextDB
 # checkpoint, not a filesystem backup, so read-only shell commands should not
 # clutter an online trajectory with version events.
 _MUTATING_TOOL_NAMES = {'write', 'edit', 'file_edit', 'apply_patch'}
+_COMMAND_TOOL_NAMES = {
+    'shell', 'exec', 'powershell', 'bash', 'terminal', 'command', 'git',
+    'python', 'functions.exec', 'functions.exec_command', 'exec_command',
+}
 _MUTATING_COMMAND = re.compile(
-    r"(?:^|\s)(?:set-content|add-content|new-item|remove-item|move-item|copy-item|"
+    r"(?:^|\s|[\"'])(?:set-content|add-content|new-item|remove-item|move-item|copy-item|"
     r"mkdir|rmdir|rm|mv|cp|touch|git\s+(?:checkout|reset|clean|apply|commit)|"
     r"pip\s+(?:install|uninstall)|npm\s+(?:install|uninstall|update)|"
     r"cargo\s+(?:add|update))(?:\s|$)|(?<![<>=])>(?!>)",
     re.IGNORECASE,
 )
+_NESTED_EXEC_TOOL = re.compile(
+    r"\btools\.(?:"
+    r"(web__run)"
+    r"|mcp__contextdb__(contextdb_[A-Za-z0-9_]+)"
+    r")\s*\(",
+)
+_DIRECT_CONTEXTDB_TOOL = re.compile(
+    r"^(?:mcp__contextdb__)?(contextdb_[A-Za-z0-9_]+)$",
+    re.IGNORECASE,
+)
+_POWERSHELL_HOST = re.compile(r"^\s*(?:&\s*)?(?:powershell|pwsh)(?:\.exe)?\b", re.IGNORECASE)
+_COMMAND_LEAF = re.compile(
+    r"(?:^|[;|&]\s*|-command\s+)(?:['\"]\s*)?(?:&\s*)?"
+    r"(git|python(?:\.exe)?|pip(?:\.exe)?|npm(?:\.cmd)?|node(?:\.exe)?|"
+    r"pytest(?:\.exe)?|rg(?:\.exe)?|get-content|set-content|add-content|"
+    r"get-childitem|new-item|remove-item|copy-item|move-item)\b",
+    re.IGNORECASE,
+)
+_POWERSHELL_PARSE_FAILURE = re.compile(
+    r"(?:parsererror|unexpected token|missing (?:expression|terminator)|at line:\d+ char:\d+)",
+    re.IGNORECASE,
+)
+
+
+def _is_contextdb_tool_call(payload: Dict[str, Any]) -> bool:
+    """Return whether a call invokes a ContextDB MCP operation.
+
+    ContextDB MCP operations can change the audit model, but never the Agent
+    workspace. They must not create an automatic pre-action snapshot or a
+    repair branch may incorrectly start from its own control-plane call.
+    """
+    transport = _transport_tool_name(payload).lower()
+    if transport.startswith("contextdb_"):
+        return True
+    command = _text(payload.get("command") or payload.get("cmd") or "")
+    return any(contextdb_tool for _, contextdb_tool in _NESTED_EXEC_TOOL.findall(command))
+
+
+def _canonical_tool_name(tool_name: Any) -> str:
+    """Return the stable display identity for a native or MCP tool.
+
+    Claude Code exposes ContextDB operations directly as
+    ``mcp__contextdb__contextdb_*`` while Codex invokes the same operation
+    inside ``exec``. The audit model uses the common ``contextdb_*`` name.
+    """
+    raw = str(tool_name or "tool").strip() or "tool"
+    direct_contextdb = _DIRECT_CONTEXTDB_TOOL.match(raw)
+    if direct_contextdb:
+        return direct_contextdb.group(1).lower()
+    normalized = raw.lower()
+    if normalized in {"pwsh", "powershell.exe", "pwsh.exe"}:
+        return "powershell"
+    if normalized.endswith(".exe"):
+        return normalized[:-4]
+    if normalized.endswith(".cmd"):
+        return normalized[:-4]
+    return normalized
 
 
 def _should_auto_snapshot(payload: Dict[str, Any]) -> bool:
-    """Return whether a Hook tool call merits a logical pre-action snapshot."""
+    """Return whether a Hook tool call merits a pre-action snapshot."""
+    if _is_contextdb_tool_call(payload):
+        return False
     explicit = payload.get('contextdb_snapshot')
     if explicit is not None:
         return bool(explicit)
-    tool_name = str(payload.get('tool_name') or payload.get('tool') or '').strip().lower()
+    tool_name = _transport_tool_name(payload).lower()
     if tool_name in _MUTATING_TOOL_NAMES:
         return True
-    if tool_name not in {'shell', 'exec', 'powershell', 'bash', 'terminal', 'command', 'git', 'python'}:
+    if tool_name not in _COMMAND_TOOL_NAMES:
         return False
     command = _text(payload.get('command') or payload.get('cmd') or '')
     return bool(_MUTATING_COMMAND.search(command))
+
+
+def _command_tool_chain(command: Any) -> List[str]:
+    """Return the observable process/cmdlet chain inside a terminal command."""
+    text = _text(command).strip()
+    if not text:
+        return []
+    if _POWERSHELL_HOST.match(text):
+        chain = ['powershell']
+        leaves = [match.group(1).lower().removesuffix('.exe').removesuffix('.cmd') for match in _COMMAND_LEAF.finditer(text)]
+        if leaves:
+            chain.append(leaves[-1])
+        return chain
+    leaves = [match.group(1).lower().removesuffix('.exe').removesuffix('.cmd') for match in _COMMAND_LEAF.finditer(text)]
+    return [leaves[-1]] if leaves else []
+
+
+def _tool_chain(tool_name: Any, command: Any) -> List[str]:
+    """Keep the transport tool and every inner tool identifiable from its input."""
+    raw_tool = _canonical_tool_name(tool_name)
+    nested_names: List[str] = []
+    for web_tool, contextdb_tool in _NESTED_EXEC_TOOL.findall(_text(command)):
+        nested_name = web_tool or contextdb_tool
+        if nested_name and nested_name not in nested_names:
+            nested_names.append(nested_name)
+    chain = [raw_tool]
+    if nested_names:
+        chain.extend(nested_names)
+    else:
+        chain.extend(_command_tool_chain(command))
+    return [name for index, name in enumerate(chain) if index == 0 or name != chain[index - 1]]
+
+
+def _transport_tool_name(payload: Dict[str, Any]) -> str:
+    """Recover the raw entry point without duplicating it in tool-call data."""
+    chain = payload.get('tool_chain') or []
+    return _canonical_tool_name(
+        payload.get('transport_tool_name')
+        or payload.get('tool_name')
+        or payload.get('tool')
+        or (chain[0] if chain else 'tool')
+    )
+
+
+def _invoked_tool_name(tool_name: Any, command: Any) -> Optional[str]:
+    """Backward-compatible shorthand for the observable innermost tool."""
+    chain = _tool_chain(tool_name, command)
+    return chain[-1] if len(chain) > 1 else None
+
+
+def _failure_tool_name(tool_chain: List[str], preview: Any) -> str:
+    """Attribute a failed execution to the observed failing layer when possible."""
+    if not tool_chain:
+        return 'tool'
+    output = _text(preview)
+    if 'powershell' in tool_chain and _POWERSHELL_PARSE_FAILURE.search(output):
+        return 'powershell'
+    # A child tool normally owns a propagated non-zero exit code.  The final
+    # chain member is therefore the best truthful attribution unless the
+    # PowerShell parser itself failed above.
+    return tool_chain[-1]
+
+
+def _result_tool_payload(
+    transport_tool_name: Any,
+    command: Any,
+    status: Any,
+    preview: Any = '',
+    exit_code: Any = None,
+    tool_chain: Optional[List[str]] = None,
+) -> Dict[str, Any]:
+    """Build a result payload with its semantic tool identity and full chain."""
+    raw_tool = _canonical_tool_name(transport_tool_name)
+    chain = list(tool_chain or _tool_chain(raw_tool, command)) or [raw_tool]
+    failed = str(status or '').lower() in {'failed', 'error', 'timeout'}
+    result_tool = _failure_tool_name(chain, preview) if failed else chain[-1]
+    payload = {
+        'tool_name': result_tool,
+        'transport_tool_name': raw_tool,
+        'tool_chain': chain,
+        'command': command,
+        'status': status,
+        'preview': preview,
+        'exit_code': exit_code,
+    }
+    if len(chain) > 1:
+        payload['invoked_tool'] = chain[-1]
+    if failed:
+        payload['failure_tool_name'] = result_tool
+    return payload
+
+
+def _tool_payload(tool_name: Any, command: Any, *, include_transport: bool = False, **extra: Any) -> Dict[str, Any]:
+    """Build call data without duplicating the transport already in its chain."""
+    raw_tool = _canonical_tool_name(tool_name)
+    chain = _tool_chain(raw_tool, command)
+    payload = {
+        'tool_chain': chain,
+        'command': command,
+        **extra,
+    }
+    if include_transport:
+        payload['tool_name'] = raw_tool
+        payload['transport_tool_name'] = raw_tool
+    else:
+        payload['status'] = 'pending'
+    return payload
+
+
+def _normalize_tool_call_payload(payload: Dict[str, Any]) -> Dict[str, Any]:
+    """Make direct Agent hooks use the same compact call shape as Codex."""
+    command = payload.get('command') or payload.get('cmd') or ''
+    ignored = {
+        'tool_name', 'tool', 'transport_tool_name', 'tool_chain', 'command',
+        'cmd', 'status', 'preview', 'output', 'message', 'exit_code',
+        'invoked_tool', 'failure_tool_name', 'result_tool_name',
+        'result_event_id',
+    }
+    extra = {key: value for key, value in payload.items() if key not in ignored}
+    return _tool_payload(_transport_tool_name(payload), command, **extra)
 
 
 @dataclass
@@ -182,15 +365,13 @@ class CodexExecJSONLHookAdapter:
         elif item_type in {'command_execution', 'shell_call', 'tool_call'}:
             command = _command(item)
             if event_type == 'item.started':
-                yield HookEvent('tool_call', {'tool_name': item.get('tool_name') or 'shell', 'command': command}, 'agent', item_id, metadata=metadata)
+                yield HookEvent('tool_call', _tool_payload(item.get('tool_name') or 'shell', command), 'agent', item_id, metadata=metadata)
             elif event_type == 'item.completed':
-                yield HookEvent('tool_result', {
-                    'tool_name': item.get('tool_name') or 'shell',
-                    'command': command,
-                    'status': _tool_status(item),
-                    'preview': _tool_output(item)[:4000],
-                    'exit_code': item.get('exit_code'),
-                }, 'tool', item_id, metadata=metadata)
+                yield HookEvent('tool_result', _tool_payload(
+                    item.get('tool_name') or 'shell', command,
+                    status=_tool_status(item), preview=_tool_output(item)[:4000],
+                    exit_code=item.get('exit_code'), include_transport=True,
+                ), 'tool', item_id, metadata=metadata)
         elif item_type in {'file_change', 'file_edit'} and event_type == 'item.completed':
             yield HookEvent('file_edit', {'path': item.get('path'), 'summary': _text(item.get('summary') or item.get('text')), 'diff': item.get('diff')}, 'agent', item_id, metadata=metadata)
         elif item_type == 'error':
@@ -218,7 +399,7 @@ class CodexDesktopSessionHookAdapter:
         if record_type == "session_meta":
             yield HookEvent(
                 "system_event",
-                {"text": "Codex App session started.", "cwd": payload.get("cwd")},
+                {"text": "Codex session started.", "cwd": payload.get("cwd")},
                 "system",
                 str(payload.get("id") or payload.get("session_id") or "") or None,
                 metadata=metadata,
@@ -245,7 +426,7 @@ class CodexDesktopSessionHookAdapter:
             call_id = str(payload.get("call_id") or item_id or "") or None
             yield HookEvent(
                 "tool_call",
-                {"tool_name": str(payload.get("name") or "tool"), "command": command, "arguments": arguments},
+                _tool_payload(payload.get("name") or "tool", command, arguments=arguments),
                 "agent",
                 call_id,
                 metadata=metadata,
@@ -258,13 +439,11 @@ class CodexDesktopSessionHookAdapter:
             call_id = str(payload.get("call_id") or item_id or "") or None
             yield HookEvent(
                 "tool_result",
-                {
-                    "tool_name": result.get("tool_name") or "tool",
-                    "command": result.get("command") or "",
-                    "status": result["status"],
-                    "preview": result["preview"],
-                    "exit_code": result.get("exit_code"),
-                },
+                _tool_payload(
+                    result.get("tool_name") or "tool", result.get("command") or "",
+                    status=result["status"], preview=result["preview"],
+                    exit_code=result.get("exit_code"), include_transport=True,
+                ),
                 "tool",
                 call_id,
                 metadata=metadata,
@@ -377,44 +556,75 @@ class HookSessionBridge:
                 **item.metadata,
             }
             if item.event_type == 'tool_call':
-                if _should_auto_snapshot(item.payload):
-                    version = self._auto_snapshot_before_tool(session, item.payload, refs)
+                call_payload = _normalize_tool_call_payload(item.payload)
+                if _should_auto_snapshot(call_payload):
+                    version = self._auto_snapshot_before_tool(session, call_payload, refs)
                     emitted.append(version['event'])
                 event = bridge.record(
-                    trajectory_id, 'tool_call', item.payload, branch_id=active_branch_id,
+                    trajectory_id, 'tool_call', call_payload, branch_id=active_branch_id,
                     actor='agent', refs=refs, metadata=metadata,
                 )
                 if item.external_id:
                     session['pending_tools'][item.external_id] = {
                         'event_id': event['event_id'],
-                        'tool_name': item.payload.get('tool_name') or 'shell',
-                        'command': item.payload.get('command') or '',
+                        'tool_name': _transport_tool_name(call_payload),
+                        'command': call_payload.get('command') or '',
+                        'tool_chain': call_payload.get('tool_chain') or [],
+                        'invoked_tool': call_payload.get('invoked_tool'),
                         'branch_id': active_branch_id,
                     }
                 emitted.append(event)
                 continue
             if item.event_type == 'tool_result':
                 pending = session['pending_tools'].pop(item.external_id, None) if item.external_id else None
-                tool_name = item.payload.get('tool_name') or (pending or {}).get('tool_name') or 'shell'
+                reported_tool_name = item.payload.get('tool_name')
+                # Codex Desktop function-call outputs often contain only the
+                # call id and output. Preserve the native call's name rather
+                # than splitting a single execution into e.g. `functions.exec`
+                # and a generic `tool` result.
+                transport_tool_name = (
+                    (pending or {}).get('tool_name')
+                    if reported_tool_name in {None, '', 'tool'} and pending
+                    else reported_tool_name or _transport_tool_name(item.payload)
+                )
                 command = item.payload.get('command') or (pending or {}).get('command') or ''
+                status = item.payload.get('status', 'ok')
+                tool_chain = list((pending or {}).get('tool_chain') or _tool_chain(transport_tool_name, command))
+                result_payload = _result_tool_payload(
+                    transport_tool_name, command, status,
+                    preview=item.payload.get('preview', ''), exit_code=item.payload.get('exit_code'),
+                    tool_chain=tool_chain,
+                )
                 result_branch_id = (pending or {}).get('branch_id') or active_branch_id
                 if pending:
                     refs['tool_call_event_id'] = pending['event_id']
                 else:
+                    implicit_payload = _tool_payload(transport_tool_name, command)
                     implicit = bridge.record(
-                        trajectory_id, 'tool_call', {'tool_name': tool_name, 'command': command},
+                        trajectory_id, 'tool_call', implicit_payload,
                         branch_id=result_branch_id, actor='agent',
                         refs={**refs, 'implicit_from_hook_result': True}, metadata=metadata,
                     )
                     refs['tool_call_event_id'] = implicit['event_id']
                     emitted.append(implicit)
+                tool_call_event_id = refs['tool_call_event_id']
                 recorded = bridge.record_tool_result(
-                    trajectory_id, tool_name, command, item.payload.get('status', 'ok'),
-                    preview=item.payload.get('preview', ''), exit_code=item.payload.get('exit_code'),
+                    trajectory_id, result_payload['tool_name'], command, status,
+                    preview=result_payload['preview'], exit_code=result_payload['exit_code'],
                     branch_id=result_branch_id, refs=refs, metadata=metadata,
+                    extra_payload={
+                        key: value for key, value in result_payload.items()
+                        if key not in {'tool_name', 'command', 'status', 'preview', 'exit_code'}
+                    },
                 )
                 emitted.append(recorded['tool_result'])
-                if item.payload.get('status', 'ok') in {'failed', 'error', 'timeout'}:
+                self.db.update_tool_call_outcome(
+                    trajectory_id, tool_call_event_id, status=status,
+                    result_tool_name=result_payload['tool_name'],
+                    tool_chain=result_payload['tool_chain'],
+                    result_event_id=recorded['tool_result']['event_id'],
+                )
+                if status in {'failed', 'error', 'timeout'}:
                     suggestion = self._suggest_repair_branch(session, recorded['tool_result'], result_branch_id, refs)
                     if suggestion:
                         emitted.append(suggestion['event'])
@@ -444,7 +654,7 @@ class HookSessionBridge:
         }
 
     def create_snapshot(self, source: str, session_id: str, message: str = '', reason: str = '') -> Dict[str, Any]:
-        """Explicitly create a logical ContextDB snapshot for a live Agent."""
+        """Explicitly create a ContextDB snapshot for a live Agent."""
         self.ensure_session(source, session_id)
         session = self.status(source, session_id)['session']
         version = self.db.create_version_snapshot(
@@ -464,13 +674,13 @@ class HookSessionBridge:
         snapshot_id: Optional[str] = None,
         reason: str = '',
     ) -> Dict[str, Any]:
-        """Accept a branch suggestion or create a named repair branch logically."""
+        """Accept a branch suggestion or create a named repair branch."""
         self.ensure_session(source, session_id)
         session = self.status(source, session_id)['session']
         suggestion = session.get('last_repair_suggestion') or {}
         snapshot_id = snapshot_id or suggestion.get('snapshot_id') or (session.get('last_version_snapshot') or {}).get('snapshot_id')
         if not snapshot_id:
-            raise ValueError('create a logical snapshot before creating a repair branch')
+            raise ValueError('create a snapshot before creating a repair branch')
         candidate = branch_id or suggestion.get('suggested_branch_id') or 'repair'
         candidate = self._available_branch_id(session['trajectory_id'], candidate)
         active_branch_id = session.get('active_branch_id') or 'main'
@@ -496,16 +706,16 @@ class HookSessionBridge:
         target_branch_id: Optional[str] = None,
         reason: str = '',
     ) -> Dict[str, Any]:
-        """Create a logical rollback branch; workspace restoration stays external."""
+        """Create a rollback branch; workspace restoration stays external."""
         self.ensure_session(source, session_id)
         session = self.status(source, session_id)['session']
         target = self._available_branch_id(session['trajectory_id'], target_branch_id or f'rollback-{snapshot_id.split("_")[-1][:6]}')
         decision = self._record_version_decision(
-            session, 'rollback_context', 'accepted', reason or 'Agent selected logical rollback.',
+            session, 'rollback_context', 'accepted', reason or 'Agent selected rollback.',
             {'snapshot_id': snapshot_id, 'target_branch_id': target},
         )
         version = self.db.create_version_rollback(
-            session['trajectory_id'], snapshot_id, target, reason=reason or 'Agent requested logical rollback.',
+            session['trajectory_id'], snapshot_id, target, reason=reason or 'Agent requested rollback.',
             origin='agent', refs={'version_decision_event_id': decision['event_id']},
         )
         session['active_branch_id'] = target
@@ -579,6 +789,7 @@ class HookSessionBridge:
         session_id: str,
         token_budget: int = 1200,
         delivery_channel: str = 'mcp',
+        include_prompt_context: bool = True,
     ) -> Dict[str, Any]:
         """Return compact turn context and persist an auditable delivery event.
 
@@ -597,7 +808,7 @@ class HookSessionBridge:
         # recording it as a skill_recommendation makes a DAG begin with a
         # misleading recommendation node.
         if not retrieval:
-            return {
+            response = {
                 'protocol_version': HOOK_PROTOCOL_VERSION,
                 'source': source,
                 'session_id': session_id,
@@ -605,11 +816,13 @@ class HookSessionBridge:
                 'delivery_event_id': None,
                 'match_event_id': None,
                 'agent_context': recommendation,
-                'prompt_context': self.db.stream_context(
-                    trajectory_id, session.get('active_branch_id') or 'main', token_budget=token_budget,
-                ).get('content', {}),
                 'version_context': self._version_context(session),
             }
+            if include_prompt_context:
+                response['prompt_context'] = self.db.stream_context(
+                    trajectory_id, session.get('active_branch_id') or 'main', token_budget=token_budget,
+                ).get('content', {})
+            return response
         selected_action = recommendation.get('selected_action') or {}
         refs = {
             'skill_match_event_id': retrieval.get('match_event_id'),
@@ -639,7 +852,7 @@ class HookSessionBridge:
         session['updated_at'] = utc_now()
         session['event_count'] = int(session.get('event_count', 0)) + 1
         self._put_session(source, session_id, session)
-        return {
+        response = {
             'protocol_version': HOOK_PROTOCOL_VERSION,
             'source': source,
             'session_id': session_id,
@@ -647,11 +860,13 @@ class HookSessionBridge:
             'delivery_event_id': delivery['event_id'],
             'match_event_id': refs.get('skill_match_event_id'),
             'agent_context': recommendation,
-            'prompt_context': self.db.stream_context(
-                trajectory_id, session.get('active_branch_id') or 'main', token_budget=token_budget,
-            ).get('content', {}),
             'version_context': self._version_context(session),
         }
+        if include_prompt_context:
+            response['prompt_context'] = self.db.stream_context(
+                trajectory_id, session.get('active_branch_id') or 'main', token_budget=token_budget,
+            ).get('content', {})
+        return response
 
     def record_skill_decision(
         self,
@@ -725,23 +940,51 @@ class HookSessionBridge:
         refs = {key: value for key, value in refs.items() if value}
         metadata = {'operation': 'skill_application', 'online': True, 'integration': 'agent-hook.v1'}
         bridge = AgentContextBridge(self.db, agent_id=session['agent_id'], source_id=f'hook:{source}')
+        transport_tool_name = tool_name
         pending = session['pending_tools'].pop(tool_call_id, None) if tool_call_id else None
         existing_call_id = tool_call_event_id or (pending or {}).get('event_id')
+        if not existing_call_id and source == 'codex-session':
+            existing_call_id = self._recent_matching_tool_call(
+                session['trajectory_id'], session.get('active_branch_id') or 'main', tool_name, command,
+            )
         if existing_call_id:
             call = self.db.get_event(session['trajectory_id'], existing_call_id)
             if call.get('event_type') != 'tool_call':
                 raise ValueError('tool_call_event_id must reference a tool_call event')
+            previous_status = str((call.get('payload') or {}).get('status') or 'pending')
+            # Never reinterpret an already-completed failed call as the later
+            # successful skill application.  The latter needs its own call.
+            if previous_status != 'pending' and previous_status != status:
+                existing_call_id = None
+        if existing_call_id:
+            call = self.db.get_event(session['trajectory_id'], existing_call_id)
             application_branch_id = call.get('branch_id') or session.get('active_branch_id') or 'main'
+            transport_tool_name = _transport_tool_name(call.get('payload') or {})
+            tool_chain = list((call.get('payload') or {}).get('tool_chain') or _tool_chain(transport_tool_name, command))
         else:
             application_branch_id = session.get('active_branch_id') or 'main'
             call = bridge.record(
-                session['trajectory_id'], 'tool_call', {'tool_name': tool_name, 'command': command},
+                session['trajectory_id'], 'tool_call', _tool_payload(tool_name, command),
                 branch_id=application_branch_id, actor='agent', refs=refs, metadata=metadata,
             )
+            tool_chain = list((call.get('payload') or {}).get('tool_chain') or _tool_chain(tool_name, command))
+        result_payload = _result_tool_payload(
+            transport_tool_name, command, status, preview=preview,
+            exit_code=exit_code, tool_chain=tool_chain,
+        )
         result = bridge.record_tool_result(
-            session['trajectory_id'], tool_name, command, status, preview=preview,
-            branch_id=application_branch_id, exit_code=exit_code,
+            session['trajectory_id'], result_payload['tool_name'], command, status, preview=result_payload['preview'],
+            branch_id=application_branch_id, exit_code=result_payload['exit_code'],
             refs={**refs, 'tool_call_event_id': call['event_id']}, metadata=metadata,
+            extra_payload={
+                key: value for key, value in result_payload.items()
+                if key not in {'tool_name', 'command', 'status', 'preview', 'exit_code'}
+            },
+        )
+        self.db.update_tool_call_outcome(
+            session['trajectory_id'], call['event_id'], status=status,
+            result_tool_name=result_payload['tool_name'], tool_chain=result_payload['tool_chain'],
+            result_event_id=result['tool_result']['event_id'],
         )
         suggestion = None
         if status in {'failed', 'error', 'timeout'}:
@@ -764,6 +1007,26 @@ class HookSessionBridge:
             'repair_branch_suggestion': suggestion.get('suggestion') if suggestion else None,
             'version_context': self._version_context(session),
         }
+
+    def _recent_matching_tool_call(
+        self,
+        trajectory_id: str,
+        branch_id: str,
+        tool_name: str,
+        command: str,
+    ) -> Optional[str]:
+        """Find the native watcher call that immediately preceded an application."""
+        for event in reversed(self.db.list_events(trajectory_id, branch_id)):
+            if event.get('event_type') != 'tool_call':
+                continue
+            payload = event.get('payload') or {}
+            chain = payload.get('tool_chain') or []
+            if (
+                payload.get('command') == command
+                and tool_name in {payload.get('tool_name'), payload.get('result_tool_name'), *(chain or [])}
+            ):
+                return event.get('event_id')
+        return None
 
     def _ensure_session(self, source: str, session_id: str, envelope: Dict[str, Any]) -> Dict[str, Any]:
         key = self._session_key(source, session_id)
@@ -844,12 +1107,12 @@ class HookSessionBridge:
             'last_version_decision': session.get('last_version_decision'),
             'workspace_restore': {
                 'supported': False,
-                'instruction': 'ContextDB records logical branch and rollback state only. Restore files through the Agent workspace after an explicit decision.',
+                'instruction': 'ContextDB records branch and rollback state only. Restore files through the Agent workspace after an explicit decision.',
             },
         }
 
     def _auto_snapshot_before_tool(self, session: Dict[str, Any], payload: Dict[str, Any], refs: Dict[str, Any]) -> Dict[str, Any]:
-        tool_name = str(payload.get('tool_name') or payload.get('tool') or 'tool')
+        tool_name = _transport_tool_name(payload)
         command = _text(payload.get('command') or payload.get('cmd') or '')
         version = self.db.create_version_snapshot(
             session['trajectory_id'], session.get('active_branch_id') or 'main',

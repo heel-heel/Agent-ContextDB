@@ -1,0 +1,28 @@
+{
+  "event_id": "evt_b5aaa11b108c",
+  "trajectory_id": "traj_be0c0dbc4d8c",
+  "branch_id": "main",
+  "event_type": "version_decision",
+  "payload": {
+    "action": "create_repair_branch",
+    "decision": "accepted",
+    "reason": "Preserve the second invalid Git checkout and inspect a separate repair path.",
+    "logical_context_only": true
+  },
+  "parent_event_ids": [
+    "evt_7deb9b33bf51"
+  ],
+  "actor": "agent",
+  "timestamp": "2026-09-15T06:42:06.793860+00:00",
+  "refs": {
+    "suggestion_event_id": "evt_d473c1ef9a6d",
+    "snapshot_id": "snap_3bd350fbed87",
+    "target_branch_id": "repair-4fe2e341"
+  },
+  "metadata": {
+    "operation": "version_decision",
+    "origin": "agent",
+    "logical_context_only": true,
+    "online": true
+  }
+}

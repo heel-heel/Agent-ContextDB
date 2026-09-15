@@ -1,0 +1,26 @@
+{
+  "event_id": "evt_e1bfc74f99c0",
+  "trajectory_id": "traj_be0c0dbc4d8c",
+  "branch_id": "main",
+  "event_type": "version_decision",
+  "payload": {
+    "action": "create_repair_branch",
+    "decision": "rejected",
+    "reason": "Keep this first invalid Git checkout on main for diagnosis.",
+    "logical_context_only": true
+  },
+  "parent_event_ids": [
+    "evt_40b251c576bc"
+  ],
+  "actor": "agent",
+  "timestamp": "2026-09-15T06:41:16.119844+00:00",
+  "refs": {
+    "suggestion_event_id": "evt_911b478b1126"
+  },
+  "metadata": {
+    "operation": "version_decision",
+    "origin": "agent",
+    "logical_context_only": true,
+    "online": true
+  }
+}

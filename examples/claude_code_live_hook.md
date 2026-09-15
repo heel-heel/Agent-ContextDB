@@ -49,3 +49,28 @@ Use a failing Bash command in Claude Code, then run:
 The resulting trajectory contains `user_message`, `tool_call`, `tool_result`,
 `skill_match`, and `skill_recommendation` events. When a historical Codex skill
 matches, the Claude hook's `additionalContext` contains its selected action.
+
+## Version-Control Fixture
+
+Keep the Skill-reuse failure separate from the failures used to demonstrate
+snapshots, repair branches, and rollback. In particular, do not reuse a Git
+failure when the trajectory already contains a Git repair Skill: vector
+retrieval can correctly identify the common tool, but that makes the version
+control demonstration noisy.
+
+For the two version-control failures, use these real PowerShell write attempts
+from the project root. Their parent directories do not exist, so each command
+fails without creating workspace files. `Set-Content` is state-changing and
+therefore triggers the ContextDB pre-action snapshot policy.
+
+```powershell
+powershell -NoProfile -Command '[System.Threading.Thread]::CurrentThread.CurrentCulture = [System.Globalization.CultureInfo]::GetCultureInfo("en-US"); [System.Threading.Thread]::CurrentThread.CurrentUICulture = [System.Globalization.CultureInfo]::GetCultureInfo("en-US"); $ErrorActionPreference = "Stop"; Set-Content -LiteralPath ".\_contextdb_claude_version_first_missing_\first-note.txt" -Value "first note"'
+```
+
+```powershell
+powershell -NoProfile -Command '[System.Threading.Thread]::CurrentThread.CurrentCulture = [System.Globalization.CultureInfo]::GetCultureInfo("en-US"); [System.Threading.Thread]::CurrentThread.CurrentUICulture = [System.Globalization.CultureInfo]::GetCultureInfo("en-US"); $ErrorActionPreference = "Stop"; Set-Content -LiteralPath ".\_contextdb_claude_version_second_missing_\second-note.txt" -Value "second note"'
+```
+
+Use the first failure to reject its repair-branch suggestion, then use the
+second failure to accept its new suggestion and create the repair branch. The
+most recent snapshot is the rollback target after the branch inspection.

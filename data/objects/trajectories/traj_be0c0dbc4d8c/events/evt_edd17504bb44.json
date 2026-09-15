@@ -1,0 +1,44 @@
+{
+  "event_id": "evt_edd17504bb44",
+  "trajectory_id": "traj_be0c0dbc4d8c",
+  "branch_id": "main",
+  "event_type": "tool_result",
+  "payload": {
+    "tool_name": "powershell",
+    "command": "powershell -NoProfile -Command '$env:LC\\_ALL=\"C\"; $env:LANG=\"C\"; git checkout --detach contextdb-demo-codex-path-first-001'",
+    "status": "failed",
+    "preview": "Script completed\nWall time 1.7 seconds\nOutput:\n\n{\"chunk_id\":\"aed174\",\"wall_time_seconds\":0.8779169,\"exit_code\":1,\"original_token_count\":78,\"output\":\"At line:1 char:8\\r\\n+ $env:LC\\\\_ALL=\\\"C\\\"; $env:LANG=\\\"C\\\"; git checkout --detach contextdb-demo ...\\r\\n+        ~~~~~~~~~\\r\\nUnexpected token '\\\\_ALL=\\\"C\\\"' in expression or statement.\\r\\n    + CategoryInfo          : ParserError: (:) [], ParentContainsErrorRecordException\\r\\n    + FullyQualifiedErrorId : UnexpectedToken\\r\\n \\r\\n\"}",
+    "exit_code": 1,
+    "transport_tool_name": "exec",
+    "tool_chain": [
+      "exec",
+      "powershell",
+      "git"
+    ],
+    "invoked_tool": "git",
+    "failure_tool_name": "powershell"
+  },
+  "parent_event_ids": [
+    "evt_207144a47701"
+  ],
+  "actor": "tool",
+  "timestamp": "2026-09-15T06:40:46.716627+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "codex-session",
+    "hook_adapter": "codex-session",
+    "hook_session_id": "rollout-2026-09-15T14-34-56-01a0a3c6-9648-70a2-af08-291576bfda30",
+    "tool_call_event_id": "evt_207144a47701"
+  },
+  "metadata": {
+    "agent_id": "codex",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T06:40:46.716384+00:00",
+    "adapter": "codex-desktop-session-jsonl",
+    "codex_session_record_type": "response_item",
+    "codex_session_timestamp": "2026-09-15T06:40:46.180Z",
+    "codex_item_type": "custom_tool_call_output",
+    "codex_item_id": "ctco_01a0a3cb-ee64-7512-a89c-ffbf2694ba0d"
+  }
+}

@@ -10,7 +10,7 @@ READ_ONLY_PREFIXES = ("select", "with", "explain")
 
 
 class ContextQLExecutor:
-    """Read-only SQL facade over ContextDB's logical relational model."""
+    """Read-only SQL facade over ContextDB's relational model."""
 
     def __init__(self, contextdb: Any):
         self.db = contextdb

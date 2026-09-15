@@ -1,0 +1,39 @@
+{
+  "event_id": "evt_40b251c576bc",
+  "trajectory_id": "traj_be0c0dbc4d8c",
+  "branch_id": "main",
+  "event_type": "tool_call",
+  "payload": {
+    "tool_chain": [
+      "exec",
+      "contextdb_record_version_decision"
+    ],
+    "command": "const r = await tools.mcp__contextdb__contextdb_record_version_decision({source:\"codex-session\",session_id:\"rollout-2026-09-15T14-34-56-01a0a3c6-9648-70a2-af08-291576bfda30\",action:\"create_repair_branch\",decision:\"rejected\",suggestion_event_id:\"evt_911b478b1126\",reason:\"Keep this first invalid Git checkout on main for diagnosis.\"});\ntext(JSON.stringify(r));",
+    "arguments": null,
+    "status": "ok",
+    "result_tool_name": "contextdb_record_version_decision",
+    "result_event_id": "evt_2cfb6ad1fd42"
+  },
+  "parent_event_ids": [
+    "evt_5003d3e1d062"
+  ],
+  "actor": "agent",
+  "timestamp": "2026-09-15T06:41:15.281936+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "codex-session",
+    "hook_adapter": "codex-session",
+    "hook_session_id": "rollout-2026-09-15T14-34-56-01a0a3c6-9648-70a2-af08-291576bfda30"
+  },
+  "metadata": {
+    "agent_id": "codex",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T06:41:15.281734+00:00",
+    "adapter": "codex-desktop-session-jsonl",
+    "codex_session_record_type": "response_item",
+    "codex_session_timestamp": "2026-09-15T06:41:14.858Z",
+    "codex_item_type": "custom_tool_call",
+    "codex_item_id": "ctc_05db448112a60cc5016aa8e888faac87d0bf6ca7a5e9366f3b"
+  }
+}

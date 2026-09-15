@@ -10,6 +10,7 @@ import sys
 import time
 from typing import Any, Dict
 from urllib import request
+from uuid import uuid4
 
 
 PROTOCOL_VERSION = "contextdb.agent_hook.v1"
@@ -36,7 +37,68 @@ def save_state(path: Path, state: Dict[str, Any]) -> None:
     temporary.replace(path)
 
 
-def forward_file(path: Path, offset: int, base_url: str, title_prefix: str) -> tuple[int, int]:
+def save_session_pointer(path: Path, session_id: str, rollout_path: Path) -> None:
+    """Expose the watcher-owned rollout id inside the project workspace.
+
+    Codex Desktop's native terminal runs in a workspace sandbox and cannot
+    reliably read ``~/.codex/sessions`` itself.  The watcher can read that
+    directory, so it mirrors only the current rollout identifier to this small
+    workspace file after successfully forwarding an event.
+    """
+    path.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        current = json.loads(path.read_text(encoding="utf-8"))
+    except (FileNotFoundError, ValueError, OSError):
+        current = {}
+    if (
+        current.get("source") == "codex-session"
+        and current.get("session_id") == session_id
+        and current.get("rollout_file") == rollout_path.name
+    ):
+        return
+
+    payload = {
+        "source": "codex-session",
+        "session_id": session_id,
+        "rollout_file": rollout_path.name,
+        "updated_at": time.time(),
+    }
+    # A Codex terminal read or another watcher can briefly hold the target on
+    # Windows. Use a per-write temporary path and retry the atomic replacement
+    # instead of terminating the live watcher.
+    temporary = path.with_name(f".{path.name}.{os.getpid()}.{uuid4().hex}.tmp")
+    try:
+        temporary.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+        for attempt in range(10):
+            try:
+                temporary.replace(path)
+                return
+            except PermissionError:
+                if attempt == 9:
+                    raise
+                time.sleep(0.1)
+    finally:
+        try:
+            temporary.unlink()
+        except FileNotFoundError:
+            pass
+
+
+def clear_session_pointer(path: Path) -> None:
+    """Do not let a new watcher run accidentally reuse an older rollout."""
+    try:
+        path.unlink()
+    except FileNotFoundError:
+        pass
+
+
+def forward_file(
+    path: Path,
+    offset: int,
+    base_url: str,
+    title_prefix: str,
+    session_pointer: Path | None = None,
+) -> tuple[int, int]:
     # A rollout file is exactly one Codex App conversation. Its filename remains
     # available on every record, unlike session metadata which appears only once.
     session_id = path.stem
@@ -44,16 +106,28 @@ def forward_file(path: Path, offset: int, base_url: str, title_prefix: str) -> t
     with path.open("r", encoding="utf-8", errors="replace") as handle:
         handle.seek(offset)
         while True:
+            line_start = handle.tell()
             line = handle.readline()
             if not line:
                 break
-            offset = handle.tell()
             if not line.strip():
+                offset = handle.tell()
                 continue
             try:
                 record = json.loads(line)
-                if not isinstance(record, dict):
-                    continue
+            except json.JSONDecodeError as exc:
+                # Codex appends JSONL records incrementally. Leave an
+                # unterminated final line for the next poll instead of losing
+                # the session-start or user-message event.
+                if not line.endswith(("\n", "\r")):
+                    return line_start, sent
+                print(f"ContextDB watcher skipped malformed JSON in {path.name}: {exc}", file=sys.stderr, flush=True)
+                offset = handle.tell()
+                continue
+            if not isinstance(record, dict):
+                offset = handle.tell()
+                continue
+            try:
                 response = post(base_url, {
                     "protocol_version": PROTOCOL_VERSION,
                     "source": "codex-session",
@@ -62,11 +136,17 @@ def forward_file(path: Path, offset: int, base_url: str, title_prefix: str) -> t
                     "agent_id": "codex",
                     "event": record,
                 })
-                sent += 1
-                for retrieval in response.get("skill_retrievals", []):
-                    print("CONTEXTDB_SKILL_HOOK " + json.dumps(retrieval, ensure_ascii=False), flush=True)
             except Exception as exc:
+                # Keep the offset on the current record so a temporary server
+                # failure does not silently drop live evidence.
                 print(f"ContextDB watcher error for {path.name}: {exc}", file=sys.stderr, flush=True)
+                return line_start, sent
+            offset = handle.tell()
+            sent += 1
+            if session_pointer:
+                save_session_pointer(session_pointer, session_id, path)
+            for retrieval in response.get("skill_retrievals", []):
+                print("CONTEXTDB_SKILL_HOOK " + json.dumps(retrieval, ensure_ascii=False), flush=True)
     return offset, sent
 
 
@@ -75,6 +155,11 @@ def main() -> int:
     parser.add_argument("--base-url", default="http://127.0.0.1:8765")
     parser.add_argument("--sessions-dir", default=str(Path.home() / ".codex" / "sessions"))
     parser.add_argument("--state-file", default=str(Path(os.environ.get("LOCALAPPDATA", str(Path.home()))) / "ContextDB" / "codex-watcher-state.json"))
+    parser.add_argument(
+        "--session-pointer",
+        default="data/codex-watcher-current-session.json",
+        help="Workspace-readable file containing the rollout id most recently forwarded by this watcher.",
+    )
     parser.add_argument("--title-prefix", default="Windows Codex App live session")
     parser.add_argument("--interval", type=float, default=0.7)
     parser.add_argument("--once", action="store_true")
@@ -83,27 +168,37 @@ def main() -> int:
 
     sessions = Path(args.sessions_dir).expanduser()
     state_path = Path(args.state_file).expanduser()
+    session_pointer = Path(args.session_pointer).expanduser()
+    clear_session_pointer(session_pointer)
     state = load_state(state_path)
     state.setdefault("files", {})
     print(f"Watching Codex App sessions under {sessions}", flush=True)
+    initial_scan = True
     while True:
         for log_path in sorted(sessions.rglob("rollout-*.jsonl")):
             key = str(log_path.resolve())
             prior = state["files"].get(key, {})
             size = log_path.stat().st_size
-            if not prior and not args.replay_existing:
+            # A normal live run is forward-only. Ignore every file present
+            # when this watcher starts, even if an old state file contains a
+            # stale offset for it. New rollout files discovered after this
+            # scan start at offset zero and retain their first user message.
+            if initial_scan and not args.replay_existing:
                 state["files"][key] = {"offset": size, "updated_at": time.time()}
                 continue
             offset = int(prior.get("offset", 0))
             if offset > size:
                 offset = 0
-            offset, sent = forward_file(log_path, offset, args.base_url, args.title_prefix)
+            offset, sent = forward_file(
+                log_path, offset, args.base_url, args.title_prefix, session_pointer,
+            )
             state["files"][key] = {"offset": offset, "updated_at": time.time()}
             if sent:
                 print(f"Forwarded {sent} event(s) from {log_path.name}", flush=True)
         save_state(state_path, state)
         if args.once:
             return 0
+        initial_scan = False
         time.sleep(max(args.interval, 0.1))
 
 

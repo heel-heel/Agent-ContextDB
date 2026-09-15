@@ -1,0 +1,33 @@
+{
+  "event_id": "evt_4b5903c95c21",
+  "trajectory_id": "traj_be0c0dbc4d8c",
+  "branch_id": "main",
+  "event_type": "tool_call",
+  "payload": {
+    "tool_chain": [
+      "exec_command",
+      "powershell",
+      "git"
+    ],
+    "command": "powershell -NoProfile -Command '[Environment]::SetEnvironmentVariable((\"LC\" + [char]95 + \"ALL\"), \"C\", \"Process\"); $env:LANG=\"C\"; git show HEAD:examples/live-path-demo/assets/settings.json; exit $LASTEXITCODE'",
+    "status": "ok",
+    "result_tool_name": "git",
+    "result_event_id": "evt_4761dad84031"
+  },
+  "parent_event_ids": [
+    "evt_b39637707d6d"
+  ],
+  "actor": "agent",
+  "timestamp": "2026-09-15T06:40:10.070859+00:00",
+  "refs": {
+    "skill_match_event_id": "evt_8aa3b8425265",
+    "skill_id": "skill_git_file_path_absent_from_git",
+    "selected_action_id": "act_git_file_path_absent_from_git_1"
+  },
+  "metadata": {
+    "agent_id": "codex",
+    "online": true,
+    "operation": "skill_application",
+    "integration": "agent-hook.v1"
+  }
+}

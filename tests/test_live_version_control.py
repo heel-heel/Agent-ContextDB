@@ -16,7 +16,7 @@ def _event(event_type: str, payload: dict, event_id: str | None = None) -> dict:
     }
 
 
-def test_live_hook_creates_logical_checkpoint_and_agent_controlled_repair_path():
+def test_live_hook_creates_checkpoint_and_agent_controlled_repair_path():
     with TemporaryDirectory() as root:
         db = ContextDB(root)
         bridge = HookSessionBridge(db)
@@ -50,9 +50,18 @@ def test_live_hook_creates_logical_checkpoint_and_agent_controlled_repair_path()
             'status': 'ok', 'preview': '{}', 'exit_code': 0,
         }, 'read-2'))
 
-        rolled_back = bridge.rollback_context('generic', 'version-policy-session', snapshot['snapshot_id'], reason='Preserve a separate logical recovery path.')
+        rolled_back = bridge.rollback_context('generic', 'version-policy-session', snapshot['snapshot_id'], reason='Preserve a separate recovery path.')
         assert rolled_back['branch']['snapshot_id'] == snapshot['snapshot_id']
         assert rolled_back['version_context']['active_branch_id'] == rolled_back['branch']['branch_id']
+
+        graph = db.graph(session['trajectory_id'])
+        repair_edge = next(edge for edge in graph['edges'] if edge.get('kind') == 'branch' and edge.get('branch_id') == repair_branch)
+        assert repair_edge == {
+            'source': repair['branch']['base_event_id'],
+            'target': repair['event']['event_id'],
+            'kind': 'branch',
+            'branch_id': repair_branch,
+        }
 
         status = bridge.version_status('generic', 'version-policy-session')
         operations = {(event.get('metadata') or {}).get('operation') for event in status['version_events']}

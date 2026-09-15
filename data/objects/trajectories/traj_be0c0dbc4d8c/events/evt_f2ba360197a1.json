@@ -1,0 +1,41 @@
+{
+  "event_id": "evt_f2ba360197a1",
+  "trajectory_id": "traj_be0c0dbc4d8c",
+  "branch_id": "main",
+  "event_type": "tool_call",
+  "payload": {
+    "tool_chain": [
+      "exec",
+      "powershell",
+      "git"
+    ],
+    "command": "powershell -NoProfile -Command '$env:LC\\_ALL=\"C\"; $env:LANG=\"C\"; git checkout --detach contextdb-demo-codex-path-second-001'",
+    "arguments": null,
+    "status": "failed",
+    "result_tool_name": "powershell",
+    "result_event_id": "evt_4fe2e341ff93",
+    "failure_tool_name": "powershell"
+  },
+  "parent_event_ids": [
+    "evt_6730ddedd61a"
+  ],
+  "actor": "agent",
+  "timestamp": "2026-09-15T06:41:31.422116+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "codex-session",
+    "hook_adapter": "codex-session",
+    "hook_session_id": "rollout-2026-09-15T14-34-56-01a0a3c6-9648-70a2-af08-291576bfda30"
+  },
+  "metadata": {
+    "agent_id": "codex",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T06:41:31.354325+00:00",
+    "adapter": "codex-desktop-session-jsonl",
+    "codex_session_record_type": "response_item",
+    "codex_session_timestamp": "2026-09-15T06:41:31.206Z",
+    "codex_item_type": "custom_tool_call",
+    "codex_item_id": "ctc_05db448112a60cc5016aa8e89a030087d0954403b41f87ed84"
+  }
+}

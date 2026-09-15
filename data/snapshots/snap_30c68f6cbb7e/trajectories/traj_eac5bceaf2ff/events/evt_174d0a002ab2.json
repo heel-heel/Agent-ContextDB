@@ -1,0 +1,42 @@
+{
+  "event_id": "evt_174d0a002ab2",
+  "trajectory_id": "traj_eac5bceaf2ff",
+  "branch_id": "main",
+  "event_type": "tool_result",
+  "payload": {
+    "tool_name": "python",
+    "command": "python -c \"import json; print(json.__name__)\"",
+    "status": "ok",
+    "preview": "{\"source\":\"claude-code\",\"session_id\":\"87bcf17d-ac16-45e4-b19e-f18d257b44fa\",\"trajectory_id\":\"traj_eac5bceaf2ff\",\"tool_call_event_id\":\"evt_0422bd94db90\",\"tool_result_event_id\":\"evt_586d8f36407a\",\"status\":\"ok\",\"next_skill_match_event_id\":null,\"repair_branch_suggestion\":null,\"version_context\":{\"active_branch_id\":\"main\",\"latest_snapshot\":null,\"repair_branch_suggestion\":null,\"last_version_decision\":null,\"workspace_restore\":{\"supported\":false,\"instruction\":\"ContextDB records branch and rollback state only. Restore files through the Agent workspace after an explicit decision.\"}}}",
+    "exit_code": null,
+    "transport_tool_name": "contextdb_record_skill_application",
+    "tool_chain": [
+      "contextdb_record_skill_application",
+      "python"
+    ],
+    "invoked_tool": "python"
+  },
+  "parent_event_ids": [
+    "evt_586d8f36407a"
+  ],
+  "actor": "tool",
+  "timestamp": "2026-09-15T07:54:41.307815+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "claude-code",
+    "hook_adapter": "generic",
+    "hook_session_id": "87bcf17d-ac16-45e4-b19e-f18d257b44fa",
+    "tool_call_event_id": "evt_4f5d61000f9a"
+  },
+  "metadata": {
+    "agent_id": "claude-code",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T07:54:41.307636+00:00",
+    "adapter": "claude-code-hooks",
+    "claude_hook_event": "PostToolUse",
+    "claude_tool_name": "mcp__contextdb__contextdb_record_skill_application",
+    "claude_cwd": "D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB",
+    "claude_transcript_path": "C:\\Users\\lenovo\\.claude\\projects\\d--software-Pycharm-SelfCode-Agent-ContextDB\\87bcf17d-ac16-45e4-b19e-f18d257b44fa.jsonl"
+  }
+}

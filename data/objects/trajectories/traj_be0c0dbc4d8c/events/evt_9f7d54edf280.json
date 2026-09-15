@@ -1,0 +1,31 @@
+{
+  "event_id": "evt_9f7d54edf280",
+  "trajectory_id": "traj_be0c0dbc4d8c",
+  "branch_id": "main",
+  "event_type": "user_message",
+  "payload": {
+    "text": "Use ContextDB MCP tool contextdb\\_create\\_repair\\_branch with source codex-session and the session id returned earlier. Accept the identified repair-branch suggestion with this reason:\n\nPreserve the second invalid Git checkout and inspect a separate repair path.\n\nThen call contextdb\\_get\\_version\\_status and report the active branch id.\n\nDo not call other ContextDB MCP tools in this turn.\n"
+  },
+  "parent_event_ids": [
+    "evt_37a0cd7f7d0b"
+  ],
+  "actor": "user",
+  "timestamp": "2026-09-15T06:41:56.241088+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "codex-session",
+    "hook_adapter": "codex-session",
+    "hook_session_id": "rollout-2026-09-15T14-34-56-01a0a3c6-9648-70a2-af08-291576bfda30"
+  },
+  "metadata": {
+    "agent_id": "codex",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T06:41:56.240715+00:00",
+    "adapter": "codex-desktop-session-jsonl",
+    "codex_session_record_type": "response_item",
+    "codex_session_timestamp": "2026-09-15T06:41:55.923Z",
+    "codex_item_type": "message",
+    "codex_item_id": "msg_01a0a3cc-fed3-77e0-a131-13ee7c138faf"
+  }
+}

@@ -8,7 +8,7 @@ import sys
 from tempfile import TemporaryDirectory
 from threading import Thread
 
-from contextdb.mcp_server import ContextDBMCPServer
+from contextdb.mcp_server import ContextDBMCPServer, _tool_result
 from contextdb.server import make_handler
 
 
@@ -58,8 +58,11 @@ def test_mcp_skill_delivery_decision_and_application_trace():
         assert recommendation["selected_action"]["action_id"] == "act_use_clang"
 
         delivered = server.dispatch("contextdb_get_recommendation", {"source": source, "session_id": session_id})
-        assert delivered["agent_context"]["matched"] is True
-        assert delivered["delivery_event_id"]
+        assert delivered["matched"] is True
+        assert delivered["skill_match_event_id"]
+        assert delivered["skill_id"] == "skill_compiler_repair"
+        assert delivered["action_id"] == "act_use_clang"
+        assert delivered["proposed_action"] == "CC=clang cargo build --release"
 
         decision = server.dispatch("contextdb_record_skill_decision", {
             "source": source, "session_id": session_id, "decision": "accepted",
@@ -103,6 +106,92 @@ def test_prepare_context_does_not_record_an_empty_recommendation():
         server.db.store.conn.close()
 
 
+def test_mcp_tool_result_compacts_diagnostic_context_for_stdio_clients():
+    result = _tool_result({
+        "trajectory_id": "traj_compact",
+        "agent_context": {"matched": False},
+        "recent_events": [{"event_id": "evt_recent", "payload": {"text": "raw"}}],
+        "prompt_context": {
+            "trajectory_id": "traj_compact",
+            "rendered_agent_context": "Selected context only.",
+            "summary": {
+                "status": "ready",
+                "summary": "A compact summary.",
+                "source_event_timeline": [{"event_id": "evt_old", "text": "raw history"}],
+                "scope": {"source_event_count": 42},
+            },
+        },
+    })
+
+    payload = result["structuredContent"]
+    assert "recent_events" not in payload
+    assert "source_event_timeline" not in payload["prompt_context"]["summary"]
+    assert payload["prompt_context"]["summary"]["source_event_count"] == 42
+    assert "raw history" not in result["content"][0]["text"]
+
+
+def test_mcp_recommendation_response_excludes_rendered_turn_context():
+    with TemporaryDirectory() as root:
+        server = ContextDBMCPServer(root)
+        try:
+            _seed_skill(server)
+            source, session_id = "codex", "compact-recommendation-session"
+            server.dispatch("contextdb_record_tool_result", {
+                "source": source, "session_id": session_id, "tool_name": "shell",
+                "command": "cargo build --release", "status": "failed",
+                "preview": "gcc rejected aws-lc-sys generated memcmp code", "exit_code": 1,
+            })
+            recommendation = server.dispatch("contextdb_get_recommendation", {
+                "source": source, "session_id": session_id,
+            })
+            assert recommendation["matched"] is True
+            assert "prompt_context" not in recommendation
+            assert "agent_context" not in recommendation
+            assert recommendation["proposed_action"] == "CC=clang cargo build --release"
+        finally:
+            server.db.vector_index.conn.close()
+            server.db.store.conn.close()
+
+
+def test_mcp_recommendation_skips_semantic_context_materialization():
+    with TemporaryDirectory() as root:
+        server = ContextDBMCPServer(root)
+        try:
+            _seed_skill(server)
+            source, session_id = "codex", "recommendation-without-summary"
+            server.dispatch("contextdb_record_tool_result", {
+                "source": source, "session_id": session_id, "tool_name": "shell",
+                "command": "cargo build --release", "status": "failed",
+                "preview": "gcc rejected aws-lc-sys generated memcmp code", "exit_code": 1,
+            })
+
+            original = server.db.stream_context
+            server.db.stream_context = lambda *args, **kwargs: (_ for _ in ()).throw(AssertionError("summary should not run"))
+            recommendation = server.dispatch("contextdb_get_recommendation", {
+                "source": source, "session_id": session_id,
+            })
+            assert recommendation["matched"] is True
+            server.db.stream_context = original
+        finally:
+            server.db.vector_index.conn.close()
+            server.db.store.conn.close()
+
+
+def test_mcp_recommendation_stdio_response_uses_compact_text_only_payload():
+    result = _tool_result(
+        {
+            "matched": True,
+            "skill_match_event_id": "evt_match",
+            "skill_id": "skill_example",
+            "action_id": "act_example",
+            "proposed_action": "git show HEAD:examples/settings.json",
+        },
+        include_structured_content=False,
+    )
+    assert "structuredContent" not in result
+    assert "git show HEAD:examples/settings.json" in result["content"][0]["text"]
+
+
 def test_mcp_records_pre_action_snapshot_and_agent_controlled_branch():
     with TemporaryDirectory() as root:
         server = ContextDBMCPServer(root)
@@ -122,9 +211,17 @@ def test_mcp_records_pre_action_snapshot_and_agent_controlled_branch():
         repair = server.dispatch('contextdb_create_repair_branch', {
             'source': source, 'session_id': session_id, 'reason': 'Keep the original failure branch for analysis.',
         })
-        assert repair['version_context']['active_branch_id'] == repair['branch']['branch_id']
+        assert repair['version_context']['active_branch_id'] == repair['branch_id']
+        assert repair['decision_event_id']
+        assert repair['branch_created_event_id']
+        assert 'event' not in repair
+        assert 'snapshot' not in repair
         status = server.dispatch('contextdb_get_version_status', {'source': source, 'session_id': session_id})
         assert status['workspace_restore']['supported'] is False
+        assert status['active_branch_id'] == repair['branch_id']
+        assert status['trajectory_id'] == repair['trajectory_id']
+        assert 'session' not in status
+        assert 'trajectory' not in status
         server.db.vector_index.conn.close()
         server.db.store.conn.close()
 

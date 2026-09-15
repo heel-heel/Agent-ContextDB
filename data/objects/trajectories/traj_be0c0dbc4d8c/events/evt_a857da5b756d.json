@@ -1,0 +1,43 @@
+{
+  "event_id": "evt_a857da5b756d",
+  "trajectory_id": "traj_be0c0dbc4d8c",
+  "branch_id": "main",
+  "event_type": "tool_result",
+  "payload": {
+    "tool_name": "git",
+    "command": "powershell -NoProfile -Command '[Environment]::SetEnvironmentVariable((\"LC\" + [char]95 + \"ALL\"), \"C\", \"Process\"); $env:LANG=\"C\"; git show HEAD:examples/live-path-demo/assets/settings.json; exit $LASTEXITCODE'",
+    "status": "ok",
+    "preview": "Script completed\nWall time 3.4 seconds\nOutput:\n\n{\"chunk_id\":\"f1689f\",\"wall_time_seconds\":2.7808261,\"exit_code\":0,\"original_token_count\":35,\"output\":\"{\\n  \\\"mode\\\": \\\"clean-path-skill-demo\\\",\\n  \\\"source\\\": \\\"project-fixture\\\",\\n  \\\"purpose\\\": \\\"real file-path repair and skill-reuse demonstration\\\"\\n}\\n\"}",
+    "exit_code": 0,
+    "transport_tool_name": "exec",
+    "tool_chain": [
+      "exec",
+      "powershell",
+      "git"
+    ],
+    "invoked_tool": "git"
+  },
+  "parent_event_ids": [
+    "evt_be680e000fa1"
+  ],
+  "actor": "tool",
+  "timestamp": "2026-09-15T06:37:38.157037+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "codex-session",
+    "hook_adapter": "codex-session",
+    "hook_session_id": "rollout-2026-09-15T14-34-56-01a0a3c6-9648-70a2-af08-291576bfda30",
+    "tool_call_event_id": "evt_be680e000fa1"
+  },
+  "metadata": {
+    "agent_id": "codex",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T06:37:38.156842+00:00",
+    "adapter": "codex-desktop-session-jsonl",
+    "codex_session_record_type": "response_item",
+    "codex_session_timestamp": "2026-09-15T06:37:37.544Z",
+    "codex_item_type": "custom_tool_call_output",
+    "codex_item_id": "ctco_01a0a3c9-0d88-75a3-aefa-56b85da59c88"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "trajectory_id": "traj_be0c0dbc4d8c",
+  "title": "Windows Codex App live session: rollout-2026-09-15T14-34-56-01a0a3c6-9648-70a2-af08-291576bfda30",
+  "agent_id": "codex",
+  "source_id": "hook:codex-session",
+  "default_branch": "main",
+  "head_event_id": "evt_192373f04076",
+  "created_at": "2026-09-15T06:34:57.620888+00:00",
+  "updated_at": "2026-09-15T06:40:45.198944+00:00",
+  "metadata": {
+    "integration": "agent-hook.v1",
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "codex-session",
+    "hook_session_id": "rollout-2026-09-15T14-34-56-01a0a3c6-9648-70a2-af08-291576bfda30"
+  }
+}

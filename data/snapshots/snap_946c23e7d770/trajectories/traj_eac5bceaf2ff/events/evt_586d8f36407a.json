@@ -1,0 +1,36 @@
+{
+  "event_id": "evt_586d8f36407a",
+  "trajectory_id": "traj_eac5bceaf2ff",
+  "branch_id": "main",
+  "event_type": "tool_result",
+  "payload": {
+    "tool_name": "python",
+    "command": "python -c \"import json; print(json.__name__)\"",
+    "status": "ok",
+    "preview": "json",
+    "exit_code": 0,
+    "transport_tool_name": "bash",
+    "tool_chain": [
+      "bash",
+      "python"
+    ],
+    "invoked_tool": "python"
+  },
+  "parent_event_ids": [
+    "evt_0422bd94db90"
+  ],
+  "actor": "tool",
+  "timestamp": "2026-09-15T07:54:41.009704+00:00",
+  "refs": {
+    "skill_match_event_id": "evt_8a4dd6eb93f6",
+    "skill_id": "skill_python_typo_in_python_module_python_c_import_jsonn",
+    "selected_action_id": "act_python_typo_in_python_module_python_c_import_jsonn_1",
+    "tool_call_event_id": "evt_0422bd94db90"
+  },
+  "metadata": {
+    "agent_id": "claude-code",
+    "online": true,
+    "operation": "skill_application",
+    "integration": "agent-hook.v1"
+  }
+}

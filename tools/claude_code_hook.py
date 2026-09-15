@@ -46,9 +46,10 @@ def _tool_payload(tool_name: str, tool_input: Dict[str, Any]) -> Dict[str, Any]:
     if not command:
         command = json.dumps(tool_input, ensure_ascii=False, sort_keys=True)
 
-    normalized_name = "shell" if tool_name in {"Bash", "PowerShell"} else tool_name.lower()
     return {
-        "tool_name": normalized_name or "claude-tool",
+        # Preserve Claude's native tool identity. The shared hook bridge
+        # canonicalizes this to the same lowercase chain format as Codex.
+        "tool_name": tool_name or "claude-tool",
         "command": command,
         "arguments": tool_input,
         "agent_tool_name": tool_name,

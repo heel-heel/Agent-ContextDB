@@ -160,7 +160,7 @@ def run_hooked_command(args: argparse.Namespace) -> int:
                 "action_id": args.action_id,
             }))
         # Record the real call before execution as well. This allows the common
-        # Hook policy to create a logical pre-action snapshot for an accepted
+        # Hook policy to create a pre-action snapshot for an accepted
         # skill that may change state, without duplicating the call later.
         _best_effort("record skill tool call", lambda: _hook_event(args.base_url, args.source, args.session_id, call_id, "tool_call", {
                 "tool_name": tool_name, "command": command_text,

@@ -105,9 +105,62 @@ def test_claude_code_hook_records_read_tool_events():
             status = HookSessionBridge(db).status("claude-code", "claude-read-session")
             tool_call = next(event for event in status["skill_application_trace"] if event["event_type"] == "tool_call")
             tool_result = next(event for event in status["skill_application_trace"] if event["event_type"] == "tool_result")
-            assert tool_call["payload"]["tool_name"] == "read"
+            assert "tool_name" not in tool_call["payload"]
+            assert tool_call["payload"]["tool_chain"] == ["read"]
+            assert tool_call["payload"]["agent_tool_name"] == "Read"
             assert tool_call["payload"]["command"] == r".\assets\settings.json"
+            assert tool_result["payload"]["tool_name"] == "read"
+            assert tool_result["payload"]["tool_chain"] == ["read"]
             assert tool_result["payload"]["status"] == "failed"
+        finally:
+            httpd.shutdown()
+            httpd.server_close()
+            db.vector_index.conn.close()
+            db.store.conn.close()
+
+
+def test_claude_code_hook_uses_codex_style_chains_and_canonical_contextdb_names():
+    with TemporaryDirectory() as root:
+        db = ContextDB(root)
+        httpd = ThreadingHTTPServer(("127.0.0.1", 0), make_handler(db))
+        thread = Thread(target=httpd.serve_forever, daemon=True)
+        thread.start()
+        hook = Path(__file__).resolve().parents[1] / "tools" / "claude_code_hook.py"
+        base_url = "http://127.0.0.1:%s" % httpd.server_port
+        shell = {
+            "session_id": "claude-chain-session",
+            "tool_name": "Bash",
+            "tool_use_id": "toolu_git_show",
+            "tool_input": {"command": "powershell -NoProfile -Command 'git show HEAD:README.md'"},
+            "tool_response": "# Agent ContextDB",
+            "exit_code": 0,
+        }
+        contextdb = {
+            "session_id": "claude-chain-session",
+            "tool_name": "mcp__contextdb__contextdb_get_version_status",
+            "tool_use_id": "toolu_contextdb_status",
+            "tool_input": {"source": "claude-code", "session_id": "claude-chain-session"},
+            "tool_response": '{"active_branch_id": "main"}',
+        }
+        try:
+            assert _run_hook(hook, base_url, "PreToolUse", shell).returncode == 0
+            assert _run_hook(hook, base_url, "PostToolUse", shell).returncode == 0
+            assert _run_hook(hook, base_url, "PreToolUse", contextdb).returncode == 0
+            assert _run_hook(hook, base_url, "PostToolUse", contextdb).returncode == 0
+
+            status = HookSessionBridge(db).status("claude-code", "claude-chain-session")
+            events = db.list_events(status["trajectory"]["trajectory_id"])
+            shell_call = next(event for event in events if event["event_type"] == "tool_call" and event["payload"].get("command", "").startswith("powershell"))
+            shell_result = next(event for event in events if event["event_type"] == "tool_result" and event["payload"].get("command", "").startswith("powershell"))
+            contextdb_call = next(event for event in events if event["event_type"] == "tool_call" and event["payload"].get("agent_tool_name") == "mcp__contextdb__contextdb_get_version_status")
+            contextdb_result = next(event for event in events if event["event_type"] == "tool_result" and event["payload"].get("tool_name") == "contextdb_get_version_status")
+
+            assert shell_call["payload"]["tool_chain"] == ["bash", "powershell", "git"]
+            assert shell_result["payload"]["tool_name"] == "git"
+            assert shell_result["payload"]["tool_chain"] == ["bash", "powershell", "git"]
+            assert contextdb_call["payload"]["tool_chain"] == ["contextdb_get_version_status"]
+            assert contextdb_result["payload"]["tool_chain"] == ["contextdb_get_version_status"]
+            assert not any(event["event_type"] == "snapshot" for event in events)
         finally:
             httpd.shutdown()
             httpd.server_close()

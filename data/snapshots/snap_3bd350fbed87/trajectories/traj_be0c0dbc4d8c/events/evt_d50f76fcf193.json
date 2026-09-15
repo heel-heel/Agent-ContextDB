@@ -1,0 +1,31 @@
+{
+  "event_id": "evt_d50f76fcf193",
+  "trajectory_id": "traj_be0c0dbc4d8c",
+  "branch_id": "main",
+  "event_type": "user_message",
+  "payload": {
+    "text": "Before any failure occurs, determine the ContextDB session id for this current Codex conversation. Use exactly one ordinary native terminal tool call from the project root to run:\n\npowershell -NoProfile -Command '$pointer = \".\\data\\codex-watcher-current-session.json\"; $deadline = (Get-Date).AddSeconds(10); do { if (Test-Path -LiteralPath $pointer) { $session = Get-Content -Raw -LiteralPath $pointer | ConvertFrom-Json; $field = \"session\" + [char]95 + \"id\"; $id = $session.PSObject.Properties[$field].Value; if ($session.source -eq \"codex-session\" -and $id) { Write-Output $id; exit 0 } }; Start-Sleep -Milliseconds 250 } while ((Get-Date) -lt $deadline); [Console]::Error.WriteLine(\"ContextDB watcher session was not available within 10 seconds.\"); exit 1'\n\nDo not use contextdb\\_native\\_exec\\_hook.py. Retain the returned rollout id and use it as the session id for every later ContextDB MCP call in this conversation. Report the session id.\n"
+  },
+  "parent_event_ids": [
+    "evt_c0a70d25d650"
+  ],
+  "actor": "user",
+  "timestamp": "2026-09-15T06:35:16.400111+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "codex-session",
+    "hook_adapter": "codex-session",
+    "hook_session_id": "rollout-2026-09-15T14-34-56-01a0a3c6-9648-70a2-af08-291576bfda30"
+  },
+  "metadata": {
+    "agent_id": "codex",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T06:35:16.399931+00:00",
+    "adapter": "codex-desktop-session-jsonl",
+    "codex_session_record_type": "response_item",
+    "codex_session_timestamp": "2026-09-15T06:35:16.224Z",
+    "codex_item_type": "message",
+    "codex_item_id": "msg_01a0a3c6-e580-7223-a3eb-82e480397c98"
+  }
+}

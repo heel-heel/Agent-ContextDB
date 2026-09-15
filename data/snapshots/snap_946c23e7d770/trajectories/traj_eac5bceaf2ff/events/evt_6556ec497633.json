@@ -1,0 +1,47 @@
+{
+  "event_id": "evt_6556ec497633",
+  "trajectory_id": "traj_eac5bceaf2ff",
+  "branch_id": "main",
+  "event_type": "tool_call",
+  "payload": {
+    "tool_chain": [
+      "contextdb_record_skill_decision"
+    ],
+    "command": "{\"action_id\": \"act_python_typo_in_python_module_python_c_import_jsonn_1\", \"decision\": \"accepted\", \"reason\": \"The corrected Python import name (json instead of jsonn) will be used for the repair.\", \"session_id\": \"87bcf17d-ac16-45e4-b19e-f18d257b44fa\", \"skill_id\": \"skill_python_typo_in_python_module_python_c_import_jsonn\", \"skill_match_event_id\": \"evt_8a4dd6eb93f6\", \"source\": \"claude-code\"}",
+    "arguments": {
+      "source": "claude-code",
+      "session_id": "87bcf17d-ac16-45e4-b19e-f18d257b44fa",
+      "decision": "accepted",
+      "skill_match_event_id": "evt_8a4dd6eb93f6",
+      "skill_id": "skill_python_typo_in_python_module_python_c_import_jsonn",
+      "action_id": "act_python_typo_in_python_module_python_c_import_jsonn_1",
+      "reason": "The corrected Python import name (json instead of jsonn) will be used for the repair."
+    },
+    "agent_tool_name": "mcp__contextdb__contextdb_record_skill_decision",
+    "status": "ok",
+    "result_tool_name": "contextdb_record_skill_decision",
+    "result_event_id": "evt_f1646a991cf9"
+  },
+  "parent_event_ids": [
+    "evt_a3586b4bfa10"
+  ],
+  "actor": "agent",
+  "timestamp": "2026-09-15T07:54:16.121323+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "claude-code",
+    "hook_adapter": "generic",
+    "hook_session_id": "87bcf17d-ac16-45e4-b19e-f18d257b44fa"
+  },
+  "metadata": {
+    "agent_id": "claude-code",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T07:54:16.121128+00:00",
+    "adapter": "claude-code-hooks",
+    "claude_hook_event": "PreToolUse",
+    "claude_tool_name": "mcp__contextdb__contextdb_record_skill_decision",
+    "claude_cwd": "D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB",
+    "claude_transcript_path": "C:\\Users\\lenovo\\.claude\\projects\\d--software-Pycharm-SelfCode-Agent-ContextDB\\87bcf17d-ac16-45e4-b19e-f18d257b44fa.jsonl"
+  }
+}

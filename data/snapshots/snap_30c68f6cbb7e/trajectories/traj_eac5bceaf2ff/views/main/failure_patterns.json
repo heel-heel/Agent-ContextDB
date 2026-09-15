@@ -1,0 +1,63 @@
+{
+  "view_name": "failure_patterns",
+  "trajectory_id": "traj_eac5bceaf2ff",
+  "branch_id": "main",
+  "content": [
+    {
+      "schema_version": "experience_mining.v2",
+      "pattern_id": "fp_24e390f15243",
+      "failure_event_id": "evt_24e390f15243",
+      "branch_id": "main",
+      "failed_tool": "python",
+      "failed_command": "python -c \"import jsonn\"",
+      "error_signature": "Exit code 1\nTraceback (most recent call last):\r\n  File \"<string>\", line 1, in <module>\r\n    import jsonn\r\nModuleNotFoundError: No module named 'jsonn'",
+      "normalized_signature": "exit code traceback most recent call last file \"<string>\" line in <module> import jsonn modulenotfounderror no module named 'jsonn'",
+      "preceding_action": "",
+      "likely_cause": "typo in python module import name",
+      "likely_cause_judgment": {
+        "enabled": true,
+        "provider": "openai-compatible",
+        "model": "deepseek-flash",
+        "likely_cause": "typo in python module import name",
+        "confidence": 0.95,
+        "reason": "The command imports 'jsonn', but Python reports no module with that name, indicating a misspelled or nonexistent module.",
+        "input": {
+          "failed_tool": "python",
+          "failed_command": "python -c \"import jsonn\"",
+          "error_signature": "Exit code 1\nTraceback (most recent call last):\r\n  File \"<string>\", line 1, in <module>\r\n    import jsonn\r\nModuleNotFoundError: No module named 'jsonn'",
+          "preceding_action": ""
+        }
+      },
+      "repair_status": "not_evaluated",
+      "repair_events_after_failure": [
+        {
+          "event_id": "evt_94109dacc646",
+          "event_type": "tool_call",
+          "summary": "tool_call:python -c \"import json; print(json.__name__)\""
+        },
+        {
+          "event_id": "evt_75d3208ba9c8",
+          "event_type": "tool_result",
+          "summary": "tool_result:python -c \"import json; print(json.__name__)\""
+        }
+      ],
+      "source_event_ids": [
+        "evt_7ed15ee53671"
+      ],
+      "evidence_event_ids": [
+        "evt_7ed15ee53671",
+        "evt_24e390f15243"
+      ],
+      "highlight_event_ids": [
+        "evt_24e390f15243"
+      ]
+    }
+  ],
+  "source_events": [
+    "evt_7ed15ee53671"
+  ],
+  "created_at": "2026-09-15T07:52:55.391766+00:00",
+  "metadata": {
+    "event_count": 12
+  }
+}

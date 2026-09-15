@@ -1,0 +1,44 @@
+{
+  "event_id": "evt_a0d602c7661c",
+  "trajectory_id": "traj_be0c0dbc4d8c",
+  "branch_id": "main",
+  "event_type": "tool_result",
+  "payload": {
+    "tool_name": "git",
+    "command": "powershell -NoProfile -Command '[Environment]::SetEnvironmentVariable((\"LC\" + [char]95 + \"ALL\"), \"C\", \"Process\"); $env:LANG=\"C\"; git show HEAD:assets/settings.json; exit $LASTEXITCODE'",
+    "status": "failed",
+    "preview": "Script completed\nWall time 1.4 seconds\nOutput:\n\n{\"chunk_id\":\"9d6f8d\",\"wall_time_seconds\":0.7710922,\"exit_code\":1,\"original_token_count\":15,\"output\":\"fatal: path 'assets/settings.json' does not exist in 'HEAD'\\n\"}",
+    "exit_code": 1,
+    "transport_tool_name": "exec",
+    "tool_chain": [
+      "exec",
+      "powershell",
+      "git"
+    ],
+    "invoked_tool": "git",
+    "failure_tool_name": "git"
+  },
+  "parent_event_ids": [
+    "evt_1f7fb305c11c"
+  ],
+  "actor": "tool",
+  "timestamp": "2026-09-15T06:38:30.692569+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "codex-session",
+    "hook_adapter": "codex-session",
+    "hook_session_id": "rollout-2026-09-15T14-34-56-01a0a3c6-9648-70a2-af08-291576bfda30",
+    "tool_call_event_id": "evt_1f7fb305c11c"
+  },
+  "metadata": {
+    "agent_id": "codex",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T06:38:30.692363+00:00",
+    "adapter": "codex-desktop-session-jsonl",
+    "codex_session_record_type": "response_item",
+    "codex_session_timestamp": "2026-09-15T06:38:30.349Z",
+    "codex_item_type": "custom_tool_call_output",
+    "codex_item_id": "ctco_01a0a3c9-dbcd-7ba3-a0a5-fb5995d4808e"
+  }
+}

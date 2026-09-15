@@ -10,7 +10,7 @@ OpenViking focuses on a context database and virtual filesystem for organizing a
 
 ## What is implemented
 
-- Logical objects: Agent, Source, Trajectory, ContextEvent, Branch, Snapshot, View, Artifact.
+- Core objects: Agent, Source, Trajectory, ContextEvent, Branch, Snapshot, View, Artifact.
 - Trajectory DAG: branch-local events now include reachable ancestor events through `parent_event_ids`.
 - Versioning: snapshot, branch, rollback, branch-aware log, and semantic diff.
 - Query/View/Index: filters by trajectory, branch, type, actor, status, timestamp, and text containment.
@@ -201,7 +201,7 @@ or another MCP-capable harness:
   Agent actually executed through its normal tool and approval mechanism. It
   never executes the command itself.
 - `contextdb_record_tool_call`: records the tool start. Potentially
-  state-changing calls receive an automatic **logical ContextDB snapshot**
+  state-changing calls receive an automatic **ContextDB snapshot**
   before the call runs.
 - `contextdb_create_snapshot`, `contextdb_create_repair_branch`, and
   `contextdb_rollback_context`: let an Agent explicitly checkpoint, branch, or
@@ -209,7 +209,7 @@ or another MCP-capable harness:
   Git commands.
 - `contextdb_record_version_decision` and `contextdb_get_version_status`:
   preserve the Agent's choice to continue, repair on a new branch, or roll
-  back logically, together with the active branch and pending repair advice.
+  back, together with the active branch and pending repair advice.
 
 The resulting application trace is explicit:
 
@@ -223,31 +223,70 @@ delivered skill is context injection; only an Agent-recorded normal tool call
 is an application. The ContextDB dashboard's **Application Trace** view shows
 these states separately.
 
-### Logical Version Control for Live Agents
+### Version Control for Live Agents
 
 The live Hook follows a conservative hybrid policy:
 
 ```text
-potentially state-changing tool call -> automatic logical snapshot
+potentially state-changing tool call -> automatic snapshot
 failure -> skill retrieval + repair-branch suggestion
-Agent decision -> continue | create repair branch | logical rollback
+Agent decision -> continue | create repair branch | rollback
 Agent workspace action -> only after the Agent explicitly chooses it
 ```
 
 The snapshot contains ContextDB trajectory state, not a copy of workspace
-files. A logical rollback creates a new DAG branch at the snapshot event; it
+files. A rollback creates a new DAG branch at the snapshot event; it
 does not call `git reset`, check out files, or change the local filesystem.
 Open **Version Control** in the Dashboard to inspect the branch registry,
-snapshots, decision timeline, and the logical-only boundary. The page also
-offers manual Snapshot, Create Repair Branch, and Logical Rollback controls for
+snapshots, decision timeline, and the workspace-restore boundary. The page also
+offers manual Snapshot, Create Repair Branch, and Rollback controls for
 demonstration purposes.
 
-### Native Exec Hook: Same-Turn Skill Injection
+### Codex Desktop: Full-DAG Watcher Mode
 
-For a Codex Desktop session, the log watcher can observe native `exec` calls
-but cannot modify their already-running context. ContextDB therefore also
-provides `tools\contextdb_native_exec_hook.py`: Codex invokes this wrapper via
-its normal native `exec`, and the wrapper executes the real child command.
+For a Codex Desktop demonstration that should look like the Claude Code DAG,
+prefer the Windows session watcher. It records the actual `user_message`,
+`assistant_message`, native tool-call/result, and MCP-call records written by
+the Codex App, under one `codex-session` trajectory. Start it before creating
+a new Codex conversation:
+
+```powershell
+cd D:\software\Pycharm\SelfCode\Agent-ContextDB
+$env:CONTEXTDB_BASE_URL = 'http://127.0.0.1:8765'
+& 'D:\software\Anaconda\ProgramFile\envs\contextdb_env\python.exe' `
+  tools\windows_codex_session_watcher.py --base-url $env:CONTEXTDB_BASE_URL
+```
+
+The watcher prints the rollout filename after it forwards events. Use that
+filename, without `.jsonl`, as the MCP session id and use `codex-session` as
+the source. It begins at the end of existing rollout files, so create the
+conversation after the watcher is ready. Do not run the native-exec wrapper for
+the same conversation.
+
+The watcher already records native Codex tools. For an accepted skill, the
+Agent must make the audit trail explicit:
+
+```text
+real tool failure (recorded by watcher)
+-> contextdb_prepare_context or contextdb_get_recommendation
+-> contextdb_record_skill_decision
+-> real repair through a native Codex tool (recorded by watcher)
+-> contextdb_record_skill_application with the observed outcome
+```
+
+Do not call `contextdb_record_tool_call` or `contextdb_record_tool_result` for
+native calls that the watcher has already observed; doing so duplicates the
+DAG. The watcher is observation-only: it delivers no automatic in-turn
+recommendation and never executes a repair.
+
+See `examples\codex_watcher_live_demo.md` for the controlled test flow.
+
+### Native Exec Hook: Controlled CLI Compatibility Mode
+
+For a controlled CLI-only test with a caller-selected source/session id,
+ContextDB also provides `tools\contextdb_native_exec_hook.py`. Codex invokes
+this wrapper through its normal native `exec`, and the wrapper executes the
+real child command.
 
 ```text
 Codex native exec -> ContextDB wrapper -> real child command
@@ -282,10 +321,11 @@ accepted, real skill-guided action, use the same wrapper with `--apply-skill`:
   powershell -NoProfile -Command "CC=clang cargo build --release"
 ```
 
-`AGENTS.md` contains the project-level instruction for this mode. Do not run
-the Windows session watcher for the same live task: the wrapper is the source
-of truth for tool calls and results, while MCP remains available for pre-turn
-context retrieval and other Agent frameworks.
+Do not run the Windows session watcher for the same live task: the wrapper is
+the source of truth for tool calls and results in this compatibility mode,
+while MCP remains available for pre-turn context retrieval and other Agent
+frameworks. The wrapper cannot capture the full native Codex conversation; use
+watcher mode above when that is required.
 
 ### Unified Agent Runtime Contract
 
@@ -374,8 +414,12 @@ trajectory; failed tool results use the normal ContextDB skill retrieval path.
    contextdb hook-status codex-session rollout-YYYY-MM-DDTHH-MM-SS-<id>
    ```
 
-On its first normal run the watcher starts at the end of existing logs, so it does not
-import old conversations. Use `--replay-existing --once` to import existing logs once.
+On its first normal run the watcher starts at the end of every log that already exists,
+including files with stale entries in a prior state file, so it does not import old
+conversations. Rollout files created after that initial scan are read from their
+beginning, including the session-start and first user-message events. Start the watcher
+before creating the Codex conversation. Use `--replay-existing --once` to import
+existing logs once.
 The hook is observation-only:
 it records what Codex actually did and retrieves a recommendation, but it never forces
 Codex to execute a recommendation.

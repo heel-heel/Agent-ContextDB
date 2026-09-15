@@ -1,0 +1,39 @@
+{
+  "event_id": "evt_b39637707d6d",
+  "trajectory_id": "traj_be0c0dbc4d8c",
+  "branch_id": "main",
+  "event_type": "tool_call",
+  "payload": {
+    "tool_chain": [
+      "exec",
+      "contextdb_record_skill_application"
+    ],
+    "command": "const r = await tools.mcp__contextdb__contextdb_record_skill_application({source:\"codex-session\",session_id:\"rollout-2026-09-15T14-34-56-01a0a3c6-9648-70a2-af08-291576bfda30\",tool_name:\"exec_command\",command:\"powershell -NoProfile -Command '[Environment]::SetEnvironmentVariable((\\\"LC\\\" + [char]95 + \\\"ALL\\\"), \\\"C\\\", \\\"Process\\\"); $env:LANG=\\\"C\\\"; git show HEAD:examples/live-path-demo/assets/settings.json; exit $LASTEXITCODE'\",status:\"ok\",exit_code:0,preview:\"{\\n  \\\"mode\\\": \\\"clean-path-skill-demo\\\",\\n  \\\"source\\\": \\\"project-fixture\\\",\\n  \\\"purpose\\\": \\\"real file-path repair and skill-reuse demonstration\\\"\\n}\\n\",skill_match_event_id:\"evt_8aa3b8425265\",skill_id:\"skill_git_file_path_absent_from_git\",action_id:\"act_git_file_path_absent_from_git_1\"});\ntext(JSON.stringify(r));",
+    "arguments": null,
+    "status": "ok",
+    "result_tool_name": "contextdb_record_skill_application",
+    "result_event_id": "evt_87b3324c83a9"
+  },
+  "parent_event_ids": [
+    "evt_25c569f93313"
+  ],
+  "actor": "agent",
+  "timestamp": "2026-09-15T06:40:05.176460+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "codex-session",
+    "hook_adapter": "codex-session",
+    "hook_session_id": "rollout-2026-09-15T14-34-56-01a0a3c6-9648-70a2-af08-291576bfda30"
+  },
+  "metadata": {
+    "agent_id": "codex",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T06:40:05.176264+00:00",
+    "adapter": "codex-desktop-session-jsonl",
+    "codex_session_record_type": "response_item",
+    "codex_session_timestamp": "2026-09-15T06:40:04.773Z",
+    "codex_item_type": "custom_tool_call",
+    "codex_item_id": "ctc_05db448112a60cc5016aa8e840320087d0a5e05fae53aa1a73"
+  }
+}

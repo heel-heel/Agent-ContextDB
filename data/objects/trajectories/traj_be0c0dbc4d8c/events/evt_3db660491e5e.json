@@ -1,0 +1,40 @@
+{
+  "event_id": "evt_3db660491e5e",
+  "trajectory_id": "traj_be0c0dbc4d8c",
+  "branch_id": "main",
+  "event_type": "tool_result",
+  "payload": {
+    "tool_name": "exec",
+    "command": "const matches = ALL_TOOLS.filter(x => x.name.toLowerCase().includes(\"contextdb\") || x.description.toLowerCase().includes(\"contextdb\"));\ntext(JSON.stringify(matches));",
+    "status": "ok",
+    "preview": "Script completed\nWall time 0.0 seconds\nOutput:\n\n[{\"name\":\"mcp__contextdb__contextdb_create_repair_branch\",\"description\":\"Call contextdb_prepare_context before planning and contextdb_record_tool_result after every real tool execution. Never execute a recommendation automatically.\\n\\nAccept a repair-branch suggestion or create a named repair branch from a ContextDB snapshot. The Agent remains responsible for any Git or workspace operation.\\n\\nexec tool declaration:\\n```ts\\ndeclare const tools: { mcp__contextdb__contextdb_create_repair_branch(args: { branch_id?: string; reason?: string; session_id: string; snapshot_id?: string; source: string; }): Promise<CallToolResult>; };\\n```\"},{\"name\":\"mcp__contextdb__contextdb_create_snapshot\",\"description\":\"Call contextdb_prepare_context before planning and contextdb_record_tool_result after every real tool execution. Never execute a recommendation automatically.\\n\\nCreate an explicit ContextDB snapshot for the active trajectory branch. It records context state only and never restores or changes workspace files.\\n\\nexec tool declaration:\\n```ts\\ndeclare const tools: { mcp__contextdb__contextdb_create_snapshot(args: { message?: string; reason?: string; session_id: string; source: string; }): Promise<CallToolResult>; };\\n```\"},{\"name\":\"mcp__contextdb__contextdb_get_recommendation\",\"description\":\"Call contextdb_prepare_context before planning and contextdb_record_tool_result after every real tool execution. Never execute a recommendation automatically.\\n\\nDeliver the latest skill recommendation after a previously recorded failure. Use this if the Agent did not receive the result inline or is resuming a session.\\n\\nexec tool declaration:\\n```ts\\ndeclare const tools: { mcp__contextdb__contextdb_get_recommendation(args: { session_id: string; source: string; }): Promise<CallToolResult>; };\\n```\"},{\"name\":\"mcp__contextdb__contextdb_get_version_status\",\"description\":\"Call contextdb_prepare_context before planning and contextdb_record_tool_result after every real tool execution. Never execute a recommendation automatically.\\n\\nReturn active branch, snapshots, repair suggestion, and the workspace-restore boundary for a live Agent session.\\n\\nexec tool declaration:\\n```ts\\ndeclare const tools: { mcp__contextdb__contextdb_get_version_status(args: { session_id: string; source: string; }): Promise<CallToolResult>; };\\n```\"},{\"name\":\"mcp__contextdb__contextdb_prepare_context\",\"description\":\"Call contextdb_prepare_context before planning and contextdb_record_tool_result after every real tool execution. Never execute a recommendation automatically.\\n\\nCall before planning a turn or retry. Returns compact trajectory context and delivers the latest ContextDB skill recommendation into this tool result. A recommendation is advisory and must not be executed automatically.\\n\\nexec tool declaration:\\n```ts\\ndeclare const tools: { mcp__contextdb__contextdb_prepare_context(args: {\\n  // Stable identifier for this live Agent session.\\n  session_id: string;\\n  // Agent source, for example codex or claude-code.\\n  source: string;\\n  token_budget?: number;\\n}): Promise<CallToolResult>; };\\n```\"},{\"name\":\"mcp__contextdb__contextdb_record_skill_application\",\"description\":\"Call contextdb_prepare_context before planning and contextdb_record_tool_result after every real tool execution. Never execute a recommendation automatically.\\n\\nRecord the result of an accepted skill-guided action that the Agent actually executed through its normal tool system. This records evidence only; ContextDB does not execute the command itself.\\n\\nexec tool declaration:\\n```ts\\ndeclare const tools: { mcp__contextdb__contextdb_record_skill_application(args: {\\n  action_id?: string;\\n  command: string;\\n  exit_code?: number | null;\\n  preview?: string;\\n  session_id: string;\\n  skill_id?: string;\\n  skill_match_event_id?: string;\\n  source: string;\\n  status: \\\"ok\\\" | \\\"failed\\\" | \\\"error\\\" | \\\"timeout\\\";\\n  // Optional ContextDB tool_call event id",
+    "exit_code": null,
+    "transport_tool_name": "exec",
+    "tool_chain": [
+      "exec"
+    ]
+  },
+  "parent_event_ids": [
+    "evt_ed3c2a9a47ea"
+  ],
+  "actor": "tool",
+  "timestamp": "2026-09-15T06:38:41.067749+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "codex-session",
+    "hook_adapter": "codex-session",
+    "hook_session_id": "rollout-2026-09-15T14-34-56-01a0a3c6-9648-70a2-af08-291576bfda30",
+    "tool_call_event_id": "evt_ed3c2a9a47ea"
+  },
+  "metadata": {
+    "agent_id": "codex",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T06:38:41.067524+00:00",
+    "adapter": "codex-desktop-session-jsonl",
+    "codex_session_record_type": "response_item",
+    "codex_session_timestamp": "2026-09-15T06:38:40.575Z",
+    "codex_item_type": "custom_tool_call_output",
+    "codex_item_id": "ctco_01a0a3ca-03bf-7d80-9941-d7cd915b5f5b"
+  }
+}

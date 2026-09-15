@@ -1,0 +1,31 @@
+{
+  "event_id": "evt_c5d2a4ad35cd",
+  "trajectory_id": "traj_be0c0dbc4d8c",
+  "branch_id": "repair-4fe2e341",
+  "event_type": "assistant_message",
+  "payload": {
+    "text": "I’ll retrieve the current version status and report the latest ContextDB snapshot details."
+  },
+  "parent_event_ids": [
+    "evt_b50f32fd1aa8"
+  ],
+  "actor": "agent",
+  "timestamp": "2026-09-15T06:42:42.139860+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "codex-session",
+    "hook_adapter": "codex-session",
+    "hook_session_id": "rollout-2026-09-15T14-34-56-01a0a3c6-9648-70a2-af08-291576bfda30"
+  },
+  "metadata": {
+    "agent_id": "codex",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T06:42:42.139628+00:00",
+    "adapter": "codex-desktop-session-jsonl",
+    "codex_session_record_type": "response_item",
+    "codex_session_timestamp": "2026-09-15T06:42:41.427Z",
+    "codex_item_type": "message",
+    "codex_item_id": "msg_05db448112a60cc5016aa8e8e16c5c87d08f6e1644f6e2e8ed"
+  }
+}

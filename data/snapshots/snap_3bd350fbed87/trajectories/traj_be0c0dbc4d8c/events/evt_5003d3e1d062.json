@@ -1,0 +1,31 @@
+{
+  "event_id": "evt_5003d3e1d062",
+  "trajectory_id": "traj_be0c0dbc4d8c",
+  "branch_id": "main",
+  "event_type": "assistant_message",
+  "payload": {
+    "text": "I’ll record rejection of the suggested repair branch with the supplied diagnostic rationale, then report the active branch."
+  },
+  "parent_event_ids": [
+    "evt_38fbb8a91953"
+  ],
+  "actor": "agent",
+  "timestamp": "2026-09-15T06:41:13.105426+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "codex-session",
+    "hook_adapter": "codex-session",
+    "hook_session_id": "rollout-2026-09-15T14-34-56-01a0a3c6-9648-70a2-af08-291576bfda30"
+  },
+  "metadata": {
+    "agent_id": "codex",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T06:41:13.105259+00:00",
+    "adapter": "codex-desktop-session-jsonl",
+    "codex_session_record_type": "response_item",
+    "codex_session_timestamp": "2026-09-15T06:41:12.518Z",
+    "codex_item_type": "message",
+    "codex_item_id": "msg_05db448112a60cc5016aa8e88874f887d0ada5f678850d7e2a"
+  }
+}

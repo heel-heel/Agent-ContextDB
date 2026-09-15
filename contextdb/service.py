@@ -91,9 +91,16 @@ class ContextDB:
             skills_by_key[key] = row
             skills_by_id.setdefault(skill_id, []).append(row)
 
+        def tool_rows(tools: Dict[str, Dict[str, Any]]) -> List[Dict[str, Any]]:
+            rows = []
+            for name, entry in sorted(tools.items()):
+                row = {"tool_name": name, "call_count": entry["call_count"]}
+                rows.append(row)
+            return rows
+
         trajectory_rows = []
         edges: Dict[Tuple[str, str, str], int] = {}
-        all_tools: Dict[str, int] = {}
+        all_tools: Dict[str, Dict[str, Any]] = {}
         for trajectory in trajectories:
             trajectory_id = trajectory["trajectory_id"]
             events = self._all_events(trajectory_id)
@@ -108,18 +115,23 @@ class ContextDB:
                 if skill_id and source_id:
                     match_sources[event.get("event_id", "")] = (source_id, skill_id)
 
-            tools: Dict[str, int] = {}
+            tools: Dict[str, Dict[str, Any]] = {}
             associated_skills: Dict[str, int] = {}
             for event in events:
-                if event.get("event_type") != "tool_call":
+                # Tool results contain the final semantic attribution.  Calls
+                # intentionally retain the raw wrapper and full invocation
+                # chain, so using them here would count wrapper tools instead.
+                if event.get("event_type") != "tool_result":
                     continue
                 payload = event.get("payload", {}) or {}
                 tool_name = str(payload.get("tool_name") or payload.get("tool") or "unknown tool")
-                tools[tool_name] = tools.get(tool_name, 0) + 1
-                all_tools[tool_name] = all_tools.get(tool_name, 0) + 1
+                local_tool = tools.setdefault(tool_name, {"call_count": 0})
+                global_tool = all_tools.setdefault(tool_name, {"call_count": 0})
+                local_tool["call_count"] += 1
+                global_tool["call_count"] += 1
                 trajectory_node = f"trajectory:{trajectory_id}"
                 tool_node = f"tool:{tool_name}"
-                edges[(trajectory_node, tool_node, "calls")] = edges.get((trajectory_node, tool_node, "calls"), 0) + 1
+                edges[(trajectory_node, tool_node, "results")] = edges.get((trajectory_node, tool_node, "results"), 0) + 1
 
                 refs = event.get("refs", {}) or {}
                 skill_id = refs.get("skill_id")
@@ -140,8 +152,8 @@ class ContextDB:
             trajectory_rows.append({
                 **trajectory,
                 "event_count": len(events),
-                "tool_call_count": sum(tools.values()),
-                "tools": [{"tool_name": name, "call_count": count} for name, count in sorted(tools.items())],
+                "tool_call_count": sum(entry["call_count"] for entry in tools.values()),
+                "tools": tool_rows(tools),
                 "associated_skills": [
                     {**skills_by_key[key], "application_count": count}
                     for key, count in sorted(associated_skills.items())
@@ -150,7 +162,12 @@ class ContextDB:
 
         nodes = (
             [{"id": f"trajectory:{row['trajectory_id']}", "type": "trajectory", "label": row.get("title") or row["trajectory_id"], "trajectory_id": row["trajectory_id"], "detail": row.get("agent_id") or "unknown-agent"} for row in trajectory_rows]
-            + [{"id": f"tool:{name}", "type": "tool", "label": name, "detail": f"{count} calls"} for name, count in sorted(all_tools.items())]
+            + [{
+                "id": f"tool:{name}",
+                "type": "tool",
+                "label": name,
+                "detail": f"{entry['call_count']} results",
+            } for name, entry in sorted(all_tools.items())]
             + [{"id": skill["node_id"], "type": "skill", "label": skill["name"], "detail": skill["source_trajectory_id"]} for skill in skills]
         )
         return {
@@ -193,6 +210,40 @@ class ContextDB:
         if obj is None:
             raise KeyError(f"event not found: {event_id}")
         return obj
+
+    def update_tool_call_outcome(
+        self,
+        trajectory_id: str,
+        event_id: str,
+        *,
+        status: str,
+        result_tool_name: str,
+        tool_chain: List[str],
+        result_event_id: str,
+    ) -> Dict[str, Any]:
+        """Finalize a recorded call once its observed result is available.
+
+        The original call remains the audit record for the transport and its
+        invocation chain.  Finalizing its payload links the later outcome and
+        makes a failed member visible directly on the call as well.
+        """
+        event = self.get_event(trajectory_id, event_id)
+        if event.get("event_type") != "tool_call":
+            raise ValueError("event_id must reference a tool_call event")
+        payload = dict(event.get("payload") or {})
+        payload.update({
+            "status": status,
+            "tool_chain": list(tool_chain),
+            "result_tool_name": result_tool_name,
+            "result_event_id": result_event_id,
+        })
+        if status in FAILURE_STATUSES:
+            payload["failure_tool_name"] = result_tool_name
+        else:
+            payload.pop("failure_tool_name", None)
+        event["payload"] = payload
+        self.store.put_object(uris.event_key(trajectory_id, event_id), event)
+        return event
 
     def _all_events(self, trajectory_id: str) -> List[Dict[str, Any]]:
         return sorted(list(self.store.scan_prefix(f"trajectories/{trajectory_id}/events")), key=lambda e: e.get("timestamp", ""))
@@ -605,7 +656,7 @@ class ContextDB:
         return text[:max(1, max_chars - 3)].rstrip() + "..."
 
     def query_sql(self, trajectory_id: str, sql: str, branch_id: Optional[str] = None) -> Dict[str, Any]:
-        """Execute one read-only ContextQL statement over logical trajectory relations."""
+        """Execute one read-only ContextQL statement over trajectory relations."""
         resolved_branch_id = branch_id or self.get_trajectory(trajectory_id).get("default_branch") or "main"
         return ContextQLExecutor(self).execute(trajectory_id, sql, resolved_branch_id)
 
@@ -688,12 +739,12 @@ class ContextDB:
         actor: str = "contextdb",
         refs: Optional[Dict[str, Any]] = None,
     ) -> Dict[str, Any]:
-        """Create an auditable logical snapshot at the current branch head."""
+        """Create an auditable snapshot at the current branch head."""
         event = self.append_event(
             trajectory_id,
             "system_event",
             {
-                "text": "ContextDB created a logical snapshot before a versioned action.",
+                "text": "ContextDB created a snapshot before a versioned action.",
                 "message": message,
                 "reason": reason,
                 "origin": origin,
@@ -768,7 +819,7 @@ class ContextDB:
         origin: str = "manual",
         refs: Optional[Dict[str, Any]] = None,
     ) -> Dict[str, Any]:
-        """Create a logical rollback branch without touching an Agent workspace."""
+        """Create a rollback branch without touching an Agent workspace."""
         branch = self.rollback(trajectory_id, snapshot_id, target_branch_id)
         branch["metadata"] = {**branch.get("metadata", {}), "version_origin": origin, "reason": reason, "logical_context_only": True}
         self.store.put_object(uris.branch_key(trajectory_id, target_branch_id), branch)
@@ -776,7 +827,7 @@ class ContextDB:
             trajectory_id,
             "system_event",
             {
-                "text": f"ContextDB created logical rollback branch {target_branch_id}.",
+                "text": f"ContextDB created rollback branch {target_branch_id}.",
                 "snapshot_id": snapshot_id,
                 "branch_id": target_branch_id,
                 "reason": reason,
@@ -809,7 +860,7 @@ class ContextDB:
             "workspace_restore": {
                 "supported": False,
                 "status": "not_connected",
-                "message": "ContextDB rollback creates a logical trajectory branch only; it never restores local workspace files automatically.",
+                "message": "ContextDB rollback creates a trajectory branch only; it never restores local workspace files automatically.",
             },
         }
 
@@ -868,9 +919,21 @@ class ContextDB:
             })
             for parent in e.get("parent_event_ids") or []:
                 edges.append({"source": parent, "target": eid, "kind": "parent"})
-        for b in branches:
-            if b.get("base_event_id") and b.get("head_event_id") and b.get("base_event_id") != b.get("head_event_id"):
-                edges.append({"source": b["base_event_id"], "target": b["head_event_id"], "kind": "branch", "branch_id": b.get("branch_id")})
+        first_local_events: Dict[str, Dict[str, Any]] = {}
+        for event in events:
+            branch_id = event.get("branch_id")
+            if branch_id and branch_id not in first_local_events:
+                first_local_events[branch_id] = event
+        for branch in branches:
+            base_event_id = branch.get("base_event_id")
+            first_local_event = first_local_events.get(branch.get("branch_id"))
+            if base_event_id and first_local_event and base_event_id != first_local_event.get("event_id"):
+                edges.append({
+                    "source": base_event_id,
+                    "target": first_local_event["event_id"],
+                    "kind": "branch",
+                    "branch_id": branch.get("branch_id"),
+                })
         return {"trajectory": self.get_trajectory(trajectory_id), "nodes": nodes, "edges": edges, "branches": branches, "snapshots": snapshots, "views": views}
 
     def event_detail(self, trajectory_id: str, event_id: str) -> Dict[str, Any]:
@@ -918,12 +981,14 @@ class ContextDB:
                 repair_events = self._following_repair_events(events, i)
                 signature = self._result_signature(event)
                 normalized_signature = self._normalize_signature(signature)
+                result_tool = self._tool_name(event)
+                result_command = self._command_text(event) or self._command_text(tool_call)
                 cause_judgment = self._llm_likely_cause(
                     trajectory_id,
                     event,
                     {
-                        "failed_tool": self._tool_name(tool_call),
-                        "failed_command": self._command_text(tool_call),
+                        "failed_tool": result_tool,
+                        "failed_command": result_command,
                         "error_signature": signature,
                         "normalized_signature": normalized_signature,
                         "preceding_action": self._payload_text(assistant),
@@ -934,8 +999,8 @@ class ContextDB:
                     "pattern_id": f"fp_{event['event_id'].split('_')[-1]}",
                     "failure_event_id": event["event_id"],
                     "branch_id": current_branch_id,
-                    "failed_tool": self._tool_name(tool_call),
-                    "failed_command": self._command_text(tool_call),
+                    "failed_tool": result_tool,
+                    "failed_command": result_command,
                     "error_signature": signature,
                     "normalized_signature": normalized_signature,
                     "preceding_action": self._payload_text(assistant),
@@ -968,8 +1033,8 @@ class ContextDB:
                     "pattern_id": f"sp_{event['event_id'].split('_')[-1]}",
                     "success_event_id": event["event_id"],
                     "branch_id": branch_id,
-                    "successful_tool": self._tool_name(tool_call),
-                    "successful_command": self._command_text(tool_call),
+                    "successful_tool": self._tool_name(event),
+                    "successful_command": self._command_text(event) or self._command_text(tool_call),
                     "strategy": self._payload_text(assistant),
                     "outcome": event.get("payload", {}).get("status"),
                     "result_preview": event.get("payload", {}).get("preview", ""),

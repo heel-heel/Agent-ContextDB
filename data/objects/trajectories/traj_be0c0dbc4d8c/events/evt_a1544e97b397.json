@@ -1,0 +1,43 @@
+{
+  "event_id": "evt_a1544e97b397",
+  "trajectory_id": "traj_be0c0dbc4d8c",
+  "branch_id": "main",
+  "event_type": "tool_result",
+  "payload": {
+    "tool_name": "contextdb_get_version_status",
+    "command": "const created = await tools.mcp__contextdb__contextdb_create_repair_branch({source:\"codex-session\",session_id:\"rollout-2026-09-15T14-34-56-01a0a3c6-9648-70a2-af08-291576bfda30\",branch_id:\"repair-4fe2e341\",snapshot_id:\"snap_3bd350fbed87\",reason:\"Preserve the second invalid Git checkout and inspect a separate repair path.\"});\nconst status = await tools.mcp__contextdb__contextdb_get_version_status({source:\"codex-session\",session_id:\"rollout-2026-09-15T14-34-56-01a0a3c6-9648-70a2-af08-291576bfda30\"});\ntext(JSON.stringify({created,status}));",
+    "status": "ok",
+    "preview": "Script completed\nWall time 2.8 seconds\nOutput:\n\n{\"created\":{\"content\":[{\"type\":\"text\",\"text\":\"{\\n  \\\"source\\\": \\\"codex-session\\\",\\n  \\\"session_id\\\": \\\"rollout-2026-09-15T14-34-56-01a0a3c6-9648-70a2-af08-291576bfda30\\\",\\n  \\\"trajectory_id\\\": \\\"traj_be0c0dbc4d8c\\\",\\n  \\\"branch_id\\\": \\\"repair-4fe2e341\\\",\\n  \\\"source_snapshot_id\\\": \\\"snap_3bd350fbed87\\\",\\n  \\\"decision_event_id\\\": \\\"evt_b5aaa11b108c\\\",\\n  \\\"branch_created_event_id\\\": \\\"evt_844e2cdbb446\\\",\\n  \\\"version_context\\\": {\\n    \\\"active_branch_id\\\": \\\"repair-4fe2e341\\\",\\n    \\\"latest_snapshot\\\": {\\n      \\\"snapshot_id\\\": \\\"snap_3bd350fbed87\\\",\\n      \\\"branch_id\\\": \\\"main\\\",\\n      \\\"checkpoint_event_id\\\": \\\"evt_6730ddedd61a\\\",\\n      \\\"message\\\": \\\"Before state-changing exec\\\",\\n      \\\"created_at\\\": \\\"2026-09-15T06:41:31.358629+00:00\\\"\\n    },\\n    \\\"repair_branch_suggestion\\\": null,\\n    \\\"last_version_decision\\\": {\\n      \\\"event_id\\\": \\\"evt_b5aaa11b108c\\\",\\n      \\\"action\\\": \\\"create_repair_branch\\\",\\n      \\\"decision\\\": \\\"accepted\\\",\\n      \\\"at\\\": \\\"2026-09-15T06:42:06.796716+00:00\\\"\\n    },\\n    \\\"workspace_restore\\\": {\\n      \\\"supported\\\": false,\\n      \\\"instruction\\\": \\\"ContextDB records branch and rollback state only. Restore files through the Agent workspace after an explicit decision.\\\"\\n    }\\n  }\\n}\"}],\"structuredContent\":{\"source\":\"codex-session\",\"session_id\":\"rollout-2026-09-15T14-34-56-01a0a3c6-9648-70a2-af08-291576bfda30\",\"trajectory_id\":\"traj_be0c0dbc4d8c\",\"branch_id\":\"repair-4fe2e341\",\"source_snapshot_id\":\"snap_3bd350fbed87\",\"decision_event_id\":\"evt_b5aaa11b108c\",\"branch_created_event_id\":\"evt_844e2cdbb446\",\"version_context\":{\"active_branch_id\":\"repair-4fe2e341\",\"latest_snapshot\":{\"snapshot_id\":\"snap_3bd350fbed87\",\"branch_id\":\"main\",\"checkpoint_event_id\":\"evt_6730ddedd61a\",\"message\":\"Before state-changing exec\",\"created_at\":\"2026-09-15T06:41:31.358629+00:00\"},\"repair_branch_suggestion\":null,\"last_version_decision\":{\"event_id\":\"evt_b5aaa11b108c\",\"action\":\"create_repair_branch\",\"decision\":\"accepted\",\"at\":\"2026-09-15T06:42:06.796716+00:00\"},\"workspace_restore\":{\"supported\":false,\"instruction\":\"ContextDB records branch and rollback state only. Restore files through the Agent workspace after an explicit decision.\"}}},\"isError\":false},\"status\":{\"content\":[{\"type\":\"text\",\"text\":\"{\\n  \\\"schema_version\\\": \\\"contextdb.mcp.version_status.v1\\\",\\n  \\\"source\\\": \\\"codex-session\\\",\\n  \\\"session_id\\\": \\\"rollout-2026-09-15T14-34-56-01a0a3c6-9648-70a2-af08-291576bfda30\\\",\\n  \\\"trajectory_id\\\": \\\"traj_be0c0dbc4d8c\\\",\\n  \\\"active_branch_id\\\": \\\"repair-4fe2e341\\\",\\n  \\\"latest_snapshot\\\": {\\n    \\\"snapshot_id\\\": \\\"snap_3bd350fbed87\\\",\\n    \\\"branch_id\\\": \\\"main\\\",\\n    \\\"checkpoint_event_id\\\": \\\"evt_6730ddedd61a\\\",\\n    \\\"message\\\": \\\"Before state-changing exec\\\",\\n    \\\"created_at\\\": \\\"2026-09-15T06:41:31.358629+00:00\\\"\\n  },\\n  \\\"repair_branch_suggestion\\\": null,\\n  \\\"last_version_decision\\\": {\\n    \\\"event_id\\\": \\\"evt_b5aaa11b108c\\\",\\n    \\\"action\\\": \\\"create_repair_branch\\\",\\n    \\\"decision\\\": \\\"accepted\\\",\\n    \\\"at\\\": \\\"2026-09-15T06:42:06.796716+00:00\\\"\\n  },\\n  \\\"branches\\\": [\\n    {\\n      \\\"branch_id\\\": \\\"main\\\",\\n      \\\"base_event_id\\\": null,\\n      \\\"head_event_id\\\": \\\"evt_b5aaa11b108c\\\",\\n      \\\"snapshot_id\\\": \\\"snap_3bd350fbed87\\\"\\n    },\\n    {\\n      \\\"branch_id\\\": \\\"repair-4fe2e341\\\",\\n      \\\"base_event_id\\\": \\\"evt_6730ddedd61a\\\",\\n      \\\"head_event_id\\\": \\\"evt_844e2cdbb446\\\",\\n      \\\"snapshot_id\\\": null\\n    }\\n  ],\\n  \\\"recent_snapshots\\\": [\\n    {\\n      \\\"snapshot_id\\\": \\\"snap_ddea743135a2\\\",\\n      \\\"branch_id\\\": \\\"main\\\",\\n      \\\"checkpoint_event_id\\\": \\\"evt_192373f04076\\\",\\n      \\\"message\\\": \\\"Before state-changing exec\\\",\\n      \\\"created_at\\\": \\\"2026-09-15T06:40:45.200278+00:00\\\"\\n    },\\n    {\\n      \\\"snapshot_id\\\": \\\"snap_3bd350fbed87\\\",\\n      \\\"branch_id\\\": \\\"main\\\",\\n      \\\"checkpoint_event_id\\\": \\\"evt_6730ddedd61a\\\",\\n      \\\"message\\\": \\\"Before state-changing exec\\\",\\n      \\\"created_at\\\": \\\"2026-09-15T06:41:31.358629+00:00\\\"\\n    }",
+    "exit_code": null,
+    "transport_tool_name": "exec",
+    "tool_chain": [
+      "exec",
+      "contextdb_create_repair_branch",
+      "contextdb_get_version_status"
+    ],
+    "invoked_tool": "contextdb_get_version_status"
+  },
+  "parent_event_ids": [
+    "evt_b5aaa11b108c"
+  ],
+  "actor": "tool",
+  "timestamp": "2026-09-15T06:42:08.588672+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "codex-session",
+    "hook_adapter": "codex-session",
+    "hook_session_id": "rollout-2026-09-15T14-34-56-01a0a3c6-9648-70a2-af08-291576bfda30",
+    "tool_call_event_id": "evt_7deb9b33bf51"
+  },
+  "metadata": {
+    "agent_id": "codex",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T06:42:08.588329+00:00",
+    "adapter": "codex-desktop-session-jsonl",
+    "codex_session_record_type": "response_item",
+    "codex_session_timestamp": "2026-09-15T06:42:08.229Z",
+    "codex_item_type": "custom_tool_call_output",
+    "codex_item_id": "ctco_01a0a3cd-2ee5-7a31-bc6a-57e8306bc5ba"
+  }
+}

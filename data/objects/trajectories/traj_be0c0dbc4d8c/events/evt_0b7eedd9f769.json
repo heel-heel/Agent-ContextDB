@@ -1,0 +1,42 @@
+{
+  "event_id": "evt_0b7eedd9f769",
+  "trajectory_id": "traj_be0c0dbc4d8c",
+  "branch_id": "main",
+  "event_type": "tool_result",
+  "payload": {
+    "tool_name": "web__run",
+    "command": "const r = await tools.web__run({search_query:[{q:\"site:git-scm.com/docs Git documentation English\",domains:[\"git-scm.com\"]}],response_length:\"short\"});\ntext(JSON.stringify(r));",
+    "status": "ok",
+    "preview": "Script completed\nWall time 3.1 seconds\nOutput:\n\n\"Git - git Documentation (https://git-scm.com/docs/git)\\nciteturn0search0 [wordlim: 200] Crawled: yesterday; A formatted and hyperlinked copy of the latest Git documentation can be viewed at https://git.github.io/htmldocs/git.html or https://git-scm.com/docs. ... Please see the gitrepository-layout[5] document.\\n\\nCheck your version of git by running\\n\\n`git --version`\\n\\n## NAME\\n\\ngit - the stupid content tracker\\n\\n## SYNOPSIS\\n    \\n    git [-v | --version] [-h | --help] [-C <path>] [-c <name>=<value>]\\n        [--exec-path[=<path>]] [--html-path] [--man-path] [--info-path]\\n        [-p | --paginate | -P | --no-pager] [--no-replace-objects] [--no-lazy-fetch]\\n        [--no-optional-locks] [--no-advice] [--bare] [--git-dir=<path>]\\n        [--work-tree=<path>] [--namespace=<name>] [--config-env=<name>=<envvar>]\\n        <command> [<args>]\\n\\n## DESCRIPTION\\n\\nGit is a fast, scalable, distributed revision control system with an unusually rich command set that provides both high-level operations and full access to internals.\\n\\nSee gittutorial[7] to get started, then see giteveryday[7] for a useful minimum set of commands. The Git User’s Manual has a more in-depth introduction.\\n\\nAfter you mastered the basic concepts, you can come back to this page to learn what commands Git offers. You can learn more about individual Git commands with \\\"git help command\\\". gitcli[7] manual page gives you an overview of the command-line command syntax.\\n\\nA formatted and hyperlinked copy of the latest Git documentation can be viewed at https://git.github.io/htmldocs/git.html or https://git-scm.com/docs.\\n\\n## OPTIONS\\n\\n-v\\n--version\\n    \\n\\nPrints the Git suite version that the git program came from.\\n\\nThis option is internally converted to `git` `version` ... and accepts the same options as the git-version[1] command. If `--help` is also given, it takes precedence over `--version`.\\n\\n-h\\n--help\\n    \\n\\nPrints the synopsis and a list of the most commonly used commands. If the option `--all` or `-a` is given then all available commands are printed. If a Git command is named this option will bring up the manual page for that command.\\n\\nOther options are available to control how the manual page is displayed. See git-help[1] for more information, because `git` `--help` ... is converted internally into `git` `help` ....\\n\\n-C <path>\\n    \\n\\nRun as if git was started in <path> instead of the current working directory. When multiple `-C` options are given, each subsequent non-absolute `-C` <path> is interpreted relative to the preceding `-C` <path>. ## Guides\\n\\nThe following documentation pages are guides about Git concepts.\\n\\ngitcore-tutorial[7]\\n    \\n\\nA Git core tutorial for developers\\n\\ngitcredentials[7]\\n    \\n\\nProviding usernames and passwords to Git\\n\\ngitcvs-migration[7]\\n    \\n\\nGit for CVS users\\n\\ngitdiffcore[7]\\n    \\n\\nTweaking diff output\\n\\ngiteveryday[7]\\n    \\n\\nA useful minimum set of commands for Everyday Git\\n\\ngitfaq[7]\\n    \\n\\nFrequently asked questions about using Git\\n\\ngitglossary[7]\\n    \\n\\nA Git Glossary\\n\\ngitnamespaces[7]\\n    \\n\\nGit namespaces\\n\\ngitremote-helpers[7]\\n    \\n\\nHelper programs to interact with remote repositories\\n\\ngitsubmodules[7]\\n    \\n\\nMounting one repository inside another\\n\\ngittutorial[7]\\n    \\n\\nA tutorial introduction to Git\\n\\ngittutorial-2[7]\\n    \\n\\nA tutorial introduction to Git: part two\\n\\ngitworkflows[7]\\n    \\n\\nAn overview of recommended workflows with Git\\n\\n## Repository, command and file interfaces\\n\\nThis documentation discusses repository and command interfaces which users are expected to interact with directly. See `--user-formats` in git-help[1] for more details on the criteria.\\n\\ngitattributes[5]\\n    \\n\\nDefining attributes per path\\n\\ngitcli[7]\\n    \\n\\nGit command-line interface and conventions\\n\\ngithooks[5]\\n    \\n\\nHooks used by Git\\n\\ngitignore[5]\\n    \\n\\nSpecifies intentionally untracked files to ign",
+    "exit_code": null,
+    "transport_tool_name": "exec",
+    "tool_chain": [
+      "exec",
+      "web__run"
+    ],
+    "invoked_tool": "web__run"
+  },
+  "parent_event_ids": [
+    "evt_d09e2dcd7597"
+  ],
+  "actor": "tool",
+  "timestamp": "2026-09-15T06:40:25.593512+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "codex-session",
+    "hook_adapter": "codex-session",
+    "hook_session_id": "rollout-2026-09-15T14-34-56-01a0a3c6-9648-70a2-af08-291576bfda30",
+    "tool_call_event_id": "evt_d09e2dcd7597"
+  },
+  "metadata": {
+    "agent_id": "codex",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T06:40:25.593287+00:00",
+    "adapter": "codex-desktop-session-jsonl",
+    "codex_session_record_type": "response_item",
+    "codex_session_timestamp": "2026-09-15T06:40:24.888Z",
+    "codex_item_type": "custom_tool_call_output",
+    "codex_item_id": "ctco_01a0a3cb-9b38-76f2-bfa4-4e8d82e8362f"
+  }
+}

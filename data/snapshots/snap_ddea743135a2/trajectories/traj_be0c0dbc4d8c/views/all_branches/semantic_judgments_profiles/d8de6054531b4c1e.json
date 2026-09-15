@@ -1,0 +1,123 @@
+{
+  "view_name": "semantic_repair_judgments",
+  "trajectory_id": "traj_be0c0dbc4d8c",
+  "branch_id": "all_branches",
+  "content": [
+    {
+      "schema_version": "semantic_repair_judgment.v1",
+      "trajectory_id": "traj_be0c0dbc4d8c",
+      "failure_event_id": "evt_fd443155ff7e",
+      "success_event_id": "evt_a857da5b756d",
+      "failure": {
+        "failure_event_id": "evt_fd443155ff7e",
+        "tool_call_event_id": "evt_533104e9f50a",
+        "branch_id": "main",
+        "command": "powershell -NoProfile -Command '[Environment]::SetEnvironmentVariable((\"LC\" + [char]95 + \"ALL\"), \"C\", \"Process\"); $env:LANG=\"C\"; git show HEAD:assets/settings.json; exit $LASTEXITCODE'",
+        "tool": "git",
+        "error_signature": "Script completed\nWall time 1.5 seconds\nOutput:\n\n{\"chunk_id\":\"d6494b\",\"wall_time_seconds\":0.8181257,\"exit_code\":1,\"original_token_count\":15,\"output\":\"fatal: path 'assets/settings.json' does not exist in 'HEAD'\\n\"}",
+        "normalized_signature": "script completed wall time seconds output \"chunk_id\" \"fatal path 'assets settings.json' does not exist in 'head' n\"",
+        "preceding_action": "I’ll run that command from the project root and return its output verbatim.",
+        "likely_cause": "file path absent from git head revision",
+        "evidence_event_ids": [
+          "evt_e41ee52e2e87",
+          "evt_533104e9f50a",
+          "evt_fd443155ff7e"
+        ],
+        "highlight_event_ids": [
+          "evt_fd443155ff7e"
+        ]
+      },
+      "repair_candidate": {
+        "schema_version": "experience_mining.v1",
+        "branch_id": "main",
+        "success_event_id": "evt_a857da5b756d",
+        "tool_call_event_id": "evt_be680e000fa1",
+        "strategy": "I’ll run the specified command from the project root and return the raw result.",
+        "tool": "git",
+        "command": "powershell -NoProfile -Command '[Environment]::SetEnvironmentVariable((\"LC\" + [char]95 + \"ALL\"), \"C\", \"Process\"); $env:LANG=\"C\"; git show HEAD:examples/live-path-demo/assets/settings.json; exit $LASTEXITCODE'",
+        "outcome": "ok",
+        "primary_rule": "same_branch_first_success_after_failure",
+        "link_type": "same_branch_first_success_after_failure",
+        "strength": "structural",
+        "why_linked": "The success is the first successful tool result after the failure on the same branch.",
+        "evidence": [
+          {
+            "rule": "same_branch_first_success_after_failure",
+            "strength": "structural",
+            "evidence_level": "primary_structural",
+            "branch_id": "main",
+            "failure_event_id": "evt_fd443155ff7e",
+            "success_event_id": "evt_a857da5b756d"
+          },
+          {
+            "rule": "same_tool_command_variant",
+            "strength": "supporting",
+            "evidence_level": "supporting",
+            "failed_command": "powershell -NoProfile -Command '[Environment]::SetEnvironmentVariable((\"LC\" + [char]95 + \"ALL\"), \"C\", \"Process\"); $env:LANG=\"C\"; git show HEAD:assets/settings.json; exit $LASTEXITCODE'",
+            "successful_command": "powershell -NoProfile -Command '[Environment]::SetEnvironmentVariable((\"LC\" + [char]95 + \"ALL\"), \"C\", \"Process\"); $env:LANG=\"C\"; git show HEAD:examples/live-path-demo/assets/settings.json; exit $LASTEXITCODE'"
+          }
+        ],
+        "evidence_event_ids": [
+          "evt_fd443155ff7e",
+          "evt_a857da5b756d"
+        ],
+        "highlight_event_ids": [
+          "evt_fd443155ff7e",
+          "evt_a857da5b756d"
+        ],
+        "highlight_branch_ids": []
+      },
+      "structural_rule": "same_branch_first_success_after_failure",
+      "judgment": {
+        "enabled": true,
+        "provider": "openai-compatible",
+        "model": "deepseek-flash",
+        "label": "likely_repair",
+        "confidence": 0.9,
+        "reason": "The failure was caused by the path 'assets/settings.json' not existing in HEAD. The successful action uses the same git show structure but changes the path to 'examples/live-path-demo/assets/settings.json', which directly addresses the missing-path failure.",
+        "risk": "The repaired file path is different from the original requested path; it may have succeeded by targeting another valid file rather than proving the original intended path now exists.",
+        "recommended_for_skill": true,
+        "execution": {
+          "profile_id": "background-deepseek-flash",
+          "provider": "openai-compatible",
+          "requested_model": "deepseek-flash",
+          "response_model": "deepseek-flash",
+          "response_id": "895aebf7-9493-4d53-8d1c-a6b3a008bb08",
+          "verified": true
+        }
+      },
+      "highlight_event_ids": [
+        "evt_fd443155ff7e",
+        "evt_a857da5b756d"
+      ]
+    }
+  ],
+  "source_events": [
+    "evt_a7455668ad35",
+    "evt_c0a70d25d650",
+    "evt_d50f76fcf193",
+    "evt_66c7d6ed2956",
+    "evt_7fac3291a48c",
+    "evt_5309f7769dca",
+    "evt_2e416f1e7c15",
+    "evt_793b7c5bba8b",
+    "evt_e41ee52e2e87",
+    "evt_533104e9f50a",
+    "evt_fd443155ff7e",
+    "evt_c9633d3eb51f",
+    "evt_6b33bd706689",
+    "evt_028686d10ba4",
+    "evt_0b2baa63fb91",
+    "evt_be680e000fa1",
+    "evt_a857da5b756d",
+    "evt_24058ec3d41b"
+  ],
+  "created_at": "2026-09-15T06:38:02.468375+00:00",
+  "metadata": {
+    "schema_version": "semantic_repair_judgment_cache.v1",
+    "event_count": 18,
+    "profile_id": "background-deepseek-flash",
+    "provider": "openai-compatible",
+    "model": "deepseek-flash"
+  }
+}

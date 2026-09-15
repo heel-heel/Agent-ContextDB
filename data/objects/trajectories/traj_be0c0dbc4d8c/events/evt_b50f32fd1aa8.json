@@ -1,0 +1,31 @@
+{
+  "event_id": "evt_b50f32fd1aa8",
+  "trajectory_id": "traj_be0c0dbc4d8c",
+  "branch_id": "repair-4fe2e341",
+  "event_type": "user_message",
+  "payload": {
+    "text": "Use ContextDB MCP tool contextdb\\_get\\_version\\_status with source codex-session and the session id returned earlier. If a snapshot is present, identify the most recent snapshot and report its snapshot id, branch id, checkpoint event id, timestamp, and message.\n"
+  },
+  "parent_event_ids": [
+    "evt_c00c86fe385e"
+  ],
+  "actor": "user",
+  "timestamp": "2026-09-15T06:42:36.294606+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "codex-session",
+    "hook_adapter": "codex-session",
+    "hook_session_id": "rollout-2026-09-15T14-34-56-01a0a3c6-9648-70a2-af08-291576bfda30"
+  },
+  "metadata": {
+    "agent_id": "codex",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T06:42:36.294425+00:00",
+    "adapter": "codex-desktop-session-jsonl",
+    "codex_session_record_type": "response_item",
+    "codex_session_timestamp": "2026-09-15T06:42:35.844Z",
+    "codex_item_type": "message",
+    "codex_item_id": "msg_01a0a3cd-9ac4-7153-ba7b-67efa47f72c3"
+  }
+}

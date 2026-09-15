@@ -1,0 +1,82 @@
+{
+  "event_id": "evt_0b92416fa286",
+  "trajectory_id": "traj_eac5bceaf2ff",
+  "branch_id": "main",
+  "event_type": "skill_recommendation",
+  "payload": {
+    "type": "contextdb_skill_recommendation",
+    "matched": true,
+    "skill_id": "skill_python_typo_in_python_module_python_c_import_jsonn",
+    "skill_name": "Repair typo in python module import name",
+    "match_score": 0.944563,
+    "match_reason": "vector cosine similarity over failure and learned trigger",
+    "selected_action": {
+      "action_id": "act_python_typo_in_python_module_python_c_import_jsonn_1",
+      "name": "Apply python -c \"import json; print(json.__name__)\"",
+      "canonical_tool": "python",
+      "canonical_command_template": "python -c \"import json; print(json.__name__)\"",
+      "strategy": "Apply python -c \"import json; print(json.__name__)\"",
+      "support_event_ids": [
+        "evt_75d3208ba9c8"
+      ],
+      "support_events": [
+        {
+          "trajectory_id": "traj_eac5bceaf2ff",
+          "failure_event_id": "evt_24e390f15243",
+          "success_event_id": "evt_75d3208ba9c8",
+          "branch_id": "main",
+          "failure_tool_call_event_id": "evt_7ed15ee53671",
+          "success_tool_call_event_id": "evt_94109dacc646",
+          "tool": "python",
+          "command": "python -c \"import json; print(json.__name__)\"",
+          "strategy": "",
+          "outcome": "ok",
+          "primary_rule": "same_branch_first_success_after_failure",
+          "judgment_label": "likely_repair",
+          "confidence": 0.95,
+          "reason": "The failed command imported nonexistent module 'jsonn' due to a typo; the successful action imports the correct standard module 'json' and prints its name, directly addressing the typo.",
+          "vector_text": "python python -c \"import json; print(json.__name__)\""
+        }
+      ],
+      "confidence": {
+        "max_llm_confidence": 0.95,
+        "support_count": 1
+      },
+      "dedupe": {
+        "method": "vector_cosine",
+        "embedding": "hash-384",
+        "threshold": 0.78,
+        "group_size": 1
+      }
+    },
+    "selected_action_index": 0,
+    "selected_action_score": 0.95,
+    "selection_policy": "highest max_llm_confidence; ties keep original action order",
+    "instruction": "Use this as a suggestion. The Agent must decide whether it is safe and appropriate before executing it.",
+    "version_context": {
+      "active_branch_id": "main",
+      "latest_snapshot": null,
+      "repair_branch_suggestion": null,
+      "last_version_decision": null,
+      "workspace_restore": {
+        "supported": false,
+        "instruction": "ContextDB records branch and rollback state only. Restore files through the Agent workspace after an explicit decision."
+      }
+    }
+  },
+  "parent_event_ids": [
+    "evt_8a4dd6eb93f6"
+  ],
+  "actor": "contextdb",
+  "timestamp": "2026-09-15T07:53:26.195685+00:00",
+  "refs": {
+    "skill_match_event_id": "evt_8a4dd6eb93f6",
+    "skill_id": "skill_python_typo_in_python_module_python_c_import_jsonn",
+    "selected_action_id": "act_python_typo_in_python_module_python_c_import_jsonn_1"
+  },
+  "metadata": {
+    "operation": "skill_recommendation_delivery",
+    "delivery_channel": "claude-code-post-tool-failure",
+    "online": true
+  }
+}

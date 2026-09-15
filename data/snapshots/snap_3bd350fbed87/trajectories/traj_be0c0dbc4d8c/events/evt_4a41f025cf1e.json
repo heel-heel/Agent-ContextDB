@@ -1,0 +1,31 @@
+{
+  "event_id": "evt_4a41f025cf1e",
+  "trajectory_id": "traj_be0c0dbc4d8c",
+  "branch_id": "main",
+  "event_type": "user_message",
+  "payload": {
+    "text": "Use ContextDB MCP tool contextdb\\_get\\_recommendation with source codex-session and the session id returned earlier. If a matched action is present, report its skill match event id, skill id, action id, and proposed action. Do not call contextdb\\_record\\_skill\\_decision in this turn. Do not execute the proposed Git command in this turn.\n"
+  },
+  "parent_event_ids": [
+    "evt_55439526768e"
+  ],
+  "actor": "user",
+  "timestamp": "2026-09-15T06:38:35.151622+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "codex-session",
+    "hook_adapter": "codex-session",
+    "hook_session_id": "rollout-2026-09-15T14-34-56-01a0a3c6-9648-70a2-af08-291576bfda30"
+  },
+  "metadata": {
+    "agent_id": "codex",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T06:38:35.151388+00:00",
+    "adapter": "codex-desktop-session-jsonl",
+    "codex_session_record_type": "response_item",
+    "codex_session_timestamp": "2026-09-15T06:38:34.855Z",
+    "codex_item_type": "message",
+    "codex_item_id": "msg_01a0a3c9-ed67-7723-a6b1-09c099d205b8"
+  }
+}

@@ -85,6 +85,14 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
     .repair-strategy-card { border-color:#b9d5ec; border-left:4px solid #2364aa; background:#fbfdff; }
     .repair-table td { overflow-wrap:anywhere; }
     .repair-table .mono { white-space:pre-wrap; overflow-wrap:anywhere; }
+    .success-patterns-wrap { overflow-x:hidden; }
+    .success-patterns-table { width:100%; min-width:0; table-layout:fixed; }
+    .success-patterns-table th:nth-child(1), .success-patterns-table td:nth-child(1) { width:22%; }
+    .success-patterns-table th:nth-child(2), .success-patterns-table td:nth-child(2) { width:34%; }
+    .success-patterns-table th:nth-child(3), .success-patterns-table td:nth-child(3) { width:32%; }
+    .success-patterns-table th:nth-child(4), .success-patterns-table td:nth-child(4) { width:12%; }
+    .success-patterns-table td { overflow-wrap:anywhere; word-break:break-word; }
+    .success-patterns-table .mono { white-space:pre-wrap; overflow-wrap:anywhere; }
     .learned-skill-card { border-color:#b9d5ec; border-left:4px solid #2364aa; background:#fbfdff; }
     .learned-skill-title { display:flex; align-items:center; gap:8px; margin:0 0 8px; }
     .summary-card .learned-skill-title h3,
@@ -777,11 +785,35 @@ function edgeEndpoints(source, target) {
     y2: target.y + target.height,
   };
 }
+function addDagArrowMarkers(edges) {
+  const prefix = edges.id || 'dagEdges';
+  const definitions = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+  [
+    ['event', '#9aa7b2'],
+    ['branch', '#9a6b16'],
+  ].forEach(([kind, color]) => {
+    const marker = document.createElementNS('http://www.w3.org/2000/svg', 'marker');
+    marker.setAttribute('id', `${prefix}-${kind}-arrow`);
+    marker.setAttribute('viewBox', '0 0 8 8');
+    marker.setAttribute('refX', '7');
+    marker.setAttribute('refY', '4');
+    marker.setAttribute('markerWidth', '7');
+    marker.setAttribute('markerHeight', '7');
+    marker.setAttribute('orient', 'auto');
+    const arrow = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    arrow.setAttribute('d', 'M 0 0 L 8 4 L 0 8 z');
+    arrow.setAttribute('fill', color);
+    marker.appendChild(arrow);
+    definitions.appendChild(marker);
+  });
+  edges.appendChild(definitions);
+}
 function drawGraph(data) {
   graphData = data;
   const graph = $('graph');
   graph.querySelectorAll('.node').forEach(n => n.remove());
   const edges = $('edges'); edges.innerHTML = '';
+  addDagArrowMarkers(edges);
   const elements = new Map();
   data.nodes.forEach((n) => {
     const el = createGraphNode(n, true);
@@ -805,6 +837,7 @@ function drawGraph(data) {
     line.dataset.branchId = e.branch_id || '';
     line.setAttribute('stroke', e.kind === 'branch' ? '#9a6b16' : '#9aa7b2');
     line.setAttribute('stroke-width', e.kind === 'branch' ? '2' : '1.5');
+    line.setAttribute('marker-end', `url(#${edges.id}-${e.kind === 'branch' ? 'branch' : 'event'}-arrow)`);
     edges.appendChild(line);
   });
   $('graphMeta').textContent = `${data.nodes.length} events, ${data.branches.length} branches`;
@@ -878,20 +911,22 @@ function renderGlobalOverview(data) {
     skill: nodes.filter(node => node.type === 'skill'),
   };
   const trajectoryRows = trajectories.map(row => {
-    const tools = (row.tools || []).map(tool => `<span class="pill">${escapeHtml(tool.tool_name)} ${escapeHtml(tool.call_count)}</span>`).join('') || '<span class="muted">No tool calls</span>';
-    const relatedSkills = (row.associated_skills || []).map(skill => `<span class="pill ok">${escapeHtml(skill.name)} (${escapeHtml(skill.application_count)})</span>`).join('') || '<span class="muted">No skill-linked tool calls</span>';
+    const tools = (row.tools || []).map(tool => {
+      return `<span class="pill">${escapeHtml(tool.tool_name)} ${escapeHtml(tool.call_count)}</span>`;
+    }).join('') || '<span class="muted">No tool results</span>';
+    const relatedSkills = (row.associated_skills || []).map(skill => `<span class="pill ok">${escapeHtml(skill.name)} (${escapeHtml(skill.application_count)})</span>`).join('') || '<span class="muted">No skill-linked tool results</span>';
     return `<tr><td><b>${escapeHtml(row.title || '')}</b><div class="mono muted">${escapeHtml(row.trajectory_id)}</div><button class="small-btn secondary" onclick='openTrajectoryFromGlobal(${JSON.stringify(row.trajectory_id)})'>Open</button></td><td>${escapeHtml(row.agent_id || '')}<div class="muted">${escapeHtml(row.source_id || '')}</div></td><td>${escapeHtml(row.created_at || '')}<div class="muted">updated ${escapeHtml(row.updated_at || '')}</div></td><td>${escapeHtml(row.event_count)}</td><td>${tools}</td><td>${relatedSkills}</td></tr>`;
   }).join('') || '<tr><td colspan="6" class="muted">No trajectories have been recorded.</td></tr>';
   const skillRows = skills.map(skill => `<tr><td><b>${escapeHtml(skill.name)}</b><div class="mono muted">${escapeHtml(skill.skill_id)}</div></td><td><button class="small-btn secondary" onclick='openTrajectoryFromGlobal(${JSON.stringify(skill.source_trajectory_id)})'>${escapeHtml(skill.source_trajectory_id)}</button></td><td>${escapeHtml(skill.trigger_tool || '')}</td><td>${escapeHtml(skill.support_count || 0)}</td><td>${escapeHtml(skill.status || '')}</td></tr>`).join('') || '<tr><td colspan="5" class="muted">No learned skills are currently materialized.</td></tr>';
   $('globalOut').innerHTML = `
     <div class="global-metrics">
       <div class="global-metric"><b>${escapeHtml(data.trajectory_count)}</b><span>trajectories</span></div>
-      <div class="global-metric"><b>${escapeHtml(data.tool_count)}</b><span>tools called</span></div>
+      <div class="global-metric"><b>${escapeHtml(data.tool_count)}</b><span>tools executed</span></div>
       <div class="global-metric"><b>${escapeHtml(data.skill_count)}</b><span>shared indexed skills</span></div>
     </div>
-    <div class="summary-card"><h3>All Trajectories</h3><div class="table-wrap"><table><thead><tr><th>Trajectory</th><th>Creation agent / source</th><th>Created / updated</th><th>Events</th><th>Tool calls</th><th>Associated skills</th></tr></thead><tbody>${trajectoryRows}</tbody></table></div></div>
+    <div class="summary-card"><h3>All Trajectories</h3><div class="table-wrap"><table><thead><tr><th>Trajectory</th><th>Creation agent / source</th><th>Created / updated</th><th>Events</th><th>Tools executed</th><th>Associated skills</th></tr></thead><tbody>${trajectoryRows}</tbody></table></div></div>
     <div class="summary-card"><h3>Global Skill Library</h3><p class="muted">Skills are stored in one persistent vector collection and can be retrieved by every trajectory. Each entry retains the trajectory that produced it.</p><div class="table-wrap"><table><thead><tr><th>Skill</th><th>Source trajectory</th><th>Trigger tool</th><th>Evidence</th><th>Status</th></tr></thead><tbody>${skillRows}</tbody></table></div></div>
-    <div class="summary-card"><h3>Trajectory / Tool / Skill Relationships</h3><p class="muted">Solid links show tool calls. Dashed green links show a trajectory applying an indexed skill. Blue links connect a tool to the skill action that used it.</p>
+    <div class="summary-card"><h3>Trajectory / Tool / Skill Relationships</h3><p class="muted">Solid links show tool results. Dashed green links show a trajectory applying an indexed skill. Blue links connect a tool to the skill action that used it.</p>
       <div class="global-relationship-graph"><svg id="globalRelationshipEdges" class="global-relationship-edges"></svg><div class="global-relationship-columns">
         <div class="global-relationship-column"><h3>Trajectories</h3><div class="global-relationship-stack">${nodeGroups.trajectory.map(globalGraphNode).join('') || '<span class="muted">None</span>'}</div></div>
         <div class="global-relationship-column"><h3>Tools</h3><div class="global-relationship-stack">${nodeGroups.tool.map(globalGraphNode).join('') || '<span class="muted">None</span>'}</div></div>
@@ -927,6 +962,7 @@ function drawPlayback() {
   if (!graph || !edges) return;
   graph.querySelectorAll('.node').forEach(n => n.remove());
   edges.innerHTML = '';
+  addDagArrowMarkers(edges);
   if (!graphData || !graphData.nodes.length) {
     playbackDetailRequest += 1;
     $('playbackMeta').textContent = 'no trajectory';
@@ -962,6 +998,7 @@ function drawPlayback() {
     line.setAttribute('x2', points.x2); line.setAttribute('y2', points.y2);
     line.setAttribute('stroke', e.kind === 'branch' ? '#9a6b16' : '#9aa7b2');
     line.setAttribute('stroke-width', e.kind === 'branch' ? '2' : '1.5');
+    line.setAttribute('marker-end', `url(#${edges.id}-${e.kind === 'branch' ? 'branch' : 'event'}-arrow)`);
     edges.appendChild(line);
   });
   const event = graphData.nodes[playbackStep];
@@ -1127,7 +1164,7 @@ function renderSuccessPatterns(data) {
   const rows = Array.isArray(data.content) ? data.content : [];
   renderMetrics(null);
   if (!rows.length) return setOutput('<div class="view-empty">No successes found in this trajectory.</div>');
-  const table = `<div class="table-wrap"><table><thead><tr><th>Success</th><th>Command</th><th>Tool Call</th><th></th></tr></thead><tbody>${rows.map(r => `
+  const table = `<div class="table-wrap success-patterns-wrap"><table class="success-patterns-table"><thead><tr><th>Success</th><th>Command</th><th>Tool Call</th><th></th></tr></thead><tbody>${rows.map(r => `
     <tr>
       <td><span class="pill ok">${escapeHtml(r.branch_id)}</span><div class="mono">${escapeHtml(r.success_event_id)}</div></td>
       <td><div class="mono">${escapeHtml(r.successful_command)}</div><div class="muted">${escapeHtml(r.successful_tool)}</div></td>
@@ -1304,10 +1341,20 @@ function renderSkillLibrary(data) {
   setOutput(toolbar + cards);
 }
 function eventTypeDot(type) { return `timeline-dot dot-${String(type || 'system_event')}`; }
+function toolChain(payload) {
+  const chain = Array.isArray(payload?.tool_chain) ? payload.tool_chain.filter(Boolean) : [];
+  return chain.length ? chain : [payload?.tool_name || payload?.tool || 'tool'];
+}
 function eventText(event) {
   const payload = event?.payload || {};
-  if (event?.event_type === 'tool_call') return `${payload.tool_name || payload.tool || ''}: ${payload.command || ''}`;
-  if (event?.event_type === 'tool_result') return `${payload.status || ''}: ${payload.preview || payload.output || payload.message || ''}`;
+  if (event?.event_type === 'tool_call') {
+    const outcome = payload.status && payload.status !== 'pending' ? ` [${payload.status}]` : '';
+    return `${toolChain(payload).join(' -> ')}${outcome}: ${payload.command || ''}`;
+  }
+  if (event?.event_type === 'tool_result') {
+    const chain = toolChain(payload).join(' -> ');
+    return `${payload.tool_name || 'tool'} [${payload.status || ''}] (${chain}): ${payload.preview || payload.output || payload.message || ''}`;
+  }
   if (event?.event_type === 'assistant_message' || event?.event_type === 'user_message') return payload.text || '';
   if (event?.event_type === 'skill_match') return payload.match_reason || (payload.matches || [])[0]?.match_reason || '';
   if (event?.event_type === 'skill_recommendation') return payload.instruction || payload.skill_name || 'ContextDB delivered a recommendation.';
@@ -1363,8 +1410,13 @@ function renderSkillApplicationTrace(data) {
       const segment = branchRows.slice(start + 1, next === -1 ? branchRows.length : next);
       const linkedEvents = segment.filter(e => e.refs?.skill_match_event_id === matchEvent.event_id);
       const delivery = linkedEvents.find(e => e.event_type === 'skill_recommendation');
-      const decision = linkedEvents.find(e => e.event_type === 'skill_decision');
       const call = linkedEvents.find(e => e.event_type === 'tool_call');
+      const decisions = linkedEvents.filter(e => e.event_type === 'skill_decision');
+      const executionBoundary = call ? linkedEvents.indexOf(call) : linkedEvents.length;
+      const decisionsBeforeExecution = linkedEvents.slice(0, executionBoundary).filter(e => e.event_type === 'skill_decision');
+      // A recommendation may be deferred for an information-only turn and
+      // accepted later. Show the final decision that governed execution.
+      const decision = decisionsBeforeExecution[decisionsBeforeExecution.length - 1] || decisions[decisions.length - 1];
       const result = linkedEvents.find(e => e.event_type === 'tool_result');
       const details = matchPayloadDetails(matchEvent);
       const failureEventReference = matchEvent.refs?.failure_event_id || details.input.event_id || '';
@@ -1688,7 +1740,7 @@ function renderVersionControl(data) {
   </div>`).join('') || '<div class="view-empty">No version lifecycle events yet. Hook snapshots and Agent decisions will appear here.</div>';
   $('versionOut').innerHTML = `<div class="context-stat-grid version-summary">
     <div class="context-stat"><b>${escapeHtml(branches.length)}</b><span>branches</span></div>
-    <div class="context-stat"><b>${escapeHtml(snapshots.length)}</b><span>logical snapshots</span></div>
+    <div class="context-stat"><b>${escapeHtml(snapshots.length)}</b><span>snapshots</span></div>
     <div class="context-stat"><b>${escapeHtml(events.length)}</b><span>version events</span></div>
   </div>
   <div class="version-section"><h3>Branches</h3><div class="table-wrap"><table class="version-table"><thead><tr><th>Branch</th><th>Base Event</th><th>Head Event</th><th>Latest Snapshot</th><th></th></tr></thead><tbody>${branchRows}</tbody></table></div></div>

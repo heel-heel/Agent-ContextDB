@@ -1,0 +1,42 @@
+{
+  "event_id": "evt_5309f7769dca",
+  "trajectory_id": "traj_be0c0dbc4d8c",
+  "branch_id": "main",
+  "event_type": "tool_result",
+  "payload": {
+    "tool_name": "powershell",
+    "command": "powershell -NoProfile -Command '$pointer = \".\\data\\codex-watcher-current-session.json\"; $deadline = (Get-Date).AddSeconds(10); do { if (Test-Path -LiteralPath $pointer) { $session = Get-Content -Raw -LiteralPath $pointer | ConvertFrom-Json; $field = \"session\" + [char]95 + \"id\"; $id = $session.PSObject.Properties[$field].Value; if ($session.source -eq \"codex-session\" -and $id) { Write-Output $id; exit 0 } }; Start-Sleep -Milliseconds 250 } while ((Get-Date) -lt $deadline); [Console]::Error.WriteLine(\"ContextDB watcher session was not available within 10 seconds.\"); exit 1'",
+    "status": "ok",
+    "preview": "Script completed\nWall time 1.8 seconds\nOutput:\n\n{\"chunk_id\":\"d646dc\",\"wall_time_seconds\":1.1031835,\"exit_code\":0,\"original_token_count\":17,\"output\":\"rollout-2026-09-15T14-34-56-01a0a3c6-9648-70a2-af08-291576bfda30\\r\\n\"}",
+    "exit_code": 0,
+    "transport_tool_name": "exec",
+    "tool_chain": [
+      "exec",
+      "powershell"
+    ],
+    "invoked_tool": "powershell"
+  },
+  "parent_event_ids": [
+    "evt_7fac3291a48c"
+  ],
+  "actor": "tool",
+  "timestamp": "2026-09-15T06:37:03.134000+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "codex-session",
+    "hook_adapter": "codex-session",
+    "hook_session_id": "rollout-2026-09-15T14-34-56-01a0a3c6-9648-70a2-af08-291576bfda30",
+    "tool_call_event_id": "evt_7fac3291a48c"
+  },
+  "metadata": {
+    "agent_id": "codex",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T06:37:03.133816+00:00",
+    "adapter": "codex-desktop-session-jsonl",
+    "codex_session_record_type": "response_item",
+    "codex_session_timestamp": "2026-09-15T06:37:02.471Z",
+    "codex_item_type": "custom_tool_call_output",
+    "codex_item_id": "ctco_01a0a3c8-8487-7601-89dc-b81baa70fa19"
+  }
+}
