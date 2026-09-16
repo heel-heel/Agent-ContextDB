@@ -1,0 +1,43 @@
+{
+  "event_id": "evt_87e6da5f19ed",
+  "trajectory_id": "traj_8c797eb6144c",
+  "branch_id": "main",
+  "event_type": "tool_call",
+  "payload": {
+    "tool_chain": [
+      "bash",
+      "powershell"
+    ],
+    "command": "powershell -NoProfile -Command '$sessionFile = Get-ChildItem -LiteralPath \".\\data\\objects\\hook_sessions\\claude-code\" -Filter \"*.json\" | Sort-Object LastWriteTime -Descending | Select-Object -First 1; $session = Get-Content -Raw -LiteralPath $sessionFile.FullName | ConvertFrom-Json; Write-Output $session.session_id'",
+    "arguments": {
+      "command": "powershell -NoProfile -Command '$sessionFile = Get-ChildItem -LiteralPath \".\\data\\objects\\hook_sessions\\claude-code\" -Filter \"*.json\" | Sort-Object LastWriteTime -Descending | Select-Object -First 1; $session = Get-Content -Raw -LiteralPath $sessionFile.FullName | ConvertFrom-Json; Write-Output $session.session_id'",
+      "description": "Find latest claude-code hook session id"
+    },
+    "agent_tool_name": "Bash",
+    "status": "ok",
+    "result_tool_name": "powershell",
+    "result_event_id": "evt_7e82ea6bea85"
+  },
+  "parent_event_ids": [
+    "evt_1399e92ab7a8"
+  ],
+  "actor": "agent",
+  "timestamp": "2026-09-15T12:03:09.050725+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "claude-code",
+    "hook_adapter": "generic",
+    "hook_session_id": "59506119-1d61-447d-8f66-8c00331cd764"
+  },
+  "metadata": {
+    "agent_id": "claude-code",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T12:03:09.050499+00:00",
+    "adapter": "claude-code-hooks",
+    "claude_hook_event": "PreToolUse",
+    "claude_tool_name": "Bash",
+    "claude_cwd": "d:\\software\\Pycharm\\SelfCode\\Agent-ContextDB",
+    "claude_transcript_path": "C:\\Users\\lenovo\\.claude\\projects\\d--software-Pycharm-SelfCode-Agent-ContextDB\\59506119-1d61-447d-8f66-8c00331cd764.jsonl"
+  }
+}

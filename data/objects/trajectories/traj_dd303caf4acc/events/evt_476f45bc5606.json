@@ -1,0 +1,31 @@
+{
+  "event_id": "evt_476f45bc5606",
+  "trajectory_id": "traj_dd303caf4acc",
+  "branch_id": "repair-9203c9d4",
+  "event_type": "user_message",
+  "payload": {
+    "text": "Use ContextDB MCP tool contextdb\\_rollback\\_context with source codex-session and the session id returned earlier.\n\nIf a most recent snapshot was reported, roll back to that snapshot with this reason:\n\nThe repair branch was inspected. Continue from the most recent checkpoint.\n\nReport the resulting active branch id and confirm that no workspace files or Git state were restored.\n"
+  },
+  "parent_event_ids": [
+    "evt_b1aff416836d"
+  ],
+  "actor": "user",
+  "timestamp": "2026-09-15T11:15:40.417015+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "codex-session",
+    "hook_adapter": "codex-session",
+    "hook_session_id": "rollout-2026-09-15T17-51-27-01a0a47a-825a-72c0-8208-b3b80d850331"
+  },
+  "metadata": {
+    "agent_id": "codex",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T11:15:40.416817+00:00",
+    "adapter": "codex-desktop-session-jsonl",
+    "codex_session_record_type": "response_item",
+    "codex_session_timestamp": "2026-09-15T11:15:39.873Z",
+    "codex_item_type": "message",
+    "codex_item_id": "msg_01a0a4c7-9ae1-78a0-8961-7368516fe453"
+  }
+}

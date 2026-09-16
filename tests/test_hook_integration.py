@@ -191,6 +191,10 @@ def test_codex_desktop_exec_calls_follow_the_version_snapshot_policy():
         'tool_name': 'ordinary native terminal',
         'command': 'node -e "require(\'fs\').writeFileSync(\'contextdb-version-first-parent-absent/note.txt\', \'first note\')"',
     })
+    assert _should_auto_snapshot({
+        'tool_name': 'bash',
+        'command': 'node -e "require(\'fs\').copyFileSync(\'contextdb-version-first-missing-source.txt\', \'contextdb-version-first-copy.txt\')"',
+    })
     assert not _should_auto_snapshot({
         'tool_name': 'functions.exec',
         'command': 'git status --short',

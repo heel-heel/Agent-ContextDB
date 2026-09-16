@@ -1,0 +1,42 @@
+{
+  "event_id": "evt_5dcbe2a5d41c",
+  "trajectory_id": "traj_8c797eb6144c",
+  "branch_id": "main",
+  "event_type": "tool_result",
+  "payload": {
+    "tool_name": "python",
+    "command": "python -c \"import json; print(json.__name__)\"",
+    "status": "ok",
+    "preview": "{\"source\":\"claude-code\",\"session_id\":\"59506119-1d61-447d-8f66-8c00331cd764\",\"trajectory_id\":\"traj_8c797eb6144c\",\"tool_call_event_id\":\"evt_6b66bd099b43\",\"tool_result_event_id\":\"evt_4ed24b57bbc5\",\"status\":\"ok\",\"next_skill_match_event_id\":null,\"repair_branch_suggestion\":null,\"version_context\":{\"active_branch_id\":\"main\",\"latest_snapshot\":null,\"repair_branch_suggestion\":null,\"last_version_decision\":null,\"workspace_restore\":{\"supported\":false,\"instruction\":\"ContextDB records branch and rollback state only. Restore files through the Agent workspace after an explicit decision.\"}}}",
+    "exit_code": null,
+    "transport_tool_name": "contextdb_record_skill_application",
+    "tool_chain": [
+      "contextdb_record_skill_application",
+      "python"
+    ],
+    "invoked_tool": "python"
+  },
+  "parent_event_ids": [
+    "evt_4ed24b57bbc5"
+  ],
+  "actor": "tool",
+  "timestamp": "2026-09-15T12:05:21.472566+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "claude-code",
+    "hook_adapter": "generic",
+    "hook_session_id": "59506119-1d61-447d-8f66-8c00331cd764",
+    "tool_call_event_id": "evt_1264e45b0a35"
+  },
+  "metadata": {
+    "agent_id": "claude-code",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T12:05:21.472364+00:00",
+    "adapter": "claude-code-hooks",
+    "claude_hook_event": "PostToolUse",
+    "claude_tool_name": "mcp__contextdb__contextdb_record_skill_application",
+    "claude_cwd": "D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB",
+    "claude_transcript_path": "C:\\Users\\lenovo\\.claude\\projects\\d--software-Pycharm-SelfCode-Agent-ContextDB\\59506119-1d61-447d-8f66-8c00331cd764.jsonl"
+  }
+}

@@ -42,8 +42,51 @@ def test_global_overview_aggregates_trajectories_tools_and_shared_skills():
             assert overview["skill_count"] == 1
             consumer_row = next(row for row in overview["trajectories"] if row["trajectory_id"] == consumer["trajectory_id"])
             assert consumer_row["tools"] == [{"tool_name": "get-content", "call_count": 1}]
+            assert consumer_row["branch_count"] == 1
             assert consumer_row["associated_skills"][0]["source_trajectory_id"] == source["trajectory_id"]
             assert any(edge["kind"] == "uses_skill" for edge in overview["graph"]["edges"])
+        finally:
+            db.vector_index.conn.close()
+            db.store.conn.close()
+
+
+def test_global_overview_falls_back_to_parent_tool_call_and_shows_produced_skills():
+    with TemporaryDirectory() as root:
+        db = ContextDB(root)
+        try:
+            trajectory = db.create_trajectory("Imported trajectory", agent_id="swe-agent")
+            skill = {
+                "skill_id": "skill_imported_repair",
+                "name": "Repair imported failure",
+                "status": "candidate",
+                "trigger": {"failed_tool": "swe-agent-editor"},
+                "confidence": {"support_count": 1},
+            }
+            db.vector_index.replace_owner("skills", trajectory["trajectory_id"], [{
+                "entry_id": trajectory["trajectory_id"] + ":skill_imported_repair",
+                "document": "imported repair",
+                "metadata": {"trajectory_id": trajectory["trajectory_id"], "skill": skill},
+            }])
+            call = db.append_event(trajectory["trajectory_id"], "tool_call", {
+                "tool_name": "swe-agent-editor", "command": "open setup.py",
+            })
+            db.append_event(trajectory["trajectory_id"], "tool_result", {
+                "status": "ok", "preview": "opened setup.py",
+            }, parent_event_ids=[call["event_id"]])
+
+            overview = db.global_overview()
+            row = overview["trajectories"][0]
+            assert row["tools"] == [{"tool_name": "swe-agent-editor", "call_count": 1}]
+            assert row["associated_skills"] == [{
+                "node_id": f"skill:{trajectory['trajectory_id']}:skill_imported_repair",
+                "skill_id": "skill_imported_repair",
+                "name": "Repair imported failure",
+                "source_trajectory_id": trajectory["trajectory_id"],
+                "trigger_tool": "swe-agent-editor",
+                "support_count": 1,
+                "status": "candidate",
+                "relationship": "learned",
+            }]
         finally:
             db.vector_index.conn.close()
             db.store.conn.close()
@@ -85,6 +128,28 @@ def test_global_overview_uses_only_tool_result_identity():
             assert tool_nodes["web__run"]["detail"] == "1 results"
             assert "tool:exec" not in {edge["target"] for edge in overview["graph"]["edges"]}
             assert "tool:web__run" in {edge["target"] for edge in overview["graph"]["edges"]}
+        finally:
+            db.vector_index.conn.close()
+            db.store.conn.close()
+
+
+def test_global_overview_lists_native_tools_before_contextdb_tools():
+    with TemporaryDirectory() as root:
+        db = ContextDB(root)
+        try:
+            trajectory = db.create_trajectory("Tool ordering")
+            db.append_event(trajectory["trajectory_id"], "tool_result", {
+                "tool_name": "contextdb_get_version_status", "status": "ok",
+            })
+            db.append_event(trajectory["trajectory_id"], "tool_result", {
+                "tool_name": "git", "status": "ok",
+            })
+
+            overview = db.global_overview()
+            assert overview["trajectories"][0]["tools"] == [
+                {"tool_name": "git", "call_count": 1},
+                {"tool_name": "contextdb_get_version_status", "call_count": 1},
+            ]
         finally:
             db.vector_index.conn.close()
             db.store.conn.close()

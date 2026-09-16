@@ -1,0 +1,40 @@
+{
+  "event_id": "evt_4a9a3d4ad3fe",
+  "trajectory_id": "traj_dd303caf4acc",
+  "branch_id": "main",
+  "event_type": "tool_result",
+  "payload": {
+    "tool_name": "exec",
+    "command": "const matches = ALL_TOOLS.filter(x => x.name.includes(\"contextdb_get_recommendation\"));\ntext(matches);",
+    "status": "ok",
+    "preview": "Script completed\nWall time 0.0 seconds\nOutput:\n\n[{\"name\":\"mcp__contextdb__contextdb_get_recommendation\",\"description\":\"Call contextdb_prepare_context before planning and contextdb_record_tool_result after every real tool execution. Never execute a recommendation automatically.\\n\\nDeliver the latest skill recommendation after a previously recorded failure. Use this if the Agent did not receive the result inline or is resuming a session.\\n\\nexec tool declaration:\\n```ts\\ndeclare const tools: { mcp__contextdb__contextdb_get_recommendation(args: { session_id: string; source: string; }): Promise<CallToolResult>; };\\n```\"}]",
+    "exit_code": null,
+    "transport_tool_name": "exec",
+    "tool_chain": [
+      "exec"
+    ]
+  },
+  "parent_event_ids": [
+    "evt_0a8ccecc2fae"
+  ],
+  "actor": "tool",
+  "timestamp": "2026-09-15T09:54:36.545961+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "codex-session",
+    "hook_adapter": "codex-session",
+    "hook_session_id": "rollout-2026-09-15T17-51-27-01a0a47a-825a-72c0-8208-b3b80d850331",
+    "tool_call_event_id": "evt_0a8ccecc2fae"
+  },
+  "metadata": {
+    "agent_id": "codex",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T09:54:36.545746+00:00",
+    "adapter": "codex-desktop-session-jsonl",
+    "codex_session_record_type": "response_item",
+    "codex_session_timestamp": "2026-09-15T09:54:36.455Z",
+    "codex_item_type": "custom_tool_call_output",
+    "codex_item_id": "ctco_01a0a47d-6527-7d13-a116-4a188a1dd40e"
+  }
+}

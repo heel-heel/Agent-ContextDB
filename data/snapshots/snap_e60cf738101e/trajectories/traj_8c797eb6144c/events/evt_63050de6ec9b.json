@@ -1,0 +1,33 @@
+{
+  "event_id": "evt_63050de6ec9b",
+  "trajectory_id": "traj_8c797eb6144c",
+  "branch_id": "main",
+  "event_type": "system_event",
+  "payload": {
+    "text": "ContextDB suggests repair branch repair-0ff971c0 from snapshot snap_f0cac335fdb6.",
+    "failure_event_id": "evt_0ff971c0f2a2",
+    "snapshot_id": "snap_f0cac335fdb6",
+    "suggested_branch_id": "repair-0ff971c0",
+    "source_branch_id": "main",
+    "logical_context_only": true
+  },
+  "parent_event_ids": [
+    "evt_32fc174acb72"
+  ],
+  "actor": "contextdb",
+  "timestamp": "2026-09-15T12:05:54.578325+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "claude-code",
+    "hook_adapter": "generic",
+    "hook_session_id": "59506119-1d61-447d-8f66-8c00331cd764",
+    "tool_call_event_id": "evt_ec13fb49259c",
+    "failure_event_id": "evt_0ff971c0f2a2",
+    "snapshot_id": "snap_f0cac335fdb6"
+  },
+  "metadata": {
+    "operation": "version_repair_branch_suggested",
+    "origin": "hook_policy",
+    "logical_context_only": true
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "event_id": "evt_a33e0a70bfc0",
+  "trajectory_id": "traj_dd303caf4acc",
+  "branch_id": "main",
+  "event_type": "tool_result",
+  "payload": {
+    "tool_name": "contextdb_record_skill_application",
+    "command": "const r = await tools.mcp__contextdb__contextdb_record_skill_application({source:\"codex-session\",session_id:\"rollout-2026-09-15T17-51-27-01a0a47a-825a-72c0-8208-b3b80d850331\",skill_match_event_id:\"evt_3e3ae4bb5c02\",skill_id:\"skill_python_misspelled_python_module_name_python_c_import_jsonn\",action_id:\"act_python_misspelled_python_module_name_python_c_import_jsonn_1\",tool_name:\"exec_command\",command:\"python -c \\\"import json; print(json.__name__)\\\"\",status:\"ok\",exit_code:0,preview:\"json\"});\ntext(r);",
+    "status": "ok",
+    "preview": "Script completed\nWall time 1.4 seconds\nOutput:\n\n{\"content\":[{\"type\":\"text\",\"text\":\"{\\n  \\\"source\\\": \\\"codex-session\\\",\\n  \\\"session_id\\\": \\\"rollout-2026-09-15T17-51-27-01a0a47a-825a-72c0-8208-b3b80d850331\\\",\\n  \\\"trajectory_id\\\": \\\"traj_dd303caf4acc\\\",\\n  \\\"tool_call_event_id\\\": \\\"evt_6fc8c297573f\\\",\\n  \\\"tool_result_event_id\\\": \\\"evt_924987996aa7\\\",\\n  \\\"status\\\": \\\"ok\\\",\\n  \\\"next_skill_match_event_id\\\": null,\\n  \\\"repair_branch_suggestion\\\": null,\\n  \\\"version_context\\\": {\\n    \\\"active_branch_id\\\": \\\"main\\\",\\n    \\\"latest_snapshot\\\": null,\\n    \\\"repair_branch_suggestion\\\": null,\\n    \\\"last_version_decision\\\": null,\\n    \\\"workspace_restore\\\": {\\n      \\\"supported\\\": false,\\n      \\\"instruction\\\": \\\"ContextDB records branch and rollback state only. Restore files through the Agent workspace after an explicit decision.\\\"\\n    }\\n  }\\n}\"}],\"structuredContent\":{\"source\":\"codex-session\",\"session_id\":\"rollout-2026-09-15T17-51-27-01a0a47a-825a-72c0-8208-b3b80d850331\",\"trajectory_id\":\"traj_dd303caf4acc\",\"tool_call_event_id\":\"evt_6fc8c297573f\",\"tool_result_event_id\":\"evt_924987996aa7\",\"status\":\"ok\",\"next_skill_match_event_id\":null,\"repair_branch_suggestion\":null,\"version_context\":{\"active_branch_id\":\"main\",\"latest_snapshot\":null,\"repair_branch_suggestion\":null,\"last_version_decision\":null,\"workspace_restore\":{\"supported\":false,\"instruction\":\"ContextDB records branch and rollback state only. Restore files through the Agent workspace after an explicit decision.\"}}},\"isError\":false}",
+    "exit_code": null,
+    "transport_tool_name": "exec",
+    "tool_chain": [
+      "exec",
+      "contextdb_record_skill_application"
+    ],
+    "invoked_tool": "contextdb_record_skill_application"
+  },
+  "parent_event_ids": [
+    "evt_924987996aa7"
+  ],
+  "actor": "tool",
+  "timestamp": "2026-09-15T11:12:35.390154+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "codex-session",
+    "hook_adapter": "codex-session",
+    "hook_session_id": "rollout-2026-09-15T17-51-27-01a0a47a-825a-72c0-8208-b3b80d850331",
+    "tool_call_event_id": "evt_0c5ed76a8891"
+  },
+  "metadata": {
+    "agent_id": "codex",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T11:12:35.389810+00:00",
+    "adapter": "codex-desktop-session-jsonl",
+    "codex_session_record_type": "response_item",
+    "codex_session_timestamp": "2026-09-15T11:12:35.232Z",
+    "codex_item_type": "custom_tool_call_output",
+    "codex_item_id": "ctco_01a0a4c4-c9a0-7042-8056-8786d4a48bfc"
+  }
+}

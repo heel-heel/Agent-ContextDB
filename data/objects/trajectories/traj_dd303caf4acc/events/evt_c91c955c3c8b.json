@@ -1,0 +1,31 @@
+{
+  "event_id": "evt_c91c955c3c8b",
+  "trajectory_id": "traj_dd303caf4acc",
+  "branch_id": "main",
+  "event_type": "assistant_message",
+  "payload": {
+    "text": "A repair branch is suggested because the state-changing Node write failed after ContextDB captured a pre-action snapshot.\n\n- Suggested branch ID: `repair-e5724dab`\n- Source snapshot ID: `snap_fc46bf79bce4`\n- Source branch ID: `main`\n\nThis is a ContextDB trajectory branch suggestion; it does not restore local workspace files automatically."
+  },
+  "parent_event_ids": [
+    "evt_c8754462cab9"
+  ],
+  "actor": "agent",
+  "timestamp": "2026-09-15T11:13:38.195520+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "codex-session",
+    "hook_adapter": "codex-session",
+    "hook_session_id": "rollout-2026-09-15T17-51-27-01a0a47a-825a-72c0-8208-b3b80d850331"
+  },
+  "metadata": {
+    "agent_id": "codex",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T11:13:38.195255+00:00",
+    "adapter": "codex-desktop-session-jsonl",
+    "codex_session_record_type": "response_item",
+    "codex_session_timestamp": "2026-09-15T11:13:37.952Z",
+    "codex_item_type": "message",
+    "codex_item_id": "msg_0809bc6db53cfd19016aa92861046c87d081c9a744e7ecc6ec"
+  }
+}

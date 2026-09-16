@@ -1,0 +1,31 @@
+{
+  "event_id": "evt_731a54f88407",
+  "trajectory_id": "traj_dd303caf4acc",
+  "branch_id": "main",
+  "event_type": "user_message",
+  "payload": {
+    "text": "Use ContextDB MCP tool contextdb\\_create\\_repair\\_branch with source codex-session and the session id returned earlier.\n\nAccept the identified repair-branch suggestion with this reason:\n\nPreserve the second failed Node write and inspect a separate repair path.\n\nReport the created repair branch id. Do not call another ContextDB MCP tool in this turn.\n"
+  },
+  "parent_event_ids": [
+    "evt_45928b973736"
+  ],
+  "actor": "user",
+  "timestamp": "2026-09-15T11:14:33.309667+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "codex-session",
+    "hook_adapter": "codex-session",
+    "hook_session_id": "rollout-2026-09-15T17-51-27-01a0a47a-825a-72c0-8208-b3b80d850331"
+  },
+  "metadata": {
+    "agent_id": "codex",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T11:14:33.309443+00:00",
+    "adapter": "codex-desktop-session-jsonl",
+    "codex_session_record_type": "response_item",
+    "codex_session_timestamp": "2026-09-15T11:14:33.005Z",
+    "codex_item_type": "message",
+    "codex_item_id": "msg_01a0a4c6-95ad-7123-89e1-5324eab95286"
+  }
+}

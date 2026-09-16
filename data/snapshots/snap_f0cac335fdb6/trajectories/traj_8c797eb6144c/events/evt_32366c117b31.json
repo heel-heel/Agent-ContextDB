@@ -1,0 +1,30 @@
+{
+  "event_id": "evt_32366c117b31",
+  "trajectory_id": "traj_8c797eb6144c",
+  "branch_id": "main",
+  "event_type": "assistant_message",
+  "payload": {
+    "text": "Recorded an **accepted** decision for the recommendation:\n\n- **Decision:** accepted\n- **Trajectory id:** `traj_8c797eb6144c`\n- **Decision event id:** `evt_8d34e016f4fd`\n\nThe proposed Git file path (`examples/live-path-demo/assets/settings.json`) is accepted and will be used for the repair in place of the incorrect root-level `assets/settings.json` path."
+  },
+  "parent_event_ids": [
+    "evt_69df227f7147"
+  ],
+  "actor": "agent",
+  "timestamp": "2026-09-15T12:04:03.206589+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "claude-code",
+    "hook_adapter": "generic",
+    "hook_session_id": "59506119-1d61-447d-8f66-8c00331cd764"
+  },
+  "metadata": {
+    "agent_id": "claude-code",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T12:04:03.206423+00:00",
+    "adapter": "claude-code-transcript",
+    "claude_transcript_path": "C:\\Users\\lenovo\\.claude\\projects\\d--software-Pycharm-SelfCode-Agent-ContextDB\\59506119-1d61-447d-8f66-8c00331cd764.jsonl",
+    "claude_transcript_message_id": "6277779c-e8b4-4aeb-b286-8ea658b4eba6",
+    "claude_transcript_timestamp": "2026-09-15T12:04:02.906Z"
+  }
+}

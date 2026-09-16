@@ -1,0 +1,31 @@
+{
+  "event_id": "evt_6b872ea7ed1c",
+  "trajectory_id": "traj_dd303caf4acc",
+  "branch_id": "main",
+  "event_type": "system_event",
+  "payload": {
+    "text": "ContextDB created a snapshot before a versioned action.",
+    "message": "Before state-changing exec",
+    "reason": "Hook policy detected a potentially state-changing action: node -e \"require('fs').writeFileSync('contextdb-codex-reuse-second-parent-absent/note.txt', 'second note')\"",
+    "origin": "hook_policy",
+    "logical_context_only": true
+  },
+  "parent_event_ids": [
+    "evt_d9f9992300b9"
+  ],
+  "actor": "contextdb",
+  "timestamp": "2026-09-15T11:14:05.374630+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "codex-session",
+    "hook_adapter": "codex-session",
+    "hook_session_id": "rollout-2026-09-15T17-51-27-01a0a47a-825a-72c0-8208-b3b80d850331",
+    "planned_tool_name": "exec",
+    "planned_command": "node -e \"require('fs').writeFileSync('contextdb-codex-reuse-second-parent-absent/note.txt', 'second note')\""
+  },
+  "metadata": {
+    "operation": "version_snapshot_created",
+    "origin": "hook_policy",
+    "logical_context_only": true
+  }
+}

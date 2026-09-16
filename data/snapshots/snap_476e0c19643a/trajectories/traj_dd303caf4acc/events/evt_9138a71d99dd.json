@@ -1,0 +1,31 @@
+{
+  "event_id": "evt_9138a71d99dd",
+  "trajectory_id": "traj_dd303caf4acc",
+  "branch_id": "main",
+  "event_type": "user_message",
+  "payload": {
+    "text": "Use web\\_run exactly once to search the official Git documentation for git show and the official Python documentation for the json module. Report the title and official link for each page in English. Do not execute local commands or invoke ContextDB in this turn.\n"
+  },
+  "parent_event_ids": [
+    "evt_506e46ca4bc7"
+  ],
+  "actor": "user",
+  "timestamp": "2026-09-15T11:12:50.627312+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "codex-session",
+    "hook_adapter": "codex-session",
+    "hook_session_id": "rollout-2026-09-15T17-51-27-01a0a47a-825a-72c0-8208-b3b80d850331"
+  },
+  "metadata": {
+    "agent_id": "codex",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T11:12:50.627126+00:00",
+    "adapter": "codex-desktop-session-jsonl",
+    "codex_session_record_type": "response_item",
+    "codex_session_timestamp": "2026-09-15T11:12:49.969Z",
+    "codex_item_type": "message",
+    "codex_item_id": "msg_01a0a4c5-0331-7d73-912d-d79c427883aa"
+  }
+}

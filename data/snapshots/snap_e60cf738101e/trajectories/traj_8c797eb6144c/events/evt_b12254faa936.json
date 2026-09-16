@@ -1,0 +1,31 @@
+{
+  "event_id": "evt_b12254faa936",
+  "trajectory_id": "traj_8c797eb6144c",
+  "branch_id": "main",
+  "event_type": "system_event",
+  "payload": {
+    "text": "ContextDB created a snapshot before a versioned action.",
+    "message": "Before state-changing bash",
+    "reason": "Hook policy detected a potentially state-changing action: node -e \"require('fs').copyFileSync('contextdb-claude-reuse-second-missing-source.txt', 'contextdb-claude-reuse-second-copy.txt')\"",
+    "origin": "hook_policy",
+    "logical_context_only": true
+  },
+  "parent_event_ids": [
+    "evt_1025633874bf"
+  ],
+  "actor": "contextdb",
+  "timestamp": "2026-09-15T12:06:24.965132+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "claude-code",
+    "hook_adapter": "generic",
+    "hook_session_id": "59506119-1d61-447d-8f66-8c00331cd764",
+    "planned_tool_name": "bash",
+    "planned_command": "node -e \"require('fs').copyFileSync('contextdb-claude-reuse-second-missing-source.txt', 'contextdb-claude-reuse-second-copy.txt')\""
+  },
+  "metadata": {
+    "operation": "version_snapshot_created",
+    "origin": "hook_policy",
+    "logical_context_only": true
+  }
+}

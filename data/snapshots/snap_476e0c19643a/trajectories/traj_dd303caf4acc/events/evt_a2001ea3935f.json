@@ -1,0 +1,31 @@
+{
+  "event_id": "evt_a2001ea3935f",
+  "trajectory_id": "traj_dd303caf4acc",
+  "branch_id": "main",
+  "event_type": "user_message",
+  "payload": {
+    "text": "Use ContextDB MCP tool contextdb\\_record\\_skill\\_decision with source codex-session and the session id returned earlier.\n\nIf the reported recommendation has a matched action, record an accepted decision using its skill match event id, skill id, and action id. Explain that the corrected Git file path will be used for the repair. Do not execute the proposed command in this turn.\n"
+  },
+  "parent_event_ids": [
+    "evt_cf64f9f3466b"
+  ],
+  "actor": "user",
+  "timestamp": "2026-09-15T09:55:04.087677+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "codex-session",
+    "hook_adapter": "codex-session",
+    "hook_session_id": "rollout-2026-09-15T17-51-27-01a0a47a-825a-72c0-8208-b3b80d850331"
+  },
+  "metadata": {
+    "agent_id": "codex",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T09:55:04.087430+00:00",
+    "adapter": "codex-desktop-session-jsonl",
+    "codex_session_record_type": "response_item",
+    "codex_session_timestamp": "2026-09-15T09:55:03.818Z",
+    "codex_item_type": "message",
+    "codex_item_id": "msg_01a0a47d-d009-7a23-8fb8-913eea979c62"
+  }
+}

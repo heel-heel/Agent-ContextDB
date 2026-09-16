@@ -1,0 +1,30 @@
+{
+  "event_id": "evt_689df444e664",
+  "trajectory_id": "traj_8c797eb6144c",
+  "branch_id": "rollback-e60cf7",
+  "event_type": "assistant_message",
+  "payload": {
+    "text": "Rollback completed:\n\n- **Resulting active branch id:** `rollback-e60cf7`\n- **Rolled back to snapshot:** `snap_e60cf738101e`\n- **Decision event id:** `evt_445defe2990c`\n- **Rollback event id:** `evt_cd61cde051c1`\n\n**Confirmation of no workspace/Git restoration:** The response's `workspace_restore` field reports `\"supported\": false`, with the instruction \"ContextDB records branch and rollback state only. Restore files through the Agent workspace after an explicit decision.\" No workspace files or Git state were restored by the rollback — it only created the new `rollback-e60cf7` trajectory branch."
+  },
+  "parent_event_ids": [
+    "evt_cd61cde051c1"
+  ],
+  "actor": "agent",
+  "timestamp": "2026-09-15T12:07:28.114798+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "claude-code",
+    "hook_adapter": "generic",
+    "hook_session_id": "59506119-1d61-447d-8f66-8c00331cd764"
+  },
+  "metadata": {
+    "agent_id": "claude-code",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T12:07:28.114641+00:00",
+    "adapter": "claude-code-transcript",
+    "claude_transcript_path": "C:\\Users\\lenovo\\.claude\\projects\\d--software-Pycharm-SelfCode-Agent-ContextDB\\59506119-1d61-447d-8f66-8c00331cd764.jsonl",
+    "claude_transcript_message_id": "fce8ca96-32fb-4857-9b64-bab5ef59cf63",
+    "claude_transcript_timestamp": "2026-09-15T12:07:27.831Z"
+  }
+}

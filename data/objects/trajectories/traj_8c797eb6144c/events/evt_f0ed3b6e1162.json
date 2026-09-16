@@ -1,0 +1,30 @@
+{
+  "event_id": "evt_f0ed3b6e1162",
+  "trajectory_id": "traj_8c797eb6144c",
+  "branch_id": "repair-0e4481fe",
+  "event_type": "assistant_message",
+  "payload": {
+    "text": "Repair branch accepted and created:\n\n- **Branch created:** `repair-0e4481fe`\n- **Source snapshot:** `snap_e60cf738101e`\n- **Decision event id:** `evt_4a6311965098`\n- **Branch created event id:** `evt_e31cb1fbb8f1`\n- **Reason:** Preserve the second failed Node copy and inspect a separate repair path.\n\n**Active branch id (after `contextdb_get_version_status`):** `repair-0e4481fe`\n\nThe trajectory is now on the new repair branch, forked from `main` at `snap_e60cf738101e`."
+  },
+  "parent_event_ids": [
+    "evt_d4383ae6a77d"
+  ],
+  "actor": "agent",
+  "timestamp": "2026-09-15T12:06:58.491150+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "claude-code",
+    "hook_adapter": "generic",
+    "hook_session_id": "59506119-1d61-447d-8f66-8c00331cd764"
+  },
+  "metadata": {
+    "agent_id": "claude-code",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T12:06:58.490961+00:00",
+    "adapter": "claude-code-transcript",
+    "claude_transcript_path": "C:\\Users\\lenovo\\.claude\\projects\\d--software-Pycharm-SelfCode-Agent-ContextDB\\59506119-1d61-447d-8f66-8c00331cd764.jsonl",
+    "claude_transcript_message_id": "9a26bca0-cc97-4c88-87a3-b6225b07fd21",
+    "claude_transcript_timestamp": "2026-09-15T12:06:58.197Z"
+  }
+}

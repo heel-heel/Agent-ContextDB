@@ -1,0 +1,40 @@
+{
+  "event_id": "evt_69df227f7147",
+  "trajectory_id": "traj_8c797eb6144c",
+  "branch_id": "main",
+  "event_type": "tool_result",
+  "payload": {
+    "tool_name": "contextdb_record_skill_decision",
+    "command": "{\"action_id\": \"act_git_file_path_absent_from_git_1\", \"decision\": \"accepted\", \"reason\": \"Accepted: the proposed Git file path (examples/live-path-demo/assets/settings.json) will be used for the repair, replacing the incorrect root-level assets/settings.json path.\", \"session_id\": \"59506119-1d61-447d-8f66-8c00331cd764\", \"skill_id\": \"skill_git_file_path_absent_from_git\", \"skill_match_event_id\": \"evt_e7017ee3fd4c\", \"source\": \"claude-code\"}",
+    "status": "ok",
+    "preview": "{\"source\":\"claude-code\",\"session_id\":\"59506119-1d61-447d-8f66-8c00331cd764\",\"trajectory_id\":\"traj_8c797eb6144c\",\"decision_event_id\":\"evt_8d34e016f4fd\",\"decision\":\"accepted\"}",
+    "exit_code": null,
+    "transport_tool_name": "contextdb_record_skill_decision",
+    "tool_chain": [
+      "contextdb_record_skill_decision"
+    ]
+  },
+  "parent_event_ids": [
+    "evt_8d34e016f4fd"
+  ],
+  "actor": "tool",
+  "timestamp": "2026-09-15T12:04:00.792364+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "claude-code",
+    "hook_adapter": "generic",
+    "hook_session_id": "59506119-1d61-447d-8f66-8c00331cd764",
+    "tool_call_event_id": "evt_3263b99d5cdc"
+  },
+  "metadata": {
+    "agent_id": "claude-code",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T12:04:00.792176+00:00",
+    "adapter": "claude-code-hooks",
+    "claude_hook_event": "PostToolUse",
+    "claude_tool_name": "mcp__contextdb__contextdb_record_skill_decision",
+    "claude_cwd": "D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB",
+    "claude_transcript_path": "C:\\Users\\lenovo\\.claude\\projects\\d--software-Pycharm-SelfCode-Agent-ContextDB\\59506119-1d61-447d-8f66-8c00331cd764.jsonl"
+  }
+}

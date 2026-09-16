@@ -1,0 +1,318 @@
+{
+  "view_name": "failure_patterns",
+  "trajectory_id": "traj_8c797eb6144c",
+  "branch_id": "main",
+  "content": [
+    {
+      "schema_version": "experience_mining.v2",
+      "pattern_id": "fp_9ecf4f0ccf43",
+      "failure_event_id": "evt_9ecf4f0ccf43",
+      "branch_id": "main",
+      "failed_tool": "git",
+      "failed_command": "powershell -NoProfile -Command '[Environment]::SetEnvironmentVariable((\"LC\" + [char]95 + \"ALL\"), \"C\", \"Process\"); $env:LANG=\"C\"; git show HEAD:assets/settings.json; exit $LASTEXITCODE'",
+      "error_signature": "Exit code 128\nfatal: path 'assets/settings.json' does not exist in 'HEAD'",
+      "normalized_signature": "exit code fatal path 'assets settings.json' does not exist in 'head'",
+      "preceding_action": "The ContextDB session id for this conversation is:\n\n**`59506119-1d61-447d-8f66-8c00331cd764`**\n\nI'll use this session id automatically for every subsequent ContextDB MCP call in this conversation.",
+      "likely_cause": "missing file path in git HEAD revision",
+      "likely_cause_judgment": {
+        "enabled": true,
+        "provider": "openai-compatible",
+        "model": "deepseek-flash",
+        "likely_cause": "missing file path in git HEAD revision",
+        "confidence": 0.95,
+        "reason": "git exited 128 with fatal: path 'assets/settings.json' does not exist in 'HEAD', showing the requested file is absent from the referenced commit.",
+        "input": {
+          "failed_tool": "git",
+          "failed_command": "powershell -NoProfile -Command '[Environment]::SetEnvironmentVariable((\"LC\" + [char]95 + \"ALL\"), \"C\", \"Process\"); $env:LANG=\"C\"; git show HEAD:assets/settings.json; exit $LASTEXITCODE'",
+          "error_signature": "Exit code 128\nfatal: path 'assets/settings.json' does not exist in 'HEAD'",
+          "preceding_action": "The ContextDB session id for this conversation is:\n\n**`59506119-1d61-447d-8f66-8c00331cd764`**\n\nI'll use this session id automatically for every subsequent ContextDB MCP call in this conversation."
+        }
+      },
+      "repair_status": "not_evaluated",
+      "repair_events_after_failure": [
+        {
+          "event_id": "evt_e370e3ade362",
+          "event_type": "assistant_message",
+          "summary": "assistant_message:The command exited with code 128. Complete raw output:\n\n```\nfatal: path 'assets/settings.json' does not exist in 'HEA..."
+        },
+        {
+          "event_id": "evt_9ba551c136d9",
+          "event_type": "tool_call",
+          "summary": "tool_call:{\"session_id\": \"59506119-1d61-447d-8f66-8c00331cd764\", \"source\": \"claude-code\"}"
+        },
+        {
+          "event_id": "evt_48fbe83616a4",
+          "event_type": "tool_result",
+          "summary": "tool_result:{\"session_id\": \"59506119-1d61-447d-8f66-8c00331cd764\", \"source\": \"claude-code\"}"
+        },
+        {
+          "event_id": "evt_2773473bc6ff",
+          "event_type": "assistant_message",
+          "summary": "assistant_message:The matched recommendation is present:\n\n- **Skill match event id:** `evt_e7017ee3fd4c`\n- **Skill id:** `skill_git_fil..."
+        }
+      ],
+      "source_event_ids": [
+        "evt_2c34a3187c6f"
+      ],
+      "evidence_event_ids": [
+        "evt_dbc90ab60f43",
+        "evt_2c34a3187c6f",
+        "evt_9ecf4f0ccf43"
+      ],
+      "highlight_event_ids": [
+        "evt_9ecf4f0ccf43"
+      ]
+    },
+    {
+      "schema_version": "experience_mining.v2",
+      "pattern_id": "fp_9156cc7a06d6",
+      "failure_event_id": "evt_9156cc7a06d6",
+      "branch_id": "main",
+      "failed_tool": "python",
+      "failed_command": "python -c \"import jsonn\"",
+      "error_signature": "Exit code 1\nTraceback (most recent call last):\r\n  File \"<string>\", line 1, in <module>\r\n    import jsonn\r\nModuleNotFoundError: No module named 'jsonn'",
+      "normalized_signature": "exit code traceback most recent call last file \"<string>\" line in <module> import jsonn modulenotfounderror no module named 'jsonn'",
+      "preceding_action": "Recorded the completed Git execution:\n\n- **Status:** ok\n- **Tool call event id:** `evt_293d510d9271`\n- **Tool result event id:** `evt_b437c2276ea7`\n- **Trajectory id:** `traj_8c797eb6144c`\n- **Exit code:** 0\n- **Next skill match event id:** none\n\nNo repair-branch suggestion was returned. I did not execute any command this turn.",
+      "likely_cause": "python import typo: nonexistent module jsonn",
+      "likely_cause_judgment": {
+        "enabled": true,
+        "provider": "openai-compatible",
+        "model": "deepseek-flash",
+        "likely_cause": "python import typo: nonexistent module jsonn",
+        "confidence": 0.98,
+        "reason": "The command `import jsonn` fails with ModuleNotFoundError, indicating a misspelled or nonexistent module name rather than a dependency/network issue.",
+        "input": {
+          "failed_tool": "python",
+          "failed_command": "python -c \"import jsonn\"",
+          "error_signature": "Exit code 1\nTraceback (most recent call last):\r\n  File \"<string>\", line 1, in <module>\r\n    import jsonn\r\nModuleNotFoundError: No module named 'jsonn'",
+          "preceding_action": "Recorded the completed Git execution:\n\n- **Status:** ok\n- **Tool call event id:** `evt_293d510d9271`\n- **Tool result event id:** `evt_b437c2276ea7`\n- **Trajectory id:** `traj_8c797eb6144c`\n- **Exit code:** 0\n- **Next skill match event id:** none\n\nNo repair-branch suggestion was returned. I did not execute any command this turn."
+        }
+      },
+      "repair_status": "not_evaluated",
+      "repair_events_after_failure": [
+        {
+          "event_id": "evt_04bf3b9c5c31",
+          "event_type": "assistant_message",
+          "summary": "assistant_message:The command exited with code 1. Complete raw output:\n\n```\nTraceback (most recent call last):\n  File \"<string>\", line..."
+        },
+        {
+          "event_id": "evt_990af2591588",
+          "event_type": "tool_call",
+          "summary": "tool_call:{\"session_id\": \"59506119-1d61-447d-8f66-8c00331cd764\", \"source\": \"claude-code\"}"
+        },
+        {
+          "event_id": "evt_c2af6237ed4b",
+          "event_type": "tool_result",
+          "summary": "tool_result:{\"session_id\": \"59506119-1d61-447d-8f66-8c00331cd764\", \"source\": \"claude-code\"}"
+        },
+        {
+          "event_id": "evt_c3e85c11f9a8",
+          "event_type": "assistant_message",
+          "summary": "assistant_message:The matched recommendation is present:\n\n- **Skill match event id:** `evt_4f2dc56bd496`\n- **Skill id:** `skill_python_..."
+        }
+      ],
+      "source_event_ids": [
+        "evt_9d24d6aa4bc1"
+      ],
+      "evidence_event_ids": [
+        "evt_8ddf262ad6e0",
+        "evt_9d24d6aa4bc1",
+        "evt_9156cc7a06d6"
+      ],
+      "highlight_event_ids": [
+        "evt_9156cc7a06d6"
+      ]
+    },
+    {
+      "schema_version": "experience_mining.v2",
+      "pattern_id": "fp_f24bc931fdb9",
+      "failure_event_id": "evt_f24bc931fdb9",
+      "branch_id": "main",
+      "failed_tool": "webfetch",
+      "failed_command": "https://docs.python.org/3/library/json.html",
+      "error_signature": "Unable to verify if domain docs.python.org is safe to fetch. This may be due to network restrictions or enterprise security policies blocking claude.ai.",
+      "normalized_signature": "unable to verify if domain docs.python.org is safe to fetch this may be due to network restrictions or enterprise security policies blocking claude.ai",
+      "preceding_action": "Matching paths under `examples/live-path-demo`:\n\n- `examples\\live-path-demo\\README.md`\n- `examples\\live-path-demo\\assets\\settings.json`",
+      "likely_cause": "network restrictions or enterprise security policy blocking domain safety verification",
+      "likely_cause_judgment": {
+        "enabled": true,
+        "provider": "openai-compatible",
+        "model": "deepseek-flash",
+        "likely_cause": "network restrictions or enterprise security policy blocking domain safety verification",
+        "confidence": 0.92,
+        "reason": "The webfetch failed while verifying whether docs.python.org is safe to fetch, with the error explicitly citing possible network restrictions or enterprise security policies.",
+        "input": {
+          "failed_tool": "webfetch",
+          "failed_command": "https://docs.python.org/3/library/json.html",
+          "error_signature": "Unable to verify if domain docs.python.org is safe to fetch. This may be due to network restrictions or enterprise security policies blocking claude.ai.",
+          "preceding_action": "Matching paths under `examples/live-path-demo`:\n\n- `examples\\live-path-demo\\README.md`\n- `examples\\live-path-demo\\assets\\settings.json`"
+        }
+      },
+      "repair_status": "not_evaluated",
+      "repair_events_after_failure": [
+        {
+          "event_id": "evt_85234a472f37",
+          "event_type": "assistant_message",
+          "summary": "assistant_message:The `WebFetch` call failed and returned no page title. Raw result:\n\n```\nUnable to verify if domain docs.python.org is..."
+        },
+        {
+          "event_id": "evt_ec13fb49259c",
+          "event_type": "tool_call",
+          "summary": "tool_call:node -e \"require('fs').copyFileSync('contextdb-claude-reuse-first-missing-source.txt', 'contextdb-claude-reuse-first-..."
+        },
+        {
+          "event_id": "evt_0ff971c0f2a2",
+          "event_type": "tool_result",
+          "summary": "tool_result:node -e \"require('fs').copyFileSync('contextdb-claude-reuse-first-missing-source.txt', 'contextdb-claude-reuse-first-..."
+        },
+        {
+          "event_id": "evt_6bdc901872f4",
+          "event_type": "assistant_message",
+          "summary": "assistant_message:The command exited with code 1. Complete raw output:\n\n```\nnode:fs:3177\n  binding.copyFile(\n          ^\n\nError: ENOENT..."
+        }
+      ],
+      "source_event_ids": [
+        "evt_dc14f0ea456a"
+      ],
+      "evidence_event_ids": [
+        "evt_e0577ed657bd",
+        "evt_dc14f0ea456a",
+        "evt_f24bc931fdb9"
+      ],
+      "highlight_event_ids": [
+        "evt_f24bc931fdb9"
+      ]
+    },
+    {
+      "schema_version": "experience_mining.v2",
+      "pattern_id": "fp_0ff971c0f2a2",
+      "failure_event_id": "evt_0ff971c0f2a2",
+      "branch_id": "main",
+      "failed_tool": "node",
+      "failed_command": "node -e \"require('fs').copyFileSync('contextdb-claude-reuse-first-missing-source.txt', 'contextdb-claude-reuse-first-copy.txt')\"",
+      "error_signature": "Exit code 1\nnode:fs:3177\r\n  binding.copyFile(\r\n          ^\r\n\r\nError: ENOENT: no such file or directory, copyfile 'D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB\\contextdb-claude-reuse-first-missing-source.txt' -> 'D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB\\contextdb-claude-reuse-first-copy.txt'\r\n    at Object.copyFileSync (node:fs:3177:11)\r\n    at [eval]:1:15\r\n    at runScriptInThisContext (node:internal/vm:219:10)\r\n    at node:internal/process/execution:451:12\r\n    at [eval]-wrapper:6:24\r\n    a",
+      "normalized_signature": "exit code node fs binding.copyfile ^ error enoent no such file or directory copyfile 'd software pycharm selfcode agent-contextdb contextdb-claude-reuse-first-missing-source.txt' -> 'd software pycharm",
+      "preceding_action": "The `WebFetch` call failed and returned no page title. Raw result:\n\n```\nUnable to verify if domain docs.python.org is safe to fetch. This may be due to network restrictions or enterprise security policies blocking claude.ai.\n```\n\nThe page could not be retrieved, so no title is available. (ContextDB checked the failed result and found no reusable skill to suggest.)",
+      "likely_cause": "source file missing for node copy operation",
+      "likely_cause_judgment": {
+        "enabled": true,
+        "provider": "openai-compatible",
+        "model": "deepseek-flash",
+        "likely_cause": "source file missing for node copy operation",
+        "confidence": 0.96,
+        "reason": "The node copyFileSync command failed with ENOENT because the specified source file contextdb-claude-reuse-first-missing-source.txt does not exist in the working directory.",
+        "input": {
+          "failed_tool": "node",
+          "failed_command": "node -e \"require('fs').copyFileSync('contextdb-claude-reuse-first-missing-source.txt', 'contextdb-claude-reuse-first-copy.txt')\"",
+          "error_signature": "Exit code 1\nnode:fs:3177\r\n  binding.copyFile(\r\n          ^\r\n\r\nError: ENOENT: no such file or directory, copyfile 'D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB\\contextdb-claude-reuse-first-missing-source.txt' -> 'D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB\\contextdb-claude-reuse-first-copy.txt'\r\n    at Object.copyFileSync (node:fs:3177:11)\r\n    at [eval]:1:15\r\n    at runScriptInThisContext (node:internal/vm:219:10)\r\n    at node:internal/process/execution:451:12\r\n    at [eval]-wrapper:6:24\r\n    a",
+          "preceding_action": "The `WebFetch` call failed and returned no page title. Raw result:\n\n```\nUnable to verify if domain docs.python.org is safe to fetch. This may be due to network restrictions or enterprise security policies blocking claude.ai.\n```\n\nThe page could not be retrieved, so no title is available. (ContextDB checked the failed result and found no reusable skill to suggest.)"
+        }
+      },
+      "repair_status": "not_evaluated",
+      "repair_events_after_failure": [
+        {
+          "event_id": "evt_6bdc901872f4",
+          "event_type": "assistant_message",
+          "summary": "assistant_message:The command exited with code 1. Complete raw output:\n\n```\nnode:fs:3177\n  binding.copyFile(\n          ^\n\nError: ENOENT..."
+        },
+        {
+          "event_id": "evt_19553e7263a2",
+          "event_type": "tool_call",
+          "summary": "tool_call:{\"session_id\": \"59506119-1d61-447d-8f66-8c00331cd764\", \"source\": \"claude-code\"}"
+        },
+        {
+          "event_id": "evt_0ca7f11b2c54",
+          "event_type": "tool_result",
+          "summary": "tool_result:{\"session_id\": \"59506119-1d61-447d-8f66-8c00331cd764\", \"source\": \"claude-code\"}"
+        },
+        {
+          "event_id": "evt_224eab22fc86",
+          "event_type": "assistant_message",
+          "summary": "assistant_message:A repair-branch suggestion is present.\n\n**Explanation:** The ContextDB hook detected a potentially state-changing act..."
+        }
+      ],
+      "source_event_ids": [
+        "evt_ec13fb49259c"
+      ],
+      "evidence_event_ids": [
+        "evt_85234a472f37",
+        "evt_ec13fb49259c",
+        "evt_0ff971c0f2a2"
+      ],
+      "highlight_event_ids": [
+        "evt_0ff971c0f2a2"
+      ]
+    },
+    {
+      "schema_version": "experience_mining.v2",
+      "pattern_id": "fp_0e4481fed35d",
+      "failure_event_id": "evt_0e4481fed35d",
+      "branch_id": "main",
+      "failed_tool": "node",
+      "failed_command": "node -e \"require('fs').copyFileSync('contextdb-claude-reuse-second-missing-source.txt', 'contextdb-claude-reuse-second-copy.txt')\"",
+      "error_signature": "Exit code 1\nnode:fs:3177\r\n  binding.copyFile(\r\n          ^\r\n\r\nError: ENOENT: no such file or directory, copyfile 'D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB\\contextdb-claude-reuse-second-missing-source.txt' -> 'D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB\\contextdb-claude-reuse-second-copy.txt'\r\n    at Object.copyFileSync (node:fs:3177:11)\r\n    at [eval]:1:15\r\n    at runScriptInThisContext (node:internal/vm:219:10)\r\n    at node:internal/process/execution:451:12\r\n    at [eval]-wrapper:6:24\r\n   ",
+      "normalized_signature": "exit code node fs binding.copyfile ^ error enoent no such file or directory copyfile 'd software pycharm selfcode agent-contextdb contextdb-claude-reuse-second-missing-source.txt' -> 'd software pycharm",
+      "preceding_action": "Recorded a **rejected** version decision for the repair-branch suggestion:\n\n- **Decision:** rejected\n- **Action:** create_repair_branch\n- **Decision event id:** `evt_6494fe4c20fc`\n- **Reason:** Keep this first failed Node copy on main for diagnosis.\n\n**Active branch:** `main` (unchanged — the rejection keeps the trajectory on `main`).",
+      "likely_cause": "missing source file in node copy operation",
+      "likely_cause_judgment": {
+        "enabled": true,
+        "provider": "openai-compatible",
+        "model": "deepseek-flash",
+        "likely_cause": "missing source file in node copy operation",
+        "confidence": 0.98,
+        "reason": "node copyFileSync failed with ENOENT because the specified source file does not exist at the given path.",
+        "input": {
+          "failed_tool": "node",
+          "failed_command": "node -e \"require('fs').copyFileSync('contextdb-claude-reuse-second-missing-source.txt', 'contextdb-claude-reuse-second-copy.txt')\"",
+          "error_signature": "Exit code 1\nnode:fs:3177\r\n  binding.copyFile(\r\n          ^\r\n\r\nError: ENOENT: no such file or directory, copyfile 'D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB\\contextdb-claude-reuse-second-missing-source.txt' -> 'D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB\\contextdb-claude-reuse-second-copy.txt'\r\n    at Object.copyFileSync (node:fs:3177:11)\r\n    at [eval]:1:15\r\n    at runScriptInThisContext (node:internal/vm:219:10)\r\n    at node:internal/process/execution:451:12\r\n    at [eval]-wrapper:6:24\r\n   ",
+          "preceding_action": "Recorded a **rejected** version decision for the repair-branch suggestion:\n\n- **Decision:** rejected\n- **Action:** create_repair_branch\n- **Decision event id:** `evt_6494fe4c20fc`\n- **Reason:** Keep this first failed Node copy on main for diagnosis.\n\n**Active branch:** `main` (unchanged — the rejection keeps the trajectory on `main`)."
+        }
+      },
+      "repair_status": "not_evaluated",
+      "repair_events_after_failure": [
+        {
+          "event_id": "evt_6d9c25913187",
+          "event_type": "assistant_message",
+          "summary": "assistant_message:The command exited with code 1. Complete raw output:\n\n```\nnode:fs:3177\n  binding.copyFile(\n          ^\n\nError: ENOENT..."
+        },
+        {
+          "event_id": "evt_80cfcc4c52e9",
+          "event_type": "tool_call",
+          "summary": "tool_call:{\"session_id\": \"59506119-1d61-447d-8f66-8c00331cd764\", \"source\": \"claude-code\"}"
+        },
+        {
+          "event_id": "evt_13f99bbd01e5",
+          "event_type": "tool_result",
+          "summary": "tool_result:{\"session_id\": \"59506119-1d61-447d-8f66-8c00331cd764\", \"source\": \"claude-code\"}"
+        },
+        {
+          "event_id": "evt_1417cb936b0f",
+          "event_type": "assistant_message",
+          "summary": "assistant_message:A new repair-branch suggestion is present (from the second failed Node copy):\n\n- **Suggested branch id:** `repair-0e4..."
+        }
+      ],
+      "source_event_ids": [
+        "evt_707691068899"
+      ],
+      "evidence_event_ids": [
+        "evt_e8cdfa9a4f33",
+        "evt_707691068899",
+        "evt_0e4481fed35d"
+      ],
+      "highlight_event_ids": [
+        "evt_0e4481fed35d"
+      ]
+    }
+  ],
+  "source_events": [
+    "evt_2c34a3187c6f",
+    "evt_9d24d6aa4bc1",
+    "evt_dc14f0ea456a",
+    "evt_ec13fb49259c",
+    "evt_707691068899"
+  ],
+  "created_at": "2026-09-15T12:09:41.792561+00:00",
+  "metadata": {
+    "event_count": 104
+  }
+}

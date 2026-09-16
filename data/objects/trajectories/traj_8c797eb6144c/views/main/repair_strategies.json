@@ -1,0 +1,1194 @@
+{
+  "view_name": "repair_strategies",
+  "trajectory_id": "traj_8c797eb6144c",
+  "branch_id": "main",
+  "content": [
+    {
+      "schema_version": "experience_mining.v1",
+      "failure": {
+        "failure_event_id": "evt_9ecf4f0ccf43",
+        "tool_call_event_id": "evt_2c34a3187c6f",
+        "branch_id": "main",
+        "command": "powershell -NoProfile -Command '[Environment]::SetEnvironmentVariable((\"LC\" + [char]95 + \"ALL\"), \"C\", \"Process\"); $env:LANG=\"C\"; git show HEAD:assets/settings.json; exit $LASTEXITCODE'",
+        "tool": "git",
+        "error_signature": "Exit code 128\nfatal: path 'assets/settings.json' does not exist in 'HEAD'",
+        "normalized_signature": "exit code fatal path 'assets settings.json' does not exist in 'head'",
+        "preceding_action": "The ContextDB session id for this conversation is:\n\n**`59506119-1d61-447d-8f66-8c00331cd764`**\n\nI'll use this session id automatically for every subsequent ContextDB MCP call in this conversation.",
+        "likely_cause": "missing file path in git HEAD revision",
+        "evidence_event_ids": [
+          "evt_dbc90ab60f43",
+          "evt_2c34a3187c6f",
+          "evt_9ecf4f0ccf43"
+        ],
+        "highlight_event_ids": [
+          "evt_9ecf4f0ccf43"
+        ]
+      },
+      "repair_status": "resolved_candidate",
+      "candidate_count": 1,
+      "repair_candidates": [
+        {
+          "schema_version": "experience_mining.v1",
+          "branch_id": "main",
+          "success_event_id": "evt_48fbe83616a4",
+          "tool_call_event_id": "evt_9ba551c136d9",
+          "strategy": "The command exited with code 128. Complete raw output:\n\n```\nfatal: path 'assets/settings.json' does not exist in 'HEAD'\n```\n\nNo `assets/settings.json` exists at the repository root in `HEAD`. (A ContextDB hook surfaced a suggestion that the file may live at `examples/live-path-demo/assets/settings.json`, but I have not run that since the instruction was to run exactly one command — let me know if you'd like me to verify that path.)",
+          "tool": "contextdb_get_recommendation",
+          "command": "{\"session_id\": \"59506119-1d61-447d-8f66-8c00331cd764\", \"source\": \"claude-code\"}",
+          "outcome": "ok",
+          "primary_rule": "same_branch_first_success_after_failure",
+          "link_type": "same_branch_first_success_after_failure",
+          "strength": "structural",
+          "why_linked": "The success is the first successful tool result after the failure on the same branch.",
+          "evidence": [
+            {
+              "rule": "same_branch_first_success_after_failure",
+              "strength": "structural",
+              "evidence_level": "primary_structural",
+              "branch_id": "main",
+              "failure_event_id": "evt_9ecf4f0ccf43",
+              "success_event_id": "evt_48fbe83616a4"
+            }
+          ],
+          "evidence_event_ids": [
+            "evt_9ecf4f0ccf43",
+            "evt_48fbe83616a4"
+          ],
+          "highlight_event_ids": [
+            "evt_9ecf4f0ccf43",
+            "evt_48fbe83616a4"
+          ],
+          "highlight_branch_ids": []
+        }
+      ],
+      "repairs": [
+        {
+          "schema_version": "experience_mining.v1",
+          "branch_id": "main",
+          "success_event_id": "evt_48fbe83616a4",
+          "tool_call_event_id": "evt_9ba551c136d9",
+          "strategy": "The command exited with code 128. Complete raw output:\n\n```\nfatal: path 'assets/settings.json' does not exist in 'HEAD'\n```\n\nNo `assets/settings.json` exists at the repository root in `HEAD`. (A ContextDB hook surfaced a suggestion that the file may live at `examples/live-path-demo/assets/settings.json`, but I have not run that since the instruction was to run exactly one command — let me know if you'd like me to verify that path.)",
+          "tool": "contextdb_get_recommendation",
+          "command": "{\"session_id\": \"59506119-1d61-447d-8f66-8c00331cd764\", \"source\": \"claude-code\"}",
+          "outcome": "ok",
+          "primary_rule": "same_branch_first_success_after_failure",
+          "link_type": "same_branch_first_success_after_failure",
+          "strength": "structural",
+          "why_linked": "The success is the first successful tool result after the failure on the same branch.",
+          "evidence": [
+            {
+              "rule": "same_branch_first_success_after_failure",
+              "strength": "structural",
+              "evidence_level": "primary_structural",
+              "branch_id": "main",
+              "failure_event_id": "evt_9ecf4f0ccf43",
+              "success_event_id": "evt_48fbe83616a4"
+            }
+          ],
+          "evidence_event_ids": [
+            "evt_9ecf4f0ccf43",
+            "evt_48fbe83616a4"
+          ],
+          "highlight_event_ids": [
+            "evt_9ecf4f0ccf43",
+            "evt_48fbe83616a4"
+          ],
+          "highlight_branch_ids": []
+        }
+      ],
+      "excluded_successes": [
+        {
+          "success_event_id": "evt_69df227f7147",
+          "branch_id": "main",
+          "command": "{\"action_id\": \"act_git_file_path_absent_from_git_1\", \"decision\": \"accepted\", \"reason\": \"Accepted: the proposed Git file path (examples/live-path-demo/assets/settings.json) will be used for the repair, replacing the incorrect root-level assets/settings.json path.\", \"session_id\": \"59506119-1d61-447d-8f66-8c00331cd764\", \"skill_id\": \"skill_git_file_path_absent_from_git\", \"skill_match_event_id\": \"evt_e7017ee3fd4c\", \"source\": \"claude-code\"}",
+          "tool": "contextdb_record_skill_decision",
+          "outcome": "ok",
+          "reason": "not_first_success_on_branch",
+          "evidence": []
+        },
+        {
+          "success_event_id": "evt_637ec18cdb45",
+          "branch_id": "main",
+          "command": "powershell -NoProfile -Command '[Environment]::SetEnvironmentVariable((\"LC\" + [char]95 + \"ALL\"), \"C\", \"Process\"); $env:LANG=\"C\"; git show HEAD:examples/live-path-demo/assets/settings.json; exit $LASTEXITCODE'",
+          "tool": "git",
+          "outcome": "ok",
+          "reason": "supporting_only",
+          "evidence": [
+            {
+              "rule": "same_tool_command_variant",
+              "strength": "supporting",
+              "evidence_level": "supporting",
+              "failed_command": "powershell -NoProfile -Command '[Environment]::SetEnvironmentVariable((\"LC\" + [char]95 + \"ALL\"), \"C\", \"Process\"); $env:LANG=\"C\"; git show HEAD:assets/settings.json; exit $LASTEXITCODE'",
+              "successful_command": "powershell -NoProfile -Command '[Environment]::SetEnvironmentVariable((\"LC\" + [char]95 + \"ALL\"), \"C\", \"Process\"); $env:LANG=\"C\"; git show HEAD:examples/live-path-demo/assets/settings.json; exit $LASTEXITCODE'"
+            }
+          ]
+        },
+        {
+          "success_event_id": "evt_b437c2276ea7",
+          "branch_id": "main",
+          "command": "powershell -NoProfile -Command '[Environment]::SetEnvironmentVariable((\"LC\" + [char]95 + \"ALL\"), \"C\", \"Process\"); $env:LANG=\"C\"; git show HEAD:examples/live-path-demo/assets/settings.json; exit $LASTEXITCODE'",
+          "tool": "git",
+          "outcome": "ok",
+          "reason": "supporting_only",
+          "evidence": [
+            {
+              "rule": "same_tool_command_variant",
+              "strength": "supporting",
+              "evidence_level": "supporting",
+              "failed_command": "powershell -NoProfile -Command '[Environment]::SetEnvironmentVariable((\"LC\" + [char]95 + \"ALL\"), \"C\", \"Process\"); $env:LANG=\"C\"; git show HEAD:assets/settings.json; exit $LASTEXITCODE'",
+              "successful_command": "powershell -NoProfile -Command '[Environment]::SetEnvironmentVariable((\"LC\" + [char]95 + \"ALL\"), \"C\", \"Process\"); $env:LANG=\"C\"; git show HEAD:examples/live-path-demo/assets/settings.json; exit $LASTEXITCODE'"
+            }
+          ]
+        },
+        {
+          "success_event_id": "evt_d001b3ef4222",
+          "branch_id": "main",
+          "command": "powershell -NoProfile -Command '[Environment]::SetEnvironmentVariable((\"LC\" + [char]95 + \"ALL\"), \"C\", \"Process\"); $env:LANG=\"C\"; git show HEAD:examples/live-path-demo/assets/settings.json; exit $LASTEXITCODE'",
+          "tool": "git",
+          "outcome": "ok",
+          "reason": "supporting_only",
+          "evidence": [
+            {
+              "rule": "same_tool_command_variant",
+              "strength": "supporting",
+              "evidence_level": "supporting",
+              "failed_command": "powershell -NoProfile -Command '[Environment]::SetEnvironmentVariable((\"LC\" + [char]95 + \"ALL\"), \"C\", \"Process\"); $env:LANG=\"C\"; git show HEAD:assets/settings.json; exit $LASTEXITCODE'",
+              "successful_command": "powershell -NoProfile -Command '[Environment]::SetEnvironmentVariable((\"LC\" + [char]95 + \"ALL\"), \"C\", \"Process\"); $env:LANG=\"C\"; git show HEAD:examples/live-path-demo/assets/settings.json; exit $LASTEXITCODE'"
+            }
+          ]
+        },
+        {
+          "success_event_id": "evt_c2af6237ed4b",
+          "branch_id": "main",
+          "command": "{\"session_id\": \"59506119-1d61-447d-8f66-8c00331cd764\", \"source\": \"claude-code\"}",
+          "tool": "contextdb_get_recommendation",
+          "outcome": "ok",
+          "reason": "not_first_success_on_branch",
+          "evidence": []
+        },
+        {
+          "success_event_id": "evt_85abcc3d2751",
+          "branch_id": "main",
+          "command": "{\"action_id\": \"act_python_misspelled_python_module_name_python_c_import_jsonn_1\", \"decision\": \"accepted\", \"reason\": \"Accepted: the recommended Python import (import json) will be used for the repair, replacing the misspelled module name 'jsonn'.\", \"session_id\": \"59506119-1d61-447d-8f66-8c00331cd764\", \"skill_id\": \"skill_python_misspelled_python_module_name_python_c_import_jsonn\", \"skill_match_event_id\": \"evt_4f2dc56bd496\", \"source\": \"claude-code\"}",
+          "tool": "contextdb_record_skill_decision",
+          "outcome": "ok",
+          "reason": "not_first_success_on_branch",
+          "evidence": []
+        },
+        {
+          "success_event_id": "evt_1b7523c77fdb",
+          "branch_id": "main",
+          "command": "python -c \"import json; print(json.__name__)\"",
+          "tool": "python",
+          "outcome": "ok",
+          "reason": "not_first_success_on_branch",
+          "evidence": []
+        },
+        {
+          "success_event_id": "evt_4ed24b57bbc5",
+          "branch_id": "main",
+          "command": "python -c \"import json; print(json.__name__)\"",
+          "tool": "python",
+          "outcome": "ok",
+          "reason": "not_first_success_on_branch",
+          "evidence": []
+        },
+        {
+          "success_event_id": "evt_5dcbe2a5d41c",
+          "branch_id": "main",
+          "command": "python -c \"import json; print(json.__name__)\"",
+          "tool": "python",
+          "outcome": "ok",
+          "reason": "not_first_success_on_branch",
+          "evidence": []
+        },
+        {
+          "success_event_id": "evt_4ab592fc952a",
+          "branch_id": "main",
+          "command": "D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB\\examples\\live-path-demo\\assets\\settings.json",
+          "tool": "read",
+          "outcome": "ok",
+          "reason": "not_first_success_on_branch",
+          "evidence": []
+        },
+        {
+          "success_event_id": "evt_bbf1ac41fe2e",
+          "branch_id": "main",
+          "command": "examples/live-path-demo/**/*",
+          "tool": "glob",
+          "outcome": "ok",
+          "reason": "not_first_success_on_branch",
+          "evidence": []
+        },
+        {
+          "success_event_id": "evt_0ca7f11b2c54",
+          "branch_id": "main",
+          "command": "{\"session_id\": \"59506119-1d61-447d-8f66-8c00331cd764\", \"source\": \"claude-code\"}",
+          "tool": "contextdb_get_version_status",
+          "outcome": "ok",
+          "reason": "not_first_success_on_branch",
+          "evidence": []
+        },
+        {
+          "success_event_id": "evt_9bfc312e18dd",
+          "branch_id": "main",
+          "command": "{\"action\": \"create_repair_branch\", \"decision\": \"rejected\", \"reason\": \"Keep this first failed Node copy on main for diagnosis.\", \"session_id\": \"59506119-1d61-447d-8f66-8c00331cd764\", \"source\": \"claude-code\", \"suggestion_event_id\": \"evt_63050de6ec9b\"}",
+          "tool": "contextdb_record_version_decision",
+          "outcome": "ok",
+          "reason": "not_first_success_on_branch",
+          "evidence": []
+        },
+        {
+          "success_event_id": "evt_13f99bbd01e5",
+          "branch_id": "main",
+          "command": "{\"session_id\": \"59506119-1d61-447d-8f66-8c00331cd764\", \"source\": \"claude-code\"}",
+          "tool": "contextdb_get_version_status",
+          "outcome": "ok",
+          "reason": "not_first_success_on_branch",
+          "evidence": []
+        },
+        {
+          "success_event_id": "evt_6f462a9ba9c7",
+          "branch_id": "main",
+          "command": "{\"branch_id\": \"repair-0e4481fe\", \"reason\": \"Preserve the second failed Node copy and inspect a separate repair path.\", \"session_id\": \"59506119-1d61-447d-8f66-8c00331cd764\", \"snapshot_id\": \"snap_e60cf738101e\", \"source\": \"claude-code\"}",
+          "tool": "contextdb_create_repair_branch",
+          "outcome": "ok",
+          "reason": "not_first_success_on_branch",
+          "evidence": []
+        },
+        {
+          "success_event_id": "evt_f597933a1229",
+          "branch_id": "repair-0e4481fe",
+          "command": "D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB\\AGENTS.md",
+          "tool": "read",
+          "outcome": "ok",
+          "reason": "not_first_success_on_branch",
+          "evidence": []
+        },
+        {
+          "success_event_id": "evt_6e9584b14d25",
+          "branch_id": "repair-0e4481fe",
+          "command": "{\"session_id\": \"59506119-1d61-447d-8f66-8c00331cd764\", \"source\": \"claude-code\"}",
+          "tool": "contextdb_get_version_status",
+          "outcome": "ok",
+          "reason": "not_first_success_on_branch",
+          "evidence": []
+        },
+        {
+          "success_event_id": "evt_1768c29218a0",
+          "branch_id": "repair-0e4481fe",
+          "command": "{\"reason\": \"The repair branch was inspected. Continue from the most recent checkpoint.\", \"session_id\": \"59506119-1d61-447d-8f66-8c00331cd764\", \"snapshot_id\": \"snap_e60cf738101e\", \"source\": \"claude-code\"}",
+          "tool": "contextdb_rollback_context",
+          "outcome": "ok",
+          "reason": "not_first_success_on_branch",
+          "evidence": []
+        }
+      ],
+      "highlight_event_ids": [
+        "evt_9ecf4f0ccf43",
+        "evt_48fbe83616a4"
+      ],
+      "highlight_branch_ids": [
+        "main"
+      ],
+      "semantic_judge": {
+        "enabled": false,
+        "label": "not_evaluated"
+      }
+    },
+    {
+      "schema_version": "experience_mining.v1",
+      "failure": {
+        "failure_event_id": "evt_9156cc7a06d6",
+        "tool_call_event_id": "evt_9d24d6aa4bc1",
+        "branch_id": "main",
+        "command": "python -c \"import jsonn\"",
+        "tool": "python",
+        "error_signature": "Exit code 1\nTraceback (most recent call last):\r\n  File \"<string>\", line 1, in <module>\r\n    import jsonn\r\nModuleNotFoundError: No module named 'jsonn'",
+        "normalized_signature": "exit code traceback most recent call last file \"<string>\" line in <module> import jsonn modulenotfounderror no module named 'jsonn'",
+        "preceding_action": "Recorded the completed Git execution:\n\n- **Status:** ok\n- **Tool call event id:** `evt_293d510d9271`\n- **Tool result event id:** `evt_b437c2276ea7`\n- **Trajectory id:** `traj_8c797eb6144c`\n- **Exit code:** 0\n- **Next skill match event id:** none\n\nNo repair-branch suggestion was returned. I did not execute any command this turn.",
+        "likely_cause": "python import typo: nonexistent module jsonn",
+        "evidence_event_ids": [
+          "evt_8ddf262ad6e0",
+          "evt_9d24d6aa4bc1",
+          "evt_9156cc7a06d6"
+        ],
+        "highlight_event_ids": [
+          "evt_9156cc7a06d6"
+        ]
+      },
+      "repair_status": "resolved_candidate",
+      "candidate_count": 1,
+      "repair_candidates": [
+        {
+          "schema_version": "experience_mining.v1",
+          "branch_id": "main",
+          "success_event_id": "evt_c2af6237ed4b",
+          "tool_call_event_id": "evt_990af2591588",
+          "strategy": "The command exited with code 1. Complete raw output:\n\n```\nTraceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n    import jsonn\nModuleNotFoundError: No module named 'jsonn'\n```\n\n(A ContextDB hook surfaced a suggestion — skill `skill_python_misspelled_python_module_name_python_c_import_jsonn` with a recommended action `python -c \"import json; print(json.__name__)\"`. I have not run it; treating it as advice only. Let me know if you'd like me to proceed with it.)",
+          "tool": "contextdb_get_recommendation",
+          "command": "{\"session_id\": \"59506119-1d61-447d-8f66-8c00331cd764\", \"source\": \"claude-code\"}",
+          "outcome": "ok",
+          "primary_rule": "same_branch_first_success_after_failure",
+          "link_type": "same_branch_first_success_after_failure",
+          "strength": "structural",
+          "why_linked": "The success is the first successful tool result after the failure on the same branch.",
+          "evidence": [
+            {
+              "rule": "same_branch_first_success_after_failure",
+              "strength": "structural",
+              "evidence_level": "primary_structural",
+              "branch_id": "main",
+              "failure_event_id": "evt_9156cc7a06d6",
+              "success_event_id": "evt_c2af6237ed4b"
+            }
+          ],
+          "evidence_event_ids": [
+            "evt_9156cc7a06d6",
+            "evt_c2af6237ed4b"
+          ],
+          "highlight_event_ids": [
+            "evt_9156cc7a06d6",
+            "evt_c2af6237ed4b"
+          ],
+          "highlight_branch_ids": []
+        }
+      ],
+      "repairs": [
+        {
+          "schema_version": "experience_mining.v1",
+          "branch_id": "main",
+          "success_event_id": "evt_c2af6237ed4b",
+          "tool_call_event_id": "evt_990af2591588",
+          "strategy": "The command exited with code 1. Complete raw output:\n\n```\nTraceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n    import jsonn\nModuleNotFoundError: No module named 'jsonn'\n```\n\n(A ContextDB hook surfaced a suggestion — skill `skill_python_misspelled_python_module_name_python_c_import_jsonn` with a recommended action `python -c \"import json; print(json.__name__)\"`. I have not run it; treating it as advice only. Let me know if you'd like me to proceed with it.)",
+          "tool": "contextdb_get_recommendation",
+          "command": "{\"session_id\": \"59506119-1d61-447d-8f66-8c00331cd764\", \"source\": \"claude-code\"}",
+          "outcome": "ok",
+          "primary_rule": "same_branch_first_success_after_failure",
+          "link_type": "same_branch_first_success_after_failure",
+          "strength": "structural",
+          "why_linked": "The success is the first successful tool result after the failure on the same branch.",
+          "evidence": [
+            {
+              "rule": "same_branch_first_success_after_failure",
+              "strength": "structural",
+              "evidence_level": "primary_structural",
+              "branch_id": "main",
+              "failure_event_id": "evt_9156cc7a06d6",
+              "success_event_id": "evt_c2af6237ed4b"
+            }
+          ],
+          "evidence_event_ids": [
+            "evt_9156cc7a06d6",
+            "evt_c2af6237ed4b"
+          ],
+          "highlight_event_ids": [
+            "evt_9156cc7a06d6",
+            "evt_c2af6237ed4b"
+          ],
+          "highlight_branch_ids": []
+        }
+      ],
+      "excluded_successes": [
+        {
+          "success_event_id": "evt_85abcc3d2751",
+          "branch_id": "main",
+          "command": "{\"action_id\": \"act_python_misspelled_python_module_name_python_c_import_jsonn_1\", \"decision\": \"accepted\", \"reason\": \"Accepted: the recommended Python import (import json) will be used for the repair, replacing the misspelled module name 'jsonn'.\", \"session_id\": \"59506119-1d61-447d-8f66-8c00331cd764\", \"skill_id\": \"skill_python_misspelled_python_module_name_python_c_import_jsonn\", \"skill_match_event_id\": \"evt_4f2dc56bd496\", \"source\": \"claude-code\"}",
+          "tool": "contextdb_record_skill_decision",
+          "outcome": "ok",
+          "reason": "not_first_success_on_branch",
+          "evidence": []
+        },
+        {
+          "success_event_id": "evt_1b7523c77fdb",
+          "branch_id": "main",
+          "command": "python -c \"import json; print(json.__name__)\"",
+          "tool": "python",
+          "outcome": "ok",
+          "reason": "supporting_only",
+          "evidence": [
+            {
+              "rule": "same_tool_command_variant",
+              "strength": "supporting",
+              "evidence_level": "supporting",
+              "failed_command": "python -c \"import jsonn\"",
+              "successful_command": "python -c \"import json; print(json.__name__)\""
+            }
+          ]
+        },
+        {
+          "success_event_id": "evt_4ed24b57bbc5",
+          "branch_id": "main",
+          "command": "python -c \"import json; print(json.__name__)\"",
+          "tool": "python",
+          "outcome": "ok",
+          "reason": "supporting_only",
+          "evidence": [
+            {
+              "rule": "same_tool_command_variant",
+              "strength": "supporting",
+              "evidence_level": "supporting",
+              "failed_command": "python -c \"import jsonn\"",
+              "successful_command": "python -c \"import json; print(json.__name__)\""
+            }
+          ]
+        },
+        {
+          "success_event_id": "evt_5dcbe2a5d41c",
+          "branch_id": "main",
+          "command": "python -c \"import json; print(json.__name__)\"",
+          "tool": "python",
+          "outcome": "ok",
+          "reason": "supporting_only",
+          "evidence": [
+            {
+              "rule": "same_tool_command_variant",
+              "strength": "supporting",
+              "evidence_level": "supporting",
+              "failed_command": "python -c \"import jsonn\"",
+              "successful_command": "python -c \"import json; print(json.__name__)\""
+            }
+          ]
+        },
+        {
+          "success_event_id": "evt_4ab592fc952a",
+          "branch_id": "main",
+          "command": "D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB\\examples\\live-path-demo\\assets\\settings.json",
+          "tool": "read",
+          "outcome": "ok",
+          "reason": "not_first_success_on_branch",
+          "evidence": []
+        },
+        {
+          "success_event_id": "evt_bbf1ac41fe2e",
+          "branch_id": "main",
+          "command": "examples/live-path-demo/**/*",
+          "tool": "glob",
+          "outcome": "ok",
+          "reason": "not_first_success_on_branch",
+          "evidence": []
+        },
+        {
+          "success_event_id": "evt_0ca7f11b2c54",
+          "branch_id": "main",
+          "command": "{\"session_id\": \"59506119-1d61-447d-8f66-8c00331cd764\", \"source\": \"claude-code\"}",
+          "tool": "contextdb_get_version_status",
+          "outcome": "ok",
+          "reason": "not_first_success_on_branch",
+          "evidence": []
+        },
+        {
+          "success_event_id": "evt_9bfc312e18dd",
+          "branch_id": "main",
+          "command": "{\"action\": \"create_repair_branch\", \"decision\": \"rejected\", \"reason\": \"Keep this first failed Node copy on main for diagnosis.\", \"session_id\": \"59506119-1d61-447d-8f66-8c00331cd764\", \"source\": \"claude-code\", \"suggestion_event_id\": \"evt_63050de6ec9b\"}",
+          "tool": "contextdb_record_version_decision",
+          "outcome": "ok",
+          "reason": "not_first_success_on_branch",
+          "evidence": []
+        },
+        {
+          "success_event_id": "evt_13f99bbd01e5",
+          "branch_id": "main",
+          "command": "{\"session_id\": \"59506119-1d61-447d-8f66-8c00331cd764\", \"source\": \"claude-code\"}",
+          "tool": "contextdb_get_version_status",
+          "outcome": "ok",
+          "reason": "not_first_success_on_branch",
+          "evidence": []
+        },
+        {
+          "success_event_id": "evt_6f462a9ba9c7",
+          "branch_id": "main",
+          "command": "{\"branch_id\": \"repair-0e4481fe\", \"reason\": \"Preserve the second failed Node copy and inspect a separate repair path.\", \"session_id\": \"59506119-1d61-447d-8f66-8c00331cd764\", \"snapshot_id\": \"snap_e60cf738101e\", \"source\": \"claude-code\"}",
+          "tool": "contextdb_create_repair_branch",
+          "outcome": "ok",
+          "reason": "not_first_success_on_branch",
+          "evidence": []
+        },
+        {
+          "success_event_id": "evt_f597933a1229",
+          "branch_id": "repair-0e4481fe",
+          "command": "D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB\\AGENTS.md",
+          "tool": "read",
+          "outcome": "ok",
+          "reason": "not_first_success_on_branch",
+          "evidence": []
+        },
+        {
+          "success_event_id": "evt_6e9584b14d25",
+          "branch_id": "repair-0e4481fe",
+          "command": "{\"session_id\": \"59506119-1d61-447d-8f66-8c00331cd764\", \"source\": \"claude-code\"}",
+          "tool": "contextdb_get_version_status",
+          "outcome": "ok",
+          "reason": "not_first_success_on_branch",
+          "evidence": []
+        },
+        {
+          "success_event_id": "evt_1768c29218a0",
+          "branch_id": "repair-0e4481fe",
+          "command": "{\"reason\": \"The repair branch was inspected. Continue from the most recent checkpoint.\", \"session_id\": \"59506119-1d61-447d-8f66-8c00331cd764\", \"snapshot_id\": \"snap_e60cf738101e\", \"source\": \"claude-code\"}",
+          "tool": "contextdb_rollback_context",
+          "outcome": "ok",
+          "reason": "not_first_success_on_branch",
+          "evidence": []
+        }
+      ],
+      "highlight_event_ids": [
+        "evt_9156cc7a06d6",
+        "evt_c2af6237ed4b"
+      ],
+      "highlight_branch_ids": [
+        "main"
+      ],
+      "semantic_judge": {
+        "enabled": false,
+        "label": "not_evaluated"
+      }
+    },
+    {
+      "schema_version": "experience_mining.v1",
+      "failure": {
+        "failure_event_id": "evt_f24bc931fdb9",
+        "tool_call_event_id": "evt_dc14f0ea456a",
+        "branch_id": "main",
+        "command": "https://docs.python.org/3/library/json.html",
+        "tool": "webfetch",
+        "error_signature": "Unable to verify if domain docs.python.org is safe to fetch. This may be due to network restrictions or enterprise security policies blocking claude.ai.",
+        "normalized_signature": "unable to verify if domain docs.python.org is safe to fetch this may be due to network restrictions or enterprise security policies blocking claude.ai",
+        "preceding_action": "Matching paths under `examples/live-path-demo`:\n\n- `examples\\live-path-demo\\README.md`\n- `examples\\live-path-demo\\assets\\settings.json`",
+        "likely_cause": "network restrictions or enterprise security policy blocking domain safety verification",
+        "evidence_event_ids": [
+          "evt_e0577ed657bd",
+          "evt_dc14f0ea456a",
+          "evt_f24bc931fdb9"
+        ],
+        "highlight_event_ids": [
+          "evt_f24bc931fdb9"
+        ]
+      },
+      "repair_status": "resolved_candidate",
+      "candidate_count": 1,
+      "repair_candidates": [
+        {
+          "schema_version": "experience_mining.v1",
+          "branch_id": "main",
+          "success_event_id": "evt_0ca7f11b2c54",
+          "tool_call_event_id": "evt_19553e7263a2",
+          "strategy": "The command exited with code 1. Complete raw output:\n\n```\nnode:fs:3177\n  binding.copyFile(\n          ^\n\nError: ENOENT: no such file or directory, copyfile 'D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB\\contextdb-claude-reuse-first-missing-source.txt' -> 'D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB\\contextdb-claude-reuse-first-copy.txt'\n    at Object.copyFileSync (node:fs:3177:11)\n    at [eval]:1:15\n    at runScriptInThisContext (node:internal/vm:219:10)\n    at node:internal/process/execution:451:12\n    at [eval]-wrapper:6:24\n    at runScriptInContext (node:internal/process/execution:449:60)\n    at evalFunction (node:internal/process/execution:283:30)\n    at evalTypeScript (node:internal/process/execution:295:3)\n    at node:internal/main/eval_string:71:3 {\n  errno: -4058,\n  code: 'ENOENT',\n  syscall: 'copyfile',\n  path: 'D:\\\\software\\\\Pycharm\\\\SelfCode\\\\Agent-ContextDB\\\\contextdb-claude-reuse-first-missing-source.txt',\n  dest: 'D:\\\\software\\\\Pycharm\\\\SelfCode\\\\Agent-ContextDB\\\\contextdb-claude-reuse-first-copy.txt'\n}\n\nNode.js v24.20.0\n```\n\nThe copy failed because the source file `contextdb-claude-reuse-first-missing-source.txt` does not exist (`ENOENT`). ContextDB found no reusable skill for this failure.",
+          "tool": "contextdb_get_version_status",
+          "command": "{\"session_id\": \"59506119-1d61-447d-8f66-8c00331cd764\", \"source\": \"claude-code\"}",
+          "outcome": "ok",
+          "primary_rule": "same_branch_first_success_after_failure",
+          "link_type": "same_branch_first_success_after_failure",
+          "strength": "structural",
+          "why_linked": "The success is the first successful tool result after the failure on the same branch.",
+          "evidence": [
+            {
+              "rule": "same_branch_first_success_after_failure",
+              "strength": "structural",
+              "evidence_level": "primary_structural",
+              "branch_id": "main",
+              "failure_event_id": "evt_f24bc931fdb9",
+              "success_event_id": "evt_0ca7f11b2c54"
+            }
+          ],
+          "evidence_event_ids": [
+            "evt_f24bc931fdb9",
+            "evt_0ca7f11b2c54"
+          ],
+          "highlight_event_ids": [
+            "evt_f24bc931fdb9",
+            "evt_0ca7f11b2c54"
+          ],
+          "highlight_branch_ids": []
+        }
+      ],
+      "repairs": [
+        {
+          "schema_version": "experience_mining.v1",
+          "branch_id": "main",
+          "success_event_id": "evt_0ca7f11b2c54",
+          "tool_call_event_id": "evt_19553e7263a2",
+          "strategy": "The command exited with code 1. Complete raw output:\n\n```\nnode:fs:3177\n  binding.copyFile(\n          ^\n\nError: ENOENT: no such file or directory, copyfile 'D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB\\contextdb-claude-reuse-first-missing-source.txt' -> 'D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB\\contextdb-claude-reuse-first-copy.txt'\n    at Object.copyFileSync (node:fs:3177:11)\n    at [eval]:1:15\n    at runScriptInThisContext (node:internal/vm:219:10)\n    at node:internal/process/execution:451:12\n    at [eval]-wrapper:6:24\n    at runScriptInContext (node:internal/process/execution:449:60)\n    at evalFunction (node:internal/process/execution:283:30)\n    at evalTypeScript (node:internal/process/execution:295:3)\n    at node:internal/main/eval_string:71:3 {\n  errno: -4058,\n  code: 'ENOENT',\n  syscall: 'copyfile',\n  path: 'D:\\\\software\\\\Pycharm\\\\SelfCode\\\\Agent-ContextDB\\\\contextdb-claude-reuse-first-missing-source.txt',\n  dest: 'D:\\\\software\\\\Pycharm\\\\SelfCode\\\\Agent-ContextDB\\\\contextdb-claude-reuse-first-copy.txt'\n}\n\nNode.js v24.20.0\n```\n\nThe copy failed because the source file `contextdb-claude-reuse-first-missing-source.txt` does not exist (`ENOENT`). ContextDB found no reusable skill for this failure.",
+          "tool": "contextdb_get_version_status",
+          "command": "{\"session_id\": \"59506119-1d61-447d-8f66-8c00331cd764\", \"source\": \"claude-code\"}",
+          "outcome": "ok",
+          "primary_rule": "same_branch_first_success_after_failure",
+          "link_type": "same_branch_first_success_after_failure",
+          "strength": "structural",
+          "why_linked": "The success is the first successful tool result after the failure on the same branch.",
+          "evidence": [
+            {
+              "rule": "same_branch_first_success_after_failure",
+              "strength": "structural",
+              "evidence_level": "primary_structural",
+              "branch_id": "main",
+              "failure_event_id": "evt_f24bc931fdb9",
+              "success_event_id": "evt_0ca7f11b2c54"
+            }
+          ],
+          "evidence_event_ids": [
+            "evt_f24bc931fdb9",
+            "evt_0ca7f11b2c54"
+          ],
+          "highlight_event_ids": [
+            "evt_f24bc931fdb9",
+            "evt_0ca7f11b2c54"
+          ],
+          "highlight_branch_ids": []
+        }
+      ],
+      "excluded_successes": [
+        {
+          "success_event_id": "evt_9bfc312e18dd",
+          "branch_id": "main",
+          "command": "{\"action\": \"create_repair_branch\", \"decision\": \"rejected\", \"reason\": \"Keep this first failed Node copy on main for diagnosis.\", \"session_id\": \"59506119-1d61-447d-8f66-8c00331cd764\", \"source\": \"claude-code\", \"suggestion_event_id\": \"evt_63050de6ec9b\"}",
+          "tool": "contextdb_record_version_decision",
+          "outcome": "ok",
+          "reason": "not_first_success_on_branch",
+          "evidence": []
+        },
+        {
+          "success_event_id": "evt_13f99bbd01e5",
+          "branch_id": "main",
+          "command": "{\"session_id\": \"59506119-1d61-447d-8f66-8c00331cd764\", \"source\": \"claude-code\"}",
+          "tool": "contextdb_get_version_status",
+          "outcome": "ok",
+          "reason": "not_first_success_on_branch",
+          "evidence": []
+        },
+        {
+          "success_event_id": "evt_6f462a9ba9c7",
+          "branch_id": "main",
+          "command": "{\"branch_id\": \"repair-0e4481fe\", \"reason\": \"Preserve the second failed Node copy and inspect a separate repair path.\", \"session_id\": \"59506119-1d61-447d-8f66-8c00331cd764\", \"snapshot_id\": \"snap_e60cf738101e\", \"source\": \"claude-code\"}",
+          "tool": "contextdb_create_repair_branch",
+          "outcome": "ok",
+          "reason": "not_first_success_on_branch",
+          "evidence": []
+        },
+        {
+          "success_event_id": "evt_f597933a1229",
+          "branch_id": "repair-0e4481fe",
+          "command": "D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB\\AGENTS.md",
+          "tool": "read",
+          "outcome": "ok",
+          "reason": "not_first_success_on_branch",
+          "evidence": []
+        },
+        {
+          "success_event_id": "evt_6e9584b14d25",
+          "branch_id": "repair-0e4481fe",
+          "command": "{\"session_id\": \"59506119-1d61-447d-8f66-8c00331cd764\", \"source\": \"claude-code\"}",
+          "tool": "contextdb_get_version_status",
+          "outcome": "ok",
+          "reason": "not_first_success_on_branch",
+          "evidence": []
+        },
+        {
+          "success_event_id": "evt_1768c29218a0",
+          "branch_id": "repair-0e4481fe",
+          "command": "{\"reason\": \"The repair branch was inspected. Continue from the most recent checkpoint.\", \"session_id\": \"59506119-1d61-447d-8f66-8c00331cd764\", \"snapshot_id\": \"snap_e60cf738101e\", \"source\": \"claude-code\"}",
+          "tool": "contextdb_rollback_context",
+          "outcome": "ok",
+          "reason": "not_first_success_on_branch",
+          "evidence": []
+        }
+      ],
+      "highlight_event_ids": [
+        "evt_f24bc931fdb9",
+        "evt_0ca7f11b2c54"
+      ],
+      "highlight_branch_ids": [
+        "main"
+      ],
+      "semantic_judge": {
+        "enabled": false,
+        "label": "not_evaluated"
+      }
+    },
+    {
+      "schema_version": "experience_mining.v1",
+      "failure": {
+        "failure_event_id": "evt_0ff971c0f2a2",
+        "tool_call_event_id": "evt_ec13fb49259c",
+        "branch_id": "main",
+        "command": "node -e \"require('fs').copyFileSync('contextdb-claude-reuse-first-missing-source.txt', 'contextdb-claude-reuse-first-copy.txt')\"",
+        "tool": "node",
+        "error_signature": "Exit code 1\nnode:fs:3177\r\n  binding.copyFile(\r\n          ^\r\n\r\nError: ENOENT: no such file or directory, copyfile 'D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB\\contextdb-claude-reuse-first-missing-source.txt' -> 'D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB\\contextdb-claude-reuse-first-copy.txt'\r\n    at Object.copyFileSync (node:fs:3177:11)\r\n    at [eval]:1:15\r\n    at runScriptInThisContext (node:internal/vm:219:10)\r\n    at node:internal/process/execution:451:12\r\n    at [eval]-wrapper:6:24\r\n    a",
+        "normalized_signature": "exit code node fs binding.copyfile ^ error enoent no such file or directory copyfile 'd software pycharm selfcode agent-contextdb contextdb-claude-reuse-first-missing-source.txt' -> 'd software pycharm",
+        "preceding_action": "The `WebFetch` call failed and returned no page title. Raw result:\n\n```\nUnable to verify if domain docs.python.org is safe to fetch. This may be due to network restrictions or enterprise security policies blocking claude.ai.\n```\n\nThe page could not be retrieved, so no title is available. (ContextDB checked the failed result and found no reusable skill to suggest.)",
+        "likely_cause": "source file missing for node copy operation",
+        "evidence_event_ids": [
+          "evt_85234a472f37",
+          "evt_ec13fb49259c",
+          "evt_0ff971c0f2a2"
+        ],
+        "highlight_event_ids": [
+          "evt_0ff971c0f2a2"
+        ]
+      },
+      "repair_status": "resolved_candidate",
+      "candidate_count": 1,
+      "repair_candidates": [
+        {
+          "schema_version": "experience_mining.v1",
+          "branch_id": "main",
+          "success_event_id": "evt_0ca7f11b2c54",
+          "tool_call_event_id": "evt_19553e7263a2",
+          "strategy": "The command exited with code 1. Complete raw output:\n\n```\nnode:fs:3177\n  binding.copyFile(\n          ^\n\nError: ENOENT: no such file or directory, copyfile 'D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB\\contextdb-claude-reuse-first-missing-source.txt' -> 'D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB\\contextdb-claude-reuse-first-copy.txt'\n    at Object.copyFileSync (node:fs:3177:11)\n    at [eval]:1:15\n    at runScriptInThisContext (node:internal/vm:219:10)\n    at node:internal/process/execution:451:12\n    at [eval]-wrapper:6:24\n    at runScriptInContext (node:internal/process/execution:449:60)\n    at evalFunction (node:internal/process/execution:283:30)\n    at evalTypeScript (node:internal/process/execution:295:3)\n    at node:internal/main/eval_string:71:3 {\n  errno: -4058,\n  code: 'ENOENT',\n  syscall: 'copyfile',\n  path: 'D:\\\\software\\\\Pycharm\\\\SelfCode\\\\Agent-ContextDB\\\\contextdb-claude-reuse-first-missing-source.txt',\n  dest: 'D:\\\\software\\\\Pycharm\\\\SelfCode\\\\Agent-ContextDB\\\\contextdb-claude-reuse-first-copy.txt'\n}\n\nNode.js v24.20.0\n```\n\nThe copy failed because the source file `contextdb-claude-reuse-first-missing-source.txt` does not exist (`ENOENT`). ContextDB found no reusable skill for this failure.",
+          "tool": "contextdb_get_version_status",
+          "command": "{\"session_id\": \"59506119-1d61-447d-8f66-8c00331cd764\", \"source\": \"claude-code\"}",
+          "outcome": "ok",
+          "primary_rule": "same_branch_first_success_after_failure",
+          "link_type": "same_branch_first_success_after_failure",
+          "strength": "structural",
+          "why_linked": "The success is the first successful tool result after the failure on the same branch.",
+          "evidence": [
+            {
+              "rule": "same_branch_first_success_after_failure",
+              "strength": "structural",
+              "evidence_level": "primary_structural",
+              "branch_id": "main",
+              "failure_event_id": "evt_0ff971c0f2a2",
+              "success_event_id": "evt_0ca7f11b2c54"
+            }
+          ],
+          "evidence_event_ids": [
+            "evt_0ff971c0f2a2",
+            "evt_0ca7f11b2c54"
+          ],
+          "highlight_event_ids": [
+            "evt_0ff971c0f2a2",
+            "evt_0ca7f11b2c54"
+          ],
+          "highlight_branch_ids": []
+        }
+      ],
+      "repairs": [
+        {
+          "schema_version": "experience_mining.v1",
+          "branch_id": "main",
+          "success_event_id": "evt_0ca7f11b2c54",
+          "tool_call_event_id": "evt_19553e7263a2",
+          "strategy": "The command exited with code 1. Complete raw output:\n\n```\nnode:fs:3177\n  binding.copyFile(\n          ^\n\nError: ENOENT: no such file or directory, copyfile 'D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB\\contextdb-claude-reuse-first-missing-source.txt' -> 'D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB\\contextdb-claude-reuse-first-copy.txt'\n    at Object.copyFileSync (node:fs:3177:11)\n    at [eval]:1:15\n    at runScriptInThisContext (node:internal/vm:219:10)\n    at node:internal/process/execution:451:12\n    at [eval]-wrapper:6:24\n    at runScriptInContext (node:internal/process/execution:449:60)\n    at evalFunction (node:internal/process/execution:283:30)\n    at evalTypeScript (node:internal/process/execution:295:3)\n    at node:internal/main/eval_string:71:3 {\n  errno: -4058,\n  code: 'ENOENT',\n  syscall: 'copyfile',\n  path: 'D:\\\\software\\\\Pycharm\\\\SelfCode\\\\Agent-ContextDB\\\\contextdb-claude-reuse-first-missing-source.txt',\n  dest: 'D:\\\\software\\\\Pycharm\\\\SelfCode\\\\Agent-ContextDB\\\\contextdb-claude-reuse-first-copy.txt'\n}\n\nNode.js v24.20.0\n```\n\nThe copy failed because the source file `contextdb-claude-reuse-first-missing-source.txt` does not exist (`ENOENT`). ContextDB found no reusable skill for this failure.",
+          "tool": "contextdb_get_version_status",
+          "command": "{\"session_id\": \"59506119-1d61-447d-8f66-8c00331cd764\", \"source\": \"claude-code\"}",
+          "outcome": "ok",
+          "primary_rule": "same_branch_first_success_after_failure",
+          "link_type": "same_branch_first_success_after_failure",
+          "strength": "structural",
+          "why_linked": "The success is the first successful tool result after the failure on the same branch.",
+          "evidence": [
+            {
+              "rule": "same_branch_first_success_after_failure",
+              "strength": "structural",
+              "evidence_level": "primary_structural",
+              "branch_id": "main",
+              "failure_event_id": "evt_0ff971c0f2a2",
+              "success_event_id": "evt_0ca7f11b2c54"
+            }
+          ],
+          "evidence_event_ids": [
+            "evt_0ff971c0f2a2",
+            "evt_0ca7f11b2c54"
+          ],
+          "highlight_event_ids": [
+            "evt_0ff971c0f2a2",
+            "evt_0ca7f11b2c54"
+          ],
+          "highlight_branch_ids": []
+        }
+      ],
+      "excluded_successes": [
+        {
+          "success_event_id": "evt_9bfc312e18dd",
+          "branch_id": "main",
+          "command": "{\"action\": \"create_repair_branch\", \"decision\": \"rejected\", \"reason\": \"Keep this first failed Node copy on main for diagnosis.\", \"session_id\": \"59506119-1d61-447d-8f66-8c00331cd764\", \"source\": \"claude-code\", \"suggestion_event_id\": \"evt_63050de6ec9b\"}",
+          "tool": "contextdb_record_version_decision",
+          "outcome": "ok",
+          "reason": "not_first_success_on_branch",
+          "evidence": []
+        },
+        {
+          "success_event_id": "evt_13f99bbd01e5",
+          "branch_id": "main",
+          "command": "{\"session_id\": \"59506119-1d61-447d-8f66-8c00331cd764\", \"source\": \"claude-code\"}",
+          "tool": "contextdb_get_version_status",
+          "outcome": "ok",
+          "reason": "not_first_success_on_branch",
+          "evidence": []
+        },
+        {
+          "success_event_id": "evt_6f462a9ba9c7",
+          "branch_id": "main",
+          "command": "{\"branch_id\": \"repair-0e4481fe\", \"reason\": \"Preserve the second failed Node copy and inspect a separate repair path.\", \"session_id\": \"59506119-1d61-447d-8f66-8c00331cd764\", \"snapshot_id\": \"snap_e60cf738101e\", \"source\": \"claude-code\"}",
+          "tool": "contextdb_create_repair_branch",
+          "outcome": "ok",
+          "reason": "not_first_success_on_branch",
+          "evidence": []
+        },
+        {
+          "success_event_id": "evt_f597933a1229",
+          "branch_id": "repair-0e4481fe",
+          "command": "D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB\\AGENTS.md",
+          "tool": "read",
+          "outcome": "ok",
+          "reason": "not_first_success_on_branch",
+          "evidence": []
+        },
+        {
+          "success_event_id": "evt_6e9584b14d25",
+          "branch_id": "repair-0e4481fe",
+          "command": "{\"session_id\": \"59506119-1d61-447d-8f66-8c00331cd764\", \"source\": \"claude-code\"}",
+          "tool": "contextdb_get_version_status",
+          "outcome": "ok",
+          "reason": "not_first_success_on_branch",
+          "evidence": []
+        },
+        {
+          "success_event_id": "evt_1768c29218a0",
+          "branch_id": "repair-0e4481fe",
+          "command": "{\"reason\": \"The repair branch was inspected. Continue from the most recent checkpoint.\", \"session_id\": \"59506119-1d61-447d-8f66-8c00331cd764\", \"snapshot_id\": \"snap_e60cf738101e\", \"source\": \"claude-code\"}",
+          "tool": "contextdb_rollback_context",
+          "outcome": "ok",
+          "reason": "not_first_success_on_branch",
+          "evidence": []
+        }
+      ],
+      "highlight_event_ids": [
+        "evt_0ff971c0f2a2",
+        "evt_0ca7f11b2c54"
+      ],
+      "highlight_branch_ids": [
+        "main"
+      ],
+      "semantic_judge": {
+        "enabled": false,
+        "label": "not_evaluated"
+      }
+    },
+    {
+      "schema_version": "experience_mining.v1",
+      "failure": {
+        "failure_event_id": "evt_0e4481fed35d",
+        "tool_call_event_id": "evt_707691068899",
+        "branch_id": "main",
+        "command": "node -e \"require('fs').copyFileSync('contextdb-claude-reuse-second-missing-source.txt', 'contextdb-claude-reuse-second-copy.txt')\"",
+        "tool": "node",
+        "error_signature": "Exit code 1\nnode:fs:3177\r\n  binding.copyFile(\r\n          ^\r\n\r\nError: ENOENT: no such file or directory, copyfile 'D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB\\contextdb-claude-reuse-second-missing-source.txt' -> 'D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB\\contextdb-claude-reuse-second-copy.txt'\r\n    at Object.copyFileSync (node:fs:3177:11)\r\n    at [eval]:1:15\r\n    at runScriptInThisContext (node:internal/vm:219:10)\r\n    at node:internal/process/execution:451:12\r\n    at [eval]-wrapper:6:24\r\n   ",
+        "normalized_signature": "exit code node fs binding.copyfile ^ error enoent no such file or directory copyfile 'd software pycharm selfcode agent-contextdb contextdb-claude-reuse-second-missing-source.txt' -> 'd software pycharm",
+        "preceding_action": "Recorded a **rejected** version decision for the repair-branch suggestion:\n\n- **Decision:** rejected\n- **Action:** create_repair_branch\n- **Decision event id:** `evt_6494fe4c20fc`\n- **Reason:** Keep this first failed Node copy on main for diagnosis.\n\n**Active branch:** `main` (unchanged — the rejection keeps the trajectory on `main`).",
+        "likely_cause": "missing source file in node copy operation",
+        "evidence_event_ids": [
+          "evt_e8cdfa9a4f33",
+          "evt_707691068899",
+          "evt_0e4481fed35d"
+        ],
+        "highlight_event_ids": [
+          "evt_0e4481fed35d"
+        ]
+      },
+      "repair_status": "resolved_candidate",
+      "candidate_count": 2,
+      "repair_candidates": [
+        {
+          "schema_version": "experience_mining.v1",
+          "branch_id": "main",
+          "success_event_id": "evt_13f99bbd01e5",
+          "tool_call_event_id": "evt_80cfcc4c52e9",
+          "strategy": "The command exited with code 1. Complete raw output:\n\n```\nnode:fs:3177\n  binding.copyFile(\n          ^\n\nError: ENOENT: no such file or directory, copyfile 'D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB\\contextdb-claude-reuse-second-missing-source.txt' -> 'D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB\\contextdb-claude-reuse-second-copy.txt'\n    at Object.copyFileSync (node:fs:3177:11)\n    at [eval]:1:15\n    at runScriptInThisContext (node:internal/vm:219:10)\n    at node:internal/process/execution:451:12\n    at [eval]-wrapper:6:24\n    at runScriptInContext (node:internal/process/execution:449:60)\n    at evalFunction (node:internal/process/execution:283:30)\n    at evalTypeScript (node:internal/process/execution:295:3)\n    at node:internal/main/eval_string:71:3 {\n  errno: -4058,\n  code: 'ENOENT',\n  syscall: 'copyfile',\n  path: 'D:\\\\software\\\\Pycharm\\\\SelfCode\\\\Agent-ContextDB\\\\contextdb-claude-reuse-second-missing-source.txt',\n  dest: 'D:\\\\software\\\\Pycharm\\\\SelfCode\\\\Agent-ContextDB\\\\contextdb-claude-reuse-second-copy.txt'\n}\n\nNode.js v24.20.0\n```\n\nThe copy failed because the source file `contextdb-claude-reuse-second-missing-source.txt` does not exist (`ENOENT`). ContextDB found no reusable skill for this failure.",
+          "tool": "contextdb_get_version_status",
+          "command": "{\"session_id\": \"59506119-1d61-447d-8f66-8c00331cd764\", \"source\": \"claude-code\"}",
+          "outcome": "ok",
+          "primary_rule": "same_branch_first_success_after_failure",
+          "link_type": "same_branch_first_success_after_failure",
+          "strength": "structural",
+          "why_linked": "The success is the first successful tool result after the failure on the same branch.",
+          "evidence": [
+            {
+              "rule": "same_branch_first_success_after_failure",
+              "strength": "structural",
+              "evidence_level": "primary_structural",
+              "branch_id": "main",
+              "failure_event_id": "evt_0e4481fed35d",
+              "success_event_id": "evt_13f99bbd01e5"
+            }
+          ],
+          "evidence_event_ids": [
+            "evt_0e4481fed35d",
+            "evt_13f99bbd01e5"
+          ],
+          "highlight_event_ids": [
+            "evt_0e4481fed35d",
+            "evt_13f99bbd01e5"
+          ],
+          "highlight_branch_ids": []
+        },
+        {
+          "schema_version": "experience_mining.v1",
+          "branch_id": "repair-0e4481fe",
+          "success_event_id": "evt_d4383ae6a77d",
+          "tool_call_event_id": "evt_b0b46f4f81e3",
+          "strategy": "Recorded a **rejected** version decision for the repair-branch suggestion:\n\n- **Decision:** rejected\n- **Action:** create_repair_branch\n- **Decision event id:** `evt_6494fe4c20fc`\n- **Reason:** Keep this first failed Node copy on main for diagnosis.\n\n**Active branch:** `main` (unchanged — the rejection keeps the trajectory on `main`).",
+          "tool": "contextdb_get_version_status",
+          "command": "{\"session_id\": \"59506119-1d61-447d-8f66-8c00331cd764\", \"source\": \"claude-code\"}",
+          "outcome": "ok",
+          "primary_rule": "branch_from_failure_ancestor_first_success",
+          "link_type": "branch_from_failure_ancestor_first_success",
+          "strength": "structural",
+          "why_linked": "The repair branch was created from an ancestor of the failed event, and this is the first success on that branch.",
+          "evidence": [
+            {
+              "rule": "branch_from_failure_ancestor_first_success",
+              "strength": "structural",
+              "evidence_level": "weak_structural",
+              "repair_branch": "repair-0e4481fe",
+              "base_event_id": "evt_b12254faa936",
+              "failure_event_id": "evt_0e4481fed35d",
+              "success_event_id": "evt_d4383ae6a77d"
+            }
+          ],
+          "evidence_event_ids": [
+            "evt_0e4481fed35d",
+            "evt_d4383ae6a77d",
+            "evt_b12254faa936"
+          ],
+          "highlight_event_ids": [
+            "evt_0e4481fed35d",
+            "evt_d4383ae6a77d"
+          ],
+          "highlight_branch_ids": []
+        }
+      ],
+      "repairs": [
+        {
+          "schema_version": "experience_mining.v1",
+          "branch_id": "main",
+          "success_event_id": "evt_13f99bbd01e5",
+          "tool_call_event_id": "evt_80cfcc4c52e9",
+          "strategy": "The command exited with code 1. Complete raw output:\n\n```\nnode:fs:3177\n  binding.copyFile(\n          ^\n\nError: ENOENT: no such file or directory, copyfile 'D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB\\contextdb-claude-reuse-second-missing-source.txt' -> 'D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB\\contextdb-claude-reuse-second-copy.txt'\n    at Object.copyFileSync (node:fs:3177:11)\n    at [eval]:1:15\n    at runScriptInThisContext (node:internal/vm:219:10)\n    at node:internal/process/execution:451:12\n    at [eval]-wrapper:6:24\n    at runScriptInContext (node:internal/process/execution:449:60)\n    at evalFunction (node:internal/process/execution:283:30)\n    at evalTypeScript (node:internal/process/execution:295:3)\n    at node:internal/main/eval_string:71:3 {\n  errno: -4058,\n  code: 'ENOENT',\n  syscall: 'copyfile',\n  path: 'D:\\\\software\\\\Pycharm\\\\SelfCode\\\\Agent-ContextDB\\\\contextdb-claude-reuse-second-missing-source.txt',\n  dest: 'D:\\\\software\\\\Pycharm\\\\SelfCode\\\\Agent-ContextDB\\\\contextdb-claude-reuse-second-copy.txt'\n}\n\nNode.js v24.20.0\n```\n\nThe copy failed because the source file `contextdb-claude-reuse-second-missing-source.txt` does not exist (`ENOENT`). ContextDB found no reusable skill for this failure.",
+          "tool": "contextdb_get_version_status",
+          "command": "{\"session_id\": \"59506119-1d61-447d-8f66-8c00331cd764\", \"source\": \"claude-code\"}",
+          "outcome": "ok",
+          "primary_rule": "same_branch_first_success_after_failure",
+          "link_type": "same_branch_first_success_after_failure",
+          "strength": "structural",
+          "why_linked": "The success is the first successful tool result after the failure on the same branch.",
+          "evidence": [
+            {
+              "rule": "same_branch_first_success_after_failure",
+              "strength": "structural",
+              "evidence_level": "primary_structural",
+              "branch_id": "main",
+              "failure_event_id": "evt_0e4481fed35d",
+              "success_event_id": "evt_13f99bbd01e5"
+            }
+          ],
+          "evidence_event_ids": [
+            "evt_0e4481fed35d",
+            "evt_13f99bbd01e5"
+          ],
+          "highlight_event_ids": [
+            "evt_0e4481fed35d",
+            "evt_13f99bbd01e5"
+          ],
+          "highlight_branch_ids": []
+        },
+        {
+          "schema_version": "experience_mining.v1",
+          "branch_id": "repair-0e4481fe",
+          "success_event_id": "evt_d4383ae6a77d",
+          "tool_call_event_id": "evt_b0b46f4f81e3",
+          "strategy": "Recorded a **rejected** version decision for the repair-branch suggestion:\n\n- **Decision:** rejected\n- **Action:** create_repair_branch\n- **Decision event id:** `evt_6494fe4c20fc`\n- **Reason:** Keep this first failed Node copy on main for diagnosis.\n\n**Active branch:** `main` (unchanged — the rejection keeps the trajectory on `main`).",
+          "tool": "contextdb_get_version_status",
+          "command": "{\"session_id\": \"59506119-1d61-447d-8f66-8c00331cd764\", \"source\": \"claude-code\"}",
+          "outcome": "ok",
+          "primary_rule": "branch_from_failure_ancestor_first_success",
+          "link_type": "branch_from_failure_ancestor_first_success",
+          "strength": "structural",
+          "why_linked": "The repair branch was created from an ancestor of the failed event, and this is the first success on that branch.",
+          "evidence": [
+            {
+              "rule": "branch_from_failure_ancestor_first_success",
+              "strength": "structural",
+              "evidence_level": "weak_structural",
+              "repair_branch": "repair-0e4481fe",
+              "base_event_id": "evt_b12254faa936",
+              "failure_event_id": "evt_0e4481fed35d",
+              "success_event_id": "evt_d4383ae6a77d"
+            }
+          ],
+          "evidence_event_ids": [
+            "evt_0e4481fed35d",
+            "evt_d4383ae6a77d",
+            "evt_b12254faa936"
+          ],
+          "highlight_event_ids": [
+            "evt_0e4481fed35d",
+            "evt_d4383ae6a77d"
+          ],
+          "highlight_branch_ids": []
+        }
+      ],
+      "excluded_successes": [
+        {
+          "success_event_id": "evt_6f462a9ba9c7",
+          "branch_id": "main",
+          "command": "{\"branch_id\": \"repair-0e4481fe\", \"reason\": \"Preserve the second failed Node copy and inspect a separate repair path.\", \"session_id\": \"59506119-1d61-447d-8f66-8c00331cd764\", \"snapshot_id\": \"snap_e60cf738101e\", \"source\": \"claude-code\"}",
+          "tool": "contextdb_create_repair_branch",
+          "outcome": "ok",
+          "reason": "not_first_success_on_branch",
+          "evidence": []
+        },
+        {
+          "success_event_id": "evt_f597933a1229",
+          "branch_id": "repair-0e4481fe",
+          "command": "D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB\\AGENTS.md",
+          "tool": "read",
+          "outcome": "ok",
+          "reason": "not_first_success_on_branch",
+          "evidence": []
+        },
+        {
+          "success_event_id": "evt_6e9584b14d25",
+          "branch_id": "repair-0e4481fe",
+          "command": "{\"session_id\": \"59506119-1d61-447d-8f66-8c00331cd764\", \"source\": \"claude-code\"}",
+          "tool": "contextdb_get_version_status",
+          "outcome": "ok",
+          "reason": "not_first_success_on_branch",
+          "evidence": []
+        },
+        {
+          "success_event_id": "evt_1768c29218a0",
+          "branch_id": "repair-0e4481fe",
+          "command": "{\"reason\": \"The repair branch was inspected. Continue from the most recent checkpoint.\", \"session_id\": \"59506119-1d61-447d-8f66-8c00331cd764\", \"snapshot_id\": \"snap_e60cf738101e\", \"source\": \"claude-code\"}",
+          "tool": "contextdb_rollback_context",
+          "outcome": "ok",
+          "reason": "not_first_success_on_branch",
+          "evidence": []
+        }
+      ],
+      "highlight_event_ids": [
+        "evt_0e4481fed35d",
+        "evt_13f99bbd01e5",
+        "evt_d4383ae6a77d"
+      ],
+      "highlight_branch_ids": [
+        "main"
+      ],
+      "semantic_judge": {
+        "enabled": false,
+        "label": "not_evaluated"
+      }
+    }
+  ],
+  "source_events": [
+    "evt_6b42935f1ad6",
+    "evt_1399e92ab7a8",
+    "evt_87e6da5f19ed",
+    "evt_7e82ea6bea85",
+    "evt_dbc90ab60f43",
+    "evt_52d29f962821",
+    "evt_2c34a3187c6f",
+    "evt_9ecf4f0ccf43",
+    "evt_e7017ee3fd4c",
+    "evt_40e89d1c8988",
+    "evt_e370e3ade362",
+    "evt_8daaa26e2dbd",
+    "evt_9ba551c136d9",
+    "evt_e36a432942a0",
+    "evt_48fbe83616a4",
+    "evt_2773473bc6ff",
+    "evt_392a925c90b3",
+    "evt_3263b99d5cdc",
+    "evt_8d34e016f4fd",
+    "evt_69df227f7147",
+    "evt_32366c117b31",
+    "evt_39ecb7800f95",
+    "evt_e1c0dc136c42",
+    "evt_637ec18cdb45",
+    "evt_86fb4a1008d5",
+    "evt_76bc80f5ac2f",
+    "evt_06df79e840b4",
+    "evt_293d510d9271",
+    "evt_b437c2276ea7",
+    "evt_d001b3ef4222",
+    "evt_8ddf262ad6e0",
+    "evt_5b6c801eb277",
+    "evt_9d24d6aa4bc1",
+    "evt_9156cc7a06d6",
+    "evt_4f2dc56bd496",
+    "evt_1c3f64b086be",
+    "evt_04bf3b9c5c31",
+    "evt_4f1e8965dd8d",
+    "evt_990af2591588",
+    "evt_d337b229bcd1",
+    "evt_c2af6237ed4b",
+    "evt_c3e85c11f9a8",
+    "evt_b4da1aa45d7d",
+    "evt_f5d23e37559c",
+    "evt_41b8695517d2",
+    "evt_85abcc3d2751",
+    "evt_9538cb9df3fc",
+    "evt_564cbaf003d5",
+    "evt_385f0002294b",
+    "evt_1b7523c77fdb",
+    "evt_385e487cdf8a",
+    "evt_ddabaf4d6388",
+    "evt_1264e45b0a35",
+    "evt_6b66bd099b43",
+    "evt_4ed24b57bbc5",
+    "evt_5dcbe2a5d41c",
+    "evt_8417e4ef3426",
+    "evt_5098a1a48946",
+    "evt_8c76521f66d7",
+    "evt_4ab592fc952a",
+    "evt_da0825b39b89",
+    "evt_38015d1783be",
+    "evt_7691695b370f",
+    "evt_bbf1ac41fe2e",
+    "evt_e0577ed657bd",
+    "evt_94c6d5483c6e",
+    "evt_dc14f0ea456a",
+    "evt_f24bc931fdb9",
+    "evt_4444f5b0bd57",
+    "evt_ea830019529e",
+    "evt_85234a472f37",
+    "evt_e21d31bea8c1",
+    "evt_0d51fc438501",
+    "evt_ec13fb49259c",
+    "evt_0ff971c0f2a2",
+    "evt_32fc174acb72",
+    "evt_63050de6ec9b",
+    "evt_f155164861c2",
+    "evt_6bdc901872f4",
+    "evt_5b2d4cca0300",
+    "evt_19553e7263a2",
+    "evt_0ca7f11b2c54",
+    "evt_224eab22fc86",
+    "evt_38496b4adab9",
+    "evt_978ec4c69376",
+    "evt_6494fe4c20fc",
+    "evt_9bfc312e18dd",
+    "evt_e8cdfa9a4f33",
+    "evt_1025633874bf",
+    "evt_b12254faa936",
+    "evt_707691068899",
+    "evt_0e4481fed35d",
+    "evt_9dfe4003f3bd",
+    "evt_43f820117886",
+    "evt_4b36a2237df3",
+    "evt_6d9c25913187",
+    "evt_614061ec128f",
+    "evt_80cfcc4c52e9",
+    "evt_13f99bbd01e5",
+    "evt_1417cb936b0f",
+    "evt_307e230d99e0",
+    "evt_1f971fd907d6",
+    "evt_4a6311965098",
+    "evt_6f462a9ba9c7"
+  ],
+  "created_at": "2026-09-15T12:10:13.977434+00:00",
+  "metadata": {
+    "event_count": 104
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "event_id": "evt_63dc710e2893",
+  "trajectory_id": "traj_dd303caf4acc",
+  "branch_id": "main",
+  "event_type": "version_decision",
+  "payload": {
+    "action": "create_repair_branch",
+    "decision": "accepted",
+    "reason": "Preserve the second failed Node write and inspect a separate repair path.",
+    "logical_context_only": true
+  },
+  "parent_event_ids": [
+    "evt_af3f4b7453b5"
+  ],
+  "actor": "agent",
+  "timestamp": "2026-09-15T11:14:46.257791+00:00",
+  "refs": {
+    "suggestion_event_id": "evt_b9f789d28c3e",
+    "snapshot_id": "snap_476e0c19643a",
+    "target_branch_id": "repair-9203c9d4"
+  },
+  "metadata": {
+    "operation": "version_decision",
+    "origin": "agent",
+    "logical_context_only": true,
+    "online": true
+  }
+}

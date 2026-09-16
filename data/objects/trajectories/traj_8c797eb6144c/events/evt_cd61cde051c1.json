@@ -1,0 +1,29 @@
+{
+  "event_id": "evt_cd61cde051c1",
+  "trajectory_id": "traj_8c797eb6144c",
+  "branch_id": "rollback-e60cf7",
+  "event_type": "system_event",
+  "payload": {
+    "text": "ContextDB created rollback branch rollback-e60cf7.",
+    "snapshot_id": "snap_e60cf738101e",
+    "branch_id": "rollback-e60cf7",
+    "reason": "The repair branch was inspected. Continue from the most recent checkpoint.",
+    "origin": "agent",
+    "logical_context_only": true,
+    "workspace_restored": false
+  },
+  "parent_event_ids": [
+    "evt_b12254faa936"
+  ],
+  "actor": "contextdb",
+  "timestamp": "2026-09-15T12:07:24.713203+00:00",
+  "refs": {
+    "version_decision_event_id": "evt_445defe2990c",
+    "snapshot_id": "snap_e60cf738101e"
+  },
+  "metadata": {
+    "operation": "version_rollback_created",
+    "origin": "agent",
+    "logical_context_only": true
+  }
+}

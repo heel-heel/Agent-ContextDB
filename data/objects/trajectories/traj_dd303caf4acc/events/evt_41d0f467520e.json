@@ -1,0 +1,42 @@
+{
+  "event_id": "evt_41d0f467520e",
+  "trajectory_id": "traj_dd303caf4acc",
+  "branch_id": "repair-9203c9d4",
+  "event_type": "tool_result",
+  "payload": {
+    "tool_name": "contextdb_get_version_status",
+    "command": "const r = await tools.mcp__contextdb__contextdb_get_version_status({source:\"codex-session\",session_id:\"rollout-2026-09-15T17-51-27-01a0a47a-825a-72c0-8208-b3b80d850331\"});\ntext(r);",
+    "status": "ok",
+    "preview": "Script completed\nWall time 14.4 seconds\nOutput:\n\n{\"content\":[{\"type\":\"text\",\"text\":\"{\\n  \\\"schema_version\\\": \\\"contextdb.mcp.version_status.v1\\\",\\n  \\\"source\\\": \\\"codex-session\\\",\\n  \\\"session_id\\\": \\\"rollout-2026-09-15T17-51-27-01a0a47a-825a-72c0-8208-b3b80d850331\\\",\\n  \\\"trajectory_id\\\": \\\"traj_dd303caf4acc\\\",\\n  \\\"active_branch_id\\\": \\\"repair-9203c9d4\\\",\\n  \\\"latest_snapshot\\\": {\\n    \\\"snapshot_id\\\": \\\"snap_476e0c19643a\\\",\\n    \\\"branch_id\\\": \\\"main\\\",\\n    \\\"checkpoint_event_id\\\": \\\"evt_6b872ea7ed1c\\\",\\n    \\\"message\\\": \\\"Before state-changing exec\\\",\\n    \\\"created_at\\\": \\\"2026-09-15T11:14:05.378149+00:00\\\"\\n  },\\n  \\\"repair_branch_suggestion\\\": null,\\n  \\\"last_version_decision\\\": {\\n    \\\"event_id\\\": \\\"evt_63dc710e2893\\\",\\n    \\\"action\\\": \\\"create_repair_branch\\\",\\n    \\\"decision\\\": \\\"accepted\\\",\\n    \\\"at\\\": \\\"2026-09-15T11:14:46.261516+00:00\\\"\\n  },\\n  \\\"branches\\\": [\\n    {\\n      \\\"branch_id\\\": \\\"main\\\",\\n      \\\"base_event_id\\\": null,\\n      \\\"head_event_id\\\": \\\"evt_97c310df1fa7\\\",\\n      \\\"snapshot_id\\\": \\\"snap_476e0c19643a\\\"\\n    },\\n    {\\n      \\\"branch_id\\\": \\\"repair-9203c9d4\\\",\\n      \\\"base_event_id\\\": \\\"evt_6b872ea7ed1c\\\",\\n      \\\"head_event_id\\\": \\\"evt_acffb730eb7e\\\",\\n      \\\"snapshot_id\\\": null\\n    }\\n  ],\\n  \\\"recent_snapshots\\\": [\\n    {\\n      \\\"snapshot_id\\\": \\\"snap_fc46bf79bce4\\\",\\n      \\\"branch_id\\\": \\\"main\\\",\\n      \\\"checkpoint_event_id\\\": \\\"evt_c52f74e4c7c6\\\",\\n      \\\"message\\\": \\\"Before state-changing exec\\\",\\n      \\\"created_at\\\": \\\"2026-09-15T11:13:11.836448+00:00\\\"\\n    },\\n    {\\n      \\\"snapshot_id\\\": \\\"snap_476e0c19643a\\\",\\n      \\\"branch_id\\\": \\\"main\\\",\\n      \\\"checkpoint_event_id\\\": \\\"evt_6b872ea7ed1c\\\",\\n      \\\"message\\\": \\\"Before state-changing exec\\\",\\n      \\\"created_at\\\": \\\"2026-09-15T11:14:05.378149+00:00\\\"\\n    }\\n  ],\\n  \\\"recent_version_events\\\": [\\n    {\\n      \\\"event_id\\\": \\\"evt_c52f74e4c7c6\\\",\\n      \\\"event_type\\\": \\\"system_event\\\",\\n      \\\"branch_id\\\": \\\"main\\\",\\n      \\\"timestamp\\\": \\\"2026-09-15T11:13:11.832502+00:00\\\",\\n      \\\"operation\\\": \\\"version_snapshot_created\\\",\\n      \\\"action\\\": null,\\n      \\\"decision\\\": null,\\n      \\\"reason\\\": \\\"Hook policy detected a potentially state-changing action: node -e \\\\\\\"require('fs').writeFileSync('contextdb-codex-reuse-first-parent-absent/note.txt', 'first note')\\\\\\\"\\\",\\n      \\\"snapshot_id\\\": \\\"snap_fc46bf79bce4\\\",\\n      \\\"suggested_branch_id\\\": null\\n    },\\n    {\\n      \\\"event_id\\\": \\\"evt_e53ef0f21421\\\",\\n      \\\"event_type\\\": \\\"system_event\\\",\\n      \\\"branch_id\\\": \\\"main\\\",\\n      \\\"timestamp\\\": \\\"2026-09-15T11:13:12.660514+00:00\\\",\\n      \\\"operation\\\": \\\"version_repair_branch_suggested\\\",\\n      \\\"action\\\": null,\\n      \\\"decision\\\": null,\\n      \\\"reason\\\": null,\\n      \\\"snapshot_id\\\": \\\"snap_fc46bf79bce4\\\",\\n      \\\"suggested_branch_id\\\": \\\"repair-e5724dab\\\"\\n    },\\n    {\\n      \\\"event_id\\\": \\\"evt_9a1c9b17aed8\\\",\\n      \\\"event_type\\\": \\\"version_decision\\\",\\n      \\\"branch_id\\\": \\\"main\\\",\\n      \\\"timestamp\\\": \\\"2026-09-15T11:13:52.349761+00:00\\\",\\n      \\\"operation\\\": \\\"version_decision\\\",\\n      \\\"action\\\": \\\"create_repair_branch\\\",\\n      \\\"decision\\\": \\\"rejected\\\",\\n      \\\"reason\\\": \\\"Keep this first failed Node write on main for diagnosis.\\\",\\n      \\\"snapshot_id\\\": null,\\n      \\\"suggested_branch_id\\\": null\\n    },\\n    {\\n      \\\"event_id\\\": \\\"evt_6b872ea7ed1c\\\",\\n      \\\"event_type\\\": \\\"system_event\\\",\\n      \\\"branch_id\\\": \\\"main\\\",\\n      \\\"timestamp\\\": \\\"2026-09-15T11:14:05.374630+00:00\\\",\\n      \\\"operation\\\": \\\"version_snapshot_created\\\",\\n      \\\"action\\\": null,\\n      \\\"decision\\\": null,\\n      \\\"reason\\\": \\\"Hook policy detected a potentially state-changing action: node -e \\\\\\\"require('fs').writeFileSync('contextdb-codex-reuse-second-parent-absent/note.txt', 'second note')\\\\\\\"\\\",\\n      \\\"snapshot_id\\\": \\\"snap_476e0c19643a\\\",\\n      \\\"suggested_branch_id\\\": null\\n    },\\n    {\\n      \\\"event_id\\\": \\\"evt_b9f789d28c3e\\\",\\n      \\\"event_type\\\": \\\"system_event\\\",\\n      \\\"branch_id\\\": \\\"main\\\",\\n",
+    "exit_code": null,
+    "transport_tool_name": "exec",
+    "tool_chain": [
+      "exec",
+      "contextdb_get_version_status"
+    ],
+    "invoked_tool": "contextdb_get_version_status"
+  },
+  "parent_event_ids": [
+    "evt_acffb730eb7e"
+  ],
+  "actor": "tool",
+  "timestamp": "2026-09-15T11:15:31.614389+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "codex-session",
+    "hook_adapter": "codex-session",
+    "hook_session_id": "rollout-2026-09-15T17-51-27-01a0a47a-825a-72c0-8208-b3b80d850331",
+    "tool_call_event_id": "evt_acffb730eb7e"
+  },
+  "metadata": {
+    "agent_id": "codex",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T11:15:31.614189+00:00",
+    "adapter": "codex-desktop-session-jsonl",
+    "codex_session_record_type": "response_item",
+    "codex_session_timestamp": "2026-09-15T11:15:31.256Z",
+    "codex_item_type": "custom_tool_call_output",
+    "codex_item_id": "ctco_01a0a4c7-7938-7ce3-acb8-0d3633b4816d"
+  }
+}

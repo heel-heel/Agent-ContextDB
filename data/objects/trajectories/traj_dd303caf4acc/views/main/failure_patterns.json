@@ -1,0 +1,257 @@
+{
+  "view_name": "failure_patterns",
+  "trajectory_id": "traj_dd303caf4acc",
+  "branch_id": "main",
+  "content": [
+    {
+      "schema_version": "experience_mining.v2",
+      "pattern_id": "fp_3c053a17e18b",
+      "failure_event_id": "evt_3c053a17e18b",
+      "branch_id": "main",
+      "failed_tool": "git",
+      "failed_command": "powershell -NoProfile -Command '[Environment]::SetEnvironmentVariable((\"LC\" + [char]95 + \"ALL\"), \"C\", \"Process\"); $env:LANG=\"C\"; git show HEAD:assets/settings.json; exit $LASTEXITCODE'",
+      "error_signature": "Script completed\nWall time 1.0 seconds\nOutput:\n\n{\"exit_code\":1,\"output\":\"fatal: path 'assets/settings.json' does not exist in 'HEAD'\\n\"}",
+      "normalized_signature": "script completed wall time seconds output \"exit_code\" \"fatal path 'assets settings.json' does not exist in 'head' n\"",
+      "preceding_action": "I’ll run the exact command from the project root and return its raw output unchanged.",
+      "likely_cause": "file path not present in git commit",
+      "likely_cause_judgment": {
+        "enabled": true,
+        "provider": "openai-compatible",
+        "model": "deepseek-flash",
+        "likely_cause": "file path not present in git commit",
+        "confidence": 0.95,
+        "reason": "The git command failed with 'fatal: path assets/settings.json does not exist in HEAD', indicating the file is not tracked or absent at that revision.",
+        "input": {
+          "failed_tool": "git",
+          "failed_command": "powershell -NoProfile -Command '[Environment]::SetEnvironmentVariable((\"LC\" + [char]95 + \"ALL\"), \"C\", \"Process\"); $env:LANG=\"C\"; git show HEAD:assets/settings.json; exit $LASTEXITCODE'",
+          "error_signature": "Script completed\nWall time 1.0 seconds\nOutput:\n\n{\"exit_code\":1,\"output\":\"fatal: path 'assets/settings.json' does not exist in 'HEAD'\\n\"}",
+          "preceding_action": "I’ll run the exact command from the project root and return its raw output unchanged."
+        }
+      },
+      "repair_status": "not_evaluated",
+      "repair_events_after_failure": [
+        {
+          "event_id": "evt_0e6f61365276",
+          "event_type": "assistant_message",
+          "summary": "assistant_message:```text\nfatal: path 'assets/settings.json' does not exist in 'HEAD'\n```"
+        },
+        {
+          "event_id": "evt_ab5778deafbf",
+          "event_type": "assistant_message",
+          "summary": "assistant_message:I’ll retrieve the ContextDB recommendation for the retained watcher session and only report any matched action—withou..."
+        },
+        {
+          "event_id": "evt_0a8ccecc2fae",
+          "event_type": "tool_call",
+          "summary": "tool_call:const matches = ALL_TOOLS.filter(x => x.name.includes(\"contextdb_get_recommendation\"));\ntext(matches);"
+        },
+        {
+          "event_id": "evt_4a9a3d4ad3fe",
+          "event_type": "tool_result",
+          "summary": "tool_result:const matches = ALL_TOOLS.filter(x => x.name.includes(\"contextdb_get_recommendation\"));\ntext(matches);"
+        }
+      ],
+      "source_event_ids": [
+        "evt_66d4890c7506"
+      ],
+      "evidence_event_ids": [
+        "evt_13fe6c9a370d",
+        "evt_66d4890c7506",
+        "evt_3c053a17e18b"
+      ],
+      "highlight_event_ids": [
+        "evt_3c053a17e18b"
+      ]
+    },
+    {
+      "schema_version": "experience_mining.v2",
+      "pattern_id": "fp_5e6dfeba0909",
+      "failure_event_id": "evt_5e6dfeba0909",
+      "branch_id": "main",
+      "failed_tool": "python",
+      "failed_command": "python -c \"import jsonn\"",
+      "error_signature": "Script completed\nWall time 1.0 seconds\nOutput:\n\n{\"exit_code\":1,\"output\":\"Traceback (most recent call last):\\r\\n  File \\\"<string>\\\", line 1, in <module>\\r\\n    import jsonn\\r\\nModuleNotFoundError: No module named 'jsonn'\\r\\n\"}",
+      "normalized_signature": "script completed wall time seconds output \"exit_code\" \"traceback most recent call last r n file \"<string> \" line in <module> r n import jsonn",
+      "preceding_action": "I’ll run the specified Python command from the project root and return its raw output unchanged.",
+      "likely_cause": "typo in python import module name",
+      "likely_cause_judgment": {
+        "enabled": true,
+        "provider": "openai-compatible",
+        "model": "deepseek-flash",
+        "likely_cause": "typo in python import module name",
+        "confidence": 0.95,
+        "reason": "The command `import jsonn` fails with `ModuleNotFoundError: No module named 'jsonn'`, indicating a misspelled module name; `json` is the likely intended standard-library module.",
+        "input": {
+          "failed_tool": "python",
+          "failed_command": "python -c \"import jsonn\"",
+          "error_signature": "Script completed\nWall time 1.0 seconds\nOutput:\n\n{\"exit_code\":1,\"output\":\"Traceback (most recent call last):\\r\\n  File \\\"<string>\\\", line 1, in <module>\\r\\n    import jsonn\\r\\nModuleNotFoundError: No module named 'jsonn'\\r\\n\"}",
+          "preceding_action": "I’ll run the specified Python command from the project root and return its raw output unchanged."
+        }
+      },
+      "repair_status": "not_evaluated",
+      "repair_events_after_failure": [
+        {
+          "event_id": "evt_c4e0002604ed",
+          "event_type": "assistant_message",
+          "summary": "assistant_message:```text\nTraceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n    import jsonn\nModuleNotFoundErro..."
+        },
+        {
+          "event_id": "evt_4e39cbb1a713",
+          "event_type": "assistant_message",
+          "summary": "assistant_message:I’ll retrieve the latest recommendation for the same ContextDB watcher session and only report any matched action."
+        },
+        {
+          "event_id": "evt_43950a5d4740",
+          "event_type": "tool_call",
+          "summary": "tool_call:const r = await tools.mcp__contextdb__contextdb_get_recommendation({source:\"codex-session\",session_id:\"rollout-2026-0..."
+        },
+        {
+          "event_id": "evt_37d1790d6e2a",
+          "event_type": "tool_result",
+          "summary": "tool_result:const r = await tools.mcp__contextdb__contextdb_get_recommendation({source:\"codex-session\",session_id:\"rollout-2026-0..."
+        }
+      ],
+      "source_event_ids": [
+        "evt_9e65c3dcd73e"
+      ],
+      "evidence_event_ids": [
+        "evt_79e41311e7a7",
+        "evt_9e65c3dcd73e",
+        "evt_5e6dfeba0909"
+      ],
+      "highlight_event_ids": [
+        "evt_5e6dfeba0909"
+      ]
+    },
+    {
+      "schema_version": "experience_mining.v2",
+      "pattern_id": "fp_e5724dab4378",
+      "failure_event_id": "evt_e5724dab4378",
+      "branch_id": "main",
+      "failed_tool": "node",
+      "failed_command": "node -e \"require('fs').writeFileSync('contextdb-codex-reuse-first-parent-absent/note.txt', 'first note')\"",
+      "error_signature": "Script completed\nWall time 0.9 seconds\nOutput:\n\n{\"exit_code\":1,\"output\":\"node:fs:2483\\r\\n    return binding.writeFileUtf8(\\r\\n                   ^\\r\\n\\r\\nError: ENOENT: no such file or directory, open 'D:\\\\software\\\\Pycharm\\\\SelfCode\\\\Agent-ContextDB\\\\contextdb-codex-reuse-first-parent-absent\\\\note.txt'\\r\\n    at Object.writeFileSync (node:fs:2483:20)\\r\\n    at [eval]:1:15\\r\\n    at runScriptInThisContext (node:internal/vm:219:10)\\r\\n    at node:internal/process/execution:451:12\\r\\n    at [eval]",
+      "normalized_signature": "script completed wall time seconds output \"exit_code\" \"node fs r n return r n ^ r n r nerror enoent no such file or",
+      "preceding_action": "I’ll run the specified Node command from the project root and return its complete raw output.",
+      "likely_cause": "missing parent directory for file write",
+      "likely_cause_judgment": {
+        "enabled": true,
+        "provider": "openai-compatible",
+        "model": "deepseek-flash",
+        "likely_cause": "missing parent directory for file write",
+        "confidence": 0.98,
+        "reason": "Node writeFileSync failed with ENOENT when opening the target path, indicating the parent directory does not exist.",
+        "input": {
+          "failed_tool": "node",
+          "failed_command": "node -e \"require('fs').writeFileSync('contextdb-codex-reuse-first-parent-absent/note.txt', 'first note')\"",
+          "error_signature": "Script completed\nWall time 0.9 seconds\nOutput:\n\n{\"exit_code\":1,\"output\":\"node:fs:2483\\r\\n    return binding.writeFileUtf8(\\r\\n                   ^\\r\\n\\r\\nError: ENOENT: no such file or directory, open 'D:\\\\software\\\\Pycharm\\\\SelfCode\\\\Agent-ContextDB\\\\contextdb-codex-reuse-first-parent-absent\\\\note.txt'\\r\\n    at Object.writeFileSync (node:fs:2483:20)\\r\\n    at [eval]:1:15\\r\\n    at runScriptInThisContext (node:internal/vm:219:10)\\r\\n    at node:internal/process/execution:451:12\\r\\n    at [eval]",
+          "preceding_action": "I’ll run the specified Node command from the project root and return its complete raw output."
+        }
+      },
+      "repair_status": "not_evaluated",
+      "repair_events_after_failure": [
+        {
+          "event_id": "evt_31f0fd221f10",
+          "event_type": "assistant_message",
+          "summary": "assistant_message:```text\nnode:fs:2483\n    return binding.writeFileUtf8(\n                   ^\n\nError: ENOENT: no such file or directory..."
+        },
+        {
+          "event_id": "evt_1d79e642c334",
+          "event_type": "assistant_message",
+          "summary": "assistant_message:I’ll check the ContextDB version status for the retained watcher session and report any repair-branch suggestion."
+        },
+        {
+          "event_id": "evt_ba08dbb0df61",
+          "event_type": "tool_call",
+          "summary": "tool_call:const matches = ALL_TOOLS.filter(x => x.name.includes(\"contextdb_get_version_status\"));\ntext(matches);"
+        },
+        {
+          "event_id": "evt_0669ac618eec",
+          "event_type": "tool_result",
+          "summary": "tool_result:const matches = ALL_TOOLS.filter(x => x.name.includes(\"contextdb_get_version_status\"));\ntext(matches);"
+        }
+      ],
+      "source_event_ids": [
+        "evt_8c122d423243"
+      ],
+      "evidence_event_ids": [
+        "evt_d77b8d39c5de",
+        "evt_8c122d423243",
+        "evt_e5724dab4378"
+      ],
+      "highlight_event_ids": [
+        "evt_e5724dab4378"
+      ]
+    },
+    {
+      "schema_version": "experience_mining.v2",
+      "pattern_id": "fp_9203c9d49534",
+      "failure_event_id": "evt_9203c9d49534",
+      "branch_id": "main",
+      "failed_tool": "node",
+      "failed_command": "node -e \"require('fs').writeFileSync('contextdb-codex-reuse-second-parent-absent/note.txt', 'second note')\"",
+      "error_signature": "Script completed\nWall time 1.0 seconds\nOutput:\n\n{\"exit_code\":1,\"output\":\"node:fs:2483\\r\\n    return binding.writeFileUtf8(\\r\\n                   ^\\r\\n\\r\\nError: ENOENT: no such file or directory, open 'D:\\\\software\\\\Pycharm\\\\SelfCode\\\\Agent-ContextDB\\\\contextdb-codex-reuse-second-parent-absent\\\\note.txt'\\r\\n    at Object.writeFileSync (node:fs:2483:20)\\r\\n    at [eval]:1:15\\r\\n    at runScriptInThisContext (node:internal/vm:219:10)\\r\\n    at node:internal/process/execution:451:12\\r\\n    at [eval",
+      "normalized_signature": "script completed wall time seconds output \"exit_code\" \"node fs r n return r n ^ r n r nerror enoent no such file or",
+      "preceding_action": "I’ll run the specified Node command from the project root and return its complete raw output.",
+      "likely_cause": "missing parent directory before file write",
+      "likely_cause_judgment": {
+        "enabled": true,
+        "provider": "openai-compatible",
+        "model": "deepseek-flash",
+        "likely_cause": "missing parent directory before file write",
+        "confidence": 0.98,
+        "reason": "The Node writeFileSync call failed with ENOENT because the target path's parent directory 'contextdb-codex-reuse-second-parent-absent' does not exist.",
+        "input": {
+          "failed_tool": "node",
+          "failed_command": "node -e \"require('fs').writeFileSync('contextdb-codex-reuse-second-parent-absent/note.txt', 'second note')\"",
+          "error_signature": "Script completed\nWall time 1.0 seconds\nOutput:\n\n{\"exit_code\":1,\"output\":\"node:fs:2483\\r\\n    return binding.writeFileUtf8(\\r\\n                   ^\\r\\n\\r\\nError: ENOENT: no such file or directory, open 'D:\\\\software\\\\Pycharm\\\\SelfCode\\\\Agent-ContextDB\\\\contextdb-codex-reuse-second-parent-absent\\\\note.txt'\\r\\n    at Object.writeFileSync (node:fs:2483:20)\\r\\n    at [eval]:1:15\\r\\n    at runScriptInThisContext (node:internal/vm:219:10)\\r\\n    at node:internal/process/execution:451:12\\r\\n    at [eval",
+          "preceding_action": "I’ll run the specified Node command from the project root and return its complete raw output."
+        }
+      },
+      "repair_status": "not_evaluated",
+      "repair_events_after_failure": [
+        {
+          "event_id": "evt_5ac983165cc5",
+          "event_type": "assistant_message",
+          "summary": "assistant_message:```text\nnode:fs:2483\n    return binding.writeFileUtf8(\n                   ^\n\nError: ENOENT: no such file or directory..."
+        },
+        {
+          "event_id": "evt_862c3ca5904e",
+          "event_type": "assistant_message",
+          "summary": "assistant_message:I’ll retrieve the version status for the retained session and report the current repair-branch suggestion, if present."
+        },
+        {
+          "event_id": "evt_efe3816ad693",
+          "event_type": "tool_call",
+          "summary": "tool_call:const r = await tools.mcp__contextdb__contextdb_get_version_status({source:\"codex-session\",session_id:\"rollout-2026-0..."
+        },
+        {
+          "event_id": "evt_a8af7db3f19a",
+          "event_type": "tool_result",
+          "summary": "tool_result:const r = await tools.mcp__contextdb__contextdb_get_version_status({source:\"codex-session\",session_id:\"rollout-2026-0..."
+        }
+      ],
+      "source_event_ids": [
+        "evt_565363b578a6"
+      ],
+      "evidence_event_ids": [
+        "evt_d9f9992300b9",
+        "evt_565363b578a6",
+        "evt_9203c9d49534"
+      ],
+      "highlight_event_ids": [
+        "evt_9203c9d49534"
+      ]
+    }
+  ],
+  "source_events": [
+    "evt_66d4890c7506",
+    "evt_9e65c3dcd73e",
+    "evt_8c122d423243",
+    "evt_565363b578a6"
+  ],
+  "created_at": "2026-09-15T11:33:20.047093+00:00",
+  "metadata": {
+    "event_count": 121
+  }
+}

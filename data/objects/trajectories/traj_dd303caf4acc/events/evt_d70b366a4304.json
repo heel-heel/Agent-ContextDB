@@ -1,0 +1,39 @@
+{
+  "event_id": "evt_d70b366a4304",
+  "trajectory_id": "traj_dd303caf4acc",
+  "branch_id": "main",
+  "event_type": "tool_call",
+  "payload": {
+    "tool_chain": [
+      "exec",
+      "contextdb_record_skill_application"
+    ],
+    "command": "const r = await tools.mcp__contextdb__contextdb_record_skill_application({source:\"codex-session\",session_id:\"rollout-2026-09-15T17-51-27-01a0a47a-825a-72c0-8208-b3b80d850331\",skill_match_event_id:\"evt_b98285f60877\",skill_id:\"skill_git_file_path_absent_from_git\",action_id:\"act_git_file_path_absent_from_git_1\",tool_name:\"exec_command\",command:\"powershell -NoProfile -Command '[Environment]::SetEnvironmentVariable((\\\"LC\\\" + [char]95 + \\\"ALL\\\"), \\\"C\\\", \\\"Process\\\"); $env:LANG=\\\"C\\\"; git show HEAD:examples/live-path-demo/assets/settings.json; exit $LASTEXITCODE'\",status:\"ok\",exit_code:0,preview:\"{\\n  \\\"mode\\\": \\\"clean-path-skill-demo\\\",\\n  \\\"source\\\": \\\"project-fixture\\\",\\n  \\\"purpose\\\": \\\"real file-path repair and skill-reuse demonstration\\\"\\n}\"});\ntext(r);",
+    "arguments": null,
+    "status": "ok",
+    "result_tool_name": "contextdb_record_skill_application",
+    "result_event_id": "evt_bdce1a3770b9"
+  },
+  "parent_event_ids": [
+    "evt_8c1ca8a8bd13"
+  ],
+  "actor": "agent",
+  "timestamp": "2026-09-15T09:56:38.869450+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "codex-session",
+    "hook_adapter": "codex-session",
+    "hook_session_id": "rollout-2026-09-15T17-51-27-01a0a47a-825a-72c0-8208-b3b80d850331"
+  },
+  "metadata": {
+    "agent_id": "codex",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T09:56:38.869260+00:00",
+    "adapter": "codex-desktop-session-jsonl",
+    "codex_session_record_type": "response_item",
+    "codex_session_timestamp": "2026-09-15T09:56:38.300Z",
+    "codex_item_type": "custom_tool_call",
+    "codex_item_id": "ctc_0809bc6db53cfd19016aa9164eb73087d0ae1d43e74c0c1bf9"
+  }
+}

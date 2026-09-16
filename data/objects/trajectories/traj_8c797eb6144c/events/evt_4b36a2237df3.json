@@ -1,0 +1,52 @@
+{
+  "event_id": "evt_4b36a2237df3",
+  "trajectory_id": "traj_8c797eb6144c",
+  "branch_id": "main",
+  "event_type": "skill_recommendation",
+  "payload": {
+    "type": "contextdb_skill_recommendation",
+    "matched": false,
+    "instruction": "No reusable ContextDB skill matched this failure. Continue with normal diagnosis.",
+    "version_context": {
+      "active_branch_id": "main",
+      "latest_snapshot": {
+        "snapshot_id": "snap_e60cf738101e",
+        "branch_id": "main",
+        "event_id": "evt_b12254faa936",
+        "message": "Before state-changing bash",
+        "created_at": "2026-09-15T12:06:24.971258+00:00"
+      },
+      "repair_branch_suggestion": {
+        "suggestion_event_id": "evt_43f820117886",
+        "failure_event_id": "evt_0e4481fed35d",
+        "snapshot_id": "snap_e60cf738101e",
+        "suggested_branch_id": "repair-0e4481fe",
+        "source_branch_id": "main",
+        "created_at": "2026-09-15T12:06:28.900999+00:00"
+      },
+      "last_version_decision": {
+        "event_id": "evt_6494fe4c20fc",
+        "action": "create_repair_branch",
+        "decision": "rejected",
+        "at": "2026-09-15T12:06:17.794887+00:00"
+      },
+      "workspace_restore": {
+        "supported": false,
+        "instruction": "ContextDB records branch and rollback state only. Restore files through the Agent workspace after an explicit decision."
+      }
+    }
+  },
+  "parent_event_ids": [
+    "evt_43f820117886"
+  ],
+  "actor": "contextdb",
+  "timestamp": "2026-09-15T12:06:28.940978+00:00",
+  "refs": {
+    "skill_match_event_id": "evt_9dfe4003f3bd"
+  },
+  "metadata": {
+    "operation": "skill_recommendation_delivery",
+    "delivery_channel": "claude-code-post-tool-failure",
+    "online": true
+  }
+}

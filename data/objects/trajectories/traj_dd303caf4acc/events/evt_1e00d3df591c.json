@@ -1,0 +1,40 @@
+{
+  "event_id": "evt_1e00d3df591c",
+  "trajectory_id": "traj_dd303caf4acc",
+  "branch_id": "main",
+  "event_type": "tool_result",
+  "payload": {
+    "tool_name": "exec",
+    "command": "const matches = ALL_TOOLS.filter(x => x.name.includes(\"contextdb_create_repair_branch\"));\ntext(matches);",
+    "status": "ok",
+    "preview": "Script completed\nWall time 0.0 seconds\nOutput:\n\n[{\"name\":\"mcp__contextdb__contextdb_create_repair_branch\",\"description\":\"Call contextdb_prepare_context before planning and contextdb_record_tool_result after every real tool execution. Never execute a recommendation automatically.\\n\\nAccept a repair-branch suggestion or create a named repair branch from a ContextDB snapshot. The Agent remains responsible for any Git or workspace operation.\\n\\nexec tool declaration:\\n```ts\\ndeclare const tools: { mcp__contextdb__contextdb_create_repair_branch(args: { branch_id?: string; reason?: string; session_id: string; snapshot_id?: string; source: string; }): Promise<CallToolResult>; };\\n```\"}]",
+    "exit_code": null,
+    "transport_tool_name": "exec",
+    "tool_chain": [
+      "exec"
+    ]
+  },
+  "parent_event_ids": [
+    "evt_6a2adf34d0d5"
+  ],
+  "actor": "tool",
+  "timestamp": "2026-09-15T11:14:39.909213+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "codex-session",
+    "hook_adapter": "codex-session",
+    "hook_session_id": "rollout-2026-09-15T17-51-27-01a0a47a-825a-72c0-8208-b3b80d850331",
+    "tool_call_event_id": "evt_6a2adf34d0d5"
+  },
+  "metadata": {
+    "agent_id": "codex",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T11:14:39.909001+00:00",
+    "adapter": "codex-desktop-session-jsonl",
+    "codex_session_record_type": "response_item",
+    "codex_session_timestamp": "2026-09-15T11:14:39.294Z",
+    "codex_item_type": "custom_tool_call_output",
+    "codex_item_id": "ctco_01a0a4c6-ae3e-7d23-a205-6a8c80fa7cbc"
+  }
+}

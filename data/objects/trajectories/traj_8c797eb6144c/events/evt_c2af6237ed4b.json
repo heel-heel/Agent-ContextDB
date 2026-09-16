@@ -1,0 +1,40 @@
+{
+  "event_id": "evt_c2af6237ed4b",
+  "trajectory_id": "traj_8c797eb6144c",
+  "branch_id": "main",
+  "event_type": "tool_result",
+  "payload": {
+    "tool_name": "contextdb_get_recommendation",
+    "command": "{\"session_id\": \"59506119-1d61-447d-8f66-8c00331cd764\", \"source\": \"claude-code\"}",
+    "status": "ok",
+    "preview": "{\n  \"skill_match_event_id\": \"evt_4f2dc56bd496\",\n  \"matched\": true,\n  \"skill_id\": \"skill_python_misspelled_python_module_name_python_c_import_jsonn\",\n  \"action_id\": \"act_python_misspelled_python_module_name_python_c_import_jsonn_1\",\n  \"proposed_action\": \"python -c \\\"import json; print(json.__name__)\\\"\"\n}",
+    "exit_code": null,
+    "transport_tool_name": "contextdb_get_recommendation",
+    "tool_chain": [
+      "contextdb_get_recommendation"
+    ]
+  },
+  "parent_event_ids": [
+    "evt_d337b229bcd1"
+  ],
+  "actor": "tool",
+  "timestamp": "2026-09-15T12:04:47.910820+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "claude-code",
+    "hook_adapter": "generic",
+    "hook_session_id": "59506119-1d61-447d-8f66-8c00331cd764",
+    "tool_call_event_id": "evt_990af2591588"
+  },
+  "metadata": {
+    "agent_id": "claude-code",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T12:04:47.910631+00:00",
+    "adapter": "claude-code-hooks",
+    "claude_hook_event": "PostToolUse",
+    "claude_tool_name": "mcp__contextdb__contextdb_get_recommendation",
+    "claude_cwd": "D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB",
+    "claude_transcript_path": "C:\\Users\\lenovo\\.claude\\projects\\d--software-Pycharm-SelfCode-Agent-ContextDB\\59506119-1d61-447d-8f66-8c00331cd764.jsonl"
+  }
+}

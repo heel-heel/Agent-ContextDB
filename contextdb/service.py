@@ -93,7 +93,7 @@ class ContextDB:
 
         def tool_rows(tools: Dict[str, Dict[str, Any]]) -> List[Dict[str, Any]]:
             rows = []
-            for name, entry in sorted(tools.items()):
+            for name, entry in sorted(tools.items(), key=lambda item: (item[0].startswith("contextdb_"), item[0])):
                 row = {"tool_name": name, "call_count": entry["call_count"]}
                 rows.append(row)
             return rows
@@ -115,6 +115,19 @@ class ContextDB:
                 if skill_id and source_id:
                     match_sources[event.get("event_id", "")] = (source_id, skill_id)
 
+            # Older imported trajectories store the tool identity only on the
+            # parent tool_call.  Live integrations repeat it on tool_result.
+            # Prefer the latter, but preserve the former for a complete global
+            # overview of both kinds of trajectory.
+            tool_call_names: Dict[str, str] = {}
+            for event in events:
+                if event.get("event_type") != "tool_call":
+                    continue
+                payload = event.get("payload", {}) or {}
+                name = payload.get("result_tool_name") or payload.get("invoked_tool") or payload.get("tool_name") or payload.get("tool")
+                if name:
+                    tool_call_names[event.get("event_id", "")] = str(name)
+
             tools: Dict[str, Dict[str, Any]] = {}
             associated_skills: Dict[str, int] = {}
             for event in events:
@@ -124,7 +137,18 @@ class ContextDB:
                 if event.get("event_type") != "tool_result":
                     continue
                 payload = event.get("payload", {}) or {}
-                tool_name = str(payload.get("tool_name") or payload.get("tool") or "unknown tool")
+                parent_tool_name = next(
+                    (tool_call_names[parent_id] for parent_id in event.get("parent_event_ids", []) if parent_id in tool_call_names),
+                    None,
+                )
+                tool_name = str(
+                    payload.get("tool_name")
+                    or payload.get("result_tool_name")
+                    or payload.get("invoked_tool")
+                    or payload.get("tool")
+                    or parent_tool_name
+                    or "unknown tool"
+                )
                 local_tool = tools.setdefault(tool_name, {"call_count": 0})
                 global_tool = all_tools.setdefault(tool_name, {"call_count": 0})
                 local_tool["call_count"] += 1
@@ -149,15 +173,33 @@ class ContextDB:
                 edges[(trajectory_node, skill_node, "uses_skill")] = edges.get((trajectory_node, skill_node, "uses_skill"), 0) + 1
                 edges[(tool_node, skill_node, "skill_action")] = edges.get((tool_node, skill_node, "skill_action"), 0) + 1
 
+            produced_skills = [
+                {**skill, "relationship": "learned"}
+                for skill in skills
+                if skill["source_trajectory_id"] == trajectory_id
+            ]
+            applied_skills = [
+                {**skills_by_key[key], "application_count": count, "relationship": "applied"}
+                for key, count in sorted(associated_skills.items())
+            ]
+            visible_skills: Dict[str, Dict[str, Any]] = {
+                skill["node_id"]: skill for skill in produced_skills
+            }
+            for skill in applied_skills:
+                existing = visible_skills.get(skill["node_id"])
+                if existing:
+                    existing["application_count"] = skill["application_count"]
+                    existing["relationship"] = "learned and applied"
+                else:
+                    visible_skills[skill["node_id"]] = skill
+
             trajectory_rows.append({
                 **trajectory,
                 "event_count": len(events),
+                "branch_count": len(self._branches(trajectory_id)),
                 "tool_call_count": sum(entry["call_count"] for entry in tools.values()),
                 "tools": tool_rows(tools),
-                "associated_skills": [
-                    {**skills_by_key[key], "application_count": count}
-                    for key, count in sorted(associated_skills.items())
-                ],
+                "associated_skills": list(visible_skills.values()),
             })
 
         nodes = (

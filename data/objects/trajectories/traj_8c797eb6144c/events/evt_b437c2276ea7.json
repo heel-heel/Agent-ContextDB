@@ -1,0 +1,37 @@
+{
+  "event_id": "evt_b437c2276ea7",
+  "trajectory_id": "traj_8c797eb6144c",
+  "branch_id": "main",
+  "event_type": "tool_result",
+  "payload": {
+    "tool_name": "git",
+    "command": "powershell -NoProfile -Command '[Environment]::SetEnvironmentVariable((\"LC\" + [char]95 + \"ALL\"), \"C\", \"Process\"); $env:LANG=\"C\"; git show HEAD:examples/live-path-demo/assets/settings.json; exit $LASTEXITCODE'",
+    "status": "ok",
+    "preview": "{\n  \"mode\": \"clean-path-skill-demo\",\n  \"source\": \"project-fixture\",\n  \"purpose\": \"real file-path repair and skill-reuse demonstration\"\n}",
+    "exit_code": 0,
+    "transport_tool_name": "git",
+    "tool_chain": [
+      "git",
+      "powershell",
+      "git"
+    ],
+    "invoked_tool": "git"
+  },
+  "parent_event_ids": [
+    "evt_293d510d9271"
+  ],
+  "actor": "tool",
+  "timestamp": "2026-09-15T12:04:24.789645+00:00",
+  "refs": {
+    "skill_match_event_id": "evt_e7017ee3fd4c",
+    "skill_id": "skill_git_file_path_absent_from_git",
+    "selected_action_id": "act_git_file_path_absent_from_git_1",
+    "tool_call_event_id": "evt_293d510d9271"
+  },
+  "metadata": {
+    "agent_id": "claude-code",
+    "online": true,
+    "operation": "skill_application",
+    "integration": "agent-hook.v1"
+  }
+}

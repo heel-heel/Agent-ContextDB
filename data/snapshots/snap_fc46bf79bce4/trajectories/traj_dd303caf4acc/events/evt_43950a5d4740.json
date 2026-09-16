@@ -1,0 +1,39 @@
+{
+  "event_id": "evt_43950a5d4740",
+  "trajectory_id": "traj_dd303caf4acc",
+  "branch_id": "main",
+  "event_type": "tool_call",
+  "payload": {
+    "tool_chain": [
+      "exec",
+      "contextdb_get_recommendation"
+    ],
+    "command": "const r = await tools.mcp__contextdb__contextdb_get_recommendation({source:\"codex-session\",session_id:\"rollout-2026-09-15T17-51-27-01a0a47a-825a-72c0-8208-b3b80d850331\"});\ntext(r);",
+    "arguments": null,
+    "status": "ok",
+    "result_tool_name": "contextdb_get_recommendation",
+    "result_event_id": "evt_37d1790d6e2a"
+  },
+  "parent_event_ids": [
+    "evt_4e39cbb1a713"
+  ],
+  "actor": "agent",
+  "timestamp": "2026-09-15T11:11:38.508793+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "codex-session",
+    "hook_adapter": "codex-session",
+    "hook_session_id": "rollout-2026-09-15T17-51-27-01a0a47a-825a-72c0-8208-b3b80d850331"
+  },
+  "metadata": {
+    "agent_id": "codex",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T11:11:38.508600+00:00",
+    "adapter": "codex-desktop-session-jsonl",
+    "codex_session_record_type": "response_item",
+    "codex_session_timestamp": "2026-09-15T11:11:38.386Z",
+    "codex_item_type": "custom_tool_call",
+    "codex_item_id": "ctc_0809bc6db53cfd19016aa927e985dc87d0ba34399a98864f13"
+  }
+}

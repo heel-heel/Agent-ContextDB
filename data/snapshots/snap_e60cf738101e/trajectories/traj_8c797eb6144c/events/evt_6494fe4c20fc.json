@@ -1,0 +1,26 @@
+{
+  "event_id": "evt_6494fe4c20fc",
+  "trajectory_id": "traj_8c797eb6144c",
+  "branch_id": "main",
+  "event_type": "version_decision",
+  "payload": {
+    "action": "create_repair_branch",
+    "decision": "rejected",
+    "reason": "Keep this first failed Node copy on main for diagnosis.",
+    "logical_context_only": true
+  },
+  "parent_event_ids": [
+    "evt_978ec4c69376"
+  ],
+  "actor": "agent",
+  "timestamp": "2026-09-15T12:06:17.790956+00:00",
+  "refs": {
+    "suggestion_event_id": "evt_63050de6ec9b"
+  },
+  "metadata": {
+    "operation": "version_decision",
+    "origin": "agent",
+    "logical_context_only": true,
+    "online": true
+  }
+}

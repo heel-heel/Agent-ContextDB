@@ -1,0 +1,30 @@
+{
+  "event_id": "evt_9538cb9df3fc",
+  "trajectory_id": "traj_8c797eb6144c",
+  "branch_id": "main",
+  "event_type": "assistant_message",
+  "payload": {
+    "text": "Recorded an **accepted** decision for the recommendation:\n\n- **Decision:** accepted\n- **Trajectory id:** `traj_8c797eb6144c`\n- **Decision event id:** `evt_41b8695517d2`\n\nThe recommended Python import (`import json`) is accepted and will be used for the repair in place of the misspelled module name `jsonn`."
+  },
+  "parent_event_ids": [
+    "evt_85abcc3d2751"
+  ],
+  "actor": "agent",
+  "timestamp": "2026-09-15T12:05:01.421046+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "claude-code",
+    "hook_adapter": "generic",
+    "hook_session_id": "59506119-1d61-447d-8f66-8c00331cd764"
+  },
+  "metadata": {
+    "agent_id": "claude-code",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T12:05:01.420887+00:00",
+    "adapter": "claude-code-transcript",
+    "claude_transcript_path": "C:\\Users\\lenovo\\.claude\\projects\\d--software-Pycharm-SelfCode-Agent-ContextDB\\59506119-1d61-447d-8f66-8c00331cd764.jsonl",
+    "claude_transcript_message_id": "9a626b8b-cd24-4ccd-8a91-394e0bd7aaf7",
+    "claude_transcript_timestamp": "2026-09-15T12:05:01.135Z"
+  }
+}

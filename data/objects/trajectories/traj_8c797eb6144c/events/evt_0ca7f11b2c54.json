@@ -1,0 +1,40 @@
+{
+  "event_id": "evt_0ca7f11b2c54",
+  "trajectory_id": "traj_8c797eb6144c",
+  "branch_id": "main",
+  "event_type": "tool_result",
+  "payload": {
+    "tool_name": "contextdb_get_version_status",
+    "command": "{\"session_id\": \"59506119-1d61-447d-8f66-8c00331cd764\", \"source\": \"claude-code\"}",
+    "status": "ok",
+    "preview": "{\"schema_version\":\"contextdb.mcp.version_status.v1\",\"source\":\"claude-code\",\"session_id\":\"59506119-1d61-447d-8f66-8c00331cd764\",\"trajectory_id\":\"traj_8c797eb6144c\",\"active_branch_id\":\"main\",\"latest_snapshot\":{\"snapshot_id\":\"snap_f0cac335fdb6\",\"branch_id\":\"main\",\"checkpoint_event_id\":\"evt_0d51fc438501\",\"message\":\"Before state-changing bash\",\"created_at\":\"2026-09-15T12:05:49.701440+00:00\"},\"repair_branch_suggestion\":{\"suggestion_event_id\":\"evt_63050de6ec9b\",\"failure_event_id\":\"evt_0ff971c0f2a2\",\"snapshot_id\":\"snap_f0cac335fdb6\",\"suggested_branch_id\":\"repair-0ff971c0\",\"source_branch_id\":\"main\",\"created_at\":\"2026-09-15T12:05:54.580648+00:00\"},\"last_version_decision\":null,\"branches\":[{\"branch_id\":\"main\",\"base_event_id\":null,\"head_event_id\":\"evt_19553e7263a2\",\"snapshot_id\":\"snap_f0cac335fdb6\"}],\"recent_snapshots\":[{\"snapshot_id\":\"snap_f0cac335fdb6\",\"branch_id\":\"main\",\"checkpoint_event_id\":\"evt_0d51fc438501\",\"message\":\"Before state-changing bash\",\"created_at\":\"2026-09-15T12:05:49.701440+00:00\"}],\"recent_version_events\":[{\"event_id\":\"evt_0d51fc438501\",\"event_type\":\"system_event\",\"branch_id\":\"main\",\"timestamp\":\"2026-09-15T12:05:49.688123+00:00\",\"operation\":\"version_snapshot_created\",\"action\":null,\"decision\":null,\"reason\":\"Hook policy detected a potentially state-changing action: node -e \\\"require('fs').copyFileSync('contextdb-claude-reuse-first-missing-source.txt', 'contextdb-claude-reuse-first-copy.txt')\\\"\",\"snapshot_id\":\"snap_f0cac335fdb6\",\"suggested_branch_id\":null},{\"event_id\":\"evt_63050de6ec9b\",\"event_type\":\"system_event\",\"branch_id\":\"main\",\"timestamp\":\"2026-09-15T12:05:54.578325+00:00\",\"operation\":\"version_repair_branch_suggested\",\"action\":null,\"decision\":null,\"reason\":null,\"snapshot_id\":\"snap_f0cac335fdb6\",\"suggested_branch_id\":\"repair-0ff971c0\"}],\"workspace_restore\":{\"supported\":false,\"status\":\"not_connected\",\"message\":\"ContextDB rollback creates a trajectory branch only; it never restores local workspace files automatically.\"}}",
+    "exit_code": null,
+    "transport_tool_name": "contextdb_get_version_status",
+    "tool_chain": [
+      "contextdb_get_version_status"
+    ]
+  },
+  "parent_event_ids": [
+    "evt_19553e7263a2"
+  ],
+  "actor": "tool",
+  "timestamp": "2026-09-15T12:06:07.065227+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "claude-code",
+    "hook_adapter": "generic",
+    "hook_session_id": "59506119-1d61-447d-8f66-8c00331cd764",
+    "tool_call_event_id": "evt_19553e7263a2"
+  },
+  "metadata": {
+    "agent_id": "claude-code",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T12:06:07.065043+00:00",
+    "adapter": "claude-code-hooks",
+    "claude_hook_event": "PostToolUse",
+    "claude_tool_name": "mcp__contextdb__contextdb_get_version_status",
+    "claude_cwd": "D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB",
+    "claude_transcript_path": "C:\\Users\\lenovo\\.claude\\projects\\d--software-Pycharm-SelfCode-Agent-ContextDB\\59506119-1d61-447d-8f66-8c00331cd764.jsonl"
+  }
+}

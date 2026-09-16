@@ -1,0 +1,30 @@
+{
+  "event_id": "evt_b3c3d5f9b706",
+  "trajectory_id": "traj_8c797eb6144c",
+  "branch_id": "repair-0e4481fe",
+  "event_type": "assistant_message",
+  "payload": {
+    "text": "Read of [AGENTS.md](AGENTS.md) succeeded. It documents ContextDB live integration modes, with two sections:\n\n1. **Codex Desktop Full-DAG Demonstrations** — use `tools\\windows_codex_session_watcher.py` (source `codex-session`), which observes the real conversation and records it automatically; do not re-record tool calls for the same native tools.\n\n2. **Native-Exec Wrapper Compatibility Mode** — use `tools\\contextdb_native_exec_hook.py` (source `codex`) only for explicitly controlled CLI demos needing a caller-selected source/session id or same-turn recommendation output; run real commands through the wrapper, and `--apply-skill` is supported only in this mode.\n\nOutside an explicit live integration request, use normal project commands."
+  },
+  "parent_event_ids": [
+    "evt_f597933a1229"
+  ],
+  "actor": "agent",
+  "timestamp": "2026-09-15T12:07:06.522834+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "claude-code",
+    "hook_adapter": "generic",
+    "hook_session_id": "59506119-1d61-447d-8f66-8c00331cd764"
+  },
+  "metadata": {
+    "agent_id": "claude-code",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T12:07:06.522543+00:00",
+    "adapter": "claude-code-transcript",
+    "claude_transcript_path": "C:\\Users\\lenovo\\.claude\\projects\\d--software-Pycharm-SelfCode-Agent-ContextDB\\59506119-1d61-447d-8f66-8c00331cd764.jsonl",
+    "claude_transcript_message_id": "0fe410d1-9007-438b-9485-d347f30a43e4",
+    "claude_transcript_timestamp": "2026-09-15T12:07:06.238Z"
+  }
+}

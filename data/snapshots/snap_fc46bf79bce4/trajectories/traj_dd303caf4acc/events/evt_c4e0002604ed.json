@@ -1,0 +1,31 @@
+{
+  "event_id": "evt_c4e0002604ed",
+  "trajectory_id": "traj_dd303caf4acc",
+  "branch_id": "main",
+  "event_type": "assistant_message",
+  "payload": {
+    "text": "```text\nTraceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n    import jsonn\nModuleNotFoundError: No module named 'jsonn'\n```"
+  },
+  "parent_event_ids": [
+    "evt_3e3ae4bb5c02"
+  ],
+  "actor": "agent",
+  "timestamp": "2026-09-15T11:11:19.643326+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "codex-session",
+    "hook_adapter": "codex-session",
+    "hook_session_id": "rollout-2026-09-15T17-51-27-01a0a47a-825a-72c0-8208-b3b80d850331"
+  },
+  "metadata": {
+    "agent_id": "codex",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T11:11:19.643096+00:00",
+    "adapter": "codex-desktop-session-jsonl",
+    "codex_session_record_type": "response_item",
+    "codex_session_timestamp": "2026-09-15T11:11:19.494Z",
+    "codex_item_type": "message",
+    "codex_item_id": "msg_0809bc6db53cfd19016aa927d719a087d0b970fa6cc4182dc8"
+  }
+}

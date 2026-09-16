@@ -1,0 +1,31 @@
+{
+  "event_id": "evt_1399e92ab7a8",
+  "trajectory_id": "traj_8c797eb6144c",
+  "branch_id": "main",
+  "event_type": "user_message",
+  "payload": {
+    "text": "<ide_opened_file>The user opened the file d:\\software\\Pycharm\\SelfCode\\Agent-ContextDB\\scripts\\serve_dashboard.py in the IDE. This may or may not be related to the current task.</ide_opened_file>\nBefore any failure occurs, determine the real ContextDB session id for this current Claude Code conversation.\n\nUse exactly one native shell tool call from the project root to run:\n\npowershell -NoProfile -Command '$sessionFile = Get-ChildItem -LiteralPath \".\\data\\objects\\hook_sessions\\claude-code\" -Filter \"*.json\" | Sort-Object LastWriteTime -Descending | Select-Object -First 1; $session = Get-Content -Raw -LiteralPath $sessionFile.FullName | ConvertFrom-Json; Write-Output $session.session_id'\n\nDo not use contextdb_native_exec_hook.py. Retain the returned session id and automatically use it for every later ContextDB MCP call in this conversation. Report the session id."
+  },
+  "parent_event_ids": [
+    "evt_6b42935f1ad6"
+  ],
+  "actor": "user",
+  "timestamp": "2026-09-15T12:03:04.081630+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "claude-code",
+    "hook_adapter": "generic",
+    "hook_session_id": "59506119-1d61-447d-8f66-8c00331cd764"
+  },
+  "metadata": {
+    "agent_id": "claude-code",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T12:03:04.081463+00:00",
+    "adapter": "claude-code-hooks",
+    "claude_hook_event": "UserPromptSubmit",
+    "claude_tool_name": "",
+    "claude_cwd": "d:\\software\\Pycharm\\SelfCode\\Agent-ContextDB",
+    "claude_transcript_path": "C:\\Users\\lenovo\\.claude\\projects\\d--software-Pycharm-SelfCode-Agent-ContextDB\\59506119-1d61-447d-8f66-8c00331cd764.jsonl"
+  }
+}

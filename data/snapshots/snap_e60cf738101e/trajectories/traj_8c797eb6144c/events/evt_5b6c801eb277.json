@@ -1,0 +1,31 @@
+{
+  "event_id": "evt_5b6c801eb277",
+  "trajectory_id": "traj_8c797eb6144c",
+  "branch_id": "main",
+  "event_type": "user_message",
+  "payload": {
+    "text": "From the project root, use exactly one native shell tool call to run this real command. Report the complete raw output.\n\npython -c \"import jsonn\""
+  },
+  "parent_event_ids": [
+    "evt_8ddf262ad6e0"
+  ],
+  "actor": "user",
+  "timestamp": "2026-09-15T12:04:31.077653+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "claude-code",
+    "hook_adapter": "generic",
+    "hook_session_id": "59506119-1d61-447d-8f66-8c00331cd764"
+  },
+  "metadata": {
+    "agent_id": "claude-code",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T12:04:31.077473+00:00",
+    "adapter": "claude-code-hooks",
+    "claude_hook_event": "UserPromptSubmit",
+    "claude_tool_name": "",
+    "claude_cwd": "D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB",
+    "claude_transcript_path": "C:\\Users\\lenovo\\.claude\\projects\\d--software-Pycharm-SelfCode-Agent-ContextDB\\59506119-1d61-447d-8f66-8c00331cd764.jsonl"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "event_id": "evt_a487632403d2",
+  "trajectory_id": "traj_dd303caf4acc",
+  "branch_id": "main",
+  "event_type": "skill_decision",
+  "payload": {
+    "decision": "accepted",
+    "reason": "The corrected Git file path will be used for the repair.",
+    "skill_id": "skill_git_file_path_absent_from_git",
+    "action_id": "act_git_file_path_absent_from_git_1"
+  },
+  "parent_event_ids": [
+    "evt_e5f5ef1d4c27"
+  ],
+  "actor": "agent",
+  "timestamp": "2026-09-15T09:55:19.000113+00:00",
+  "refs": {
+    "skill_match_event_id": "evt_b98285f60877",
+    "skill_id": "skill_git_file_path_absent_from_git",
+    "selected_action_id": "act_git_file_path_absent_from_git_1"
+  },
+  "metadata": {
+    "operation": "skill_decision",
+    "online": true,
+    "integration": "agent-hook.v1"
+  }
+}

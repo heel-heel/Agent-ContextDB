@@ -1,0 +1,30 @@
+{
+  "event_id": "evt_224eab22fc86",
+  "trajectory_id": "traj_8c797eb6144c",
+  "branch_id": "main",
+  "event_type": "assistant_message",
+  "payload": {
+    "text": "A repair-branch suggestion is present.\n\n**Explanation:** The ContextDB hook detected a potentially state-changing action (the `node ... copyFileSync ...` command) and, after it failed, suggested creating a repair branch. The repair branch would branch off the current `main` trajectory at the snapshot taken right before that state-changing command ran (`snap_f0cac335fdb6`, message \"Before state-changing bash\").\n\n- **Suggested branch id:** `repair-0ff971c0`\n- **Source snapshot id:** `snap_f0cac335fdb6`\n- **Source branch id:** `main`\n\nAdditional context from the status: the suggestion event id is `evt_63050de6ec9b`, tied to failure event `evt_0ff971c0f2a2`. Note that `workspace_restore.supported` is `false` — ContextDB creates the trajectory branch only and does not restore local workspace files automatically."
+  },
+  "parent_event_ids": [
+    "evt_0ca7f11b2c54"
+  ],
+  "actor": "agent",
+  "timestamp": "2026-09-15T12:06:11.114344+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "claude-code",
+    "hook_adapter": "generic",
+    "hook_session_id": "59506119-1d61-447d-8f66-8c00331cd764"
+  },
+  "metadata": {
+    "agent_id": "claude-code",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T12:06:11.114177+00:00",
+    "adapter": "claude-code-transcript",
+    "claude_transcript_path": "C:\\Users\\lenovo\\.claude\\projects\\d--software-Pycharm-SelfCode-Agent-ContextDB\\59506119-1d61-447d-8f66-8c00331cd764.jsonl",
+    "claude_transcript_message_id": "44ecb7f8-4890-4a17-a006-e7e39140b23c",
+    "claude_transcript_timestamp": "2026-09-15T12:06:10.813Z"
+  }
+}

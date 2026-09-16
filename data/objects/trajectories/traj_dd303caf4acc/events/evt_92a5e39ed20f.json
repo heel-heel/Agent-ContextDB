@@ -1,0 +1,39 @@
+{
+  "event_id": "evt_92a5e39ed20f",
+  "trajectory_id": "traj_dd303caf4acc",
+  "branch_id": "main",
+  "event_type": "tool_call",
+  "payload": {
+    "tool_chain": [
+      "exec",
+      "powershell"
+    ],
+    "command": "powershell -NoProfile -Command '$pointer = \".\\data\\codex-watcher-current-session.json\"; $deadline = (Get-Date).AddSeconds(10); do { if (Test-Path -LiteralPath $pointer) { $session = Get-Content -Raw -LiteralPath $pointer | ConvertFrom-Json; $field = \"session\" + [char]95 + \"id\"; $id = $session.PSObject.Properties[$field].Value; if ($session.source -eq \"codex-session\" -and $id) { Write-Output $id; exit 0 } }; Start-Sleep -Milliseconds 250 } while ((Get-Date) -lt $deadline); [Console]::Error.WriteLine(\"ContextDB watcher session was not available within 10 seconds.\"); exit 1'",
+    "arguments": null,
+    "status": "ok",
+    "result_tool_name": "powershell",
+    "result_event_id": "evt_2162a926561c"
+  },
+  "parent_event_ids": [
+    "evt_5594eadd88f1"
+  ],
+  "actor": "agent",
+  "timestamp": "2026-09-15T09:53:28.476150+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "codex-session",
+    "hook_adapter": "codex-session",
+    "hook_session_id": "rollout-2026-09-15T17-51-27-01a0a47a-825a-72c0-8208-b3b80d850331"
+  },
+  "metadata": {
+    "agent_id": "codex",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T09:53:28.475891+00:00",
+    "adapter": "codex-desktop-session-jsonl",
+    "codex_session_record_type": "response_item",
+    "codex_session_timestamp": "2026-09-15T09:53:28.072Z",
+    "codex_item_type": "custom_tool_call",
+    "codex_item_id": "ctc_0809bc6db53cfd19016aa91594776087d088fe426758876f2c"
+  }
+}

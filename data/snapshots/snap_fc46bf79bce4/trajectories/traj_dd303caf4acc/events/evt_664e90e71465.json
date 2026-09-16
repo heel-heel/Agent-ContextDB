@@ -1,0 +1,42 @@
+{
+  "event_id": "evt_664e90e71465",
+  "trajectory_id": "traj_dd303caf4acc",
+  "branch_id": "main",
+  "event_type": "tool_result",
+  "payload": {
+    "tool_name": "contextdb_record_skill_decision",
+    "command": "const r = await tools.mcp__contextdb__contextdb_record_skill_decision({source:\"codex-session\",session_id:\"rollout-2026-09-15T17-51-27-01a0a47a-825a-72c0-8208-b3b80d850331\",skill_match_event_id:\"evt_3e3ae4bb5c02\",skill_id:\"skill_python_misspelled_python_module_name_python_c_import_jsonn\",action_id:\"act_python_misspelled_python_module_name_python_c_import_jsonn_1\",decision:\"accepted\",reason:\"The corrected Python import name will be used for the repair.\"});\ntext(r);",
+    "status": "ok",
+    "preview": "Script completed\nWall time 1.5 seconds\nOutput:\n\n{\"content\":[{\"type\":\"text\",\"text\":\"{\\n  \\\"source\\\": \\\"codex-session\\\",\\n  \\\"session_id\\\": \\\"rollout-2026-09-15T17-51-27-01a0a47a-825a-72c0-8208-b3b80d850331\\\",\\n  \\\"trajectory_id\\\": \\\"traj_dd303caf4acc\\\",\\n  \\\"decision_event_id\\\": \\\"evt_3c2002151114\\\",\\n  \\\"decision\\\": \\\"accepted\\\"\\n}\"}],\"structuredContent\":{\"source\":\"codex-session\",\"session_id\":\"rollout-2026-09-15T17-51-27-01a0a47a-825a-72c0-8208-b3b80d850331\",\"trajectory_id\":\"traj_dd303caf4acc\",\"decision_event_id\":\"evt_3c2002151114\",\"decision\":\"accepted\"},\"isError\":false}",
+    "exit_code": null,
+    "transport_tool_name": "exec",
+    "tool_chain": [
+      "exec",
+      "contextdb_record_skill_decision"
+    ],
+    "invoked_tool": "contextdb_record_skill_decision"
+  },
+  "parent_event_ids": [
+    "evt_3c2002151114"
+  ],
+  "actor": "tool",
+  "timestamp": "2026-09-15T11:12:09.692648+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "codex-session",
+    "hook_adapter": "codex-session",
+    "hook_session_id": "rollout-2026-09-15T17-51-27-01a0a47a-825a-72c0-8208-b3b80d850331",
+    "tool_call_event_id": "evt_a420cf4d1420"
+  },
+  "metadata": {
+    "agent_id": "codex",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T11:12:09.692438+00:00",
+    "adapter": "codex-desktop-session-jsonl",
+    "codex_session_record_type": "response_item",
+    "codex_session_timestamp": "2026-09-15T11:12:08.991Z",
+    "codex_item_type": "custom_tool_call_output",
+    "codex_item_id": "ctco_01a0a4c4-631f-7721-8606-72babfb0af54"
+  }
+}

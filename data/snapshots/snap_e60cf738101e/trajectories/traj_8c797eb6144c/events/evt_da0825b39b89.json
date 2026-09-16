@@ -1,0 +1,30 @@
+{
+  "event_id": "evt_da0825b39b89",
+  "trajectory_id": "traj_8c797eb6144c",
+  "branch_id": "main",
+  "event_type": "assistant_message",
+  "payload": {
+    "text": "Read of [examples/live-path-demo/assets/settings.json](examples/live-path-demo/assets/settings.json) succeeded. File contents (5 lines):\n\n```json\n{\n  \"mode\": \"clean-path-skill-demo\",\n  \"source\": \"project-fixture\",\n  \"purpose\": \"real file-path repair and skill-reuse demonstration\"\n}\n```\n\nThis matches the content returned earlier by `git show HEAD:examples/live-path-demo/assets/settings.json`."
+  },
+  "parent_event_ids": [
+    "evt_4ab592fc952a"
+  ],
+  "actor": "agent",
+  "timestamp": "2026-09-15T12:05:29.256694+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "claude-code",
+    "hook_adapter": "generic",
+    "hook_session_id": "59506119-1d61-447d-8f66-8c00331cd764"
+  },
+  "metadata": {
+    "agent_id": "claude-code",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T12:05:29.256522+00:00",
+    "adapter": "claude-code-transcript",
+    "claude_transcript_path": "C:\\Users\\lenovo\\.claude\\projects\\d--software-Pycharm-SelfCode-Agent-ContextDB\\59506119-1d61-447d-8f66-8c00331cd764.jsonl",
+    "claude_transcript_message_id": "5700866b-1efb-485a-af28-7f1fb11eee7b",
+    "claude_transcript_timestamp": "2026-09-15T12:05:28.979Z"
+  }
+}

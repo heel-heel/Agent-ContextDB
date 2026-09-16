@@ -1,0 +1,42 @@
+{
+  "event_id": "evt_0dbfc55571b1",
+  "trajectory_id": "traj_dd303caf4acc",
+  "branch_id": "repair-9203c9d4",
+  "event_type": "tool_result",
+  "payload": {
+    "tool_name": "get-content",
+    "command": "Get-Content -Raw -LiteralPath AGENTS.md",
+    "status": "ok",
+    "preview": "Script completed\nWall time 0.8 seconds\nOutput:\n\n# ContextDB Live Integration Modes\r\n\r\nWhen a user explicitly asks to test or run a live ContextDB integration, use\r\none source/session pair consistently for the full Agent session. Do not mix\r\nthe watcher and native-exec wrapper for one trajectory.\r\n\r\n## Codex Desktop Full-DAG Demonstrations\r\n\r\nFor a Codex Desktop demonstration that must show user messages, assistant\r\nmessages, native tools, and MCP calls in the DAG, use\r\n`tools\\windows_codex_session_watcher.py`. The watcher observes the Codex App\r\nrollout log and records the real conversation under:\r\n\r\n```text\r\nsource = codex-session\r\nsession_id = rollout-<timestamp>-<id>\r\n```\r\n\r\nStart the watcher before creating the new Codex conversation. Use the rollout\r\nfilename reported by the watcher as the session id for ContextDB MCP calls.\r\nThe watcher already records real tool calls and results, so do not call\r\n`contextdb_record_tool_call` or `contextdb_record_tool_result` for those same\r\nnative tools.\r\n\r\nWhen a skill matches, retrieve or prepare its recommendation explicitly,\r\nrecord an accepted/rejected/deferred skill decision, execute the repair through\r\nCodex's ordinary native tool, and record the observed outcome with\r\n`contextdb_record_skill_application`. Do not use the wrapper's `--apply-skill`\r\noption in watcher mode.\r\n\r\n## Native-Exec Wrapper Compatibility Mode\r\n\r\nUse `tools\\contextdb_native_exec_hook.py` only when an explicitly controlled\r\nCLI demonstration needs a caller-selected source/session id or same-turn\r\nrecommendation output. It records only the child command that it wraps; it\r\ndoes not observe native Codex messages, Read/Glob/apply-patch calls, or direct\r\nMCP calls. In this mode, run real commands through the wrapper rather than\r\nmocking their results:\r\n\r\n```powershell\r\n& 'D:\\software\\Anaconda\\ProgramFile\\envs\\contextdb_env\\python.exe' `\r\n  'D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB\\tools\\contextdb_native_exec_hook.py' `\r\n  --source codex --session-id <session_id> -- <real command and arguments>\r\n```\r\n\r\nThe wrapper returns the real child output and exit code, and may append a\r\n`CONTEXTDB_RECOMMENDATION` object. Applying an accepted action with\r\n`--apply-skill` is supported only in this wrapper mode.\r\n\r\nOutside an explicit live integration request, use normal project commands.\r\n\r\n",
+    "exit_code": null,
+    "transport_tool_name": "exec",
+    "tool_chain": [
+      "exec",
+      "get-content"
+    ],
+    "invoked_tool": "get-content"
+  },
+  "parent_event_ids": [
+    "evt_eb0bfd46b316"
+  ],
+  "actor": "tool",
+  "timestamp": "2026-09-15T11:15:01.120286+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "codex-session",
+    "hook_adapter": "codex-session",
+    "hook_session_id": "rollout-2026-09-15T17-51-27-01a0a47a-825a-72c0-8208-b3b80d850331",
+    "tool_call_event_id": "evt_eb0bfd46b316"
+  },
+  "metadata": {
+    "agent_id": "codex",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T11:15:01.120109+00:00",
+    "adapter": "codex-desktop-session-jsonl",
+    "codex_session_record_type": "response_item",
+    "codex_session_timestamp": "2026-09-15T11:15:00.753Z",
+    "codex_item_type": "custom_tool_call_output",
+    "codex_item_id": "ctco_01a0a4c7-0211-7b61-8d91-4a75d14e68ca"
+  }
+}

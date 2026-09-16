@@ -235,11 +235,28 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
     .page.hidden { display:none; }
     .global-page { display:block; padding:16px; min-height:calc(100vh - 64px); }
     .global-page > section { min-height:calc(100vh - 96px); }
-    .global-overview-content { padding:14px; display:flex; flex-direction:column; gap:14px; }
+    .global-overview-content { padding:14px; display:flex; flex-direction:column; gap:4px; }
     .global-metrics { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; }
     .global-metric { border-left:3px solid #2364aa; background:#f4f8fd; padding:10px; }
     .global-metric b { display:block; font-size:20px; }
     .global-metric span { color:var(--muted); font-size:12px; }
+    .global-section { border:1px solid #c9def5; border-left:4px solid #2364aa; border-radius:7px; background:#fbfdff; padding:8px 12px 10px; }
+    .global-section > h3 { margin:0 0 7px; color:#17202a; font-size:17px; font-weight:700; line-height:1.3; }
+    .global-section > p { margin:0 0 7px; }
+    .global-section .table-wrap { border-color:#d4e3f1; border-radius:6px; background:#fff; }
+    .trajectory-catalog-table { min-width:1200px; table-layout:fixed; }
+    .trajectory-catalog-table th, .trajectory-catalog-table td { text-align:center; vertical-align:middle; }
+    .trajectory-catalog-table th:nth-child(1), .trajectory-catalog-table td:nth-child(1) { width:145px; }
+    .trajectory-catalog-table th:nth-child(2), .trajectory-catalog-table td:nth-child(2) { width:105px; }
+    .trajectory-catalog-table th:nth-child(3), .trajectory-catalog-table td:nth-child(3) { width:195px; }
+    .trajectory-catalog-table th:nth-child(4), .trajectory-catalog-table td:nth-child(4) { width:55px; }
+    .trajectory-catalog-table th:nth-child(5), .trajectory-catalog-table td:nth-child(5) { width:65px; }
+    .trajectory-catalog-table th:nth-child(6), .trajectory-catalog-table td:nth-child(6) { width:300px; }
+    .trajectory-catalog-table th:nth-child(7), .trajectory-catalog-table td:nth-child(7) { width:250px; }
+    .trajectory-catalog-table th:nth-child(8), .trajectory-catalog-table td:nth-child(8) { width:85px; }
+    .global-trajectory-id { display:block; font-family:inherit; font-size:12px; font-weight:700; overflow-wrap:anywhere; }
+    .global-open-btn { display:block; margin:0 auto; }
+    .trajectory-catalog-table td:nth-child(7) .pill { max-width:100%; white-space:normal; overflow-wrap:anywhere; }
     .global-relationship-graph { position:relative; min-height:350px; overflow:auto; border:1px solid #c9ddec; border-radius:7px; background:#f8fbff; }
     .global-relationship-edges { position:absolute; inset:0; z-index:0; pointer-events:none; overflow:visible; }
     .global-relationship-edges line { stroke:#91abc3; stroke-width:2; opacity:.85; }
@@ -910,23 +927,33 @@ function renderGlobalOverview(data) {
     tool: nodes.filter(node => node.type === 'tool'),
     skill: nodes.filter(node => node.type === 'skill'),
   };
+  const displaySource = row => {
+    const value = String(row.agent_id || row.source_id || '');
+    if (value === 'claude-code') return 'Claude Code';
+    if (value === 'codex') return 'Codex';
+    if (value === 'swe-agent') return 'SWE-agent';
+    return value;
+  };
   const trajectoryRows = trajectories.map(row => {
     const tools = (row.tools || []).map(tool => {
       return `<span class="pill">${escapeHtml(tool.tool_name)} ${escapeHtml(tool.call_count)}</span>`;
     }).join('') || '<span class="muted">No tool results</span>';
-    const relatedSkills = (row.associated_skills || []).map(skill => `<span class="pill ok">${escapeHtml(skill.name)} (${escapeHtml(skill.application_count)})</span>`).join('') || '<span class="muted">No skill-linked tool results</span>';
-    return `<tr><td><b>${escapeHtml(row.title || '')}</b><div class="mono muted">${escapeHtml(row.trajectory_id)}</div><button class="small-btn secondary" onclick='openTrajectoryFromGlobal(${JSON.stringify(row.trajectory_id)})'>Open</button></td><td>${escapeHtml(row.agent_id || '')}<div class="muted">${escapeHtml(row.source_id || '')}</div></td><td>${escapeHtml(row.created_at || '')}<div class="muted">updated ${escapeHtml(row.updated_at || '')}</div></td><td>${escapeHtml(row.event_count)}</td><td>${tools}</td><td>${relatedSkills}</td></tr>`;
-  }).join('') || '<tr><td colspan="6" class="muted">No trajectories have been recorded.</td></tr>';
+    const relatedSkills = (row.associated_skills || []).map(skill => {
+      const count = skill.application_count || skill.support_count || 0;
+      return `<span class="pill ok">${escapeHtml(skill.skill_id || skill.name)} (${escapeHtml(count)})</span>`;
+    }).join('') || '<span class="muted">No learned or applied skills</span>';
+    return `<tr><td><b class="global-trajectory-id">${escapeHtml(row.trajectory_id)}</b></td><td>${escapeHtml(displaySource(row))}</td><td>${escapeHtml(displayVersionTimestamp(row.created_at))}<div class="muted">updated ${escapeHtml(displayVersionTimestamp(row.updated_at))}</div></td><td>${escapeHtml(row.event_count)}</td><td>${escapeHtml(row.branch_count || 0)}</td><td>${tools}</td><td>${relatedSkills}</td><td><button class="small-btn global-open-btn" onclick='openTrajectoryFromGlobal(${JSON.stringify(row.trajectory_id)})'>Open</button></td></tr>`;
+  }).join('') || '<tr><td colspan="8" class="muted">No trajectories have been recorded.</td></tr>';
   const skillRows = skills.map(skill => `<tr><td><b>${escapeHtml(skill.name)}</b><div class="mono muted">${escapeHtml(skill.skill_id)}</div></td><td><button class="small-btn secondary" onclick='openTrajectoryFromGlobal(${JSON.stringify(skill.source_trajectory_id)})'>${escapeHtml(skill.source_trajectory_id)}</button></td><td>${escapeHtml(skill.trigger_tool || '')}</td><td>${escapeHtml(skill.support_count || 0)}</td><td>${escapeHtml(skill.status || '')}</td></tr>`).join('') || '<tr><td colspan="5" class="muted">No learned skills are currently materialized.</td></tr>';
   $('globalOut').innerHTML = `
     <div class="global-metrics">
       <div class="global-metric"><b>${escapeHtml(data.trajectory_count)}</b><span>trajectories</span></div>
       <div class="global-metric"><b>${escapeHtml(data.tool_count)}</b><span>tools executed</span></div>
-      <div class="global-metric"><b>${escapeHtml(data.skill_count)}</b><span>shared indexed skills</span></div>
+      <div class="global-metric"><b>${escapeHtml(data.skill_count)}</b><span>shared skills</span></div>
     </div>
-    <div class="summary-card"><h3>All Trajectories</h3><div class="table-wrap"><table><thead><tr><th>Trajectory</th><th>Creation agent / source</th><th>Created / updated</th><th>Events</th><th>Tools executed</th><th>Associated skills</th></tr></thead><tbody>${trajectoryRows}</tbody></table></div></div>
-    <div class="summary-card"><h3>Global Skill Library</h3><p class="muted">Skills are stored in one persistent vector collection and can be retrieved by every trajectory. Each entry retains the trajectory that produced it.</p><div class="table-wrap"><table><thead><tr><th>Skill</th><th>Source trajectory</th><th>Trigger tool</th><th>Evidence</th><th>Status</th></tr></thead><tbody>${skillRows}</tbody></table></div></div>
-    <div class="summary-card"><h3>Trajectory / Tool / Skill Relationships</h3><p class="muted">Solid links show tool results. Dashed green links show a trajectory applying an indexed skill. Blue links connect a tool to the skill action that used it.</p>
+    <div class="summary-card global-section"><h3>Trajectory Catalog</h3><div class="table-wrap"><table class="trajectory-catalog-table"><thead><tr><th>Trajectory</th><th>Source</th><th>Created / updated</th><th>Events</th><th>Branches</th><th>Tools executed</th><th>Skills</th><th aria-label="Open trajectory"></th></tr></thead><tbody>${trajectoryRows}</tbody></table></div></div>
+    <div class="summary-card global-section"><h3>Global Skill Library</h3><p class="muted">Skills are stored in one persistent vector collection and can be retrieved by every trajectory. Each entry retains the trajectory that produced it.</p><div class="table-wrap"><table><thead><tr><th>Skill</th><th>Source trajectory</th><th>Trigger tool</th><th>Evidence</th><th>Status</th></tr></thead><tbody>${skillRows}</tbody></table></div></div>
+    <div class="summary-card global-section"><h3>Trajectory / Tool / Skill Relationships</h3><p class="muted">Solid links show tool results. Dashed green links show a trajectory applying an indexed skill. Blue links connect a tool to the skill action that used it.</p>
       <div class="global-relationship-graph"><svg id="globalRelationshipEdges" class="global-relationship-edges"></svg><div class="global-relationship-columns">
         <div class="global-relationship-column"><h3>Trajectories</h3><div class="global-relationship-stack">${nodeGroups.trajectory.map(globalGraphNode).join('') || '<span class="muted">None</span>'}</div></div>
         <div class="global-relationship-column"><h3>Tools</h3><div class="global-relationship-stack">${nodeGroups.tool.map(globalGraphNode).join('') || '<span class="muted">None</span>'}</div></div>

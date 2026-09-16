@@ -1,0 +1,30 @@
+{
+  "event_id": "evt_2773473bc6ff",
+  "trajectory_id": "traj_8c797eb6144c",
+  "branch_id": "main",
+  "event_type": "assistant_message",
+  "payload": {
+    "text": "The matched recommendation is present:\n\n- **Skill match event id:** `evt_e7017ee3fd4c`\n- **Skill id:** `skill_git_file_path_absent_from_git`\n- **Action id:** `act_git_file_path_absent_from_git_1`\n- **Proposed action:**\n  ```\n  powershell -NoProfile -Command '[Environment]::SetEnvironmentVariable((\"LC\" + [char]95 + \"ALL\"), \"C\", \"Process\"); $env:LANG=\"C\"; git show HEAD:examples/live-path-demo/assets/settings.json; exit $LASTEXITCODE'\n  ```\n\nI have not recorded a skill decision or executed the proposed action this turn."
+  },
+  "parent_event_ids": [
+    "evt_48fbe83616a4"
+  ],
+  "actor": "agent",
+  "timestamp": "2026-09-15T12:03:50.283671+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "claude-code",
+    "hook_adapter": "generic",
+    "hook_session_id": "59506119-1d61-447d-8f66-8c00331cd764"
+  },
+  "metadata": {
+    "agent_id": "claude-code",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T12:03:50.283502+00:00",
+    "adapter": "claude-code-transcript",
+    "claude_transcript_path": "C:\\Users\\lenovo\\.claude\\projects\\d--software-Pycharm-SelfCode-Agent-ContextDB\\59506119-1d61-447d-8f66-8c00331cd764.jsonl",
+    "claude_transcript_message_id": "e05b8092-e020-4945-bf81-57e8defd8622",
+    "claude_transcript_timestamp": "2026-09-15T12:03:49.964Z"
+  }
+}

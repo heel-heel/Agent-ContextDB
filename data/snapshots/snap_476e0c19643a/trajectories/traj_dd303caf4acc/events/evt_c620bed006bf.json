@@ -1,0 +1,40 @@
+{
+  "event_id": "evt_c620bed006bf",
+  "trajectory_id": "traj_dd303caf4acc",
+  "branch_id": "main",
+  "event_type": "tool_result",
+  "payload": {
+    "tool_name": "exec",
+    "command": "const matches = ALL_TOOLS.filter(x => x.name.includes(\"contextdb_record_skill_decision\"));\ntext(matches);",
+    "status": "ok",
+    "preview": "Script completed\nWall time 0.0 seconds\nOutput:\n\n[{\"name\":\"mcp__contextdb__contextdb_record_skill_decision\",\"description\":\"Call contextdb_prepare_context before planning and contextdb_record_tool_result after every real tool execution. Never execute a recommendation automatically.\\n\\nRecord whether the Agent accepted, rejected, or deferred ContextDB's delivered recommendation. Call this before an accepted skill-guided action, or explain why it was rejected.\\n\\nexec tool declaration:\\n```ts\\ndeclare const tools: { mcp__contextdb__contextdb_record_skill_decision(args: { action_id?: string; decision: \\\"accepted\\\" | \\\"rejected\\\" | \\\"deferred\\\"; reason?: string; session_id: string; skill_id?: string; skill_match_event_id?: string; source: string; }): Promise<CallToolResult>; };\\n```\"}]",
+    "exit_code": null,
+    "transport_tool_name": "exec",
+    "tool_chain": [
+      "exec"
+    ]
+  },
+  "parent_event_ids": [
+    "evt_6eaaf80ce63c"
+  ],
+  "actor": "tool",
+  "timestamp": "2026-09-15T09:55:09.952921+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "codex-session",
+    "hook_adapter": "codex-session",
+    "hook_session_id": "rollout-2026-09-15T17-51-27-01a0a47a-825a-72c0-8208-b3b80d850331",
+    "tool_call_event_id": "evt_6eaaf80ce63c"
+  },
+  "metadata": {
+    "agent_id": "codex",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T09:55:09.952693+00:00",
+    "adapter": "codex-desktop-session-jsonl",
+    "codex_session_record_type": "response_item",
+    "codex_session_timestamp": "2026-09-15T09:55:09.457Z",
+    "codex_item_type": "custom_tool_call_output",
+    "codex_item_id": "ctco_01a0a47d-e611-7ca0-96ff-4651cf5d26e9"
+  }
+}

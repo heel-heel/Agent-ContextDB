@@ -1,0 +1,42 @@
+{
+  "event_id": "evt_f6b0f7eea039",
+  "trajectory_id": "traj_dd303caf4acc",
+  "branch_id": "repair-9203c9d4",
+  "event_type": "tool_result",
+  "payload": {
+    "tool_name": "contextdb_rollback_context",
+    "command": "const r = await tools.mcp__contextdb__contextdb_rollback_context({source:\"codex-session\",session_id:\"rollout-2026-09-15T17-51-27-01a0a47a-825a-72c0-8208-b3b80d850331\",snapshot_id:\"snap_476e0c19643a\",reason:\"The repair branch was inspected. Continue from the most recent checkpoint.\"});\ntext(r);",
+    "status": "ok",
+    "preview": "Script completed\nWall time 1.4 seconds\nOutput:\n\n{\"content\":[{\"type\":\"text\",\"text\":\"{\\n  \\\"source\\\": \\\"codex-session\\\",\\n  \\\"session_id\\\": \\\"rollout-2026-09-15T17-51-27-01a0a47a-825a-72c0-8208-b3b80d850331\\\",\\n  \\\"trajectory_id\\\": \\\"traj_dd303caf4acc\\\",\\n  \\\"branch_id\\\": \\\"rollback-476e0c\\\",\\n  \\\"snapshot_id\\\": \\\"snap_476e0c19643a\\\",\\n  \\\"decision_event_id\\\": \\\"evt_b23055c0ec81\\\",\\n  \\\"rollback_event_id\\\": \\\"evt_ee51db40f413\\\",\\n  \\\"version_context\\\": {\\n    \\\"active_branch_id\\\": \\\"rollback-476e0c\\\",\\n    \\\"latest_snapshot\\\": {\\n      \\\"snapshot_id\\\": \\\"snap_476e0c19643a\\\",\\n      \\\"branch_id\\\": \\\"main\\\",\\n      \\\"checkpoint_event_id\\\": \\\"evt_6b872ea7ed1c\\\",\\n      \\\"message\\\": \\\"Before state-changing exec\\\",\\n      \\\"created_at\\\": \\\"2026-09-15T11:14:05.378149+00:00\\\"\\n    },\\n    \\\"repair_branch_suggestion\\\": null,\\n    \\\"last_version_decision\\\": {\\n      \\\"event_id\\\": \\\"evt_b23055c0ec81\\\",\\n      \\\"action\\\": \\\"rollback_context\\\",\\n      \\\"decision\\\": \\\"accepted\\\",\\n      \\\"at\\\": \\\"2026-09-15T11:15:51.102378+00:00\\\"\\n    },\\n    \\\"workspace_restore\\\": {\\n      \\\"supported\\\": false,\\n      \\\"instruction\\\": \\\"ContextDB records branch and rollback state only. Restore files through the Agent workspace after an explicit decision.\\\"\\n    }\\n  }\\n}\"}],\"structuredContent\":{\"source\":\"codex-session\",\"session_id\":\"rollout-2026-09-15T17-51-27-01a0a47a-825a-72c0-8208-b3b80d850331\",\"trajectory_id\":\"traj_dd303caf4acc\",\"branch_id\":\"rollback-476e0c\",\"snapshot_id\":\"snap_476e0c19643a\",\"decision_event_id\":\"evt_b23055c0ec81\",\"rollback_event_id\":\"evt_ee51db40f413\",\"version_context\":{\"active_branch_id\":\"rollback-476e0c\",\"latest_snapshot\":{\"snapshot_id\":\"snap_476e0c19643a\",\"branch_id\":\"main\",\"checkpoint_event_id\":\"evt_6b872ea7ed1c\",\"message\":\"Before state-changing exec\",\"created_at\":\"2026-09-15T11:14:05.378149+00:00\"},\"repair_branch_suggestion\":null,\"last_version_decision\":{\"event_id\":\"evt_b23055c0ec81\",\"action\":\"rollback_context\",\"decision\":\"accepted\",\"at\":\"2026-09-15T11:15:51.102378+00:00\"},\"workspace_restore\":{\"supported\":false,\"instruction\":\"ContextDB records branch and rollback state only. Restore files through the Agent workspace after an explicit decision.\"}}},\"isError\":false}",
+    "exit_code": null,
+    "transport_tool_name": "exec",
+    "tool_chain": [
+      "exec",
+      "contextdb_rollback_context"
+    ],
+    "invoked_tool": "contextdb_rollback_context"
+  },
+  "parent_event_ids": [
+    "evt_b23055c0ec81"
+  ],
+  "actor": "tool",
+  "timestamp": "2026-09-15T11:15:51.406128+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "codex-session",
+    "hook_adapter": "codex-session",
+    "hook_session_id": "rollout-2026-09-15T17-51-27-01a0a47a-825a-72c0-8208-b3b80d850331",
+    "tool_call_event_id": "evt_893964cc9f33"
+  },
+  "metadata": {
+    "agent_id": "codex",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T11:15:51.405913+00:00",
+    "adapter": "codex-desktop-session-jsonl",
+    "codex_session_record_type": "response_item",
+    "codex_session_timestamp": "2026-09-15T11:15:51.121Z",
+    "codex_item_type": "custom_tool_call_output",
+    "codex_item_id": "ctco_01a0a4c7-c6d1-7110-90e8-a93b96bfec75"
+  }
+}

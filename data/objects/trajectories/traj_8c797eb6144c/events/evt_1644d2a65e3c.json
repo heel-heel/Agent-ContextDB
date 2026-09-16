@@ -1,0 +1,30 @@
+{
+  "event_id": "evt_1644d2a65e3c",
+  "trajectory_id": "traj_8c797eb6144c",
+  "branch_id": "repair-0e4481fe",
+  "event_type": "assistant_message",
+  "payload": {
+    "text": "The most recent snapshot is present:\n\n- **Snapshot id:** `snap_e60cf738101e`\n- **Branch id:** `main`\n- **Checkpoint event id:** `evt_b12254faa936`\n- **Timestamp:** `2026-09-15T12:06:24.971258+00:00`\n- **Message:** `Before state-changing bash`\n\nThis snapshot was taken before the second state-changing Node copy command. The active branch remains `repair-0e4481fe`."
+  },
+  "parent_event_ids": [
+    "evt_6e9584b14d25"
+  ],
+  "actor": "agent",
+  "timestamp": "2026-09-15T12:07:16.754285+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "claude-code",
+    "hook_adapter": "generic",
+    "hook_session_id": "59506119-1d61-447d-8f66-8c00331cd764"
+  },
+  "metadata": {
+    "agent_id": "claude-code",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T12:07:16.754123+00:00",
+    "adapter": "claude-code-transcript",
+    "claude_transcript_path": "C:\\Users\\lenovo\\.claude\\projects\\d--software-Pycharm-SelfCode-Agent-ContextDB\\59506119-1d61-447d-8f66-8c00331cd764.jsonl",
+    "claude_transcript_message_id": "5772caff-e65a-4d84-9354-2140e4fffd0b",
+    "claude_transcript_timestamp": "2026-09-15T12:07:16.459Z"
+  }
+}

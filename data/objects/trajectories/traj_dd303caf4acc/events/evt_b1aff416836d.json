@@ -1,0 +1,31 @@
+{
+  "event_id": "evt_b1aff416836d",
+  "trajectory_id": "traj_dd303caf4acc",
+  "branch_id": "repair-9203c9d4",
+  "event_type": "assistant_message",
+  "payload": {
+    "text": "Most recent snapshot:\n\n- Snapshot ID: `snap_476e0c19643a`\n- Branch ID: `main`\n- Checkpoint event ID: `evt_6b872ea7ed1c`\n- Timestamp: `2026-09-15T11:14:05.378149+00:00`\n- Message: `Before state-changing exec`"
+  },
+  "parent_event_ids": [
+    "evt_41d0f467520e"
+  ],
+  "actor": "agent",
+  "timestamp": "2026-09-15T11:15:38.129125+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "codex-session",
+    "hook_adapter": "codex-session",
+    "hook_session_id": "rollout-2026-09-15T17-51-27-01a0a47a-825a-72c0-8208-b3b80d850331"
+  },
+  "metadata": {
+    "agent_id": "codex",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T11:15:38.128931+00:00",
+    "adapter": "codex-desktop-session-jsonl",
+    "codex_session_record_type": "response_item",
+    "codex_session_timestamp": "2026-09-15T11:15:37.706Z",
+    "codex_item_type": "message",
+    "codex_item_id": "msg_0809bc6db53cfd19016aa928d8843487d0ba3b8cf75676edd6"
+  }
+}

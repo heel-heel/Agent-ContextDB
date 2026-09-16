@@ -1,0 +1,43 @@
+{
+  "event_id": "evt_e5724dab4378",
+  "trajectory_id": "traj_dd303caf4acc",
+  "branch_id": "main",
+  "event_type": "tool_result",
+  "payload": {
+    "tool_name": "node",
+    "command": "node -e \"require('fs').writeFileSync('contextdb-codex-reuse-first-parent-absent/note.txt', 'first note')\"",
+    "status": "failed",
+    "preview": "Script completed\nWall time 0.9 seconds\nOutput:\n\n{\"exit_code\":1,\"output\":\"node:fs:2483\\r\\n    return binding.writeFileUtf8(\\r\\n                   ^\\r\\n\\r\\nError: ENOENT: no such file or directory, open 'D:\\\\software\\\\Pycharm\\\\SelfCode\\\\Agent-ContextDB\\\\contextdb-codex-reuse-first-parent-absent\\\\note.txt'\\r\\n    at Object.writeFileSync (node:fs:2483:20)\\r\\n    at [eval]:1:15\\r\\n    at runScriptInThisContext (node:internal/vm:219:10)\\r\\n    at node:internal/process/execution:451:12\\r\\n    at [eval]-wrapper:6:24\\r\\n    at runScriptInContext (node:internal/process/execution:449:60)\\r\\n    at evalFunction (node:internal/process/execution:283:30)\\r\\n    at evalTypeScript (node:internal/process/execution:295:3)\\r\\n    at node:internal/main/eval_string:71:3 {\\r\\n  errno: -4058,\\r\\n  code: 'ENOENT',\\r\\n  syscall: 'open',\\r\\n  path: 'D:\\\\\\\\software\\\\\\\\Pycharm\\\\\\\\SelfCode\\\\\\\\Agent-ContextDB\\\\\\\\contextdb-codex-reuse-first-parent-absent\\\\\\\\note.txt'\\r\\n}\\r\\n\\r\\nNode.js v24.20.0\\r\\n\"}",
+    "exit_code": 1,
+    "transport_tool_name": "exec",
+    "tool_chain": [
+      "exec",
+      "node"
+    ],
+    "invoked_tool": "node",
+    "failure_tool_name": "node"
+  },
+  "parent_event_ids": [
+    "evt_8c122d423243"
+  ],
+  "actor": "tool",
+  "timestamp": "2026-09-15T11:13:12.651139+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "codex-session",
+    "hook_adapter": "codex-session",
+    "hook_session_id": "rollout-2026-09-15T17-51-27-01a0a47a-825a-72c0-8208-b3b80d850331",
+    "tool_call_event_id": "evt_8c122d423243"
+  },
+  "metadata": {
+    "agent_id": "codex",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T11:13:12.650857+00:00",
+    "adapter": "codex-desktop-session-jsonl",
+    "codex_session_record_type": "response_item",
+    "codex_session_timestamp": "2026-09-15T11:13:12.060Z",
+    "codex_item_type": "custom_tool_call_output",
+    "codex_item_id": "ctco_01a0a4c5-597c-7c73-be20-9ce03fbbb145"
+  }
+}

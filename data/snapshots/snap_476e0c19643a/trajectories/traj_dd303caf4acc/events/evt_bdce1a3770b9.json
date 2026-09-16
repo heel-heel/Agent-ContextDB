@@ -1,0 +1,42 @@
+{
+  "event_id": "evt_bdce1a3770b9",
+  "trajectory_id": "traj_dd303caf4acc",
+  "branch_id": "main",
+  "event_type": "tool_result",
+  "payload": {
+    "tool_name": "contextdb_record_skill_application",
+    "command": "const r = await tools.mcp__contextdb__contextdb_record_skill_application({source:\"codex-session\",session_id:\"rollout-2026-09-15T17-51-27-01a0a47a-825a-72c0-8208-b3b80d850331\",skill_match_event_id:\"evt_b98285f60877\",skill_id:\"skill_git_file_path_absent_from_git\",action_id:\"act_git_file_path_absent_from_git_1\",tool_name:\"exec_command\",command:\"powershell -NoProfile -Command '[Environment]::SetEnvironmentVariable((\\\"LC\\\" + [char]95 + \\\"ALL\\\"), \\\"C\\\", \\\"Process\\\"); $env:LANG=\\\"C\\\"; git show HEAD:examples/live-path-demo/assets/settings.json; exit $LASTEXITCODE'\",status:\"ok\",exit_code:0,preview:\"{\\n  \\\"mode\\\": \\\"clean-path-skill-demo\\\",\\n  \\\"source\\\": \\\"project-fixture\\\",\\n  \\\"purpose\\\": \\\"real file-path repair and skill-reuse demonstration\\\"\\n}\"});\ntext(r);",
+    "status": "ok",
+    "preview": "Script completed\nWall time 26.1 seconds\nOutput:\n\n{\"content\":[{\"type\":\"text\",\"text\":\"{\\n  \\\"source\\\": \\\"codex-session\\\",\\n  \\\"session_id\\\": \\\"rollout-2026-09-15T17-51-27-01a0a47a-825a-72c0-8208-b3b80d850331\\\",\\n  \\\"trajectory_id\\\": \\\"traj_dd303caf4acc\\\",\\n  \\\"tool_call_event_id\\\": \\\"evt_b254f35a57c7\\\",\\n  \\\"tool_result_event_id\\\": \\\"evt_7e6e32fe5b20\\\",\\n  \\\"status\\\": \\\"ok\\\",\\n  \\\"next_skill_match_event_id\\\": null,\\n  \\\"repair_branch_suggestion\\\": null,\\n  \\\"version_context\\\": {\\n    \\\"active_branch_id\\\": \\\"main\\\",\\n    \\\"latest_snapshot\\\": null,\\n    \\\"repair_branch_suggestion\\\": null,\\n    \\\"last_version_decision\\\": null,\\n    \\\"workspace_restore\\\": {\\n      \\\"supported\\\": false,\\n      \\\"instruction\\\": \\\"ContextDB records branch and rollback state only. Restore files through the Agent workspace after an explicit decision.\\\"\\n    }\\n  }\\n}\"}],\"structuredContent\":{\"source\":\"codex-session\",\"session_id\":\"rollout-2026-09-15T17-51-27-01a0a47a-825a-72c0-8208-b3b80d850331\",\"trajectory_id\":\"traj_dd303caf4acc\",\"tool_call_event_id\":\"evt_b254f35a57c7\",\"tool_result_event_id\":\"evt_7e6e32fe5b20\",\"status\":\"ok\",\"next_skill_match_event_id\":null,\"repair_branch_suggestion\":null,\"version_context\":{\"active_branch_id\":\"main\",\"latest_snapshot\":null,\"repair_branch_suggestion\":null,\"last_version_decision\":null,\"workspace_restore\":{\"supported\":false,\"instruction\":\"ContextDB records branch and rollback state only. Restore files through the Agent workspace after an explicit decision.\"}}},\"isError\":false}",
+    "exit_code": null,
+    "transport_tool_name": "exec",
+    "tool_chain": [
+      "exec",
+      "contextdb_record_skill_application"
+    ],
+    "invoked_tool": "contextdb_record_skill_application"
+  },
+  "parent_event_ids": [
+    "evt_7e6e32fe5b20"
+  ],
+  "actor": "tool",
+  "timestamp": "2026-09-15T09:57:04.648775+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "codex-session",
+    "hook_adapter": "codex-session",
+    "hook_session_id": "rollout-2026-09-15T17-51-27-01a0a47a-825a-72c0-8208-b3b80d850331",
+    "tool_call_event_id": "evt_d70b366a4304"
+  },
+  "metadata": {
+    "agent_id": "codex",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T09:57:04.648594+00:00",
+    "adapter": "codex-desktop-session-jsonl",
+    "codex_session_record_type": "response_item",
+    "codex_session_timestamp": "2026-09-15T09:57:04.387Z",
+    "codex_item_type": "custom_tool_call_output",
+    "codex_item_id": "ctco_01a0a47f-a703-7951-abb0-6d61cc863acc"
+  }
+}

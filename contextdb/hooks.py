@@ -37,7 +37,7 @@ _MUTATING_COMMAND = re.compile(
     r"pip\s+(?:install|uninstall)|npm\s+(?:install|uninstall|update)|"
     r"cargo\s+(?:add|update))(?:\s|$)|"
     r"\.(?:write_text|write_bytes)\s*\(|"
-    r"\.(?:writefilesync|appendfilesync)\s*\(|"
+    r"\.(?:writefilesync|appendfilesync|copyfilesync|renamesync)\s*\(|"
     r"\bopen\s*\([^,\n]+,\s*[\"'](?:w|a|x)[\"']|"
     r"(?<![<>=])>(?!>)",
     re.IGNORECASE,

@@ -1,0 +1,31 @@
+{
+  "event_id": "evt_20304b5e216f",
+  "trajectory_id": "traj_dd303caf4acc",
+  "branch_id": "main",
+  "event_type": "user_message",
+  "payload": {
+    "text": "From the project root, use your ordinary native terminal tool to run this real command. Report the complete raw output.\n\nnode -e \"require('fs').writeFileSync('contextdb-codex-reuse-second-parent-absent/note.txt', 'second note')\"\n"
+  },
+  "parent_event_ids": [
+    "evt_ed76099f39dc"
+  ],
+  "actor": "user",
+  "timestamp": "2026-09-15T11:13:58.109905+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "codex-session",
+    "hook_adapter": "codex-session",
+    "hook_session_id": "rollout-2026-09-15T17-51-27-01a0a47a-825a-72c0-8208-b3b80d850331"
+  },
+  "metadata": {
+    "agent_id": "codex",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T11:13:58.109738+00:00",
+    "adapter": "codex-desktop-session-jsonl",
+    "codex_session_record_type": "response_item",
+    "codex_session_timestamp": "2026-09-15T11:13:57.743Z",
+    "codex_item_type": "message",
+    "codex_item_id": "msg_01a0a4c6-0bef-7bb2-97c3-c042c16934ec"
+  }
+}

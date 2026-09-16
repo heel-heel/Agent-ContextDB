@@ -1,0 +1,30 @@
+{
+  "event_id": "evt_e8cdfa9a4f33",
+  "trajectory_id": "traj_8c797eb6144c",
+  "branch_id": "main",
+  "event_type": "assistant_message",
+  "payload": {
+    "text": "Recorded a **rejected** version decision for the repair-branch suggestion:\n\n- **Decision:** rejected\n- **Action:** create_repair_branch\n- **Decision event id:** `evt_6494fe4c20fc`\n- **Reason:** Keep this first failed Node copy on main for diagnosis.\n\n**Active branch:** `main` (unchanged — the rejection keeps the trajectory on `main`)."
+  },
+  "parent_event_ids": [
+    "evt_9bfc312e18dd"
+  ],
+  "actor": "agent",
+  "timestamp": "2026-09-15T12:06:20.283495+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "claude-code",
+    "hook_adapter": "generic",
+    "hook_session_id": "59506119-1d61-447d-8f66-8c00331cd764"
+  },
+  "metadata": {
+    "agent_id": "claude-code",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T12:06:20.283314+00:00",
+    "adapter": "claude-code-transcript",
+    "claude_transcript_path": "C:\\Users\\lenovo\\.claude\\projects\\d--software-Pycharm-SelfCode-Agent-ContextDB\\59506119-1d61-447d-8f66-8c00331cd764.jsonl",
+    "claude_transcript_message_id": "704ef90b-22dd-469d-8a11-bff2046b78aa",
+    "claude_transcript_timestamp": "2026-09-15T12:06:19.967Z"
+  }
+}

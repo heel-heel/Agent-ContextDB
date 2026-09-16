@@ -1,0 +1,27 @@
+{
+  "event_id": "evt_8d34e016f4fd",
+  "trajectory_id": "traj_8c797eb6144c",
+  "branch_id": "main",
+  "event_type": "skill_decision",
+  "payload": {
+    "decision": "accepted",
+    "reason": "Accepted: the proposed Git file path (examples/live-path-demo/assets/settings.json) will be used for the repair, replacing the incorrect root-level assets/settings.json path.",
+    "skill_id": "skill_git_file_path_absent_from_git",
+    "action_id": "act_git_file_path_absent_from_git_1"
+  },
+  "parent_event_ids": [
+    "evt_3263b99d5cdc"
+  ],
+  "actor": "agent",
+  "timestamp": "2026-09-15T12:04:00.465354+00:00",
+  "refs": {
+    "skill_match_event_id": "evt_e7017ee3fd4c",
+    "skill_id": "skill_git_file_path_absent_from_git",
+    "selected_action_id": "act_git_file_path_absent_from_git_1"
+  },
+  "metadata": {
+    "operation": "skill_decision",
+    "online": true,
+    "integration": "agent-hook.v1"
+  }
+}

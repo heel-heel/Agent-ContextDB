@@ -1,0 +1,40 @@
+{
+  "event_id": "evt_8c1ca8a8bd13",
+  "trajectory_id": "traj_dd303caf4acc",
+  "branch_id": "main",
+  "event_type": "tool_result",
+  "payload": {
+    "tool_name": "exec",
+    "command": "const matches = ALL_TOOLS.filter(x => x.name.includes(\"contextdb_record_skill_application\"));\ntext(matches);",
+    "status": "ok",
+    "preview": "Script completed\nWall time 0.0 seconds\nOutput:\n\n[{\"name\":\"mcp__contextdb__contextdb_record_skill_application\",\"description\":\"Call contextdb_prepare_context before planning and contextdb_record_tool_result after every real tool execution. Never execute a recommendation automatically.\\n\\nRecord the result of an accepted skill-guided action that the Agent actually executed through its normal tool system. This records evidence only; ContextDB does not execute the command itself.\\n\\nexec tool declaration:\\n```ts\\ndeclare const tools: { mcp__contextdb__contextdb_record_skill_application(args: {\\n  action_id?: string;\\n  command: string;\\n  exit_code?: number | null;\\n  preview?: string;\\n  session_id: string;\\n  skill_id?: string;\\n  skill_match_event_id?: string;\\n  source: string;\\n  status: \\\"ok\\\" | \\\"failed\\\" | \\\"error\\\" | \\\"timeout\\\";\\n  // Optional ContextDB tool_call event id to reuse.\\n  tool_call_event_id?: string;\\n  // Optional id from contextdb_record_tool_call.\\n  tool_call_id?: string;\\n  tool_name: string;\\n}): Promise<CallToolResult>; };\\n```\"}]",
+    "exit_code": null,
+    "transport_tool_name": "exec",
+    "tool_chain": [
+      "exec"
+    ]
+  },
+  "parent_event_ids": [
+    "evt_ea556c34bd10"
+  ],
+  "actor": "tool",
+  "timestamp": "2026-09-15T09:56:25.162818+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "codex-session",
+    "hook_adapter": "codex-session",
+    "hook_session_id": "rollout-2026-09-15T17-51-27-01a0a47a-825a-72c0-8208-b3b80d850331",
+    "tool_call_event_id": "evt_ea556c34bd10"
+  },
+  "metadata": {
+    "agent_id": "codex",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T09:56:25.162541+00:00",
+    "adapter": "codex-desktop-session-jsonl",
+    "codex_session_record_type": "response_item",
+    "codex_session_timestamp": "2026-09-15T09:56:24.442Z",
+    "codex_item_type": "custom_tool_call_output",
+    "codex_item_id": "ctco_01a0a47f-0afa-77e2-a470-c384cf2c1b54"
+  }
+}

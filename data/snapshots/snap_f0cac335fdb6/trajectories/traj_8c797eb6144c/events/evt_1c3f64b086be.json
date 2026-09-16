@@ -1,0 +1,82 @@
+{
+  "event_id": "evt_1c3f64b086be",
+  "trajectory_id": "traj_8c797eb6144c",
+  "branch_id": "main",
+  "event_type": "skill_recommendation",
+  "payload": {
+    "type": "contextdb_skill_recommendation",
+    "matched": true,
+    "skill_id": "skill_python_misspelled_python_module_name_python_c_import_jsonn",
+    "skill_name": "Repair misspelled python module name in import statement",
+    "match_score": 0.938077,
+    "match_reason": "vector cosine similarity over failure and learned trigger",
+    "selected_action": {
+      "action_id": "act_python_misspelled_python_module_name_python_c_import_jsonn_1",
+      "name": "Complete raw output:\n\n```\nExit code 1\nTraceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n    import jsonn\nModuleNotFoundError: No module ",
+      "canonical_tool": "python",
+      "canonical_command_template": "python -c \"import json; print(json.__name__)\"",
+      "strategy": "Complete raw output:\n\n```\nExit code 1\nTraceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n    import jsonn\nModuleNotFoundError: No module named 'jsonn'\n```\n\nThe command failed because there is no module named `jsonn` (likely a typo of `json`).",
+      "support_event_ids": [
+        "evt_684d65a183b7"
+      ],
+      "support_events": [
+        {
+          "trajectory_id": "traj_8ab5973b84ab",
+          "failure_event_id": "evt_3493949bf720",
+          "success_event_id": "evt_684d65a183b7",
+          "branch_id": "main",
+          "failure_tool_call_event_id": "evt_2bcf3c1543ee",
+          "success_tool_call_event_id": "evt_d7b1d401f8b6",
+          "tool": "python",
+          "command": "python -c \"import json; print(json.__name__)\"",
+          "strategy": "Complete raw output:\n\n```\nExit code 1\nTraceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n    import jsonn\nModuleNotFoundError: No module named 'jsonn'\n```\n\nThe command failed because there is no module named `jsonn` (likely a typo of `json`).",
+          "outcome": "ok",
+          "primary_rule": "same_branch_first_success_after_failure",
+          "judgment_label": "likely_repair",
+          "confidence": 0.95,
+          "reason": "The failed command imported the misspelled module `jsonn`, while the successful command imports the correct module `json`, directly addressing the ModuleNotFoundError.",
+          "vector_text": "python python -c \"import json; print(json.__name__)\" Complete raw output:\n\n```\nExit code 1\nTraceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n    import jsonn\nModuleNotFoundError: No module named 'jsonn'\n```\n\nThe command failed because there is no module named `jsonn` (likely a typo of `json`)."
+        }
+      ],
+      "confidence": {
+        "max_llm_confidence": 0.95,
+        "support_count": 1
+      },
+      "dedupe": {
+        "method": "vector_cosine",
+        "embedding": "hash-384",
+        "threshold": 0.78,
+        "group_size": 1
+      }
+    },
+    "selected_action_index": 0,
+    "selected_action_score": 0.95,
+    "selection_policy": "highest max_llm_confidence; ties keep original action order",
+    "instruction": "Use this as a suggestion. The Agent must decide whether it is safe and appropriate before executing it.",
+    "version_context": {
+      "active_branch_id": "main",
+      "latest_snapshot": null,
+      "repair_branch_suggestion": null,
+      "last_version_decision": null,
+      "workspace_restore": {
+        "supported": false,
+        "instruction": "ContextDB records branch and rollback state only. Restore files through the Agent workspace after an explicit decision."
+      }
+    }
+  },
+  "parent_event_ids": [
+    "evt_4f2dc56bd496"
+  ],
+  "actor": "contextdb",
+  "timestamp": "2026-09-15T12:04:37.356421+00:00",
+  "refs": {
+    "skill_match_event_id": "evt_4f2dc56bd496",
+    "skill_id": "skill_python_misspelled_python_module_name_python_c_import_jsonn",
+    "selected_action_id": "act_python_misspelled_python_module_name_python_c_import_jsonn_1"
+  },
+  "metadata": {
+    "operation": "skill_recommendation_delivery",
+    "delivery_channel": "claude-code-post-tool-failure",
+    "online": true
+  }
+}

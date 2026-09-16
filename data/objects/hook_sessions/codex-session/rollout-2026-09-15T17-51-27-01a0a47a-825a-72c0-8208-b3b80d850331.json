@@ -1,0 +1,74 @@
+{
+  "schema_version": "contextdb.hook_session.v2",
+  "source": "codex-session",
+  "session_id": "rollout-2026-09-15T17-51-27-01a0a47a-825a-72c0-8208-b3b80d850331",
+  "agent_id": "codex",
+  "trajectory_id": "traj_dd303caf4acc",
+  "created_at": "2026-09-15T09:51:28.773453+00:00",
+  "updated_at": "2026-09-15T11:15:57.269338+00:00",
+  "event_count": 138,
+  "pending_tools": {},
+  "last_skill_retrieval": {
+    "match_event_id": "evt_51a917281b61",
+    "matched": false,
+    "agent_context": {
+      "type": "contextdb_skill_recommendation",
+      "matched": false,
+      "instruction": "No reusable ContextDB skill matched this failure. Continue with normal diagnosis.",
+      "version_context": {
+        "active_branch_id": "main",
+        "latest_snapshot": {
+          "snapshot_id": "snap_476e0c19643a",
+          "branch_id": "main",
+          "event_id": "evt_6b872ea7ed1c",
+          "message": "Before state-changing exec",
+          "created_at": "2026-09-15T11:14:05.378149+00:00"
+        },
+        "repair_branch_suggestion": {
+          "suggestion_event_id": "evt_b9f789d28c3e",
+          "failure_event_id": "evt_9203c9d49534",
+          "snapshot_id": "snap_476e0c19643a",
+          "suggested_branch_id": "repair-9203c9d4",
+          "source_branch_id": "main",
+          "created_at": "2026-09-15T11:14:06.218522+00:00"
+        },
+        "last_version_decision": {
+          "event_id": "evt_9a1c9b17aed8",
+          "action": "create_repair_branch",
+          "decision": "rejected",
+          "at": "2026-09-15T11:13:52.353358+00:00"
+        },
+        "workspace_restore": {
+          "supported": false,
+          "instruction": "ContextDB records branch and rollback state only. Restore files through the Agent workspace after an explicit decision."
+        }
+      }
+    }
+  },
+  "last_skill_delivery": {
+    "delivery_event_id": "evt_d0326c23fde8",
+    "match_event_id": "evt_3e3ae4bb5c02",
+    "matched": true,
+    "delivered_at": "2026-09-15T11:11:40.839648+00:00"
+  },
+  "last_skill_decision": {
+    "event_id": "evt_3c2002151114",
+    "decision": "accepted",
+    "at": "2026-09-15T11:12:08.978018+00:00"
+  },
+  "active_branch_id": "rollback-476e0c",
+  "last_version_snapshot": {
+    "snapshot_id": "snap_476e0c19643a",
+    "branch_id": "main",
+    "event_id": "evt_6b872ea7ed1c",
+    "message": "Before state-changing exec",
+    "created_at": "2026-09-15T11:14:05.378149+00:00"
+  },
+  "last_repair_suggestion": null,
+  "last_version_decision": {
+    "event_id": "evt_b23055c0ec81",
+    "action": "rollback_context",
+    "decision": "accepted",
+    "at": "2026-09-15T11:15:51.102378+00:00"
+  }
+}

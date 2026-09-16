@@ -1,0 +1,31 @@
+{
+  "event_id": "evt_45928b973736",
+  "trajectory_id": "traj_dd303caf4acc",
+  "branch_id": "main",
+  "event_type": "assistant_message",
+  "payload": {
+    "text": "A repair-branch suggestion is present for the second failed Node write:\n\n- Suggested branch ID: `repair-9203c9d4`\n- Source snapshot ID: `snap_476e0c19643a`\n- Source branch ID: `main`"
+  },
+  "parent_event_ids": [
+    "evt_a8af7db3f19a"
+  ],
+  "actor": "agent",
+  "timestamp": "2026-09-15T11:14:28.873346+00:00",
+  "refs": {
+    "hook_protocol": "contextdb.agent_hook.v1",
+    "hook_source": "codex-session",
+    "hook_adapter": "codex-session",
+    "hook_session_id": "rollout-2026-09-15T17-51-27-01a0a47a-825a-72c0-8208-b3b80d850331"
+  },
+  "metadata": {
+    "agent_id": "codex",
+    "online": true,
+    "integration": "agent-hook.v1",
+    "hook_received_at": "2026-09-15T11:14:28.873140+00:00",
+    "adapter": "codex-desktop-session-jsonl",
+    "codex_session_record_type": "response_item",
+    "codex_session_timestamp": "2026-09-15T11:14:28.444Z",
+    "codex_item_type": "message",
+    "codex_item_id": "msg_0809bc6db53cfd19016aa92893d5a487d0bab41e5f89b87051"
+  }
+}
