@@ -109,6 +109,10 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
     .learned-skills-table th:nth-child(2), .learned-skills-table td:nth-child(2) { width:58%; }
     .learned-skills-table td { overflow-wrap:anywhere; }
     .learned-skill-action { font-weight:400; }
+    .global-skill-detail { margin-top:10px; border:1px solid #b9d5ec; border-left:4px solid #2364aa; border-radius:6px; background:#fbfdff; padding:12px; }
+    .global-skill-detail[hidden] { display:none; }
+    .global-skill-detail h4 { margin:0 0 8px; color:#17202a; font-size:16px; line-height:1.3; }
+    .global-skill-detail > p { margin:0 0 8px; }
     .skill-support-event + .skill-support-event { margin-top:7px; padding-top:7px; border-top:1px solid #d8e4ef; }
     .skill-support-judge { margin-top:3px; font-size:11px; line-height:1.35; }
     .skill-support-judge .muted { display:block; margin-top:2px; }
@@ -235,41 +239,51 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
     .page.hidden { display:none; }
     .global-page { display:block; padding:16px; min-height:calc(100vh - 64px); }
     .global-page > section { min-height:calc(100vh - 96px); }
-    .global-overview-content { padding:14px; display:flex; flex-direction:column; gap:4px; }
+    .global-overview-content { padding:14px; display:flex; flex-direction:column; gap:0; }
     .global-metrics { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; }
-    .global-metric { border-left:3px solid #2364aa; background:#f4f8fd; padding:10px; }
+    .global-metric { display:flex; flex-direction:column; align-items:center; justify-content:center; border-left:3px solid #2364aa; background:#f4f8fd; padding:10px; text-align:center; }
     .global-metric b { display:block; font-size:20px; }
     .global-metric span { color:var(--muted); font-size:12px; }
-    .global-section { border:1px solid #c9def5; border-left:4px solid #2364aa; border-radius:7px; background:#fbfdff; padding:8px 12px 10px; }
+    .global-section { border:1px solid #c9def5; border-radius:7px; background:#fbfdff; padding:8px 12px 10px; }
     .global-section > h3 { margin:0 0 7px; color:#17202a; font-size:17px; font-weight:700; line-height:1.3; }
     .global-section > p { margin:0 0 7px; }
     .global-section .table-wrap { border-color:#d4e3f1; border-radius:6px; background:#fff; }
-    .trajectory-catalog-table { min-width:1200px; table-layout:fixed; }
+    .global-section .table-wrap tbody tr:hover { background:#f5faff; }
+    .trajectory-catalog-table { min-width:1120px; table-layout:fixed; }
     .trajectory-catalog-table th, .trajectory-catalog-table td { text-align:center; vertical-align:middle; }
     .trajectory-catalog-table th:nth-child(1), .trajectory-catalog-table td:nth-child(1) { width:145px; }
     .trajectory-catalog-table th:nth-child(2), .trajectory-catalog-table td:nth-child(2) { width:105px; }
     .trajectory-catalog-table th:nth-child(3), .trajectory-catalog-table td:nth-child(3) { width:195px; }
     .trajectory-catalog-table th:nth-child(4), .trajectory-catalog-table td:nth-child(4) { width:55px; }
     .trajectory-catalog-table th:nth-child(5), .trajectory-catalog-table td:nth-child(5) { width:65px; }
-    .trajectory-catalog-table th:nth-child(6), .trajectory-catalog-table td:nth-child(6) { width:300px; }
-    .trajectory-catalog-table th:nth-child(7), .trajectory-catalog-table td:nth-child(7) { width:250px; }
-    .trajectory-catalog-table th:nth-child(8), .trajectory-catalog-table td:nth-child(8) { width:85px; }
+    .trajectory-catalog-table th:nth-child(6), .trajectory-catalog-table td:nth-child(6) { width:320px; }
+    .trajectory-catalog-table th:nth-child(7), .trajectory-catalog-table td:nth-child(7) { width:235px; }
     .global-trajectory-id { display:block; font-family:inherit; font-size:12px; font-weight:700; overflow-wrap:anywhere; }
-    .global-open-btn { display:block; margin:0 auto; }
+    .global-open-btn { display:block; margin:9px auto 0; }
     .trajectory-catalog-table td:nth-child(7) .pill { max-width:100%; white-space:normal; overflow-wrap:anywhere; }
+    .global-related-skill { border:0; cursor:pointer; font:inherit; text-align:left; }
+    .global-related-skill:hover { background:#d7ecdf; text-decoration:underline; }
+    .global-related-skill:focus-visible { outline:2px solid #2364aa; outline-offset:2px; }
     .global-relationship-graph { position:relative; min-height:350px; overflow:auto; border:1px solid #c9ddec; border-radius:7px; background:#f8fbff; }
     .global-relationship-edges { position:absolute; inset:0; z-index:0; pointer-events:none; overflow:visible; }
     .global-relationship-edges line { stroke:#91abc3; stroke-width:2; opacity:.85; }
     .global-relationship-edges line.uses-skill { stroke:#2f855a; stroke-dasharray:5 4; }
     .global-relationship-edges line.skill-action { stroke:#087ea4; }
-    .global-relationship-columns { position:relative; z-index:1; display:grid; grid-template-columns:repeat(3,minmax(230px,1fr)); gap:42px; min-width:840px; padding:16px; }
-    .global-relationship-column h3 { margin:0 0 9px; color:#355e87; font-size:13px; }
-    .global-relationship-stack { display:flex; flex-direction:column; gap:9px; }
-    .global-graph-node { min-height:58px; border:1px solid #d4e1ee; border-left:4px solid #64748b; border-radius:6px; background:#fff; padding:8px 9px; box-shadow:0 1px 2px rgba(23,50,77,.05); overflow-wrap:anywhere; }
-    .global-graph-node.trajectory { border-left-color:#2364aa; background:#f4f8fd; }
+    .global-relationship-columns { position:relative; z-index:1; display:grid; grid-template-columns:150px 250px 390px; justify-content:space-between; column-gap:40px; min-width:902px; padding:16px; }
+    .global-relationship-column { display:flex; min-height:0; flex-direction:column; }
+    .global-relationship-column h3 { margin:0 0 9px; color:#355e87; font-size:13px; text-align:center; }
+    .global-relationship-stack { display:flex; flex:1; min-height:0; flex-direction:column; gap:9px; }
+    .global-relationship-column:first-child .global-relationship-stack,
+    .global-relationship-column:last-child .global-relationship-stack { justify-content:space-between; }
+    .global-relationship-column:nth-child(2) { transform:translateX(80px); }
+    .global-graph-node { min-height:0; border:1px solid #d4e1ee; border-left:4px solid #64748b; border-radius:6px; background:#fff; padding:8px 9px; box-shadow:0 1px 2px rgba(23,50,77,.05); overflow-wrap:anywhere; text-align:center; }
+    .global-graph-node.trajectory,
+    .global-graph-node.skill { display:flex; align-items:center; justify-content:center; min-height:50px; }
+    .global-graph-node.trajectory { border-left-color:#9b4662; background:#fff7f8; }
     .global-graph-node.tool { border-left-color:#9a6b16; background:#fffaf0; }
     .global-graph-node.skill { border-left-color:#2f855a; background:#f2fbf5; }
     .global-graph-node b { display:block; font-size:12px; }
+    .global-graph-node.skill b { white-space:nowrap; }
     .global-graph-node span { display:block; margin-top:3px; color:var(--muted); font-size:11px; }
     .global-graph-node button { width:100%; height:auto; min-height:20px; margin-top:5px; padding:2px 5px; border:0; background:transparent; color:#1f5592; text-align:left; font-size:11px; }
     .global-graph-node button:hover { text-decoration:underline; }
@@ -874,10 +888,9 @@ function setMode(mode) {
 }
 
 function globalGraphNode(node) {
-  const button = node.type === 'trajectory'
-    ? `<button onclick='openTrajectoryFromGlobal(${JSON.stringify(node.trajectory_id)})'>Open trajectory</button>`
-    : '';
-  return `<div class="global-graph-node ${escapeHtml(node.type)}" data-global-node="${escapeHtml(node.id)}"><b>${escapeHtml(node.label)}</b><span>${escapeHtml(node.detail || '')}</span>${button}</div>`;
+  const label = node.type === 'trajectory' ? node.trajectory_id : node.label;
+  const detail = node.type === 'tool' ? `<span>${escapeHtml(node.detail || '')}</span>` : '';
+  return `<div class="global-graph-node ${escapeHtml(node.type)}" data-global-node="${escapeHtml(node.id)}"><b>${escapeHtml(label || '')}</b>${detail}</div>`;
 }
 
 function drawGlobalRelationshipGraph(graphData) {
@@ -911,9 +924,64 @@ function drawGlobalRelationshipGraph(graphData) {
     line.setAttribute('x2', forward ? targetLeft : targetRight);
     line.setAttribute('y2', targetCenterY);
     line.setAttribute('class', String(edge.kind || '').replaceAll('_', '-'));
-    line.setAttribute('stroke-width', Math.min(5, 1 + Number(edge.count || 1)));
+    line.setAttribute('stroke-width', '2');
     edges.appendChild(line);
   }
+}
+
+function globalSkillSemanticSupportText(items) {
+  const groups = {};
+  for (const item of items || []) {
+    const label = String(item.judgment_label || '').replaceAll('_', ' ').trim();
+    if (!label) continue;
+    const confidence = Number(item.confidence);
+    const entry = groups[label] || {count:0, confidences:[]};
+    entry.count += 1;
+    if (Number.isFinite(confidence)) entry.confidences.push(confidence);
+    groups[label] = entry;
+  }
+  return Object.entries(groups).map(([label, entry]) => {
+    const average = entry.confidences.length
+      ? entry.confidences.reduce((sum, value) => sum + value, 0) / entry.confidences.length
+      : null;
+    return `${entry.count} ${label}${average === null ? '' : ` (${average.toFixed(2)})`}`;
+  }).join(', ') || 'No semantic support';
+}
+
+function showGlobalSkillDetail(index) {
+  const container = $('globalSkillDetail');
+  const skill = (globalOverviewData?.skills || [])[index];
+  if (!container || !skill) return;
+  const detail = skill.detail || skill;
+  const trigger = detail.trigger || {};
+  const confidence = detail.confidence || {};
+  const recommendedActions = detail.recommended_actions || [];
+  const semanticSupport = recommendedActions.flatMap(action => action.support_events || []);
+  const actions = recommendedActions.map(action => {
+    const command = action.canonical_command_template || action.command_template || action.command || '';
+    const supports = (action.support_events || []).map(event => {
+      const label = String(event.judgment_label || 'not_evaluated');
+      const pillClass = label === 'likely_repair' || label === 'partial_repair'
+        ? 'ok' : (label === 'not_evaluated' ? '' : 'excluded');
+      return `<div class="skill-support-event"><span class="pill ok">${escapeHtml(event.branch_id || '')}</span><span class="pill mono">${escapeHtml(event.success_event_id || '')}</span><span class="pill ${pillClass}">${escapeHtml(label.replaceAll('_', ' '))}</span><div class="skill-support-judge"><span class="muted">Confidence: ${escapeHtml(event.confidence ?? '')}${event.reason ? ` - ${escapeHtml(event.reason)}` : ''}</span></div></div>`;
+    }).join('') || '<span class="muted">No support events.</span>';
+    return `<tr><td><div class="learned-skill-action">${escapeHtml(command ? `Apply ${command}` : 'Apply successful repair')}</div></td><td>${supports}</td></tr>`;
+  }).join('') || '<tr><td colspan="2" class="muted">No recommended actions.</td></tr>';
+  container.hidden = false;
+  container.innerHTML = `<h4>${escapeHtml(detail.name || skill.name || skill.skill_id)}</h4>
+    <p><span class="pill rule">Skill ID: ${escapeHtml(detail.skill_id || skill.skill_id)}</span></p>
+    <p><span class="pill">${escapeHtml(confidence.support_count || skill.support_count || 0)} evidence refs</span><span class="pill ok">Semantic support: ${escapeHtml(globalSkillSemanticSupportText(semanticSupport))}</span></p>
+    <div class="skill-trigger"><b>Trigger</b><div><span class="muted">Tool:</span> ${escapeHtml(trigger.failed_tool || skill.trigger_tool || '')}</div><div><span class="muted">Command pattern:</span> <span class="mono">${escapeHtml(trigger.failed_command_pattern || '')}</span></div><div><span class="muted">Likely cause:</span> ${escapeHtml(trigger.likely_cause || '')}</div></div>
+    <div class="table-wrap learned-skills-wrap"><table class="learned-skills-table"><thead><tr><th>Recommended Action</th><th>Support Events</th></tr></thead><tbody>${actions}</tbody></table></div>`;
+}
+
+function showGlobalSkillDetailForSkill(sourceTrajectoryId, skillId) {
+  const index = (globalOverviewData?.skills || []).findIndex(skill =>
+    skill.source_trajectory_id === sourceTrajectoryId && skill.skill_id === skillId
+  );
+  if (index < 0) return;
+  showGlobalSkillDetail(index);
+  $('globalSkillDetail')?.scrollIntoView({behavior:'smooth', block:'nearest'});
 }
 
 function renderGlobalOverview(data) {
@@ -940,24 +1008,24 @@ function renderGlobalOverview(data) {
     }).join('') || '<span class="muted">No tool results</span>';
     const relatedSkills = (row.associated_skills || []).map(skill => {
       const count = skill.application_count || skill.support_count || 0;
-      return `<span class="pill ok">${escapeHtml(skill.skill_id || skill.name)} (${escapeHtml(count)})</span>`;
+      return `<button type="button" class="pill ok global-related-skill" title="${escapeHtml(skill.skill_id || '')}" onclick='showGlobalSkillDetailForSkill(${JSON.stringify(skill.source_trajectory_id)}, ${JSON.stringify(skill.skill_id)})'>${escapeHtml(skill.name || skill.skill_id)} (${escapeHtml(count)})</button>`;
     }).join('') || '<span class="muted">No learned or applied skills</span>';
-    return `<tr><td><b class="global-trajectory-id">${escapeHtml(row.trajectory_id)}</b></td><td>${escapeHtml(displaySource(row))}</td><td>${escapeHtml(displayVersionTimestamp(row.created_at))}<div class="muted">updated ${escapeHtml(displayVersionTimestamp(row.updated_at))}</div></td><td>${escapeHtml(row.event_count)}</td><td>${escapeHtml(row.branch_count || 0)}</td><td>${tools}</td><td>${relatedSkills}</td><td><button class="small-btn global-open-btn" onclick='openTrajectoryFromGlobal(${JSON.stringify(row.trajectory_id)})'>Open</button></td></tr>`;
-  }).join('') || '<tr><td colspan="8" class="muted">No trajectories have been recorded.</td></tr>';
-  const skillRows = skills.map(skill => `<tr><td><b>${escapeHtml(skill.name)}</b><div class="mono muted">${escapeHtml(skill.skill_id)}</div></td><td><button class="small-btn secondary" onclick='openTrajectoryFromGlobal(${JSON.stringify(skill.source_trajectory_id)})'>${escapeHtml(skill.source_trajectory_id)}</button></td><td>${escapeHtml(skill.trigger_tool || '')}</td><td>${escapeHtml(skill.support_count || 0)}</td><td>${escapeHtml(skill.status || '')}</td></tr>`).join('') || '<tr><td colspan="5" class="muted">No learned skills are currently materialized.</td></tr>';
+    return `<tr><td><b class="global-trajectory-id">${escapeHtml(row.trajectory_id)}</b><button class="small-btn global-open-btn" onclick='openTrajectoryFromGlobal(${JSON.stringify(row.trajectory_id)})'>Open</button></td><td>${escapeHtml(displaySource(row))}</td><td>${escapeHtml(displayVersionTimestamp(row.created_at))}<div class="muted">updated ${escapeHtml(displayVersionTimestamp(row.updated_at))}</div></td><td>${escapeHtml(row.event_count)}</td><td>${escapeHtml(row.branch_count || 0)}</td><td>${tools}</td><td>${relatedSkills}</td></tr>`;
+  }).join('') || '<tr><td colspan="7" class="muted">No trajectories have been recorded.</td></tr>';
+  const skillRows = skills.map((skill, index) => `<tr><td><b>${escapeHtml(skill.name)}</b><div class="mono muted">${escapeHtml(skill.skill_id)}</div></td><td><button class="small-btn secondary" onclick='openTrajectoryFromGlobal(${JSON.stringify(skill.source_trajectory_id)})'>${escapeHtml(skill.source_trajectory_id)}</button></td><td><button class="small-btn" onclick="showGlobalSkillDetail(${index})">Details</button></td></tr>`).join('') || '<tr><td colspan="3" class="muted">No learned skills are currently materialized.</td></tr>';
   $('globalOut').innerHTML = `
     <div class="global-metrics">
       <div class="global-metric"><b>${escapeHtml(data.trajectory_count)}</b><span>trajectories</span></div>
-      <div class="global-metric"><b>${escapeHtml(data.tool_count)}</b><span>tools executed</span></div>
-      <div class="global-metric"><b>${escapeHtml(data.skill_count)}</b><span>shared skills</span></div>
+      <div class="global-metric"><b>${escapeHtml(data.tool_count)}</b><span>tools</span></div>
+      <div class="global-metric"><b>${escapeHtml(data.skill_count)}</b><span>skills</span></div>
     </div>
-    <div class="summary-card global-section"><h3>Trajectory Catalog</h3><div class="table-wrap"><table class="trajectory-catalog-table"><thead><tr><th>Trajectory</th><th>Source</th><th>Created / updated</th><th>Events</th><th>Branches</th><th>Tools executed</th><th>Skills</th><th aria-label="Open trajectory"></th></tr></thead><tbody>${trajectoryRows}</tbody></table></div></div>
-    <div class="summary-card global-section"><h3>Global Skill Library</h3><p class="muted">Skills are stored in one persistent vector collection and can be retrieved by every trajectory. Each entry retains the trajectory that produced it.</p><div class="table-wrap"><table><thead><tr><th>Skill</th><th>Source trajectory</th><th>Trigger tool</th><th>Evidence</th><th>Status</th></tr></thead><tbody>${skillRows}</tbody></table></div></div>
-    <div class="summary-card global-section"><h3>Trajectory / Tool / Skill Relationships</h3><p class="muted">Solid links show tool results. Dashed green links show a trajectory applying an indexed skill. Blue links connect a tool to the skill action that used it.</p>
+    <div class="summary-card global-section"><h3>Trajectory Catalog</h3><div class="table-wrap"><table class="trajectory-catalog-table"><thead><tr><th>Trajectory</th><th>Source</th><th>Created / updated</th><th>Events</th><th>Branches</th><th>Tools</th><th>Skills</th></tr></thead><tbody>${trajectoryRows}</tbody></table></div></div>
+    <div class="summary-card global-section"><h3>Skill Library</h3><div class="table-wrap"><table><thead><tr><th>Skill</th><th>Source trajectory</th><th aria-label="Details"></th></tr></thead><tbody>${skillRows}</tbody></table></div><div id="globalSkillDetail" class="global-skill-detail" hidden></div></div>
+    <div class="summary-card global-section"><h3>Trajectory-Tool-Skill Graph</h3>
       <div class="global-relationship-graph"><svg id="globalRelationshipEdges" class="global-relationship-edges"></svg><div class="global-relationship-columns">
         <div class="global-relationship-column"><h3>Trajectories</h3><div class="global-relationship-stack">${nodeGroups.trajectory.map(globalGraphNode).join('') || '<span class="muted">None</span>'}</div></div>
         <div class="global-relationship-column"><h3>Tools</h3><div class="global-relationship-stack">${nodeGroups.tool.map(globalGraphNode).join('') || '<span class="muted">None</span>'}</div></div>
-        <div class="global-relationship-column"><h3>Shared Skills</h3><div class="global-relationship-stack">${nodeGroups.skill.map(globalGraphNode).join('') || '<span class="muted">None</span>'}</div></div>
+        <div class="global-relationship-column"><h3>Skills</h3><div class="global-relationship-stack">${nodeGroups.skill.map(globalGraphNode).join('') || '<span class="muted">None</span>'}</div></div>
       </div></div>
     </div>`;
   requestAnimationFrame(() => drawGlobalRelationshipGraph(graph));

@@ -70,6 +70,7 @@ class ContextDB:
         skills = []
         skills_by_key: Dict[str, Dict[str, Any]] = {}
         skills_by_id: Dict[str, List[Dict[str, Any]]] = {}
+        skill_details: Dict[str, Dict[str, Any]] = {}
         for entry in self.vector_index.list_entries("skills"):
             metadata = entry.get("metadata", {}) or {}
             skill = metadata.get("skill", {}) or {}
@@ -90,6 +91,7 @@ class ContextDB:
             skills.append(row)
             skills_by_key[key] = row
             skills_by_id.setdefault(skill_id, []).append(row)
+            skill_details[key] = skill
 
         def tool_rows(tools: Dict[str, Dict[str, Any]]) -> List[Dict[str, Any]]:
             rows = []
@@ -218,7 +220,7 @@ class ContextDB:
             "tool_count": len(all_tools),
             "skill_count": len(skills),
             "trajectories": trajectory_rows,
-            "skills": skills,
+            "skills": [{**skill, "detail": skill_details[skill["node_id"]]} for skill in skills],
             "graph": {
                 "nodes": nodes,
                 "edges": [

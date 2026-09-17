@@ -40,6 +40,7 @@ def test_global_overview_aggregates_trajectories_tools_and_shared_skills():
 
             assert overview["trajectory_count"] == 2
             assert overview["skill_count"] == 1
+            assert overview["skills"][0]["detail"] == skill
             consumer_row = next(row for row in overview["trajectories"] if row["trajectory_id"] == consumer["trajectory_id"])
             assert consumer_row["tools"] == [{"tool_name": "get-content", "call_count": 1}]
             assert consumer_row["branch_count"] == 1
