@@ -45,7 +45,8 @@ def test_global_overview_aggregates_trajectories_tools_and_shared_skills():
             assert consumer_row["tools"] == [{"tool_name": "get-content", "call_count": 1}]
             assert consumer_row["branch_count"] == 1
             assert consumer_row["associated_skills"][0]["source_trajectory_id"] == source["trajectory_id"]
-            assert any(edge["kind"] == "uses_skill" for edge in overview["graph"]["edges"])
+            assert not any(edge["kind"] == "uses_skill" for edge in overview["graph"]["edges"])
+            assert any(edge["kind"] == "skill_action" for edge in overview["graph"]["edges"])
         finally:
             db.vector_index.conn.close()
             db.store.conn.close()

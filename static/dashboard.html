@@ -264,26 +264,34 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
     .global-related-skill { border:0; cursor:pointer; font:inherit; text-align:left; }
     .global-related-skill:hover { background:#d7ecdf; text-decoration:underline; }
     .global-related-skill:focus-visible { outline:2px solid #2364aa; outline-offset:2px; }
-    .global-relationship-graph { position:relative; min-height:350px; overflow:auto; border:1px solid #c9ddec; border-radius:7px; background:#f8fbff; }
+    .global-relationship-graph { position:relative; min-height:350px; overflow:visible; border:1px solid #c9ddec; border-radius:7px; background:#fff; }
     .global-relationship-edges { position:absolute; inset:0; z-index:0; pointer-events:none; overflow:visible; }
-    .global-relationship-edges line { stroke:#91abc3; stroke-width:2; opacity:.85; }
-    .global-relationship-edges line.uses-skill { stroke:#2f855a; stroke-dasharray:5 4; }
+    .global-relationship-edges line { fill:none; stroke:#91abc3; stroke-width:2; opacity:.85; }
+    .global-relationship-edges path { stroke-width:2; opacity:.85; }
+    .global-relationship-edges path.trajectory-result { stroke-linejoin:round; opacity:.58; }
+    .global-relationship-edges line.uses-skill { stroke:#2f855a; }
     .global-relationship-edges line.skill-action { stroke:#087ea4; }
-    .global-relationship-columns { position:relative; z-index:1; display:grid; grid-template-columns:150px 250px 390px; justify-content:space-between; column-gap:40px; min-width:902px; padding:16px; }
+    .global-relationship-columns { position:relative; z-index:1; display:grid; grid-template-columns:minmax(140px, 180px) minmax(190px, 250px) minmax(230px, 390px); justify-content:space-between; column-gap:24px; min-width:0; width:100%; box-sizing:border-box; padding:16px; }
     .global-relationship-column { display:flex; min-height:0; flex-direction:column; }
     .global-relationship-column h3 { margin:0 0 9px; color:#355e87; font-size:13px; text-align:center; }
     .global-relationship-stack { display:flex; flex:1; min-height:0; flex-direction:column; gap:9px; }
     .global-relationship-column:first-child .global-relationship-stack,
     .global-relationship-column:last-child .global-relationship-stack { justify-content:space-between; }
-    .global-relationship-column:nth-child(2) { transform:translateX(80px); }
+    .global-relationship-column:first-child .global-relationship-stack { padding:100px 0; }
+    .global-relationship-column:nth-child(2) { position:relative; z-index:2; transform:translateX(155px); }
     .global-graph-node { min-height:0; border:1px solid #d4e1ee; border-left:4px solid #64748b; border-radius:6px; background:#fff; padding:8px 9px; box-shadow:0 1px 2px rgba(23,50,77,.05); overflow-wrap:anywhere; text-align:center; }
     .global-graph-node.trajectory,
     .global-graph-node.skill { display:flex; align-items:center; justify-content:center; min-height:50px; }
-    .global-graph-node.trajectory { border-left-color:#9b4662; background:#fff7f8; }
+    .global-graph-node.trajectory { position:relative; border-left-color:#9b4662; background:#fff7f8; }
+    .global-source-logo { position:absolute; left:9px; top:calc(50% - 3px); display:block; width:20px; height:20px; transform:translateY(-50%); }
+    .global-source-logo img { display:block; width:100%; height:100%; object-fit:contain; }
+    .global-source-logo.codex img { transform:scale(1.5); }
+    .global-source-logo.swe-agent img { transform:scale(1.2); }
     .global-graph-node.tool { border-left-color:#9a6b16; background:#fffaf0; }
     .global-graph-node.skill { border-left-color:#2f855a; background:#f2fbf5; }
     .global-graph-node b { display:block; font-size:12px; }
-    .global-graph-node.skill b { white-space:nowrap; }
+    .global-graph-node.trajectory b { transform:translateX(16px); }
+    .global-graph-node.skill b { white-space:normal; }
     .global-graph-node span { display:block; margin-top:3px; color:var(--muted); font-size:11px; }
     .global-graph-node button { width:100%; height:auto; min-height:20px; margin-top:5px; padding:2px 5px; border:0; background:transparent; color:#1f5592; text-align:left; font-size:11px; }
     .global-graph-node button:hover { text-decoration:underline; }
@@ -546,7 +554,7 @@ const GRAPH_NODE_WIDTH = 210;
 const SAME_ROW_EDGE_OFFSET = 36;
 const GRAPH_PAYLOAD_VALUE_LIMIT = 96;
 async function api(path, body) {
-  const opts = body ? {method:'POST', body:JSON.stringify(body)} : {};
+  const opts = body ? {method:'POST', body:JSON.stringify(body)} : {cache:'no-store'};
   const res = await fetch(path, opts);
   const data = await res.json();
   if (!res.ok || data.error) throw new Error(data.error || res.statusText);
@@ -887,10 +895,23 @@ function setMode(mode) {
   else if (graphData) requestAnimationFrame(() => drawGraph(graphData));
 }
 
+function globalTrajectorySourceLogo(source) {
+  const sourceKey = String(source || '').toLowerCase();
+  const logos = {
+    codex: {className:'codex', label:'Codex', asset:'openai.svg'},
+    'claude-code': {className:'claude-code', label:'Claude Code', asset:'claude-code.svg'},
+    'swe-agent': {className:'swe-agent', label:'SWE-agent', asset:'swe-agent.svg'},
+  };
+  const logo = logos[sourceKey];
+  if (!logo) return '';
+  return `<span class="global-source-logo ${logo.className}" title="${escapeHtml(logo.label)}"><img src="/assets/${logo.asset}" alt="${escapeHtml(logo.label)} logo"></span>`;
+}
+
 function globalGraphNode(node) {
   const label = node.type === 'trajectory' ? node.trajectory_id : node.label;
   const detail = node.type === 'tool' ? `<span>${escapeHtml(node.detail || '')}</span>` : '';
-  return `<div class="global-graph-node ${escapeHtml(node.type)}" data-global-node="${escapeHtml(node.id)}"><b>${escapeHtml(label || '')}</b>${detail}</div>`;
+  const sourceLogo = node.type === 'trajectory' ? globalTrajectorySourceLogo(node.detail) : '';
+  return `<div class="global-graph-node ${escapeHtml(node.type)}" data-global-node="${escapeHtml(node.id)}">${sourceLogo}<b>${escapeHtml(label || '')}</b>${detail}</div>`;
 }
 
 function drawGlobalRelationshipGraph(graphData) {
@@ -905,6 +926,36 @@ function drawGlobalRelationshipGraph(graphData) {
   edges.setAttribute('viewBox', `0 0 ${width} ${height}`);
   edges.innerHTML = '';
   const byId = new Map([...graph.querySelectorAll('[data-global-node]')].map(node => [node.dataset.globalNode, node]));
+  const trajectoryEdgeColors = ['#4c78a8', '#5c9e8f', '#8271ad', '#bd7c59', '#ad5f7c'];
+  const trajectoryColorById = new Map(
+    (graphData.nodes || [])
+      .filter(node => node.type === 'trajectory')
+      .map((node, index) => [node.id, trajectoryEdgeColors[index % trajectoryEdgeColors.length]])
+  );
+  const resultBands = new Map();
+  const resultUnitWidth = 2;
+  const resultBandGap = 2;
+  const resultEdgesByTool = new Map();
+  for (const edge of graphData.edges || []) {
+    const source = byId.get(edge.source);
+    const target = byId.get(edge.target);
+    if (edge.kind !== 'results' || !source || !target || !source.classList.contains('trajectory') || !target.classList.contains('tool')) continue;
+    const toolEdges = resultEdgesByTool.get(edge.target) || [];
+    toolEdges.push(edge);
+    resultEdgesByTool.set(edge.target, toolEdges);
+  }
+  for (const [toolId, toolEdges] of resultEdgesByTool) {
+    const target = byId.get(toolId);
+    const targetBox = target.getBoundingClientRect();
+    toolEdges.sort((left, right) => byId.get(left.source).getBoundingClientRect().top - byId.get(right.source).getBoundingClientRect().top);
+    const totalWidth = toolEdges.reduce((sum, edge) => sum + Math.max(1, Number(edge.count) || 1) * resultUnitWidth, 0) + Math.max(0, toolEdges.length - 1) * resultBandGap;
+    let cursor = targetBox.top - bounds.top + graph.scrollTop + (targetBox.height - totalWidth) / 2;
+    for (const edge of toolEdges) {
+      const bandWidth = Math.max(1, Number(edge.count) || 1) * resultUnitWidth;
+      resultBands.set(edge, {top: cursor, bottom: cursor + bandWidth});
+      cursor += bandWidth + resultBandGap;
+    }
+  }
   for (const edge of graphData.edges || []) {
     const source = byId.get(edge.source);
     const target = byId.get(edge.target);
@@ -918,6 +969,28 @@ function drawGlobalRelationshipGraph(graphData) {
     const sourceCenterY = sourceBox.top - bounds.top + graph.scrollTop + sourceBox.height / 2;
     const targetCenterY = targetBox.top - bounds.top + graph.scrollTop + targetBox.height / 2;
     const forward = sourceLeft <= targetLeft;
+    const isTrajectoryResult = edge.kind === 'results' && source.classList.contains('trajectory') && target.classList.contains('tool');
+    if (isTrajectoryResult) {
+      const startX = forward ? sourceRight : sourceLeft;
+      const endX = forward ? targetLeft : targetRight;
+      const direction = forward ? 1 : -1;
+      const horizontalDistance = Math.max(1, Math.abs(endX - startX));
+      const startControlX = startX + direction * Math.min(126, horizontalDistance * .44);
+      const endControlX = endX - direction * Math.min(150, horizontalDistance * .5);
+      const band = resultBands.get(edge) || {top: targetCenterY - 1, bottom: targetCenterY + 1};
+      const startHalfWidth = 1;
+      const upperClusterY = targetCenterY + (band.top - targetCenterY) * .22;
+      const lowerClusterY = targetCenterY + (band.bottom - targetCenterY) * .22;
+      const color = trajectoryColorById.get(edge.source) || '#4c78a8';
+      const curve = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      curve.setAttribute('d', `M ${startX} ${sourceCenterY - startHalfWidth} C ${startControlX} ${sourceCenterY - startHalfWidth}, ${endControlX} ${upperClusterY}, ${endX} ${band.top} L ${endX} ${band.bottom} C ${endControlX} ${lowerClusterY}, ${startControlX} ${sourceCenterY + startHalfWidth}, ${startX} ${sourceCenterY + startHalfWidth} Z`);
+      curve.setAttribute('class', 'results trajectory-result');
+      curve.style.fill = color;
+      curve.style.stroke = color;
+      curve.setAttribute('stroke-width', '1');
+      edges.appendChild(curve);
+      continue;
+    }
     const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
     line.setAttribute('x1', forward ? sourceRight : sourceLeft);
     line.setAttribute('y1', sourceCenterY);

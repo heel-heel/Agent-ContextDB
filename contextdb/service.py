@@ -172,7 +172,6 @@ class ContextDB:
                 if skill_node not in skills_by_key:
                     continue
                 associated_skills[skill_node] = associated_skills.get(skill_node, 0) + 1
-                edges[(trajectory_node, skill_node, "uses_skill")] = edges.get((trajectory_node, skill_node, "uses_skill"), 0) + 1
                 edges[(tool_node, skill_node, "skill_action")] = edges.get((tool_node, skill_node, "skill_action"), 0) + 1
 
             produced_skills = [
@@ -204,6 +203,33 @@ class ContextDB:
                 "associated_skills": list(visible_skills.values()),
             })
 
+        graph_tool_tail = [
+            "shell",
+            "swe-agent-editor",
+            "swe-agent-file-edit",
+            "swe-agent-submit",
+        ]
+        graph_tool_tail_order = {name: index for index, name in enumerate(graph_tool_tail)}
+
+        def graph_tool_sort_key(item: Tuple[str, Dict[str, Any]]) -> Tuple[int, Any]:
+            name = item[0]
+            if name in graph_tool_tail_order:
+                return 2, graph_tool_tail_order[name]
+            if name == "webfetch":
+                return 0, "contextdb_rollback_context~webfetch"
+            if name == "web__run":
+                return 1, 1
+            return 0, name
+
+        graph_skill_order = {
+            "skill_git_file_path_absent_from_git": 0,
+            "skill_python_misspelled_python_module_name_python_c_import_jsonn": 1,
+        }
+        graph_skills = sorted(
+            skills,
+            key=lambda skill: graph_skill_order.get(skill["skill_id"], -1),
+        )
+
         nodes = (
             [{"id": f"trajectory:{row['trajectory_id']}", "type": "trajectory", "label": row.get("title") or row["trajectory_id"], "trajectory_id": row["trajectory_id"], "detail": row.get("agent_id") or "unknown-agent"} for row in trajectory_rows]
             + [{
@@ -211,8 +237,8 @@ class ContextDB:
                 "type": "tool",
                 "label": name,
                 "detail": f"{entry['call_count']} results",
-            } for name, entry in sorted(all_tools.items())]
-            + [{"id": skill["node_id"], "type": "skill", "label": skill["name"], "detail": skill["source_trajectory_id"]} for skill in skills]
+            } for name, entry in sorted(all_tools.items(), key=graph_tool_sort_key)]
+            + [{"id": skill["node_id"], "type": "skill", "label": skill["name"], "detail": skill["source_trajectory_id"]} for skill in graph_skills]
         )
         return {
             "schema_version": "global_overview.v1",

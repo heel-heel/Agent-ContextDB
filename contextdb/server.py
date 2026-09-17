@@ -48,6 +48,14 @@ def make_handler(db: ContextDB):
                 if parsed.path == "/" or parsed.path == "/demo":
                     html = (STATIC_DIR / "dashboard.html").read_text(encoding="utf-8")
                     self._send(200, html, "text/html; charset=utf-8")
+                elif parsed.path.startswith("/assets/"):
+                    asset_root = (STATIC_DIR / "assets").resolve()
+                    asset_path = (asset_root / parsed.path.removeprefix("/assets/")).resolve()
+                    if asset_root not in asset_path.parents or not asset_path.is_file():
+                        self._send(404, {"error": "not found"})
+                        return
+                    content_type = "image/svg+xml" if asset_path.suffix == ".svg" else "application/octet-stream"
+                    self._send(200, asset_path.read_bytes(), content_type)
                 elif parsed.path == "/health":
                     self._send(200, {"status": "ok", "service": "contextdb"})
                 elif parsed.path == "/api/v1/trajectory":
