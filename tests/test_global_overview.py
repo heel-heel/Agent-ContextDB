@@ -41,6 +41,12 @@ def test_global_overview_aggregates_trajectories_tools_and_shared_skills():
             assert overview["trajectory_count"] == 2
             assert overview["skill_count"] == 1
             assert overview["skills"][0]["detail"] == skill
+            assert {
+                "source": f"skill:{source['trajectory_id']}:skill_fix_settings",
+                "target": f"trajectory:{consumer['trajectory_id']}",
+                "kind": "skill_usage",
+                "count": 1,
+            } in overview["graph"]["edges"]
             consumer_row = next(row for row in overview["trajectories"] if row["trajectory_id"] == consumer["trajectory_id"])
             assert consumer_row["tools"] == [{"tool_name": "get-content", "call_count": 1}]
             assert consumer_row["branch_count"] == 1
@@ -79,6 +85,18 @@ def test_global_overview_falls_back_to_parent_tool_call_and_shows_produced_skill
             overview = db.global_overview()
             row = overview["trajectories"][0]
             assert row["tools"] == [{"tool_name": "swe-agent-editor", "call_count": 1}]
+            assert {
+                "source": f"skill:{trajectory['trajectory_id']}:skill_imported_repair",
+                "target": "tool:swe-agent-editor",
+                "kind": "skill_trigger",
+                "count": 1,
+            } in overview["graph"]["edges"]
+            assert {
+                "source": f"skill:{trajectory['trajectory_id']}:skill_imported_repair",
+                "target": f"trajectory:{trajectory['trajectory_id']}",
+                "kind": "skill_usage",
+                "count": 1,
+            } in overview["graph"]["edges"]
             assert row["associated_skills"] == [{
                 "node_id": f"skill:{trajectory['trajectory_id']}:skill_imported_repair",
                 "skill_id": "skill_imported_repair",

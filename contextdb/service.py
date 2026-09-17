@@ -103,6 +103,7 @@ class ContextDB:
         trajectory_rows = []
         edges: Dict[Tuple[str, str, str], int] = {}
         all_tools: Dict[str, Dict[str, Any]] = {}
+        skill_consumers: Dict[str, Set[str]] = {}
         for trajectory in trajectories:
             trajectory_id = trajectory["trajectory_id"]
             events = self._all_events(trajectory_id)
@@ -172,6 +173,7 @@ class ContextDB:
                 if skill_node not in skills_by_key:
                     continue
                 associated_skills[skill_node] = associated_skills.get(skill_node, 0) + 1
+                skill_consumers.setdefault(skill_node, set()).add(trajectory_node)
                 edges[(tool_node, skill_node, "skill_action")] = edges.get((tool_node, skill_node, "skill_action"), 0) + 1
 
             produced_skills = [
@@ -203,6 +205,19 @@ class ContextDB:
                 "associated_skills": list(visible_skills.values()),
             })
 
+        # A learned Skill remains visible even before another trajectory has
+        # applied it. Link it to the tool that produced its failure so the
+        # relationship graph retains that provenance.
+        for skill in skills:
+            trigger_tool = str(skill.get("trigger_tool") or "")
+            if trigger_tool and trigger_tool in all_tools:
+                edges[(skill["node_id"], f"tool:{trigger_tool}", "skill_trigger")] = 1
+        for skill in skills:
+            skill_node = skill["node_id"]
+            consumer_nodes = skill_consumers.get(skill_node) or {f"trajectory:{skill['source_trajectory_id']}"}
+            for trajectory_node in consumer_nodes:
+                edges[(skill_node, trajectory_node, "skill_usage")] = 1
+
         graph_tool_tail = [
             "shell",
             "swe-agent-editor",
@@ -224,10 +239,11 @@ class ContextDB:
         graph_skill_order = {
             "skill_git_file_path_absent_from_git": 0,
             "skill_python_misspelled_python_module_name_python_c_import_jsonn": 1,
+            "skill_swe_agent_file_edit_source_code_indentation_error_edit_1475_1475_return": 2,
         }
         graph_skills = sorted(
             skills,
-            key=lambda skill: graph_skill_order.get(skill["skill_id"], -1),
+            key=lambda skill: graph_skill_order.get(skill["skill_id"], len(graph_skill_order)),
         )
 
         nodes = (

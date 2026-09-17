@@ -251,6 +251,7 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
     .global-section .table-wrap tbody tr:hover { background:#f5faff; }
     .trajectory-catalog-table { min-width:1120px; table-layout:fixed; }
     .trajectory-catalog-table th, .trajectory-catalog-table td { text-align:center; vertical-align:middle; }
+    .global-skill-library-table th, .global-skill-library-table td { text-align:center; vertical-align:middle; }
     .trajectory-catalog-table th:nth-child(1), .trajectory-catalog-table td:nth-child(1) { width:145px; }
     .trajectory-catalog-table th:nth-child(2), .trajectory-catalog-table td:nth-child(2) { width:105px; }
     .trajectory-catalog-table th:nth-child(3), .trajectory-catalog-table td:nth-child(3) { width:195px; }
@@ -264,21 +265,28 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
     .global-related-skill { border:0; cursor:pointer; font:inherit; text-align:left; }
     .global-related-skill:hover { background:#d7ecdf; text-decoration:underline; }
     .global-related-skill:focus-visible { outline:2px solid #2364aa; outline-offset:2px; }
-    .global-relationship-graph { position:relative; min-height:350px; overflow:visible; border:1px solid #c9ddec; border-radius:7px; background:#fff; }
+    .global-relationship-graph { position:relative; min-height:350px; overflow:visible; border:1px solid #c9ddec; border-radius:7px; background:#fff; padding-bottom:64px; }
     .global-relationship-edges { position:absolute; inset:0; z-index:0; pointer-events:none; overflow:visible; }
     .global-relationship-edges line { fill:none; stroke:#91abc3; stroke-width:2; opacity:.85; }
     .global-relationship-edges path { stroke-width:2; opacity:.85; }
     .global-relationship-edges path.trajectory-result { stroke-linejoin:round; opacity:.58; }
     .global-relationship-edges line.uses-skill { stroke:#2f855a; }
-    .global-relationship-edges line.skill-action { stroke:#087ea4; }
-    .global-relationship-columns { position:relative; z-index:1; display:grid; grid-template-columns:minmax(140px, 180px) minmax(190px, 250px) minmax(230px, 390px); justify-content:space-between; column-gap:24px; min-width:0; width:100%; box-sizing:border-box; padding:16px; }
+    .global-relationship-edges line.skill-action { stroke:#3c8c88; stroke-width:1; opacity:.58; }
+    .global-relationship-edges line.skill-trigger { stroke:#5d8f70; }
+    .global-relationship-edges path.skill-usage { fill:none; stroke-width:3; opacity:.64; }
+    .global-relationship-edges path.skill-action,
+    .global-relationship-edges path.skill-trigger { fill:none; opacity:.58; }
+    .global-relationship-columns { position:relative; z-index:1; display:grid; grid-template-columns:minmax(140px, 180px) minmax(190px, 250px) minmax(230px, 390px); justify-content:space-between; column-gap:24px; min-width:0; width:100%; box-sizing:border-box; padding:16px; transform:translateX(-10px); }
     .global-relationship-column { display:flex; min-height:0; flex-direction:column; }
     .global-relationship-column h3 { margin:0 0 9px; color:#355e87; font-size:13px; text-align:center; }
     .global-relationship-stack { display:flex; flex:1; min-height:0; flex-direction:column; gap:9px; }
     .global-relationship-column:first-child .global-relationship-stack,
     .global-relationship-column:last-child .global-relationship-stack { justify-content:space-between; }
+    .global-relationship-column:first-child { position:relative; z-index:2; transform:translateX(70px); }
     .global-relationship-column:first-child .global-relationship-stack { padding:100px 0; }
-    .global-relationship-column:nth-child(2) { position:relative; z-index:2; transform:translateX(155px); }
+    .global-relationship-column:last-child .global-relationship-stack { justify-content:center; gap:9px; }
+    .global-relationship-column:last-child { position:relative; z-index:2; transform:translateX(-50px); }
+    .global-relationship-column:nth-child(2) { position:relative; z-index:2; transform:translateX(225px); }
     .global-graph-node { min-height:0; border:1px solid #d4e1ee; border-left:4px solid #64748b; border-radius:6px; background:#fff; padding:8px 9px; box-shadow:0 1px 2px rgba(23,50,77,.05); overflow-wrap:anywhere; text-align:center; }
     .global-graph-node.trajectory,
     .global-graph-node.skill { display:flex; align-items:center; justify-content:center; min-height:50px; }
@@ -918,6 +926,21 @@ function drawGlobalRelationshipGraph(graphData) {
   const graph = document.querySelector('.global-relationship-graph');
   const edges = document.getElementById('globalRelationshipEdges');
   if (!graph || !edges) return;
+  const trajectoryNodes = [...graph.querySelectorAll('.global-graph-node.trajectory')];
+  const toolNodes = [...graph.querySelectorAll('.global-graph-node.tool')];
+  const skillNodes = [...graph.querySelectorAll('.global-graph-node.skill')];
+  const skillStack = graph.querySelector('.global-relationship-column:last-child .global-relationship-stack');
+  skillNodes.forEach(node => { node.style.height = ''; });
+  const sharedSkillHeight = Math.max(50, ...toolNodes.map(node => Math.ceil(node.getBoundingClientRect().height)));
+  skillNodes.forEach(node => { node.style.height = `${sharedSkillHeight}px`; });
+  const trajectoryGaps = trajectoryNodes.slice(1).map((node, index) => {
+    const previousBox = trajectoryNodes[index].getBoundingClientRect();
+    return node.getBoundingClientRect().top - previousBox.bottom;
+  });
+  if (skillStack) skillStack.style.gap = '';
+  if (skillStack && trajectoryGaps.length) {
+    skillStack.style.gap = `${trajectoryGaps.reduce((sum, gap) => sum + gap, 0) / trajectoryGaps.length}px`;
+  }
   const bounds = graph.getBoundingClientRect();
   const width = Math.max(graph.scrollWidth, Math.ceil(bounds.width));
   const height = Math.max(graph.scrollHeight, Math.ceil(bounds.height));
@@ -926,14 +949,32 @@ function drawGlobalRelationshipGraph(graphData) {
   edges.setAttribute('viewBox', `0 0 ${width} ${height}`);
   edges.innerHTML = '';
   const byId = new Map([...graph.querySelectorAll('[data-global-node]')].map(node => [node.dataset.globalNode, node]));
-  const trajectoryEdgeColors = ['#4c78a8', '#5c9e8f', '#8271ad', '#bd7c59', '#ad5f7c'];
+  const trajectoryEdgeColors = ['#b55d78', '#b78332', '#5d8f70', '#4f7fa8', '#8069a5'];
   const trajectoryColorById = new Map(
     (graphData.nodes || [])
       .filter(node => node.type === 'trajectory')
       .map((node, index) => [node.id, trajectoryEdgeColors[index % trajectoryEdgeColors.length]])
   );
+  const skillEdgeColors = ['#b55d78', '#b78332', '#8069a5', '#3c8c88', '#5d8f70'];
+  const skillColorById = new Map(
+    (graphData.nodes || [])
+      .filter(node => node.type === 'skill')
+      .map((node, index) => [node.id, skillEdgeColors[index % skillEdgeColors.length]])
+  );
+  const skillUsageLaneByEdge = new Map(
+    (graphData.edges || [])
+      .filter(edge => edge.kind === 'skill_usage')
+      .sort((left, right) => `${left.source}:${left.target}`.localeCompare(`${right.source}:${right.target}`))
+      .map((edge, index) => [edge, index])
+  );
+  const skillActionPairs = new Set(
+    (graphData.edges || [])
+      .filter(edge => edge.kind === 'skill_action')
+      .map(edge => `${edge.source}:${edge.target}`)
+  );
   const resultBands = new Map();
   const resultUnitWidth = 2;
+  const skillRelationWidth = resultUnitWidth * 3;
   const resultBandGap = 2;
   const resultEdgesByTool = new Map();
   for (const edge of graphData.edges || []) {
@@ -960,6 +1001,7 @@ function drawGlobalRelationshipGraph(graphData) {
     const source = byId.get(edge.source);
     const target = byId.get(edge.target);
     if (!source || !target) continue;
+    if (edge.kind === 'skill_trigger' && skillActionPairs.has(`${edge.target}:${edge.source}`)) continue;
     const sourceBox = source.getBoundingClientRect();
     const targetBox = target.getBoundingClientRect();
     const sourceRight = sourceBox.right - bounds.left + graph.scrollLeft;
@@ -991,6 +1033,40 @@ function drawGlobalRelationshipGraph(graphData) {
       edges.appendChild(curve);
       continue;
     }
+    const isSkillToolRelation = (
+      (edge.kind === 'skill_action' && source.classList.contains('tool') && target.classList.contains('skill'))
+      || (edge.kind === 'skill_trigger' && source.classList.contains('skill') && target.classList.contains('tool'))
+    );
+    if (isSkillToolRelation) {
+      const startX = forward ? sourceRight : sourceLeft;
+      const endX = forward ? targetLeft : targetRight;
+      const direction = forward ? 1 : -1;
+      const horizontalDistance = Math.max(1, Math.abs(endX - startX));
+      const startControlX = startX + direction * Math.min(126, horizontalDistance * .44);
+      const endControlX = endX - direction * Math.min(150, horizontalDistance * .5);
+      const relatedSkill = source.classList.contains('skill') ? edge.source : edge.target;
+      const curve = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      curve.setAttribute('d', `M ${startX} ${sourceCenterY} C ${startControlX} ${sourceCenterY}, ${endControlX} ${targetCenterY}, ${endX} ${targetCenterY}`);
+      curve.setAttribute('class', String(edge.kind).replaceAll('_', '-'));
+      curve.style.strokeWidth = `${skillRelationWidth}px`;
+      curve.style.stroke = skillColorById.get(relatedSkill) || '#3c8c88';
+      edges.appendChild(curve);
+      continue;
+    }
+    const isSkillUsage = edge.kind === 'skill_usage' && source.classList.contains('skill') && target.classList.contains('trajectory');
+    if (isSkillUsage) {
+      const lane = skillUsageLaneByEdge.get(edge) || 0;
+      const bottomRouteY = height - 13 - lane * 7;
+      const sourceExitX = sourceRight + 16 + lane * 7;
+      const targetEntryX = targetLeft - 16 - lane * 7;
+      const route = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      route.setAttribute('d', `M ${sourceRight} ${sourceCenterY} H ${sourceExitX} V ${bottomRouteY} H ${targetEntryX} V ${targetCenterY} H ${targetLeft}`);
+      route.setAttribute('class', 'skill-usage');
+      route.style.stroke = skillColorById.get(edge.source) || '#8069a5';
+      route.style.strokeWidth = '3px';
+      edges.appendChild(route);
+      continue;
+    }
     const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
     line.setAttribute('x1', forward ? sourceRight : sourceLeft);
     line.setAttribute('y1', sourceCenterY);
@@ -998,6 +1074,8 @@ function drawGlobalRelationshipGraph(graphData) {
     line.setAttribute('y2', targetCenterY);
     line.setAttribute('class', String(edge.kind || '').replaceAll('_', '-'));
     line.setAttribute('stroke-width', '2');
+    const relatedSkill = source.classList.contains('skill') ? edge.source : (target.classList.contains('skill') ? edge.target : '');
+    if (relatedSkill && skillColorById.has(relatedSkill)) line.style.stroke = skillColorById.get(relatedSkill);
     edges.appendChild(line);
   }
 }
@@ -1093,7 +1171,7 @@ function renderGlobalOverview(data) {
       <div class="global-metric"><b>${escapeHtml(data.skill_count)}</b><span>skills</span></div>
     </div>
     <div class="summary-card global-section"><h3>Trajectory Catalog</h3><div class="table-wrap"><table class="trajectory-catalog-table"><thead><tr><th>Trajectory</th><th>Source</th><th>Created / updated</th><th>Events</th><th>Branches</th><th>Tools</th><th>Skills</th></tr></thead><tbody>${trajectoryRows}</tbody></table></div></div>
-    <div class="summary-card global-section"><h3>Skill Library</h3><div class="table-wrap"><table><thead><tr><th>Skill</th><th>Source trajectory</th><th aria-label="Details"></th></tr></thead><tbody>${skillRows}</tbody></table></div><div id="globalSkillDetail" class="global-skill-detail" hidden></div></div>
+    <div class="summary-card global-section"><h3>Skill Library</h3><div class="table-wrap"><table class="global-skill-library-table"><thead><tr><th>Skill</th><th>Source trajectory</th><th aria-label="Details"></th></tr></thead><tbody>${skillRows}</tbody></table></div><div id="globalSkillDetail" class="global-skill-detail" hidden></div></div>
     <div class="summary-card global-section"><h3>Trajectory-Tool-Skill Graph</h3>
       <div class="global-relationship-graph"><svg id="globalRelationshipEdges" class="global-relationship-edges"></svg><div class="global-relationship-columns">
         <div class="global-relationship-column"><h3>Trajectories</h3><div class="global-relationship-stack">${nodeGroups.trajectory.map(globalGraphNode).join('') || '<span class="muted">None</span>'}</div></div>

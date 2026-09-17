@@ -26,6 +26,7 @@ def make_handler(db: ContextDB):
             try:
                 self.send_response(status)
                 self.send_header("Content-Type", content_type)
+                self.send_header("Cache-Control", "no-store")
                 self.send_header("Content-Length", str(len(data)))
                 self.end_headers()
                 self.wfile.write(data)
