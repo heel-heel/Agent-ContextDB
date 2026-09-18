@@ -6,14 +6,18 @@
     "schema_version": "semantic_summary.v1",
     "trajectory_id": "traj_be0c0dbc4d8c",
     "branch_id": "main",
-    "summary": "The agent started a Codex session, determined the ContextDB session ID, and executed several Git commands. The agent used ContextDB to handle a file path issue, recorded decisions and applications, and rejected a repair-branch suggestion to keep the first invalid Git checkout on the main branch for diagnosis. A second failed Git checkout was also performed, and the agent is about to check the version status for any new repair-branch suggestions.",
+    "summary": "Codex session on branch main. Per user instruction, the agent determined the ContextDB session id by reading the watcher pointer file .\\data\\codex-watcher-current-session.json from the project root via a single native PowerShell call, obtaining rollout id 'rollout-2026-09-15T14-34-56-01a0a3c6-9648-70a2-af08-29157...'. A contextdb_get_version_status call then surfaced a repair-branch suggestion (ContextDB had snapshotted before an attempted state-changing checkout). The user directed rejection of that suggestion; the agent recorded the rejection via contextdb_record_version_decision and confirmed active branch 'main'. Next, the user asked the agent to run 'powershell -NoProfile -Command '$env:LC_ALL=\"C\"; $env:LANG=\"C\"; git checkout --detach contextdb-demo-codex-path-second-001'' and report raw output. ContextDB snapshotted before the action; the command failed with a PowerShell parse error (\"Unexpected token '\\_ALL=\\\"C\\\"' in expression\") caused by the escaped underscore in $env:LC\\_ALL. ContextDB then suggested repair branch 'repair-4fe2e341' from snapshot 'snap_3bd350fbed87'. The agent reported the raw error. The user then instructed the agent to call contextdb_get_version_status again and report any repair-branch suggestion; the agent acknowledged and was about to make the call.",
     "key_facts": [
-      "ContextDB session ID: `rollout-2026-09-15T14-34-56-01a0a3c6-9648-70a2-af08-291576bfda30`",
-      "Accepted skill match event ID: `evt_8aa3b8425265`, Skill ID: `skill_git_file_path_absent_from_git`, Action ID: `act_git_file_path_absent_from_git_1`",
-      "Rejected repair-branch suggestion with reason: `Keep this first invalid Git checkout on main for diagnosis.`"
+      "ContextDB session id: rollout-2026-09-15T14-34-56-01a0a3c6-9648-70a2-af08-29157... (read from .\\data\\codex-watcher-current-session.json)",
+      "Active git branch: main",
+      "First repair-branch suggestion was rejected via contextdb_record_version_decision with user-supplied diagnostic rationale",
+      "git checkout --detach contextdb-demo-codex-path-second-001 failed: PowerShell parse error from escaped underscore in $env:LC\\_ALL",
+      "ContextDB created a snapshot before the failed checkout and suggested repair branch 'repair-4fe2e341' from snapshot 'snap_3bd350fbed87'",
+      "MCP tools used: contextdb_get_version_status, contextdb_record_version_decision (source: codex-session)"
     ],
     "open_items": [
-      "Check ContextDB version status for any new repair-branch suggestions after the second failed Git checkout."
+      "Pending contextdb_get_version_status call to check for and report the current repair-branch suggestion (repair-4fe2e341)",
+      "The detached checkout of 'contextdb-demo-codex-path-second-001' never succeeded; no decision yet recorded on the new repair-branch suggestion repair-4fe2e341"
     ],
     "status": "ready",
     "method": "incremental_llm_semantic_summary",
@@ -615,27 +619,27 @@
       }
     ],
     "raw_tokens": 35974,
-    "compressed_tokens": 112,
-    "compression_ratio": 99.7,
+    "compressed_tokens": 325,
+    "compression_ratio": 99.1,
     "materialization": {
       "cache_hit": false,
       "generation_mode": "full",
       "previous_covered_event_count": 0,
-      "profile_id": "qwen-max"
+      "profile_id": "kimi-k3"
     },
     "llm": {
       "enabled": true,
-      "profile_id": "qwen-max",
+      "profile_id": "kimi-k3",
       "provider": "bailian",
-      "model": "qwen-max",
+      "model": "kimi-k3",
       "reason": "LLM generated a factual semantic trajectory digest.",
       "error": null,
       "execution": {
-        "profile_id": "qwen-max",
+        "profile_id": "kimi-k3",
         "provider": "bailian",
-        "requested_model": "qwen-max",
-        "response_model": "qwen-max",
-        "response_id": "chatcmpl-dbc3c290-c441-9b2d-a423-1c5b4ff589ea",
+        "requested_model": "kimi-k3",
+        "response_model": "kimi-k3",
+        "response_id": "chatcmpl-2f70f9f5-bf3d-976a-a733-ac9a41388111",
         "verified": true
       }
     }
@@ -726,7 +730,7 @@
     "evt_85722f6b150b",
     "evt_588113fea96f"
   ],
-  "created_at": "2026-09-18T00:48:38.198886+00:00",
+  "created_at": "2026-09-18T06:19:52.315457+00:00",
   "metadata": {
     "event_count": 84,
     "semantic": true

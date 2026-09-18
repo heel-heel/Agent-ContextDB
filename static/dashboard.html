@@ -8,9 +8,9 @@
     :root { color-scheme: light; --ink:#17202a; --muted:#607080; --line:#d9e0e6; --bg:#f7f8fa; --panel:#ffffff; --blue:#2364aa; --green:#2f855a; --red:#b83232; --gold:#9a6b16; --violet:#6b46c1; --teal:#be185d; --cyan:#087ea4; --gray:#64748b; --skill-match-accent:#087ea4; --skill-match-surface:#eaf8fb; --skill-match-divider:#bde5ec; --system-event-accent:#475569; --system-event-surface:#f1f5f9; --system-event-divider:#cbd5e1; }
     * { box-sizing: border-box; }
     body { margin: 0; font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: var(--bg); color: var(--ink); }
-    header { height: 64px; display:flex; align-items:center; justify-content:space-between; padding:0 20px; border-bottom:1px solid var(--line); background:#fff; }
-    h1 { font-size: 20px; margin: 0; letter-spacing:0; }
-    .controls { display:flex; gap:8px; align-items:center; }
+    header { height:64px; display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; padding:0 20px; border-bottom:1px solid var(--line); background:#fff; }
+    h1 { margin:0; color:#17202a; font-family:"Aptos Display", "Segoe UI Variable Display", "Segoe UI", sans-serif; font-size:30px; font-weight:800; letter-spacing:0; line-height:1; text-align:center; }
+    .controls { display:flex; gap:8px; align-items:center; justify-self:end; }
     input, select, button { height: 36px; border:1px solid var(--line); border-radius:6px; background:#fff; color:var(--ink); padding:0 10px; font:inherit; }
     input { min-width: 360px; }
     button { cursor:pointer; background:#17324d; color:#fff; border-color:#17324d; }
@@ -31,11 +31,11 @@
     .node.skill_match { --node-accent:var(--skill-match-accent); --node-surface:var(--skill-match-surface); --node-divider:var(--skill-match-divider); }
     .node.skill_recommendation { --node-accent:#0284c7; --node-surface:#ebf7ff; --node-divider:#bde3f7; }
     .node.skill_decision { --node-accent:#c2410c; --node-surface:#fff2e9; --node-divider:#f2ceb9; }
-    .node.version_snapshot_created { --node-accent:#0f766e; --node-surface:#e9f8f5; --node-divider:#bce3dc; }
-    .node.version_repair_branch_suggested { --node-accent:#b45309; --node-surface:#fff5e8; --node-divider:#f0d4ad; }
-    .node.version_branch_created { --node-accent:#7c3aed; --node-surface:#f3efff; --node-divider:#d8cdf9; }
-    .node.version_rollback_created { --node-accent:#be123c; --node-surface:#fff0f3; --node-divider:#f2c8d3; }
-    .node.version_decision { --node-accent:#334155; --node-surface:#f1f5f9; --node-divider:#d3dee8; }
+    .node.version_snapshot_created { --node-accent:#0f9f92; --node-surface:#e7faf7; --node-divider:#a9e1d8; }
+    .node.version_repair_branch_suggested { --node-accent:#6f8f12; --node-surface:#f4f8e5; --node-divider:#d4e2a9; }
+    .node.version_branch_created { --node-accent:#5b5bd6; --node-surface:#f0f0ff; --node-divider:#c9caf4; }
+    .node.version_rollback_created { --node-accent:#a63fa6; --node-surface:#fbf0fb; --node-divider:#e4c8e4; }
+    .node.version_decision { --node-accent:#d14343; --node-surface:#fff0f0; --node-divider:#f0c8c8; }
     .node.summary_update { --node-accent:var(--gray); --node-surface:#f3f6f8; --node-divider:#dce5eb; }
     .node.system_event { --node-accent:var(--system-event-accent); --node-surface:var(--system-event-surface); --node-divider:var(--system-event-divider); }
     .node .type { font-size:12px; color:var(--node-accent); font-weight:700; }
@@ -154,7 +154,7 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
     .context-head h3 { margin:0; font-size:16px; }
     .context-identifiers { display:flex; flex-wrap:wrap; gap:5px; }
     .context-stat-grid { display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:8px; }
-    .context-stat { border-left:3px solid #2364aa; background:#f7faff; padding:9px 10px; min-width:0; }
+    .context-stat { border-left:3px solid #2364aa; background:#f7faff; padding:9px 10px; min-width:0; text-align:center; }
     .context-stat b { display:block; font-size:16px; overflow-wrap:anywhere; }
     .context-stat span { color:var(--muted); font-size:11px; }
     .context-evidence { height:auto; min-height:24px; padding:3px 7px; border-color:#b8cce1; background:#f6faff; color:#1f5592; font-size:11px; white-space:nowrap; }
@@ -163,7 +163,7 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
     .context-evidence-label { color:var(--muted); }
     .rendered-context { border:1px solid #cbd9e8; background:#f7faff; padding:11px; white-space:pre-wrap; overflow-wrap:anywhere; line-height:1.45; font-size:12px; }
     .summary-status { margin:0; }
-    .summary-profile-control { display:flex; align-items:center; gap:7px; padding-right:10px; border-right:1px solid #d4e1ee; color:#4b6074; white-space:nowrap; }
+    .summary-profile-control { display:flex; align-items:center; gap:7px; color:#4b6074; white-space:nowrap; }
     .digest-insights { display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:14px; margin:14px 0; }
     .digest-insight { min-width:0; padding:4px 0 4px 12px; border-left:3px solid #237b7d; }
     .digest-insight.open-items { border-left-color:#b77218; }
@@ -213,11 +213,11 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
     .dot-skill_match { background:var(--skill-match-accent); }
     .dot-skill_recommendation { background:#0284c7; }
     .dot-skill_decision { background:#c2410c; }
-    .dot-version_snapshot_created { background:#0f766e; }
-    .dot-version_repair_branch_suggested { background:#b45309; }
-    .dot-version_branch_created { background:#7c3aed; }
-    .dot-version_rollback_created { background:#be123c; }
-    .dot-version_decision { background:#334155; }
+    .dot-version_snapshot_created { background:#0f9f92; }
+    .dot-version_repair_branch_suggested { background:#6f8f12; }
+    .dot-version_branch_created { background:#5b5bd6; }
+    .dot-version_rollback_created { background:#a63fa6; }
+    .dot-version_decision { background:#d14343; }
     .dot-system_event { background:var(--system-event-accent); }
     .app-flow { display:flex; flex-direction:column; gap:12px; border-color:#b9d5ec; border-left:4px solid #2364aa; background:#fbfdff; }
     .app-flow-status { margin:-4px 0 !important; line-height:1.2 !important; }
@@ -242,7 +242,13 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
     .global-overview-content { padding:14px; display:flex; flex-direction:column; gap:0; }
     .global-metrics { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; }
     .global-metric { display:flex; flex-direction:column; align-items:center; justify-content:center; border-left:3px solid #2364aa; background:#f4f8fd; padding:10px; text-align:center; }
+    .global-metric-content { display:grid; grid-template-columns:minmax(0,1fr) auto minmax(0,1fr); align-items:center; width:100%; }
+    .global-metric-value { grid-column:2; display:flex; flex-direction:column; align-items:center; gap:2px; line-height:1.15; }
     .global-metric b { display:block; font-size:20px; }
+    .global-metric-icon { grid-column:1; justify-self:end; width:27px; height:27px; margin-right:9px; fill:none; stroke:currentColor; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; }
+    .global-metric.trajectory-metric { color:#b55d78; }
+    .global-metric.tool-metric { color:#b78332; }
+    .global-metric.skill-metric { color:#3c8c88; }
     .global-metric span { color:var(--muted); font-size:12px; }
     .global-section { border:1px solid #c9def5; border-radius:7px; background:#fbfdff; padding:8px 12px 10px; }
     .global-section > h3 { margin:0 0 7px; color:#17202a; font-size:17px; font-weight:700; line-height:1.3; }
@@ -251,7 +257,11 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
     .global-section .table-wrap tbody tr:hover { background:#f5faff; }
     .trajectory-catalog-table { min-width:1120px; table-layout:fixed; }
     .trajectory-catalog-table th, .trajectory-catalog-table td { text-align:center; vertical-align:middle; }
-    .global-skill-library-table th, .global-skill-library-table td { text-align:center; vertical-align:middle; }
+    .global-skill-library-table { width:100%; table-layout:fixed; }
+    .global-skill-library-table th, .global-skill-library-table td { text-align:center; vertical-align:middle; overflow-wrap:anywhere; }
+    .global-skill-library-table th:nth-child(1), .global-skill-library-table td:nth-child(1) { width:42%; }
+    .global-skill-library-table th:nth-child(2), .global-skill-library-table td:nth-child(2) { width:43%; }
+    .global-skill-library-table th:nth-child(3), .global-skill-library-table td:nth-child(3) { width:15%; }
     .trajectory-catalog-table th:nth-child(1), .trajectory-catalog-table td:nth-child(1) { width:145px; }
     .trajectory-catalog-table th:nth-child(2), .trajectory-catalog-table td:nth-child(2) { width:105px; }
     .trajectory-catalog-table th:nth-child(3), .trajectory-catalog-table td:nth-child(3) { width:195px; }
@@ -276,16 +286,16 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
     .global-relationship-edges path.skill-usage { fill:none; stroke-width:3; opacity:.64; }
     .global-relationship-edges path.skill-action,
     .global-relationship-edges path.skill-trigger { fill:none; opacity:.58; }
-    .global-relationship-columns { position:relative; z-index:1; display:grid; grid-template-columns:minmax(140px, 180px) minmax(190px, 250px) minmax(230px, 390px); justify-content:space-between; column-gap:24px; min-width:0; width:100%; box-sizing:border-box; padding:16px; transform:translateX(-10px); }
+    .global-relationship-columns { position:relative; z-index:1; display:grid; grid-template-columns:minmax(140px, 180px) minmax(190px, 250px) minmax(180px, 260px); justify-content:space-between; column-gap:24px; min-width:0; width:100%; box-sizing:border-box; padding:16px; transform:translateX(-10px); }
     .global-relationship-column { display:flex; min-height:0; flex-direction:column; }
     .global-relationship-column h3 { margin:0 0 9px; color:#355e87; font-size:13px; text-align:center; }
     .global-relationship-stack { display:flex; flex:1; min-height:0; flex-direction:column; gap:9px; }
     .global-relationship-column:first-child .global-relationship-stack,
     .global-relationship-column:last-child .global-relationship-stack { justify-content:space-between; }
-    .global-relationship-column:first-child { position:relative; z-index:2; transform:translateX(70px); }
+    .global-relationship-column:first-child { position:relative; z-index:2; transform:translateX(90px); }
     .global-relationship-column:first-child .global-relationship-stack { padding:100px 0; }
     .global-relationship-column:last-child .global-relationship-stack { justify-content:center; gap:9px; }
-    .global-relationship-column:last-child { position:relative; z-index:2; transform:translateX(-50px); }
+    .global-relationship-column:last-child { position:relative; z-index:2; transform:translateX(-70px); }
     .global-relationship-column:nth-child(2) { position:relative; z-index:2; transform:translateX(225px); }
     .global-graph-node { min-height:0; border:1px solid #d4e1ee; border-left:4px solid #64748b; border-radius:6px; background:#fff; padding:8px 9px; box-shadow:0 1px 2px rgba(23,50,77,.05); overflow-wrap:anywhere; text-align:center; }
     .global-graph-node.trajectory,
@@ -324,11 +334,11 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
     .step-card.event-skill_match { --event-accent:var(--skill-match-accent); --event-surface:var(--skill-match-surface); --event-divider:var(--skill-match-divider); }
     .step-card.event-skill_recommendation { --event-accent:#0284c7; --event-surface:#ebf7ff; --event-divider:#bde3f7; }
     .step-card.event-skill_decision { --event-accent:#c2410c; --event-surface:#fff2e9; --event-divider:#f2ceb9; }
-    .step-card.event-version_snapshot_created { --event-accent:#0f766e; --event-surface:#e9f8f5; --event-divider:#bce3dc; }
-    .step-card.event-version_repair_branch_suggested { --event-accent:#b45309; --event-surface:#fff5e8; --event-divider:#f0d4ad; }
-    .step-card.event-version_branch_created { --event-accent:#7c3aed; --event-surface:#f3efff; --event-divider:#d8cdf9; }
-    .step-card.event-version_rollback_created { --event-accent:#be123c; --event-surface:#fff0f3; --event-divider:#f2c8d3; }
-    .step-card.event-version_decision { --event-accent:#334155; --event-surface:#f1f5f9; --event-divider:#d3dee8; }
+    .step-card.event-version_snapshot_created { --event-accent:#0f9f92; --event-surface:#e7faf7; --event-divider:#a9e1d8; }
+    .step-card.event-version_repair_branch_suggested { --event-accent:#6f8f12; --event-surface:#f4f8e5; --event-divider:#d4e2a9; }
+    .step-card.event-version_branch_created { --event-accent:#5b5bd6; --event-surface:#f0f0ff; --event-divider:#c9caf4; }
+    .step-card.event-version_rollback_created { --event-accent:#a63fa6; --event-surface:#fbf0fb; --event-divider:#e4c8e4; }
+    .step-card.event-version_decision { --event-accent:#d14343; --event-surface:#fff0f0; --event-divider:#f0c8c8; }
     .step-card.event-system_event { --event-accent:var(--system-event-accent); --event-surface:var(--system-event-surface); --event-divider:var(--system-event-divider); }
     .step-card h3 { margin:0; font-size:15px; }
     .event-type-chip { display:inline-block; color:var(--event-accent); font-size:16px; font-weight:800; letter-spacing:.02em; }
@@ -391,7 +401,13 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
 .version-toolbar { display:flex; flex-direction:column; gap:8px; padding-bottom:12px; border-bottom:1px dashed var(--line); }
 .version-action-row { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:8px; align-items:center; }
 .version-action-row input { min-width:0; width:100%; }
-.context-stat-grid.version-summary { grid-template-columns:repeat(3,minmax(0,1fr)); }
+    .context-stat-grid.version-summary { grid-template-columns:repeat(3,minmax(0,1fr)); }
+    .version-stat-content { display:inline-flex; align-items:center; gap:9px; }
+    .version-stat-value { display:flex; flex-direction:column; align-items:center; gap:2px; line-height:1.15; }
+    .version-stat-icon { width:25px; height:25px; fill:none; stroke:currentColor; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; }
+    .version-stat.branches { color:#5b5bd6; }
+    .version-stat.snapshots { color:#0f9f92; }
+    .version-stat.events { color:#d14343; }
 .version-section { border:1px solid #c9def5; border-radius:7px; padding:8px 12px 10px; background:#fbfdff; }
 .version-section h3 { margin:0 0 7px; color:#17202a; font-size:16px; font-weight:700; line-height:1.3; }
 .version-section .table-wrap { border:1px solid #d4e3f1; border-radius:6px; background:#fff; }
@@ -403,9 +419,14 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
 .version-note { border:1px dashed #d5a94a; background:#fffaf0; color:#6b4b09; padding:10px; border-radius:6px; font-size:12px; line-height:1.45; }
 .version-table { min-width:820px; }
 .version-timeline { display:grid; gap:0; }
-.version-event { position:relative; padding:10px 0 10px 18px; border-bottom:1px solid #d8e6f2; display:grid; grid-template-columns:minmax(0,1fr) auto; gap:12px; align-items:center; font-size:12px; }
-.version-event::before { content:""; position:absolute; left:4px; top:16px; width:7px; height:7px; border-radius:50%; background:#2364aa; box-shadow:0 0 0 3px #dcecff; }
-.version-event::after { content:""; position:absolute; left:7px; top:26px; bottom:-10px; width:1px; background:#bcd6ef; }
+    .version-event { --version-accent:#2364aa; --version-halo:#dcecff; position:relative; padding:10px 0 10px 18px; border-bottom:1px solid #d8e6f2; display:grid; grid-template-columns:minmax(0,1fr) auto; gap:12px; align-items:center; font-size:12px; }
+    .version-event.event-version_snapshot_created { --version-accent:#0f9f92; --version-halo:#d5f1ec; }
+    .version-event.event-version_repair_branch_suggested { --version-accent:#6f8f12; --version-halo:#e5edc8; }
+    .version-event.event-version_branch_created { --version-accent:#5b5bd6; --version-halo:#dfdffd; }
+    .version-event.event-version_rollback_created { --version-accent:#a63fa6; --version-halo:#f1d9f1; }
+    .version-event.event-version_decision { --version-accent:#d14343; --version-halo:#f8dada; }
+    .version-event::before { content:""; position:absolute; left:4px; top:16px; width:7px; height:7px; border-radius:50%; background:var(--version-accent); box-shadow:0 0 0 3px var(--version-halo); }
+    .version-event::after { content:""; position:absolute; left:7px; top:26px; bottom:-10px; width:1px; background:var(--version-accent); opacity:.35; }
 .version-event:last-child { border-bottom:0; }
 .version-event:last-child::after { display:none; }
 .version-event-meta { display:flex; align-items:center; gap:7px; flex-wrap:wrap; margin-bottom:4px; }
@@ -416,12 +437,12 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
 @media (max-width:900px) { .view-groups { overflow-x:auto; } .view-group-row { min-width:max-content; } .version-action-row { grid-template-columns:1fr; } .context-stat-grid.version-summary { grid-template-columns:repeat(2,minmax(0,1fr)); } .version-event { grid-template-columns:1fr; gap:7px; } .version-event .small-btn { justify-self:start; } .global-metrics { grid-template-columns:1fr; } }
 
     @media (max-width: 1200px) { main { grid-template-columns:1fr; } }
-    @media (max-width: 900px) { main, .playback-layout { grid-template-columns:1fr; } input { min-width: 160px; width:100%; } header { height:auto; gap:10px; align-items:flex-start; flex-direction:column; padding:12px; } .controls { width:100%; flex-wrap:wrap; } .playback-progress { flex-basis:100%; } }
+    @media (max-width: 900px) { main, .playback-layout { grid-template-columns:1fr; } input { min-width: 160px; width:100%; } header { height:auto; display:flex; gap:10px; align-items:flex-start; flex-direction:column; padding:12px; } h1 { width:100%; text-align:center; } .controls { width:100%; flex-wrap:wrap; justify-self:auto; } .playback-progress { flex-basis:100%; } }
   </style>
 </head>
 <body>
   <header>
-    <h1>Agent ContextDB: Trajectory DAG + Views</h1>
+    <h1>Agent ContextDB</h1>
     <div class="controls">
       <button id="globalMode" class="secondary mode-btn">Global Overview</button>
       <button id="traceMode" class="secondary mode-btn">Trajectory Playback</button>
@@ -434,11 +455,11 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
     <section>
       <div class="panel-head"><h2>Versioned Trajectory DAG</h2><span id="graphMeta" class="badge">idle</span></div>
       <div class="event-legend">
+        <span class="pill"><span class="legend-dot dot-system_event"></span>system event</span>
         <span class="pill"><span class="legend-dot dot-user_message"></span>user message</span>
         <span class="pill"><span class="legend-dot dot-assistant_message"></span>assistant message</span>
         <span class="pill"><span class="legend-dot dot-tool_call"></span>tool call</span>
         <span class="pill"><span class="legend-dot dot-tool_result"></span>tool result</span>
-        <span class="pill"><span class="legend-dot dot-memory_update"></span>memory</span>
         <span class="pill"><span class="legend-dot dot-skill_match"></span>skill match</span>
         <span class="pill"><span class="legend-dot dot-skill_recommendation"></span>skill recommendation</span>
         <span class="pill"><span class="legend-dot dot-skill_decision"></span>skill decision</span>
@@ -447,7 +468,6 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
         <span class="pill"><span class="legend-dot dot-version_branch_created"></span>branch creation</span>
         <span class="pill"><span class="legend-dot dot-version_rollback_created"></span>rollback</span>
         <span class="pill"><span class="legend-dot dot-version_decision"></span>version decision</span>
-        <span class="pill"><span class="legend-dot dot-system_event"></span>system event</span>
       </div>
       <div id="graph" class="graph"><svg id="edges" class="edges"></svg></div>
     </section>
@@ -476,7 +496,7 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
             </div>
           </div>
         </div>
-        <div class="content"><div id="metrics" class="metrics"></div><div id="out" class="view-output"><div class="view-empty">Paste a trajectory_id, then load it to inspect its ContextDB data.</div></div></div>
+        <div class="content"><div id="metrics" class="metrics"></div><div id="out" class="view-output"><div class="view-empty">Enter a trajectory_id, then load it to inspect its ContextDB data.</div></div></div>
       </div>
       <div id="contextQlPanel" class="right-pane hidden">
         <div class="contextql">
@@ -505,11 +525,11 @@ ORDER BY timestamp;</textarea>
     <section>
       <div class="panel-head"><h2>Versioned Trajectory DAG</h2></div>
       <div class="event-legend">
+        <span class="pill"><span class="legend-dot dot-system_event"></span>system event</span>
         <span class="pill"><span class="legend-dot dot-user_message"></span>user message</span>
         <span class="pill"><span class="legend-dot dot-assistant_message"></span>assistant message</span>
         <span class="pill"><span class="legend-dot dot-tool_call"></span>tool call</span>
         <span class="pill"><span class="legend-dot dot-tool_result"></span>tool result</span>
-        <span class="pill"><span class="legend-dot dot-memory_update"></span>memory</span>
         <span class="pill"><span class="legend-dot dot-skill_match"></span>skill match</span>
         <span class="pill"><span class="legend-dot dot-skill_recommendation"></span>skill recommendation</span>
         <span class="pill"><span class="legend-dot dot-skill_decision"></span>skill decision</span>
@@ -518,7 +538,6 @@ ORDER BY timestamp;</textarea>
         <span class="pill"><span class="legend-dot dot-version_branch_created"></span>branch creation</span>
         <span class="pill"><span class="legend-dot dot-version_rollback_created"></span>rollback</span>
         <span class="pill"><span class="legend-dot dot-version_decision"></span>version decision</span>
-        <span class="pill"><span class="legend-dot dot-system_event"></span>system event</span>
       </div>
       <div class="content playback-layout">
         <div>
@@ -555,6 +574,7 @@ let playbackDetailRequest = 0;
 let llmProfiles = [];
 let defaultLlmProfileId = '';
 let summaryProfileId = '';
+let loadingElapsedTimer = null;
 let globalOverviewData = null;
 const BRANCH_SCOPED_VIEWS = new Set(['current_prompt', 'summary', 'rl_dataset']);
 const viewBranches = {current_prompt: 'main', summary: 'main', rl_dataset: 'main'};
@@ -624,7 +644,10 @@ function populateSummaryProfileSelector() {
 function bindSummaryProfileControls() {
   const select = $('summaryProfile');
   const button = $('generateSummary');
-  if (select) select.onchange = () => { summaryProfileId = select.value; };
+  if (select) select.onchange = () => {
+    summaryProfileId = select.value;
+    if (!globalBusy && currentView === 'summary') loadView();
+  };
   if (button) button.onclick = () => {
     summaryProfileId = select?.value || selectedSummaryProfile();
     if (!globalBusy && currentView === 'summary' && summaryProfileId) loadView({refreshSummary: true});
@@ -948,6 +971,18 @@ function drawGlobalRelationshipGraph(graphData) {
   edges.setAttribute('height', height);
   edges.setAttribute('viewBox', `0 0 ${width} ${height}`);
   edges.innerHTML = '';
+  for (const column of graph.querySelectorAll('.global-relationship-column')) {
+    const columnBox = column.getBoundingClientRect();
+    const background = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    background.setAttribute('x', columnBox.left - bounds.left + graph.scrollLeft - 10);
+    background.setAttribute('y', columnBox.top - bounds.top + graph.scrollTop - 10);
+    background.setAttribute('width', columnBox.width + 20);
+    background.setAttribute('height', columnBox.height + 20);
+    background.setAttribute('rx', '6');
+    background.setAttribute('fill', '#e2f0fc');
+    background.setAttribute('fill-opacity', '.68');
+    edges.appendChild(background);
+  }
   const byId = new Map([...graph.querySelectorAll('[data-global-node]')].map(node => [node.dataset.globalNode, node]));
   const trajectoryEdgeColors = ['#b55d78', '#b78332', '#5d8f70', '#4f7fa8', '#8069a5'];
   const trajectoryColorById = new Map(
@@ -1057,8 +1092,8 @@ function drawGlobalRelationshipGraph(graphData) {
     if (isSkillUsage) {
       const lane = skillUsageLaneByEdge.get(edge) || 0;
       const bottomRouteY = height - 13 - lane * 7;
-      const sourceExitX = sourceRight + 16 + lane * 7;
-      const targetEntryX = targetLeft - 16 - lane * 7;
+      const sourceExitX = sourceRight + 28 + lane * 7;
+      const targetEntryX = targetLeft - 28 - lane * 7;
       const route = document.createElementNS('http://www.w3.org/2000/svg', 'path');
       route.setAttribute('d', `M ${sourceRight} ${sourceCenterY} H ${sourceExitX} V ${bottomRouteY} H ${targetEntryX} V ${targetCenterY} H ${targetLeft}`);
       route.setAttribute('class', 'skill-usage');
@@ -1166,9 +1201,9 @@ function renderGlobalOverview(data) {
   const skillRows = skills.map((skill, index) => `<tr><td><b>${escapeHtml(skill.name)}</b><div class="mono muted">${escapeHtml(skill.skill_id)}</div></td><td><button class="small-btn secondary" onclick='openTrajectoryFromGlobal(${JSON.stringify(skill.source_trajectory_id)})'>${escapeHtml(skill.source_trajectory_id)}</button></td><td><button class="small-btn" onclick="showGlobalSkillDetail(${index})">Details</button></td></tr>`).join('') || '<tr><td colspan="3" class="muted">No learned skills are currently materialized.</td></tr>';
   $('globalOut').innerHTML = `
     <div class="global-metrics">
-      <div class="global-metric"><b>${escapeHtml(data.trajectory_count)}</b><span>trajectories</span></div>
-      <div class="global-metric"><b>${escapeHtml(data.tool_count)}</b><span>tools</span></div>
-      <div class="global-metric"><b>${escapeHtml(data.skill_count)}</b><span>skills</span></div>
+      <div class="global-metric trajectory-metric"><div class="global-metric-content"><svg class="global-metric-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="5" r="2"></circle><circle cx="18" cy="12" r="2"></circle><circle cx="6" cy="19" r="2"></circle><path d="M8 6.3 16 10.7M16 13.3 8 17.7"></path></svg><div class="global-metric-value"><b>${escapeHtml(data.trajectory_count)}</b><span>trajectories</span></div></div></div>
+      <div class="global-metric tool-metric"><div class="global-metric-content"><svg class="global-metric-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M14.7 6.3a4.5 4.5 0 0 0-5.9 5.9L3.5 17.5a2.1 2.1 0 0 0 3 3l5.3-5.3a4.5 4.5 0 0 0 5.9-5.9l-3.1 3.1-2.6-2.6z"></path></svg><div class="global-metric-value"><b>${escapeHtml(data.tool_count)}</b><span>tools</span></div></div></div>
+      <div class="global-metric skill-metric"><div class="global-metric-content"><svg class="global-metric-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3-1.2 4.8L6 9l4.8 1.2L12 15l1.2-4.8L18 9l-4.8-1.2zM19 15l-.7 2.3L16 18l2.3.7L19 21l.7-2.3L22 18l-2.3-.7zM5 15l-.5 1.5L3 17l1.5.5L5 19l.5-1.5L7 17l-1.5-.5z"></path></svg><div class="global-metric-value"><b>${escapeHtml(data.skill_count)}</b><span>skills</span></div></div></div>
     </div>
     <div class="summary-card global-section"><h3>Trajectory Catalog</h3><div class="table-wrap"><table class="trajectory-catalog-table"><thead><tr><th>Trajectory</th><th>Source</th><th>Created / updated</th><th>Events</th><th>Branches</th><th>Tools</th><th>Skills</th></tr></thead><tbody>${trajectoryRows}</tbody></table></div></div>
     <div class="summary-card global-section"><h3>Skill Library</h3><div class="table-wrap"><table class="global-skill-library-table"><thead><tr><th>Skill</th><th>Source trajectory</th><th aria-label="Details"></th></tr></thead><tbody>${skillRows}</tbody></table></div><div id="globalSkillDetail" class="global-skill-detail" hidden></div></div>
@@ -1295,13 +1330,33 @@ function setBusyControls(busy) {
   globalBusy = busy;
   document.querySelectorAll('.tabs button, #load, #runSql, #runNaturalLanguage, #nlProfile, #summaryProfile, #generateSummary, #viewsMode, #queryMode, #versionMode, #traceMode, #finalMode, #globalMode, [data-view-branch]').forEach(el => el.disabled = busy);
 }
+function clearLoadingElapsedTimer() {
+  if (loadingElapsedTimer !== null) {
+    clearInterval(loadingElapsedTimer);
+    loadingElapsedTimer = null;
+  }
+}
 function setLoadingOutput(view, branch) {
+  clearLoadingElapsedTimer();
   const label = viewLabel(view);
-  const slow = view === 'semantic_repair_judgments' || view === 'learned_skills' || view === 'summary' || view === 'current_prompt' || view === 'context_budget';
-  const scope = BRANCH_SCOPED_VIEWS.has(view) ? `Reading branch ${branch || defaultBranchId()} from ContextDB.` : 'Reading trajectory-wide ContextDB data.';
+  if (view === 'summary') {
+    const counterId = 'digestWaitElapsed';
+    setOutput(`<div class="loading-card">
+      <div class="spinner" aria-hidden="true"></div>
+      <div class="loading-text"><b>Generating Context Digest</b><span id="${counterId}">Waiting 0s</span><div class="progress"><div></div></div></div>
+    </div>`);
+    let elapsedSeconds = 0;
+    loadingElapsedTimer = setInterval(() => {
+      elapsedSeconds += 1;
+      const counter = $(counterId);
+      if (counter) counter.textContent = `Waiting ${elapsedSeconds}s`;
+      else clearLoadingElapsedTimer();
+    }, 1000);
+    return;
+  }
   setOutput(`<div class="loading-card">
     <div class="spinner" aria-hidden="true"></div>
-    <div class="loading-text"><b>Loading ${escapeHtml(label)}</b><span>${escapeHtml(slow ? 'This view may call the configured LLM, so it can take a little longer.' : scope)}</span><div class="progress"><div></div></div></div>
+    <div class="loading-text"><b>Loading ${escapeHtml(label)}</b><div class="progress"><div></div></div></div>
   </div>`);
 }
 function showDatabaseViewsPlaceholder() {
@@ -1369,7 +1424,7 @@ function renderSqlResult(data) {
   const resultCount=Number(data.row_count||0);const meta=document.createElement('div');meta.className='sql-result-meta';meta.innerHTML='<span class="pill ok">'+escapeHtml(resultCount)+' '+(resultCount===1?'result':'results')+'</span>';card.appendChild(meta);card.appendChild(wrap);
   $('sqlOut').innerHTML='';$('sqlOut').appendChild(card);if((data.highlight_event_ids||[]).length)highlightGraph(data.highlight_event_ids,[]);
 }
-async function runSqlQuery(){const tid=getTid();if(!tid)return;const sql=$('sqlInput').value.trim();if(!sql)return;setBusyControls(true);$('sqlMeta').textContent='executing...';$('sqlOut').innerHTML='<div class="loading-card"><div class="spinner" aria-hidden="true"></div><div><b>Running SQL query</b></div></div>';try{const data=await api('/api/v1/sql',{trajectory_id:tid,sql:sql});renderSqlResult(data);$('sqlMeta').textContent=String(data.row_count)+' rows';}catch(err){$('sqlMeta').textContent='query error';$('sqlOut').innerHTML='<div class="view-empty"><b>Query failed</b><br>'+escapeHtml(err.message)+'</div>';}finally{setBusyControls(false);}}
+async function runSqlQuery(){const tid=getTid();if(!tid)return;const sql=$('sqlInput').value.trim();if(!sql)return;setBusyControls(true);$('sqlMeta').textContent='executing...';$('sqlOut').innerHTML='<div class="loading-card"><div class="spinner" aria-hidden="true"></div><div class="loading-text"><b>Running SQL query</b><div class="progress"><div></div></div></div></div>';try{const data=await api('/api/v1/sql',{trajectory_id:tid,sql:sql});renderSqlResult(data);$('sqlMeta').textContent=String(data.row_count)+' rows';}catch(err){$('sqlMeta').textContent='query error';$('sqlOut').innerHTML='<div class="view-empty"><b>Query failed</b><br>'+escapeHtml(err.message)+'</div>';}finally{setBusyControls(false);}}
 async function loadLlmProfiles(){
   const select=$('nlProfile');
   try{
@@ -1390,7 +1445,7 @@ async function loadLlmProfiles(){
   }
 }
 function modelExecutionMessage(execution, fallback){const requested=execution.requested_model||fallback||'selected model',actual=execution.response_model;if(execution.verified)return 'Confirmed by API response: '+actual+' (request id '+(execution.response_id||'unavailable')+').';if(actual)return 'API responded with '+actual+' although '+requested+' was requested.';return 'Translation completed, but the API did not return model metadata; the model cannot be independently confirmed.';}
-async function runNaturalLanguageQuery(){const tid=getTid(),question=$('nlQuestion').value.trim(),profileId=$('nlProfile').value;if(!tid||!question||!profileId)return;setBusyControls(true);$('sqlMeta').textContent='translating...';const profileLabel=$('nlProfile').selectedOptions[0]?.textContent||profileId;$('sqlOut').innerHTML='<div class="loading-card"><div class="spinner" aria-hidden="true"></div><div><b>Translating query with '+escapeHtml(profileLabel)+'</b></div></div>';try{const data=await api('/api/v1/nl_sql',{trajectory_id:tid,question:question,profile_id:profileId});const translation=data.translation||{},execution=translation.execution||{};$('sqlInput').value=translation.sql||'';$('sqlMeta').textContent=execution.verified?'verified '+execution.response_model:'SQL translated';$('sqlOut').innerHTML='<div class="view-empty"><b>SQL ready for review.</b><br><span class="sql-translation-detail">'+escapeHtml(modelExecutionMessage(execution,translation.model))+'</span><br><span class="muted sql-translation-detail">'+escapeHtml(translation.reason||'Click Run SQL to execute the generated statement.')+'</span></div>';}catch(err){$('sqlMeta').textContent='translation error';$('sqlOut').innerHTML='<div class="view-empty"><b>Natural-language translation failed</b><br>'+escapeHtml(err.message)+'</div>';}finally{setBusyControls(false);}}
+async function runNaturalLanguageQuery(){const tid=getTid(),question=$('nlQuestion').value.trim(),profileId=$('nlProfile').value;if(!tid||!question||!profileId)return;setBusyControls(true);$('sqlMeta').textContent='translating...';const profileLabel=$('nlProfile').selectedOptions[0]?.textContent||profileId;$('sqlOut').innerHTML='<div class="loading-card"><div class="spinner" aria-hidden="true"></div><div class="loading-text"><b>Translating query with '+escapeHtml(profileLabel)+'</b><div class="progress"><div></div></div></div></div>';try{const data=await api('/api/v1/nl_sql',{trajectory_id:tid,question:question,profile_id:profileId});const translation=data.translation||{},execution=translation.execution||{};$('sqlInput').value=translation.sql||'';$('sqlMeta').textContent=execution.verified?'verified '+execution.response_model:'SQL translated';$('sqlOut').innerHTML='<div class="view-empty"><b>SQL ready for review.</b><br><span class="sql-translation-detail">'+escapeHtml(modelExecutionMessage(execution,translation.model))+'</span><br><span class="muted sql-translation-detail">'+escapeHtml(translation.reason||'Click Run SQL to execute the generated statement.')+'</span></div>';}catch(err){$('sqlMeta').textContent='translation error';$('sqlOut').innerHTML='<div class="view-empty"><b>Natural-language translation failed</b><br>'+escapeHtml(err.message)+'</div>';}finally{setBusyControls(false);}}
 
 function renderFailurePatterns(data) {
   const rows = Array.isArray(data.content) ? data.content : [];
@@ -1665,6 +1720,12 @@ function renderSkillApplicationTrace(data) {
       const decision = decisionsBeforeExecution[decisionsBeforeExecution.length - 1] || decisions[decisions.length - 1];
       const result = linkedEvents.find(e => e.event_type === 'tool_result');
       const details = matchPayloadDetails(matchEvent);
+      const recommendationPayload = delivery?.payload || {};
+      const hasRecommendation = Boolean(
+        delivery
+        && Object.keys(recommendationPayload).length
+        && recommendationPayload.matched !== false
+      );
       const failureEventReference = matchEvent.refs?.failure_event_id || details.input.event_id || '';
       const failureEvent = failureEventReference ? branchRows.find(e => e.event_id === failureEventReference) : null;
       if (failureEvent?.event_type !== 'tool_result' || failureEvent.payload?.status !== 'failed') return;
@@ -1679,14 +1740,18 @@ function renderSkillApplicationTrace(data) {
         timelineStep('skill_match', details.matched ? 'Skill Matched' : 'Skill Match Attempted', matchBody, [matchEvent.event_id], matchMeta)
       ];
       if (details.matched) {
-        const recommendationText = String(eventText(delivery) || details.actionName || 'ContextDB made the selected action available to the Agent.').replace(/\bsuggestion\b/gi, 'recommendation');
-        const recommendationBody = `<span class="trace-secondary-detail">${escapeHtml(recommendationText)}</span>`;
-        steps.push(timelineStep('skill_recommendation', 'Recommendation Delivered To Agent', recommendationBody, delivery ? [delivery.event_id] : [], traceEventMeta(delivery?.branch_id || matchEvent.branch_id || branch, delivery?.event_id)));
-        if (decision) {
-          const decisionBody = `<span class="trace-secondary-detail">${escapeHtml(eventText(decision))}</span>`;
-          steps.push(timelineStep('skill_decision', 'Agent Decision', decisionBody, [decision.event_id], traceEventMeta(decision.branch_id || matchEvent.branch_id || branch, decision.event_id)));
+        if (hasRecommendation) {
+          const recommendationText = String(eventText(delivery) || details.actionName || 'ContextDB made the selected action available to the Agent.').replace(/\bsuggestion\b/gi, 'recommendation');
+          const recommendationBody = `<span class="trace-secondary-detail">${escapeHtml(recommendationText)}</span>`;
+          steps.push(timelineStep('skill_recommendation', 'Recommendation Delivered To Agent', recommendationBody, [delivery.event_id], traceEventMeta(delivery.branch_id || matchEvent.branch_id || branch, delivery.event_id)));
+          if (decision) {
+            const decisionBody = `<span class="trace-secondary-detail">${escapeHtml(eventText(decision))}</span>`;
+            steps.push(timelineStep('skill_decision', 'Agent Decision', decisionBody, [decision.event_id], traceEventMeta(decision.branch_id || matchEvent.branch_id || branch, decision.event_id)));
+          } else {
+            steps.push(timelineStep('skill_decision', 'Agent Decision', '<span class="trace-secondary-detail">No agent decision.</span>'));
+          }
         } else {
-          steps.push(timelineStep('skill_decision', 'Agent Decision', '<span class="trace-secondary-detail">No agent decision.</span>'));
+          steps.push(timelineStep('skill_recommendation', 'Recommendation Delivered To Agent', '<span class="trace-secondary-detail">No recommendation.</span>'));
         }
         if (call) steps.push(timelineStep('tool_call', 'Agent-Executed Skill Action', `<span class="mono">${escapeHtml(eventText(call))}</span>`, [call.event_id], traceEventMeta(call.branch_id || matchEvent.branch_id || branch, call.event_id)));
       } else {
@@ -1699,7 +1764,7 @@ function renderSkillApplicationTrace(data) {
       }
       cards.push(`<div class="summary-card app-flow">
         <div class="app-flow-title"><h3>Skill Application ${cards.length + 1}</h3><button class="small-btn" onclick='highlightGraph(${JSON.stringify(eventIds)}, [])'>Highlight Workflow</button></div>
-        <p class="app-flow-status"><span class="pill ${details.matched && result ? 'ok' : 'excluded'}">${details.matched ? ['failure', 'match', 'recommend', ...(decision ? ['decide'] : []), ...(call ? ['execute'] : []), ...(result ? ['outcome'] : [])].join(' -> ') : 'failure -> match attempted -> recommend attempted'}</span></p>
+        <p class="app-flow-status"><span class="pill ${details.matched && result ? 'ok' : 'excluded'}">${details.matched ? ['failure', 'match', hasRecommendation ? 'recommend' : 'no recommendation', ...(hasRecommendation && decision ? ['decide'] : []), ...(call ? ['execute'] : []), ...(result ? ['outcome'] : [])].join(' -> ') : 'failure -> match attempted -> recommend attempted'}</span></p>
         <div class="timeline">${steps.join('')}</div>
       </div>`);
     });
@@ -1920,7 +1985,10 @@ async function loadView(options = {}) {
       showError(err.message);
     }
   } finally {
-    if (seq === viewRequestSeq) setBusyControls(false);
+    if (seq === viewRequestSeq) {
+      clearLoadingElapsedTimer();
+      setBusyControls(false);
+    }
   }
 }
 async function loadAll() {
@@ -1963,6 +2031,9 @@ function displayVersionTimestamp(value) {
   const zone = match[3] === 'Z' || match[3] === '+00:00' ? ' UTC' : (match[3] ? ` UTC${match[3]}` : '');
   return `${match[1]} ${match[2]}${zone}`;
 }
+function versionStat(label, value, kind, icon) {
+  return `<div class="context-stat version-stat ${kind}"><div class="version-stat-content"><svg class="version-stat-icon" viewBox="0 0 24 24" aria-hidden="true">${icon}</svg><div class="version-stat-value"><b>${escapeHtml(value)}</b><span>${escapeHtml(label)}</span></div></div></div>`;
+}
 function renderVersionControl(data) {
   const branches = data.branches || [];
   const snapshots = data.snapshots || [];
@@ -1980,14 +2051,14 @@ function renderVersionControl(data) {
     <td>${escapeHtml(s.message || '')}</td>
     <td><button class="small-btn" aria-label="Highlight snapshot ${escapeHtml(s.snapshot_id || '')}" onclick='highlightGraph([${JSON.stringify(s.event_id)}], [])'>Highlight</button></td>
   </tr>`).join('') || '<tr><td colspan="5" class="muted">No snapshots.</td></tr>';
-  const lifecycle = events.slice().reverse().map(e => `<div class="version-event">
+  const lifecycle = events.slice().reverse().map(e => `<div class="version-event event-${escapeHtml(e.event_type || '')}">
     <div><div class="version-event-meta"><span class="version-event-operation">${escapeHtml(versionOperationLabel(e))}</span><span class="version-event-time">${escapeHtml(displayVersionTimestamp(e.timestamp))}</span></div><div class="version-event-identity">${traceEventMeta(e.branch_id || 'main', e.event_id, 'excluded')}</div><p>${escapeHtml(versionEventText(e))}</p></div>
     <button class="small-btn" aria-label="Highlight version event ${escapeHtml(e.event_id || '')}" onclick='highlightGraph([${JSON.stringify(e.event_id)}], [])'>Highlight</button>
   </div>`).join('') || '<div class="view-empty">No version lifecycle events yet. Hook snapshots and Agent decisions will appear here.</div>';
   $('versionOut').innerHTML = `<div class="context-stat-grid version-summary">
-    <div class="context-stat"><b>${escapeHtml(branches.length)}</b><span>branches</span></div>
-    <div class="context-stat"><b>${escapeHtml(snapshots.length)}</b><span>snapshots</span></div>
-    <div class="context-stat"><b>${escapeHtml(events.length)}</b><span>version events</span></div>
+    ${versionStat('branches', branches.length, 'branches', '<circle cx="6" cy="5" r="2"></circle><circle cx="18" cy="12" r="2"></circle><circle cx="6" cy="19" r="2"></circle><path d="M8 6.3 16 10.7M16 13.3 8 17.7"></path>')}
+    ${versionStat('snapshots', snapshots.length, 'snapshots', '<rect x="4" y="5" width="16" height="14" rx="2"></rect><path d="M8 5v5h8V5M8 15h8"></path>')}
+    ${versionStat('version events', events.length, 'events', '<path d="M3 12a9 9 0 1 0 3-6.7"></path><path d="M3 4v5h5M12 7v5l3 2"></path>')}
   </div>
   <div class="version-section"><h3>Branches</h3><div class="table-wrap"><table class="version-table"><thead><tr><th>Branch</th><th>Base Event</th><th>Head Event</th><th>Latest Snapshot</th><th></th></tr></thead><tbody>${branchRows}</tbody></table></div></div>
   <div class="version-section"><h3>Snapshots</h3><div class="table-wrap"><table class="version-table"><thead><tr><th>Snapshot</th><th>Branch</th><th>Checkpoint Event</th><th>Message</th><th></th></tr></thead><tbody>${snapshotRows}</tbody></table></div></div>

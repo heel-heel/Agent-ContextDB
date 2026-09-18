@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import os
 import re
+import ssl
 import time
 from typing import Any, Dict, List
 from urllib import error, request
@@ -17,6 +18,20 @@ STRUCTURAL_REPAIR_RULES = {
     "rollback_then_repair_first_success",
     "same_branch_first_success_after_failure",
 }
+
+# Keep a first summary pass comfortably within the response window of remote
+# providers. Later passes are incremental and normally contain only new events.
+CONTEXT_SUMMARY_MAX_EVENTS = 24
+CONTEXT_SUMMARY_HEAD_EVENTS = 6
+CONTEXT_SUMMARY_EVENT_TEXT_LIMIT = 160
+NETWORK_CONFIGURATION_MAX_ATTEMPTS = 3
+HTTP_LLM_DIAGNOSTICS = {
+    401: "HTTP 401: authentication failed. Check the API key configured for the selected LLM profile.",
+    403: "HTTP 403: access to the selected model or workspace is forbidden. Check model authorization and workspace permissions.",
+    404: "HTTP 404: the configured LLM endpoint or selected model was not found. Check the base URL and model identifier.",
+    429: "HTTP 429: the selected LLM service rejected the request because of rate limits or quota. Check usage and retry later.",
+}
+INVALID_JSON_ESCAPE = re.compile(r'\\(?!(?:["\\\\/bfnrt]|u[0-9a-fA-F]{4}))')
 
 class SemanticRepairJudge:
     """Optional semantic judge for failure -> repair candidates.
@@ -83,7 +98,7 @@ class SemanticRepairJudge:
                 or os.environ.get("OPENAI_API_KEY")
             )
             self.provider = (configured_provider if configured_provider is not None else ("qwen" if has_api_key else "disabled")).strip().lower()
-            self.model = (model or os.environ.get("CONTEXTDB_LLM_MODEL", "qwen3.7-max")).strip()
+            self.model = (model or os.environ.get("CONTEXTDB_LLM_MODEL", "deepseek-v4.1-flash")).strip()
         self._uses_background_config = uses_background_config
         timeout_key = (
             "CONTEXTDB_BACKGROUND_LLM_TIMEOUT"
@@ -213,6 +228,7 @@ class SemanticRepairJudge:
                 self._context_summary_prompt(events, previous_summary),
                 self._disabled_context_summary_result(),
                 "OpenAI-compatible LLM semantic context summarization failed.",
+                wait_indefinitely=True,
             )
             if result.get("error"):
                 return result
@@ -525,7 +541,14 @@ class SemanticRepairJudge:
             return result
         return self._normalize_skill_match_result(result, skills, top_k)
 
-    def _openai_json_call(self, system: str, prompt: str, disabled_result: Dict[str, Any], failure_reason: str) -> Dict[str, Any]:
+    def _openai_json_call(
+        self,
+        system: str,
+        prompt: str,
+        disabled_result: Dict[str, Any],
+        failure_reason: str,
+        wait_indefinitely: bool = False,
+    ) -> Dict[str, Any]:
         if self._profile_error:
             result = dict(disabled_result)
             result.update({"enabled": False, "provider": self.provider, "model": self.model, "error": self._profile_error})
@@ -554,15 +577,15 @@ class SemanticRepairJudge:
             payload["response_format"] = {"type": "json_object"}
         req = request.Request(base_url + "/chat/completions", data=json.dumps(payload).encode("utf-8"), headers={"Content-Type": "application/json", "Authorization": f"Bearer {api_key}"}, method="POST")
         retry_window = self._retry_window_seconds()
-        deadline = time.monotonic() + retry_window
+        deadline = None if wait_indefinitely else time.monotonic() + retry_window
         attempt = 0
         retry_delay = 0.5
 
         while True:
             attempt += 1
             try:
-                remaining = deadline - time.monotonic()
-                request_timeout = min(self.timeout, max(1.0, remaining))
+                remaining = None if deadline is None else deadline - time.monotonic()
+                request_timeout = None if wait_indefinitely else min(self.timeout, max(1.0, remaining))
                 with request.urlopen(req, timeout=request_timeout) as resp:
                     data = json.loads(resp.read().decode("utf-8"))
                 parsed = _parse_json_object(data["choices"][0]["message"]["content"])
@@ -580,13 +603,29 @@ class SemanticRepairJudge:
                 retryable = isinstance(exc, (error.URLError, TimeoutError, OSError)) or (
                     isinstance(exc, error.HTTPError) and exc.code >= 500
                 )
-                remaining = deadline - time.monotonic()
-                if retryable and remaining > 0:
-                    time.sleep(min(retry_delay, remaining))
+                remaining = None if deadline is None else deadline - time.monotonic()
+                http_diagnostic = self._http_llm_diagnostic(exc)
+                network_configuration_error = self._is_network_configuration_error(exc)
+                if http_diagnostic:
+                    detail = http_diagnostic
+                elif network_configuration_error and attempt >= NETWORK_CONFIGURATION_MAX_ATTEMPTS:
+                    detail = (
+                        f"The configured LLM endpoint could not be reached after {attempt} attempts: {exc}. "
+                        "Check DNS, network access, proxy settings, TLS certificates, and the configured endpoint URL."
+                    )
+                else:
+                    detail = ""
+                if detail:
+                    result = dict(disabled_result)
+                    result.update({"enabled": True, "provider": self.provider, "model": self.model, "error": detail, "reason": failure_reason, "_contextdb_execution": {"profile_id": self.profile_id or None, "provider": self.provider, "requested_model": self.model, "response_model": None, "response_id": None, "verified": False}})
+                    return result
+                if retryable and (wait_indefinitely or remaining > 0):
+                    time.sleep(retry_delay if wait_indefinitely else min(retry_delay, remaining))
                     retry_delay = min(retry_delay * 2, 5.0)
                     continue
 
                 detail = str(exc) or exc.__class__.__name__
+                wait_description = "without a configured time limit" if wait_indefinitely else f"within {retry_window:g} seconds"
                 connection_refused = (
                     isinstance(exc, ConnectionRefusedError)
                     or getattr(exc, "winerror", None) == 10061
@@ -595,17 +634,43 @@ class SemanticRepairJudge:
                 )
                 if connection_refused:
                     detail = (
-                        f"The connection to the configured LLM endpoint was refused after {attempt} attempt(s) within {retry_window:g} seconds: {detail}. "
+                        f"The connection to the configured LLM endpoint was refused after {attempt} attempt(s) {wait_description}: {detail}. "
                         "Check VPN, firewall or network egress rules, and any required HTTPS proxy."
                     )
                 elif isinstance(exc, OSError):
                     detail = (
-                        f"The remote LLM endpoint closed or reset the connection after {attempt} attempt(s) within {retry_window:g} seconds: {detail}. "
+                        f"The remote LLM endpoint closed or reset the connection after {attempt} attempt(s) {wait_description}: {detail}. "
                         "Verify CONTEXTDB_LLM_BASE_URL for the selected Bailian workspace and any proxy/firewall settings."
                     )
                 result = dict(disabled_result)
                 result.update({"enabled": True, "provider": self.provider, "model": self.model, "error": detail, "reason": failure_reason, "_contextdb_execution": {"profile_id": self.profile_id or None, "provider": self.provider, "requested_model": self.model, "response_model": None, "response_id": None, "verified": False}})
                 return result
+
+    @staticmethod
+    def _http_llm_diagnostic(exc: Exception) -> str:
+        if isinstance(exc, error.HTTPError):
+            return HTTP_LLM_DIAGNOSTICS.get(exc.code, "")
+        return ""
+
+    @staticmethod
+    def _is_network_configuration_error(exc: Exception) -> bool:
+        reason = getattr(exc, "reason", exc)
+        if isinstance(reason, (ConnectionRefusedError, ssl.SSLError)):
+            return True
+        text = f"{exc} {reason}".lower()
+        return any(marker in text for marker in (
+            "connection refused",
+            "getaddrinfo",
+            "name or service not known",
+            "temporary failure in name resolution",
+            "nodename nor servname",
+            "certificate verify failed",
+            "ssl:",
+            "tls",
+            "proxy error",
+            "proxyerror",
+            "tunnel connection failed",
+        ))
 
     def _contextql_translation_prompt(self, question: str, relations: List[Dict[str, Any]]) -> str:
         compact = {
@@ -643,8 +708,15 @@ class SemanticRepairJudge:
         return json.dumps(compact, ensure_ascii=False, indent=2)
 
     def _context_summary_prompt(self, events: List[Dict[str, Any]], previous_summary: str) -> str:
+        source_events = list(events)
+        omitted_event_count = 0
+        if len(source_events) > CONTEXT_SUMMARY_MAX_EVENTS:
+            tail_count = CONTEXT_SUMMARY_MAX_EVENTS - CONTEXT_SUMMARY_HEAD_EVENTS
+            omitted_event_count = len(source_events) - CONTEXT_SUMMARY_MAX_EVENTS
+            source_events = source_events[:CONTEXT_SUMMARY_HEAD_EVENTS] + source_events[-tail_count:]
+
         compact_events = []
-        for event in events:
+        for event in source_events:
             payload = event.get("payload", {}) or {}
             text = (
                 payload.get("text")
@@ -660,7 +732,7 @@ class SemanticRepairJudge:
                 "event_type": event.get("event_type"),
                 "actor": event.get("actor"),
                 "status": payload.get("status"),
-                "text": str(text)[:1200],
+                "text": str(text)[:CONTEXT_SUMMARY_EVENT_TEXT_LIMIT],
             })
         compact = {
             "task": "Create an incremental semantic digest of a completed prefix of an agent trajectory.",
@@ -678,6 +750,12 @@ class SemanticRepairJudge:
                 "open_items": ["unresolved items, if any"],
             },
             "previous_summary": str(previous_summary or "")[:5000],
+            "source_event_selection": {
+                "total_event_count": len(events),
+                "included_event_count": len(source_events),
+                "omitted_event_count": omitted_event_count,
+                "selection": "all" if not omitted_event_count else "first_and_most_recent",
+            },
             "new_source_events": compact_events,
         }
         return json.dumps(compact, ensure_ascii=False, indent=2)
@@ -938,7 +1016,15 @@ def _parse_json_object(text: str) -> Dict[str, Any]:
         match = re.search(r"\{.*\}", text, re.DOTALL)
         if match:
             text = match.group(0)
-    return json.loads(text)
+    try:
+        return json.loads(text)
+    except json.JSONDecodeError as exc:
+        if "Invalid \\escape" not in exc.msg:
+            raise
+        # Some OpenAI-compatible models emit Windows paths with literal
+        # backslashes despite the strict-JSON instruction. Repair only escapes
+        # that JSON cannot interpret, then preserve the normal decoder rules.
+        return json.loads(INVALID_JSON_ESCAPE.sub(r"\\\\", text))
 
 
 def _slug(text: str) -> str:

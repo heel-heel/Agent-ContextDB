@@ -6,14 +6,17 @@
     "schema_version": "semantic_summary.v1",
     "trajectory_id": "traj_be0c0dbc4d8c",
     "branch_id": "main",
-    "summary": "The agent started a Codex session, determined the ContextDB session ID, and executed several Git commands. The agent used ContextDB to handle a file path issue, recorded decisions and applications, and rejected a repair-branch suggestion to keep the first invalid Git checkout on the main branch for diagnosis. A second failed Git checkout was also performed, and the agent is about to check the version status for any new repair-branch suggestions.",
+    "summary": "The agent obtained the current ContextDB session identifier using one native terminal call. ContextDB initially suggested a repair branch; the agent rejected that suggestion via MCP with the diagnostic rationale and confirmed the active branch was main. The user then supplied a PowerShell command to run from the project root. Its versioned checkout attempt failed because the command used the escaped variable name `$env:LC\\_ALL`, producing a PowerShell syntax error. ContextDB created a snapshot and suggested repair branch `repair-4fe2e341` from snapshot `snap_3bd350fbed87`. The latest request is to retrieve the current version status and report any repair suggestion.",
     "key_facts": [
-      "ContextDB session ID: `rollout-2026-09-15T14-34-56-01a0a3c6-9648-70a2-af08-291576bfda30`",
-      "Accepted skill match event ID: `evt_8aa3b8425265`, Skill ID: `skill_git_file_path_absent_from_git`, Action ID: `act_git_file_path_absent_from_git_1`",
-      "Rejected repair-branch suggestion with reason: `Keep this first invalid Git checkout on main for diagnosis.`"
+      "ContextDB source: `codex-session`.",
+      "The active branch was reported as `main` after rejecting the earlier repair-branch suggestion.",
+      "Failed command attempted detached checkout of `contextdb-demo-codex-path-second-001` with `LC\\_ALL` and `LANG` environment assignments.",
+      "Failure was a PowerShell parse error caused by the escaped underscore in `$env:LC\\_ALL`.",
+      "ContextDB suggested `repair-4fe2e341` from snapshot `snap_3bd350fbed87` after the failed versioned action."
     ],
     "open_items": [
-      "Check ContextDB version status for any new repair-branch suggestions after the second failed Git checkout."
+      "Retrieve the current ContextDB version status using the previously obtained session ID.",
+      "Determine how to handle the newly suggested repair branch."
     ],
     "status": "ready",
     "method": "incremental_llm_semantic_summary",
@@ -615,27 +618,27 @@
       }
     ],
     "raw_tokens": 35974,
-    "compressed_tokens": 112,
-    "compression_ratio": 99.7,
+    "compressed_tokens": 168,
+    "compression_ratio": 99.5,
     "materialization": {
       "cache_hit": false,
       "generation_mode": "full",
       "previous_covered_event_count": 0,
-      "profile_id": "qwen-max"
+      "profile_id": "gpt-6-astra"
     },
     "llm": {
       "enabled": true,
-      "profile_id": "qwen-max",
-      "provider": "bailian",
-      "model": "qwen-max",
+      "profile_id": "gpt-6-astra",
+      "provider": "openai-compatible",
+      "model": "gpt-6-astra",
       "reason": "LLM generated a factual semantic trajectory digest.",
       "error": null,
       "execution": {
-        "profile_id": "qwen-max",
-        "provider": "bailian",
-        "requested_model": "qwen-max",
-        "response_model": "qwen-max",
-        "response_id": "chatcmpl-dbc3c290-c441-9b2d-a423-1c5b4ff589ea",
+        "profile_id": "gpt-6-astra",
+        "provider": "openai-compatible",
+        "requested_model": "gpt-6-astra",
+        "response_model": "gpt-6-astra",
+        "response_id": "resp_0595992540f54fde016aacb3a8df0487d0b9be3dd0766c91a6",
         "verified": true
       }
     }
@@ -726,7 +729,7 @@
     "evt_85722f6b150b",
     "evt_588113fea96f"
   ],
-  "created_at": "2026-09-18T00:48:38.198886+00:00",
+  "created_at": "2026-09-18T03:44:51.784101+00:00",
   "metadata": {
     "event_count": 84,
     "semantic": true

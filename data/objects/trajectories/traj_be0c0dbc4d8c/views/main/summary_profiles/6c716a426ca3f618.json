@@ -6,16 +6,10 @@
     "schema_version": "semantic_summary.v1",
     "trajectory_id": "traj_be0c0dbc4d8c",
     "branch_id": "main",
-    "summary": "The agent started a Codex session, determined the ContextDB session ID, and executed several Git commands. The agent used ContextDB to handle a file path issue, recorded decisions and applications, and rejected a repair-branch suggestion to keep the first invalid Git checkout on the main branch for diagnosis. A second failed Git checkout was also performed, and the agent is about to check the version status for any new repair-branch suggestions.",
-    "key_facts": [
-      "ContextDB session ID: `rollout-2026-09-15T14-34-56-01a0a3c6-9648-70a2-af08-291576bfda30`",
-      "Accepted skill match event ID: `evt_8aa3b8425265`, Skill ID: `skill_git_file_path_absent_from_git`, Action ID: `act_git_file_path_absent_from_git_1`",
-      "Rejected repair-branch suggestion with reason: `Keep this first invalid Git checkout on main for diagnosis.`"
-    ],
-    "open_items": [
-      "Check ContextDB version status for any new repair-branch suggestions after the second failed Git checkout."
-    ],
-    "status": "ready",
+    "summary": "",
+    "key_facts": [],
+    "open_items": [],
+    "status": "unavailable",
     "method": "incremental_llm_semantic_summary",
     "scope": {
       "start_event_id": "evt_a7455668ad35",
@@ -615,28 +609,28 @@
       }
     ],
     "raw_tokens": 35974,
-    "compressed_tokens": 112,
-    "compression_ratio": 99.7,
+    "compressed_tokens": 0,
+    "compression_ratio": 0.0,
     "materialization": {
       "cache_hit": false,
       "generation_mode": "full",
       "previous_covered_event_count": 0,
-      "profile_id": "qwen-max"
+      "profile_id": "glm5.3"
     },
     "llm": {
       "enabled": true,
-      "profile_id": "qwen-max",
+      "profile_id": "glm5.3",
       "provider": "bailian",
-      "model": "qwen-max",
-      "reason": "LLM generated a factual semantic trajectory digest.",
-      "error": null,
+      "model": "glm5.3",
+      "reason": "OpenAI-compatible LLM semantic context summarization failed.",
+      "error": "HTTP 404: the configured LLM endpoint or selected model was not found. Check the base URL and model identifier.",
       "execution": {
-        "profile_id": "qwen-max",
+        "profile_id": "glm5.3",
         "provider": "bailian",
-        "requested_model": "qwen-max",
-        "response_model": "qwen-max",
-        "response_id": "chatcmpl-dbc3c290-c441-9b2d-a423-1c5b4ff589ea",
-        "verified": true
+        "requested_model": "glm5.3",
+        "response_model": null,
+        "response_id": null,
+        "verified": false
       }
     }
   },
@@ -726,7 +720,7 @@
     "evt_85722f6b150b",
     "evt_588113fea96f"
   ],
-  "created_at": "2026-09-18T00:48:38.198886+00:00",
+  "created_at": "2026-09-18T03:04:18.339124+00:00",
   "metadata": {
     "event_count": 84,
     "semantic": true

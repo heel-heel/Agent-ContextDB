@@ -500,7 +500,13 @@ class ContextDB:
         summary_key = uris.summary_view_key(trajectory_id, branch_id, profile_identity)
         cached_view = self.store.get_object(summary_key) or {}
         cached = cached_view.get("content") if isinstance(cached_view, dict) else None
-        if not force_refresh and isinstance(cached, dict) and cached.get("schema_version") == "semantic_summary.v1" and cached.get("source_event_ids") == source_ids:
+        if (
+            not force_refresh
+            and isinstance(cached, dict)
+            and cached.get("schema_version") == "semantic_summary.v1"
+            and cached.get("status") == "ready"
+            and cached.get("source_event_ids") == source_ids
+        ):
             content = dict(cached)
             content["materialization"] = {**(content.get("materialization") or {}), "cache_hit": True}
             return content

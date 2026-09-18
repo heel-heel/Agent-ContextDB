@@ -1,6 +1,8 @@
+import json
 import os
 from tempfile import TemporaryDirectory
 
+from contextdb.llm_judge import SemanticRepairJudge
 from contextdb.service import ContextDB
 
 
@@ -50,3 +52,29 @@ def test_context_assembly_materializes_incremental_semantic_summary():
             os.environ.pop("CONTEXTDB_LLM_PROFILE", None)
         else:
             os.environ["CONTEXTDB_LLM_PROFILE"] = old_profile
+
+
+def test_context_summary_prompt_bounds_a_large_initial_history():
+    judge = SemanticRepairJudge(provider="mock")
+    events = [
+        {
+            "event_id": f"evt_{index}",
+            "branch_id": "main",
+            "event_type": "tool_result",
+            "actor": "tool",
+            "payload": {"status": "ok", "preview": "x" * 2000},
+        }
+        for index in range(100)
+    ]
+
+    prompt = json.loads(judge._context_summary_prompt(events, ""))
+
+    assert prompt["source_event_selection"] == {
+        "total_event_count": 100,
+        "included_event_count": 24,
+        "omitted_event_count": 76,
+        "selection": "first_and_most_recent",
+    }
+    assert prompt["new_source_events"][0]["event_id"] == "evt_0"
+    assert prompt["new_source_events"][-1]["event_id"] == "evt_99"
+    assert all(len(event["text"]) == 160 for event in prompt["new_source_events"])

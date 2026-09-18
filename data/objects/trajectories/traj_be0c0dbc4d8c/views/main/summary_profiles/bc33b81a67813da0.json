@@ -6,14 +6,20 @@
     "schema_version": "semantic_summary.v1",
     "trajectory_id": "traj_be0c0dbc4d8c",
     "branch_id": "main",
-    "summary": "The agent started a Codex session, determined the ContextDB session ID, and executed several Git commands. The agent used ContextDB to handle a file path issue, recorded decisions and applications, and rejected a repair-branch suggestion to keep the first invalid Git checkout on the main branch for diagnosis. A second failed Git checkout was also performed, and the agent is about to check the version status for any new repair-branch suggestions.",
+    "summary": "Codex session started. User instructed the agent to determine the ContextDB session ID for the current conversation using exactly one ordinary native terminal call. The agent read the watcher current-session pointer via PowerShell and obtained session ID rollout-2026-09-15T14-34-56-01a0a3c6-9648-70a2-af08-29157... (truncated in events). ContextDB version status showed a repair-branch suggestion. User then instructed rejection of the repair-branch suggestion; the agent called contextdb_record_version_decision with source codex-session and the session ID, recorded the rejection, and reported active branch main. User later requested running a PowerShell git checkout --detach command for tag/branch contextdb-demo-codex-path-second-001 from project root and reporting raw output. ContextDB created a snapshot before the versioned action. The command failed due to PowerShell parsing of escaped environment variable assignment ($env:LC\\_ALL=\"C\"), producing an unexpected token error. ContextDB suggested repair branch repair-4fe2e341 from snapshot snap_3bd350fbed87. User then requested contextdb_get_version_status and handling of any repair-branch suggestion; agent began retrieving status.",
     "key_facts": [
-      "ContextDB session ID: `rollout-2026-09-15T14-34-56-01a0a3c6-9648-70a2-af08-291576bfda30`",
-      "Accepted skill match event ID: `evt_8aa3b8425265`, Skill ID: `skill_git_file_path_absent_from_git`, Action ID: `act_git_file_path_absent_from_git_1`",
-      "Rejected repair-branch suggestion with reason: `Keep this first invalid Git checkout on main for diagnosis.`"
+      "ContextDB session ID retrieved: rollout-2026-09-15T14-34-56-01a0a3c6-9648-70a2-af08-29157... (truncated in source events).",
+      "A repair-branch suggestion was present and was explicitly rejected via contextdb_record_version_decision.",
+      "Active branch after rejection: main.",
+      "ContextDB snapshot created before attempted git checkout --detach contextdb-demo-codex-path-second-001.",
+      "The git checkout command failed because PowerShell rejected escaped syntax $env:LC\\_ALL=\"C\" as an unexpected token.",
+      "ContextDB suggested repair branch repair-4fe2e341 from snapshot snap_3bd350fbed87 after the failed command.",
+      "Agent was instructed to call contextdb_get_version_status and handle any repair-branch suggestion."
     ],
     "open_items": [
-      "Check ContextDB version status for any new repair-branch suggestions after the second failed Git checkout."
+      "Complete result of contextdb_get_version_status was not included in the supplied events.",
+      "Repair branch repair-4fe2e341 remains suggested/pending handling.",
+      "The requested git checkout --detach command has not successfully completed; raw successful output not obtained."
     ],
     "status": "ready",
     "method": "incremental_llm_semantic_summary",
@@ -615,27 +621,27 @@
       }
     ],
     "raw_tokens": 35974,
-    "compressed_tokens": 112,
-    "compression_ratio": 99.7,
+    "compressed_tokens": 299,
+    "compression_ratio": 99.2,
     "materialization": {
       "cache_hit": false,
       "generation_mode": "full",
       "previous_covered_event_count": 0,
-      "profile_id": "qwen-max"
+      "profile_id": "qwen3.8-max"
     },
     "llm": {
       "enabled": true,
-      "profile_id": "qwen-max",
+      "profile_id": "qwen3.8-max",
       "provider": "bailian",
-      "model": "qwen-max",
+      "model": "qwen3.8-max",
       "reason": "LLM generated a factual semantic trajectory digest.",
       "error": null,
       "execution": {
-        "profile_id": "qwen-max",
+        "profile_id": "qwen3.8-max",
         "provider": "bailian",
-        "requested_model": "qwen-max",
-        "response_model": "qwen-max",
-        "response_id": "chatcmpl-dbc3c290-c441-9b2d-a423-1c5b4ff589ea",
+        "requested_model": "qwen3.8-max",
+        "response_model": "qwen3.8-max",
+        "response_id": "chatcmpl-933c4fae-5fb1-9e4c-9d61-e8510045ab5d",
         "verified": true
       }
     }
@@ -726,7 +732,7 @@
     "evt_85722f6b150b",
     "evt_588113fea96f"
   ],
-  "created_at": "2026-09-18T00:48:38.198886+00:00",
+  "created_at": "2026-09-18T02:53:45.285639+00:00",
   "metadata": {
     "event_count": 84,
     "semantic": true

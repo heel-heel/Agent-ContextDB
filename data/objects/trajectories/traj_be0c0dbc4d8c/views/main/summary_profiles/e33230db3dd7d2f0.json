@@ -6,14 +6,16 @@
     "schema_version": "semantic_summary.v1",
     "trajectory_id": "traj_be0c0dbc4d8c",
     "branch_id": "main",
-    "summary": "The agent started a Codex session, determined the ContextDB session ID, and executed several Git commands. The agent used ContextDB to handle a file path issue, recorded decisions and applications, and rejected a repair-branch suggestion to keep the first invalid Git checkout on the main branch for diagnosis. A second failed Git checkout was also performed, and the agent is about to check the version status for any new repair-branch suggestions.",
+    "summary": "The agent retrieved the current ContextDB session identifier using one native terminal call. ContextDB reported a snapshot and suggested repair branch repair-4fe2e341 after a versioned checkout attempt. The agent rejected the repair-branch suggestion via ContextDB, leaving the active branch as main. A subsequent requested checkout command failed in PowerShell because the environment variable name contained an escaped underscore (`LC\\_ALL`), so the checkout did not complete. The latest action requested another ContextDB version-status lookup; its result is not included.",
     "key_facts": [
-      "ContextDB session ID: `rollout-2026-09-15T14-34-56-01a0a3c6-9648-70a2-af08-291576bfda30`",
-      "Accepted skill match event ID: `evt_8aa3b8425265`, Skill ID: `skill_git_file_path_absent_from_git`, Action ID: `act_git_file_path_absent_from_git_1`",
-      "Rejected repair-branch suggestion with reason: `Keep this first invalid Git checkout on main for diagnosis.`"
+      "ContextDB source: codex-session.",
+      "A repair suggestion was rejected and the active branch was reported as main.",
+      "Snapshot snap_3bd350fbed87 led to suggested repair branch repair-4fe2e341.",
+      "The attempted detached checkout failed at PowerShell parsing due to `LC\\_ALL`."
     ],
     "open_items": [
-      "Check ContextDB version status for any new repair-branch suggestions after the second failed Git checkout."
+      "The latest ContextDB version-status lookup has no supplied result.",
+      "The requested command did not successfully perform the checkout or produce complete intended output."
     ],
     "status": "ready",
     "method": "incremental_llm_semantic_summary",
@@ -615,27 +617,27 @@
       }
     ],
     "raw_tokens": 35974,
-    "compressed_tokens": 112,
-    "compression_ratio": 99.7,
+    "compressed_tokens": 143,
+    "compression_ratio": 99.6,
     "materialization": {
       "cache_hit": false,
       "generation_mode": "full",
       "previous_covered_event_count": 0,
-      "profile_id": "qwen-max"
+      "profile_id": "gpt-5.6-luna"
     },
     "llm": {
       "enabled": true,
-      "profile_id": "qwen-max",
-      "provider": "bailian",
-      "model": "qwen-max",
+      "profile_id": "gpt-5.6-luna",
+      "provider": "openai-compatible",
+      "model": "gpt-5.6-luna",
       "reason": "LLM generated a factual semantic trajectory digest.",
       "error": null,
       "execution": {
-        "profile_id": "qwen-max",
-        "provider": "bailian",
-        "requested_model": "qwen-max",
-        "response_model": "qwen-max",
-        "response_id": "chatcmpl-dbc3c290-c441-9b2d-a423-1c5b4ff589ea",
+        "profile_id": "gpt-5.6-luna",
+        "provider": "openai-compatible",
+        "requested_model": "gpt-5.6-luna",
+        "response_model": "gpt-5.6-luna",
+        "response_id": "resp_0e78b09bd3f9a5fb016aacb38c1c0c87d0a36b56a2b59c102a",
         "verified": true
       }
     }
@@ -726,7 +728,7 @@
     "evt_85722f6b150b",
     "evt_588113fea96f"
   ],
-  "created_at": "2026-09-18T00:48:38.198886+00:00",
+  "created_at": "2026-09-18T03:44:30.247456+00:00",
   "metadata": {
     "event_count": 84,
     "semantic": true

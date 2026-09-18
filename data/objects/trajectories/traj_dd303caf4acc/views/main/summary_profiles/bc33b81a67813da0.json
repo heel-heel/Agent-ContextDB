@@ -6,20 +6,10 @@
     "schema_version": "semantic_summary.v1",
     "trajectory_id": "traj_dd303caf4acc",
     "branch_id": "main",
-    "summary": "['Established ContextDB session ID `rollout-2026-09-15T17-51-27-01a0a47a-825a-72c0-8208-b3b80d850331` via a PowerShell watcher command.', 'Repaired and successfully executed a failed `git show` command using ContextDB skill `skill_git_file_path_absent_from_git` (corrected path to `examples/live-path-demo/assets/settings.json`).', 'Repaired and successfully executed a failed Python import command using ContextDB skill `skill_python_misspelled_python_module_name_python_c_import_jsonn` (corrected `jsonn` to `json`).', 'Recorded successful skill applications for both command repairs in ContextDB.', \"Fetched official documentation links for `git show` and Python's `json` module via web search.\", 'Executed a Node.js file write to a missing directory (`contextdb-codex-reuse-first-parent-absent`), which failed with ENOENT. Rejected the resulting ContextDB repair branch suggestion (`repair-e5724dab`) to retain the failure on `main` for diagnosis.', 'Executed a second Node.js file write to another missing directory (`contextdb-codex-reuse-second-parent-absent`), which also failed with ENOENT. ContextDB suggested a new repair branch `repair-9203c9d4` from snapshot `snap_476e0c19643a`, and the agent retrieved the version status to identify it.']",
-    "key_facts": [
-      "ContextDB Session ID: `rollout-2026-09-15T17-51-27-01a0a47a-825a-72c0-8208-b3b80d850331`",
-      "Git repair skill used: `skill_git_file_path_absent_from_git`",
-      "Python repair skill used: `skill_python_misspelled_python_module_name_python_c_import_jsonn`",
-      "First rejected repair branch: `repair-e5724dab` (source snapshot `snap_fc46bf79bce4`)",
-      "Second pending repair branch suggestion: `repair-9203c9d4` (source snapshot `snap_476e0c19643a`)",
-      "Active branch remains `main`."
-    ],
-    "open_items": [
-      "Process the second repair branch suggestion (`repair-9203c9d4`) for the second failed Node.js write command.",
-      "Record a version decision (accept or reject) for the second repair branch suggestion using `contextdb_record_version_decision`."
-    ],
-    "status": "ready",
+    "summary": "",
+    "key_facts": [],
+    "open_items": [],
+    "status": "unavailable",
     "method": "incremental_llm_semantic_summary",
     "scope": {
       "start_event_id": "evt_46f10cde64e9",
@@ -822,28 +812,28 @@
       }
     ],
     "raw_tokens": 46984,
-    "compressed_tokens": 313,
-    "compression_ratio": 99.3,
+    "compressed_tokens": 0,
+    "compression_ratio": 0.0,
     "materialization": {
       "cache_hit": false,
       "generation_mode": "full",
       "previous_covered_event_count": 0,
-      "profile_id": "qwen-3.7-max"
+      "profile_id": "qwen3.8-max"
     },
     "llm": {
       "enabled": true,
-      "profile_id": "qwen-3.7-max",
+      "profile_id": "qwen3.8-max",
       "provider": "bailian",
-      "model": "qwen3.7-max",
-      "reason": "LLM generated a factual semantic trajectory digest.",
-      "error": null,
+      "model": "qwen3.8-max",
+      "reason": "OpenAI-compatible LLM semantic context summarization failed.",
+      "error": "The remote LLM endpoint closed or reset the connection after 2 attempt(s) within 60 seconds: The read operation timed out. Verify CONTEXTDB_LLM_BASE_URL for the selected Bailian workspace and any proxy/firewall settings.",
       "execution": {
-        "profile_id": "qwen-3.7-max",
+        "profile_id": "qwen3.8-max",
         "provider": "bailian",
-        "requested_model": "qwen3.7-max",
-        "response_model": "qwen3.7-max",
-        "response_id": "chatcmpl-d5d8295b-089e-9f8c-b2b9-876a28a58576",
-        "verified": true
+        "requested_model": "qwen3.8-max",
+        "response_model": null,
+        "response_id": null,
+        "verified": false
       }
     }
   },
@@ -962,7 +952,7 @@
     "evt_efe3816ad693",
     "evt_a8af7db3f19a"
   ],
-  "created_at": "2026-09-17T12:02:01.249501+00:00",
+  "created_at": "2026-09-18T02:32:28.587888+00:00",
   "metadata": {
     "event_count": 113,
     "semantic": true

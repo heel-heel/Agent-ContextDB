@@ -6,14 +6,17 @@
     "schema_version": "semantic_summary.v1",
     "trajectory_id": "traj_be0c0dbc4d8c",
     "branch_id": "main",
-    "summary": "The agent started a Codex session, determined the ContextDB session ID, and executed several Git commands. The agent used ContextDB to handle a file path issue, recorded decisions and applications, and rejected a repair-branch suggestion to keep the first invalid Git checkout on the main branch for diagnosis. A second failed Git checkout was also performed, and the agent is about to check the version status for any new repair-branch suggestions.",
+    "summary": "The agent first read the watcher’s current-session pointer with exactly one native terminal call and obtained a ContextDB session identifier beginning `rollout-2026-09-15T14-34-56-01a0a3c6-9648-70a2-af08-29157...`. ContextDB reported a repair-branch suggestion after a prior state-changing checkout attempt. At the user’s direction, the agent rejected that suggestion via `contextdb_record_version_decision`; the active branch remained `main`. A subsequent requested PowerShell command attempted to detach-checkout `contextdb-demo-codex-path-second-001`, but failed with a PowerShell parse error caused by the escaped `LC\\_ALL` token. ContextDB created snapshot `snap_3bd350fbed87` and suggested repair branch `repair-4fe2e341`. The latest request to retrieve version status has not yet produced a recorded tool outcome.",
     "key_facts": [
-      "ContextDB session ID: `rollout-2026-09-15T14-34-56-01a0a3c6-9648-70a2-af08-291576bfda30`",
-      "Accepted skill match event ID: `evt_8aa3b8425265`, Skill ID: `skill_git_file_path_absent_from_git`, Action ID: `act_git_file_path_absent_from_git_1`",
-      "Rejected repair-branch suggestion with reason: `Keep this first invalid Git checkout on main for diagnosis.`"
+      "ContextDB session ID was determined before the observed failure; only its visible prefix is available in the supplied events.",
+      "Repair-branch suggestion was explicitly rejected through ContextDB.",
+      "Active branch after rejection was `main`.",
+      "The checkout command failed before completing because PowerShell parsed `LC\\_ALL` incorrectly.",
+      "ContextDB snapshot `snap_3bd350fbed87` and repair suggestion `repair-4fe2e341` followed the failed versioned action."
     ],
     "open_items": [
-      "Check ContextDB version status for any new repair-branch suggestions after the second failed Git checkout."
+      "The latest `contextdb_get_version_status` request has no supplied tool result.",
+      "The requested checkout did not succeed."
     ],
     "status": "ready",
     "method": "incremental_llm_semantic_summary",
@@ -615,27 +618,27 @@
       }
     ],
     "raw_tokens": 35974,
-    "compressed_tokens": 112,
-    "compression_ratio": 99.7,
+    "compressed_tokens": 205,
+    "compression_ratio": 99.4,
     "materialization": {
       "cache_hit": false,
       "generation_mode": "full",
       "previous_covered_event_count": 0,
-      "profile_id": "qwen-max"
+      "profile_id": "gpt-5.5"
     },
     "llm": {
       "enabled": true,
-      "profile_id": "qwen-max",
-      "provider": "bailian",
-      "model": "qwen-max",
+      "profile_id": "gpt-5.5",
+      "provider": "openai-compatible",
+      "model": "gpt-5.5",
       "reason": "LLM generated a factual semantic trajectory digest.",
       "error": null,
       "execution": {
-        "profile_id": "qwen-max",
-        "provider": "bailian",
-        "requested_model": "qwen-max",
-        "response_model": "qwen-max",
-        "response_id": "chatcmpl-dbc3c290-c441-9b2d-a423-1c5b4ff589ea",
+        "profile_id": "gpt-5.5",
+        "provider": "openai-compatible",
+        "requested_model": "gpt-5.5",
+        "response_model": "gpt-5.5",
+        "response_id": "resp_09a8f85574a3aa52016aacb2dfb99487d086cdd8be4cf38d50",
         "verified": true
       }
     }
@@ -726,7 +729,7 @@
     "evt_85722f6b150b",
     "evt_588113fea96f"
   ],
-  "created_at": "2026-09-18T00:48:38.198886+00:00",
+  "created_at": "2026-09-18T03:41:41.768439+00:00",
   "metadata": {
     "event_count": 84,
     "semantic": true
