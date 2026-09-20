@@ -444,14 +444,15 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
   <header>
     <h1>Agent ContextDB</h1>
     <div class="controls">
-      <button id="globalMode" class="secondary mode-btn">Global Overview</button>
+      <button id="globalMode" class="secondary mode-btn active">Global Overview</button>
       <button id="traceMode" class="secondary mode-btn">Trajectory Playback</button>
-      <button id="finalMode" class="secondary mode-btn active">Trajectory Overview</button>
-      <input id="tid" placeholder="trajectory_id">
+      <button id="finalMode" class="secondary mode-btn">Trajectory Overview</button>
+      <input id="tid" list="trajectorySuggestions" placeholder="trajectory_id" autocomplete="off">
+      <datalist id="trajectorySuggestions"></datalist>
       <button id="load">Load</button>
     </div>
   </header>
-  <main id="finalPage" class="page">
+  <main id="finalPage" class="page hidden">
     <section>
       <div class="panel-head"><h2>Versioned Trajectory DAG</h2><span id="graphMeta" class="badge">idle</span></div>
       <div class="event-legend">
@@ -553,7 +554,7 @@ ORDER BY timestamp;</textarea>
       </div>
     </section>
   </div>
-  <main id="globalPage" class="page global-page hidden">
+  <main id="globalPage" class="page global-page">
     <section>
       <div id="globalOut" class="global-overview-content"><div class="view-empty">Load the global view to inspect all trajectories and the shared Skill Library.</div></div>
     </section>
@@ -1170,9 +1171,24 @@ function showGlobalSkillDetailForSkill(sourceTrajectoryId, skillId) {
   $('globalSkillDetail')?.scrollIntoView({behavior:'smooth', block:'nearest'});
 }
 
+function updateTrajectorySuggestions(trajectories) {
+  const sourceLabels = {'claude-code': 'Claude Code', codex: 'Codex', 'swe-agent': 'SWE-agent'};
+  const suggestions = [...trajectories].sort((left, right) => {
+    const leftUpdated = String(left.updated_at || left.created_at || '');
+    const rightUpdated = String(right.updated_at || right.created_at || '');
+    return rightUpdated.localeCompare(leftUpdated);
+  }).map(row => {
+    const source = row.agent_id || row.source_id || '';
+    const label = `${sourceLabels[source] || source || 'Unknown source'} - updated ${displayVersionTimestamp(row.updated_at || row.created_at)}`;
+    return `<option value="${escapeHtml(row.trajectory_id)}" label="${escapeHtml(label)}"></option>`;
+  }).join('');
+  $('trajectorySuggestions').innerHTML = suggestions;
+}
+
 function renderGlobalOverview(data) {
   globalOverviewData = data;
   const trajectories = data.trajectories || [];
+  updateTrajectorySuggestions(trajectories);
   const skills = data.skills || [];
   const graph = data.graph || {nodes: [], edges: []};
   const nodes = graph.nodes || [];
@@ -1232,8 +1248,7 @@ async function loadGlobalOverview() {
 
 function openTrajectoryFromGlobal(trajectoryId) {
   $('tid').value = trajectoryId;
-  setMode('final');
-  showDatabaseViewsPlaceholder();
+  setMode('trace');
   loadAll().catch(err => { showError(err.message); $('graphMeta').textContent = 'load failed'; });
 }
 function playbackNodes() { return graphData ? graphData.nodes.slice(0, playbackStep + 1) : []; }
@@ -2110,7 +2125,8 @@ window.addEventListener('resize', () => {
   }
 });
 loadLlmProfiles();
-if (getTid()) { $('tid').value = getTid(); loadAll().catch(err => { showError(err.message); $('graphMeta').textContent = 'load failed'; setBusyControls(false); }); }
+setMode('global');
+if (getTid()) $('tid').value = getTid();
 </script>
 </body>
 </html>
