@@ -1,3 +1,5 @@
+## This adapter is retained for offline Codex JSONL imports and is not used by the current live Codex session watcher.
+
 from __future__ import annotations
 
 import json

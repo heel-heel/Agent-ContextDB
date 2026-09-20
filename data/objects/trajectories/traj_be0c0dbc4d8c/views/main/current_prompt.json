@@ -7,14 +7,14 @@
     "trajectory_id": "traj_be0c0dbc4d8c",
     "branch_id": "main",
     "head_event_id": "evt_a1544e97b397",
-    "token_budget": 1450,
-    "selected_tokens": 944,
-    "max_selectable_tokens": 944,
-    "remaining_tokens": 506,
+    "token_budget": 750,
+    "selected_tokens": 750,
+    "max_selectable_tokens": 1218,
+    "remaining_tokens": 0,
     "estimated_full_history_tokens": 40768,
-    "estimated_loaded_tokens": 944,
-    "estimated_saved_tokens": 39824,
-    "estimated_saved_percent": 97.7,
+    "estimated_loaded_tokens": 750,
+    "estimated_saved_tokens": 40018,
+    "estimated_saved_percent": 98.2,
     "loading_policy": "priority budget packing over current task, recent causal trace, version state, retrieved memory, matched skills, and semantic digest",
     "segments": [
       {
@@ -70,10 +70,10 @@
         ],
         "selection_reason": "Active branch head and the latest snapshot/version transition.",
         "included": true,
-        "loaded_text": "Active branch: main\nHead: evt_a1544e97b397\nLatest snapshot: snap_3bd350fbed87 (Before state-changing exec)\nRecent version state: system_event:ContextDB created a snapshot before a versioned action.; system_event:ContextDB suggests repair branch repair-4fe2e341 from snapshot snap_3bd350fbed87.; version_decision:{'action': 'create_repair_branch', 'decision': 'accepted', 'reason': 'Preserve the second invalid Git checkout and inspect a separate repair path.', 'logical_context_only': True}",
-        "loaded_token_cost": 122,
-        "selection_status": "included",
-        "omission_reason": ""
+        "loaded_text": "Active branch: main\nHead: evt_a1544e97b397\nLatest snapshot: snap_3bd350fbed87 (Before state-changing exec)\nRecent version state: system_event:ContextDB created a snapshot before a versioned action.; system_event:ContextDB suggests repair branch repair-4fe2e341 from snapshot snap_3bd350fbed87.; version_decision:{'action': 'create_repair_branch', 'decision': 'accepted', 'reason': 'Pre...",
+        "loaded_token_cost": 97,
+        "selection_status": "truncated",
+        "omission_reason": "Truncated to fit the remaining context budget."
       },
       {
         "segment_id": "retrieved_memory",
@@ -98,18 +98,18 @@
           "evt_0aef55864b7a"
         ],
         "selection_reason": "Latest ContextDB skill recommendation events on the selected branch.",
-        "included": true,
-        "loaded_text": "- Use this as a suggestion. The Agent must decide whether it is safe and appropriate before executing it.",
-        "loaded_token_cost": 26,
-        "selection_status": "included",
-        "omission_reason": ""
+        "included": false,
+        "loaded_text": "",
+        "loaded_token_cost": 0,
+        "selection_status": "omitted",
+        "omission_reason": "Omitted after the budget was exhausted."
       },
       {
         "segment_id": "earlier_trajectory_digest",
         "priority": "P5",
         "title": "Earlier Trajectory Digest",
-        "text": "Codex session started and determined ContextDB session ID rollout-2026-09-15T14-34-56-01a0a3c6-9648-70a2-af08-29157. Agent rejected an initial repair-branch suggestion per user instruction. User then requested execution of a git checkout command via PowerShell, which failed with a syntax error due to escaped underscore in LC\\_ALL environment variable assignment. ContextDB captured snapshot snap_3bd350fbed87 before the failed command and generated repair-branch suggestion repair-4fe2e341. User requested version status check to review the new repair-branch suggestion.",
-        "token_cost": 143,
+        "text": "Session began with a list of recommended but uninstalled plugins. User then instructed determining the ContextDB session id for the current Codex conversation before any failure, using exactly one ordinary native terminal call from the project root. Agent read .\\data\\codex-watcher-current-session.json and obtained rollout ID rollout-2026-09-15T14-34-56-01a0a3c6-9648-70a2-af08-29157… (truncated in supplied events). ContextDB status showed a repair-branch suggestion from a snapshot taken before an attempted state-changing checkout. User then instructed using ContextDB MCP tool contextdb_record_version_decision with source codex-session and the returned session id to reject the current repair-branch suggestion with diagnostic rationale. Agent did so; the version decision was recorded and the active branch was reported as main. Next, user supplied a real PowerShell command to run from the project root and report raw output: `$env:LC_ALL=\"C\"; $env:LANG=\"C\"; git checkout --detach contextdb-demo-codex-path-second-001`. ContextDB created a snapshot before the versioned action. The tool call failed; raw output showed a PowerShell parser error at line 1 char 8, `Unexpected token '\\_ALL=\"C\"'`, indicating a command-text/escaping issue. ContextDB then suggested repair branch repair-4fe2e341 from snapshot snap_3bd350fbed87. User asked the agent to call ContextDB MCP contextdb_get_version_status with source codex-session and the session id, and if a repair-branch suggestion is present, handle/report it. Agent acknowledged and said it would retrieve current version status and report any repair-branch suggestion; no result for that call appears in this prefix.",
+        "token_cost": 417,
         "source_event_ids": [
           "evt_a7455668ad35",
           "evt_c0a70d25d650",
@@ -197,29 +197,32 @@
           "evt_588113fea96f"
         ],
         "selection_reason": "LLM-generated incremental semantic digest of the earlier completed trajectory prefix.",
-        "included": true,
-        "loaded_text": "Codex session started and determined ContextDB session ID rollout-2026-09-15T14-34-56-01a0a3c6-9648-70a2-af08-29157. Agent rejected an initial repair-branch suggestion per user instruction. User then requested execution of a git checkout command via PowerShell, which failed with a syntax error due to escaped underscore in LC\\_ALL environment variable assignment. ContextDB captured snapshot snap_3bd350fbed87 before the failed command and generated repair-branch suggestion repair-4fe2e341. User requested version status check to review the new repair-branch suggestion.",
-        "loaded_token_cost": 143,
-        "selection_status": "included",
-        "omission_reason": ""
+        "included": false,
+        "loaded_text": "",
+        "loaded_token_cost": 0,
+        "selection_status": "omitted",
+        "omission_reason": "Omitted after the budget was exhausted."
       }
     ],
-    "rendered_agent_context": "## Current Task\nUse ContextDB MCP tool contextdb\\_create\\_repair\\_branch with source codex-session and the session id returned earlier. Accept the identified repair-branch suggestion with this reason:\n\nPreserve the second invalid Git checkout and inspect a separate repair path.\n\nThen call contextdb\\_get\\_version\\_status and report the active branch id.\n\nDo not call other ContextDB MCP tools in this turn.\n\n## Recent Causal Trace\n- tool_call:const r = await tools.mcp__contextdb__contextdb_get_version_status({source:\"codex-session\",session_id:\"rollout-2026-09-15T14-34-56-01a0a3c6-9648-70a2-af08-291576bfda30\"});\ntext(JSON.stringify(r));\n- tool_result:const r = await tools.mcp__contextdb__contextdb_get_version_status({source:\"codex-session\",session_id:\"rollout-2026-09-15T14-34-56-01a0a3c6-9648-70a2-af08-291576bfda30\"});\ntext(JSON.stringify(r));\n- assistant_message:A repair-branch suggestion is present:\n\n- Suggested branch ID: `repair-4fe2e341`\n- Source snapshot ID: `snap_3bd350fbed87`\n- Source branch ID: `main`\n- user_message:Use ContextDB MCP tool contextdb\\_create\\_repair\\_branch with source codex-session and the session id returned earlier. Accept the identified repair-branch suggestion with this reason:\n\nPreserve the second invalid Git checkout and inspect a separate repair path.\n\nThen call contextdb\\_get\\_version\\_status and report the active branch id.\n\nDo not call other ContextDB MCP tools in this turn.\n\n- assistant_message:I’ll create the suggested separate repair trajectory with the supplied rationale, then retrieve version status to confirm the active branch.\n- tool_call:const created = await tools.mcp__contextdb__contextdb_create_repair_branch({source:\"codex-session\",session_id:\"rollout-2026-09-15T14-34-56-01a0a3c6-9648-70a2-af08-291576bfda30\",branch_id:\"repair-4fe2e341\",snapshot_id:\"snap_3bd350fbed87\",reason:\"Preserve the second invalid Git checkout and inspect a separate repair path.\"});\nconst status = await tools.mcp__contextdb__contextdb_get_version_status({source:\"codex-sess...\n- version_decision:{'action': 'create_repair_branch', 'decision': 'accepted', 'reason': 'Preserve the second invalid Git checkout and inspect a separate repair path.', 'logical_context_only': True}\n- tool_result:const created = await tools.mcp__contextdb__contextdb_create_repair_branch({source:\"codex-session\",session_id:\"rollout-2026-09-15T14-34-56-01a0a3c6-9648-70a2-af08-291576bfda30\",branch_id:\"repair-4fe2e341\",snapshot_id:\"snap_3bd350fbed87\",reason:\"Preserve the second invalid Git checkout and inspect a separate repair path.\"});\nconst status = await tools.mcp__contextdb__contextdb_get_version_status({source:\"codex-sess...\n\n## Branch / Version State\nActive branch: main\nHead: evt_a1544e97b397\nLatest snapshot: snap_3bd350fbed87 (Before state-changing exec)\nRecent version state: system_event:ContextDB created a snapshot before a versioned action.; system_event:ContextDB suggests repair branch repair-4fe2e341 from snapshot snap_3bd350fbed87.; version_decision:{'action': 'create_repair_branch', 'decision': 'accepted', 'reason': 'Preserve the second invalid Git checkout and inspect a separate repair path.', 'logical_context_only': True}\n\n## Matched Skills\n- Use this as a suggestion. The Agent must decide whether it is safe and appropriate before executing it.\n\n## Earlier Trajectory Digest\nCodex session started and determined ContextDB session ID rollout-2026-09-15T14-34-56-01a0a3c6-9648-70a2-af08-29157. Agent rejected an initial repair-branch suggestion per user instruction. User then requested execution of a git checkout command via PowerShell, which failed with a syntax error due to escaped underscore in LC\\_ALL environment variable assignment. ContextDB captured snapshot snap_3bd350fbed87 before the failed command and generated repair-branch suggestion repair-4fe2e341. User requested version status check to review the new repair-branch suggestion.",
+    "rendered_agent_context": "## Current Task\nUse ContextDB MCP tool contextdb\\_create\\_repair\\_branch with source codex-session and the session id returned earlier. Accept the identified repair-branch suggestion with this reason:\n\nPreserve the second invalid Git checkout and inspect a separate repair path.\n\nThen call contextdb\\_get\\_version\\_status and report the active branch id.\n\nDo not call other ContextDB MCP tools in this turn.\n\n## Recent Causal Trace\n- tool_call:const r = await tools.mcp__contextdb__contextdb_get_version_status({source:\"codex-session\",session_id:\"rollout-2026-09-15T14-34-56-01a0a3c6-9648-70a2-af08-291576bfda30\"});\ntext(JSON.stringify(r));\n- tool_result:const r = await tools.mcp__contextdb__contextdb_get_version_status({source:\"codex-session\",session_id:\"rollout-2026-09-15T14-34-56-01a0a3c6-9648-70a2-af08-291576bfda30\"});\ntext(JSON.stringify(r));\n- assistant_message:A repair-branch suggestion is present:\n\n- Suggested branch ID: `repair-4fe2e341`\n- Source snapshot ID: `snap_3bd350fbed87`\n- Source branch ID: `main`\n- user_message:Use ContextDB MCP tool contextdb\\_create\\_repair\\_branch with source codex-session and the session id returned earlier. Accept the identified repair-branch suggestion with this reason:\n\nPreserve the second invalid Git checkout and inspect a separate repair path.\n\nThen call contextdb\\_get\\_version\\_status and report the active branch id.\n\nDo not call other ContextDB MCP tools in this turn.\n\n- assistant_message:I’ll create the suggested separate repair trajectory with the supplied rationale, then retrieve version status to confirm the active branch.\n- tool_call:const created = await tools.mcp__contextdb__contextdb_create_repair_branch({source:\"codex-session\",session_id:\"rollout-2026-09-15T14-34-56-01a0a3c6-9648-70a2-af08-291576bfda30\",branch_id:\"repair-4fe2e341\",snapshot_id:\"snap_3bd350fbed87\",reason:\"Preserve the second invalid Git checkout and inspect a separate repair path.\"});\nconst status = await tools.mcp__contextdb__contextdb_get_version_status({source:\"codex-sess...\n- version_decision:{'action': 'create_repair_branch', 'decision': 'accepted', 'reason': 'Preserve the second invalid Git checkout and inspect a separate repair path.', 'logical_context_only': True}\n- tool_result:const created = await tools.mcp__contextdb__contextdb_create_repair_branch({source:\"codex-session\",session_id:\"rollout-2026-09-15T14-34-56-01a0a3c6-9648-70a2-af08-291576bfda30\",branch_id:\"repair-4fe2e341\",snapshot_id:\"snap_3bd350fbed87\",reason:\"Preserve the second invalid Git checkout and inspect a separate repair path.\"});\nconst status = await tools.mcp__contextdb__contextdb_get_version_status({source:\"codex-sess...\n\n## Branch / Version State\nActive branch: main\nHead: evt_a1544e97b397\nLatest snapshot: snap_3bd350fbed87 (Before state-changing exec)\nRecent version state: system_event:ContextDB created a snapshot before a versioned action.; system_event:ContextDB suggests repair branch repair-4fe2e341 from snapshot snap_3bd350fbed87.; version_decision:{'action': 'create_repair_branch', 'decision': 'accepted', 'reason': 'Pre...",
     "summary": {
       "schema_version": "semantic_summary.v1",
       "trajectory_id": "traj_be0c0dbc4d8c",
       "branch_id": "main",
-      "summary": "Codex session started and determined ContextDB session ID rollout-2026-09-15T14-34-56-01a0a3c6-9648-70a2-af08-29157. Agent rejected an initial repair-branch suggestion per user instruction. User then requested execution of a git checkout command via PowerShell, which failed with a syntax error due to escaped underscore in LC\\_ALL environment variable assignment. ContextDB captured snapshot snap_3bd350fbed87 before the failed command and generated repair-branch suggestion repair-4fe2e341. User requested version status check to review the new repair-branch suggestion.",
+      "summary": "Session began with a list of recommended but uninstalled plugins. User then instructed determining the ContextDB session id for the current Codex conversation before any failure, using exactly one ordinary native terminal call from the project root. Agent read .\\data\\codex-watcher-current-session.json and obtained rollout ID rollout-2026-09-15T14-34-56-01a0a3c6-9648-70a2-af08-29157… (truncated in supplied events). ContextDB status showed a repair-branch suggestion from a snapshot taken before an attempted state-changing checkout. User then instructed using ContextDB MCP tool contextdb_record_version_decision with source codex-session and the returned session id to reject the current repair-branch suggestion with diagnostic rationale. Agent did so; the version decision was recorded and the active branch was reported as main. Next, user supplied a real PowerShell command to run from the project root and report raw output: `$env:LC_ALL=\"C\"; $env:LANG=\"C\"; git checkout --detach contextdb-demo-codex-path-second-001`. ContextDB created a snapshot before the versioned action. The tool call failed; raw output showed a PowerShell parser error at line 1 char 8, `Unexpected token '\\_ALL=\"C\"'`, indicating a command-text/escaping issue. ContextDB then suggested repair branch repair-4fe2e341 from snapshot snap_3bd350fbed87. User asked the agent to call ContextDB MCP contextdb_get_version_status with source codex-session and the session id, and if a repair-branch suggestion is present, handle/report it. Agent acknowledged and said it would retrieve current version status and report any repair-branch suggestion; no result for that call appears in this prefix.",
       "key_facts": [
-        "ContextDB session ID: rollout-2026-09-15T14-34-56-01a0a3c6-9648-70a2-af08-29157",
-        "Active branch: main",
-        "First repair-branch suggestion was rejected with user-supplied diagnostic rationale",
-        "PowerShell git checkout command failed: syntax error on escaped underscore in $env:LC\\_ALL",
-        "ContextDB snapshot snap_3bd350fbed87 created before failed checkout",
-        "Second repair-branch suggestion generated: repair-4fe2e341"
+        "ContextDB session id obtained from .\\data\\codex-watcher-current-session.json: rollout-2026-09-15T14-34-56-01a0a3c6-9648-70a2-af08-29157… (truncated in supplied events).",
+        "Agent initially found a ContextDB repair-branch suggestion and, per user instruction, recorded rejection via contextdb_record_version_decision with source codex-session.",
+        "After rejection, active branch was reported as main.",
+        "A later user-supplied PowerShell checkout command failed: `$env:LC_ALL=\"C\"; $env:LANG=\"C\"; git checkout --detach contextdb-demo-codex-path-second-001`.",
+        "Failure output was a PowerShell parser error at line 1 char 8: `Unexpected token '\\_ALL=\"C\"'`.",
+        "ContextDB created a snapshot before the failed versioned action, then suggested repair branch repair-4fe2e341 from snapshot snap_3bd350fbed87.",
+        "User then requested contextdb_get_version_status with source codex-session and the earlier session id, and handling of any repair-branch suggestion."
       ],
       "open_items": [
-        "User requested contextdb_get_version_status to review repair-branch suggestion repair-4fe2e341 (no result shown in provided events)"
+        "Complete ContextDB MCP contextdb_get_version_status call with source codex-session and the returned session id.",
+        "Report and decide on any current repair-branch suggestion, including repair-4fe2e341 from snapshot snap_3bd350fbed87.",
+        "Resolve the failed PowerShell checkout command, likely due to command text/escaping causing `Unexpected token '\\_ALL=\"C\"'`, if the checkout still needs to be performed."
       ],
       "status": "ready",
       "method": "incremental_llm_semantic_summary",
@@ -821,27 +824,27 @@
         }
       ],
       "raw_tokens": 35974,
-      "compressed_tokens": 143,
-      "compression_ratio": 99.6,
+      "compressed_tokens": 417,
+      "compression_ratio": 98.8,
       "materialization": {
         "cache_hit": true,
         "generation_mode": "full",
         "previous_covered_event_count": 0,
-        "profile_id": "claude-fable-5"
+        "profile_id": "deepseek-v4.1-flash"
       },
       "llm": {
         "enabled": true,
-        "profile_id": "claude-fable-5",
-        "provider": "openai-compatible",
-        "model": "claude-fable-5",
+        "profile_id": "deepseek-v4.1-flash",
+        "provider": "bailian",
+        "model": "deepseek-v4.1-flash",
         "reason": "LLM generated a factual semantic trajectory digest.",
         "error": null,
         "execution": {
-          "profile_id": "claude-fable-5",
-          "provider": "openai-compatible",
-          "requested_model": "claude-fable-5",
-          "response_model": "claude-fable-5",
-          "response_id": "msg_011Cf5xkQcVLUJ0PqNdnmZqv",
+          "profile_id": "deepseek-v4.1-flash",
+          "provider": "bailian",
+          "requested_model": "deepseek-v4.1-flash",
+          "response_model": "deepseek-v4.1-flash",
+          "response_id": "chatcmpl-da6f0399-601a-9f04-884f-1e059118bf97",
           "verified": true
         }
       }
@@ -1229,7 +1232,7 @@
     "evt_b5aaa11b108c",
     "evt_a1544e97b397"
   ],
-  "created_at": "2026-09-19T03:51:45.780296+00:00",
+  "created_at": "2026-09-20T09:05:46.512364+00:00",
   "metadata": {
     "event_count": 92
   }

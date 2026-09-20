@@ -1454,6 +1454,7 @@ class ContextDB:
         }
 
     def apply_skill(self, trajectory_id: str, failure: Dict[str, Any], branch_id: str = "skill-application", top_k: int = 1, outcome_status: str = "ok") -> Dict[str, Any]:
+        # no usage now. 
         if self.store.get_object(uris.branch_key(trajectory_id, branch_id)) is None:
             self.create_branch(trajectory_id, branch_id, from_branch="main")
         match = self.match_skill(trajectory_id, failure, top_k=top_k)
