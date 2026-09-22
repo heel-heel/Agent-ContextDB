@@ -38,20 +38,6 @@
     "claude_hook_event": "PostToolUseFailure",
     "claude_tool_name": "Bash",
     "claude_cwd": "D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB",
-    "claude_transcript_path": "C:\\Users\\lenovo\\.claude\\projects\\d--software-Pycharm-SelfCode-Agent-ContextDB\\59506119-1d61-447d-8f66-8c00331cd764.jsonl",
-    "likely_cause_judgment": {
-      "enabled": true,
-      "provider": "openai-compatible",
-      "model": "deepseek-flash",
-      "likely_cause": "source file missing for node copy operation",
-      "confidence": 0.96,
-      "reason": "The node copyFileSync command failed with ENOENT because the specified source file contextdb-claude-reuse-first-missing-source.txt does not exist in the working directory.",
-      "input": {
-        "failed_tool": "node",
-        "failed_command": "node -e \"require('fs').copyFileSync('contextdb-claude-reuse-first-missing-source.txt', 'contextdb-claude-reuse-first-copy.txt')\"",
-        "error_signature": "Exit code 1\nnode:fs:3177\r\n  binding.copyFile(\r\n          ^\r\n\r\nError: ENOENT: no such file or directory, copyfile 'D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB\\contextdb-claude-reuse-first-missing-source.txt' -> 'D:\\software\\Pycharm\\SelfCode\\Agent-ContextDB\\contextdb-claude-reuse-first-copy.txt'\r\n    at Object.copyFileSync (node:fs:3177:11)\r\n    at [eval]:1:15\r\n    at runScriptInThisContext (node:internal/vm:219:10)\r\n    at node:internal/process/execution:451:12\r\n    at [eval]-wrapper:6:24\r\n    a",
-        "preceding_action": "The `WebFetch` call failed and returned no page title. Raw result:\n\n```\nUnable to verify if domain docs.python.org is safe to fetch. This may be due to network restrictions or enterprise security policies blocking claude.ai.\n```\n\nThe page could not be retrieved, so no title is available. (ContextDB checked the failed result and found no reusable skill to suggest.)"
-      }
-    }
+    "claude_transcript_path": "C:\\Users\\lenovo\\.claude\\projects\\d--software-Pycharm-SelfCode-Agent-ContextDB\\59506119-1d61-447d-8f66-8c00331cd764.jsonl"
   }
 }

@@ -103,3 +103,6 @@ class SQLiteVectorIndex:
         query = "SELECT COUNT(*) AS count FROM vector_entries" + (" WHERE collection_name=?" if collection else "")
         row = self.conn.execute(query, (collection,) if collection else ()).fetchone()
         return int(row["count"] if row else 0)
+
+    def close(self) -> None:
+        self.conn.close()

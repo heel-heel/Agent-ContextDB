@@ -92,6 +92,8 @@ def make_handler(db: ContextDB):
                     self._send(200, db.query(body))
                 elif parsed.path == "/api/v1/query_view":
                     self._send(200, db.query_view(**body))
+                elif parsed.path == "/api/v1/view_execution":
+                    self._send(200, db.describe_view_execution(body["view_name"]))
                 elif parsed.path == "/api/v1/sql":
                     self._send(200, db.query_sql(**body))
                 elif parsed.path == "/api/v1/nl_sql":

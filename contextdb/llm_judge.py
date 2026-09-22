@@ -679,7 +679,7 @@ class SemanticRepairJudge:
                 "Use only the listed relations and columns.",
                 "Return exactly one SELECT, WITH ... SELECT, or EXPLAIN SELECT statement.",
                 "Never use INSERT, UPDATE, DELETE, CREATE, DROP, ALTER, PRAGMA, ATTACH, or multiple statements.",
-                "Use :trajectory_id to scope trajectory data unless querying only the trajectories relation.",
+                "Every statement is trajectory-scoped: include a WHERE or JOIN predicate that uses trajectory_id = :trajectory_id, including when querying trajectories.",
                 "For events.status use only: ok, failed, error, timeout, warning, unknown.",
                 "Return strict JSON only.",
             ],

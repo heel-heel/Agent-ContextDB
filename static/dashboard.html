@@ -85,11 +85,16 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
     .repair-strategy-card { border-color:#b9d5ec; border-left:4px solid #2364aa; background:#fbfdff; }
     .repair-table td { overflow-wrap:anywhere; }
     .repair-table .mono { white-space:pre-wrap; overflow-wrap:anywhere; }
-    .success-patterns-wrap { overflow-x:hidden; }
+    .success-patterns-wrap, .failure-patterns-wrap { overflow-x:hidden; border:1px solid #c9def5; border-top:4px solid #2364aa; background:#fff; box-shadow:0 2px 6px rgba(35,100,170,.08); }
+    .success-patterns-table thead th, .failure-patterns-table thead th { padding:8px 10px; background:#f3f8fe; color:#315d89; border-bottom-color:#c9def5; font-size:12px; }
+    .success-patterns-table tbody td, .failure-patterns-table tbody td { padding:8px 10px; background:#fff; border-bottom-color:#dfeaf5; line-height:1.4; }
+    .success-patterns-table tbody tr, .failure-patterns-table tbody tr { transition:background-color 140ms ease; }
+    .success-patterns-table tbody tr:hover td, .failure-patterns-table tbody tr:hover td { background:#f5faff; }
+    .success-patterns-table .mono, .failure-patterns-table .mono { line-height:1.4; }
     .success-patterns-table { width:100%; min-width:0; table-layout:fixed; }
-    .success-patterns-table th:nth-child(1), .success-patterns-table td:nth-child(1) { width:22%; }
-    .success-patterns-table th:nth-child(2), .success-patterns-table td:nth-child(2) { width:34%; }
-    .success-patterns-table th:nth-child(3), .success-patterns-table td:nth-child(3) { width:32%; }
+    .success-patterns-table th:nth-child(1), .success-patterns-table td:nth-child(1) { width:17%; }
+    .success-patterns-table th:nth-child(2), .success-patterns-table td:nth-child(2) { width:57%; }
+    .success-patterns-table th:nth-child(3), .success-patterns-table td:nth-child(3) { width:14%; }
     .success-patterns-table th:nth-child(4), .success-patterns-table td:nth-child(4) { width:12%; }
     .success-patterns-table td { overflow-wrap:anywhere; word-break:break-word; }
     .success-patterns-table .mono { white-space:pre-wrap; overflow-wrap:anywhere; }
@@ -116,7 +121,10 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
     .skill-support-event + .skill-support-event { margin-top:7px; padding-top:7px; border-top:1px solid #d8e4ef; }
     .skill-support-judge { margin-top:3px; font-size:11px; line-height:1.35; }
     .skill-support-judge .muted { display:block; margin-top:2px; }
-    .semantic-judgments-wrap { overflow-x:visible; }
+    .semantic-judgments-wrap { overflow-x:visible; border:1px solid #c9def5; border-top:4px solid #2364aa; background:#fff; box-shadow:0 2px 6px rgba(35,100,170,.08); }
+    .semantic-judgments-table thead th { background:#f3f8fe; color:#315d89; border-bottom-color:#c9def5; }
+    .semantic-judgments-table tbody td { background:#fff; border-bottom-color:#dfeaf5; }
+    .semantic-judgments-table tbody tr:hover td { background:#f5faff; }
     .semantic-judgments-table { width:100%; min-width:0; table-layout:fixed; }
     .semantic-judgments-table th, .semantic-judgments-table td { padding:4px 8px; line-height:1.3; }
     .semantic-judgments-table th:nth-child(1), .semantic-judgments-table td:nth-child(1) { width:23%; }
@@ -131,12 +139,11 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
     .repair-excluded-table th:nth-child(3), .repair-excluded-table td:nth-child(3) { width:25%; }
     .repair-excluded-table td { overflow-wrap:anywhere; }
     .repair-excluded-table .mono { white-space:pre-wrap; overflow-wrap:anywhere; }
-    .failure-patterns-wrap { overflow-x:hidden; }
     .failure-patterns-table { width:100%; max-width:100%; min-width:0; table-layout:fixed; }
     .failure-patterns-table th, .failure-patterns-table td { padding:7px 6px; }
-    .failure-patterns-table th:nth-child(1), .failure-patterns-table td:nth-child(1) { width:14%; }
+    .failure-patterns-table th:nth-child(1), .failure-patterns-table td:nth-child(1) { width:17%; }
     .failure-patterns-table th:nth-child(2), .failure-patterns-table td:nth-child(2) { width:39%; }
-    .failure-patterns-table th:nth-child(3), .failure-patterns-table td:nth-child(3) { width:20%; }
+    .failure-patterns-table th:nth-child(3), .failure-patterns-table td:nth-child(3) { width:17%; }
     .failure-patterns-table th:nth-child(4), .failure-patterns-table td:nth-child(4) { width:17%; }
     .failure-patterns-table th:nth-child(5), .failure-patterns-table td:nth-child(5) { width:10%; white-space:nowrap; }
     .failure-patterns-table td { overflow-wrap:anywhere; }
@@ -179,6 +186,38 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
     .budget-control label { font-size:12px; font-weight:700; }
     .budget-control input { flex:1 1 260px; padding:0; height:16px; border:0; }
     .budget-value { min-width:92px; text-align:right; font-family:inherit; font-size:12px; font-weight:700; }
+    .view-execution-plan { margin-top:0; padding-top:0; background:transparent; border:0; border-radius:0; }
+    .view-execution-plan-foot { display:flex; justify-content:flex-start; margin-top:10px; }
+    .execution-flow { display:grid; gap:0; }
+    .execution-step { border:1px solid #d7e3ef; border-left:4px solid #2364aa; border-radius:6px; background:#f7faff; padding:10px 12px; }
+    .execution-step.semantic { border-color:#e2d4f7; border-left-color:#7c3aed; background:#faf7ff; }
+    .execution-step.python { border-color:#cce5df; border-left-color:#197a68; background:#f5fcfa; }
+    .execution-step.vector { border-color:#d4e7ba; border-left-color:#5f8d23; background:#f9fdf2; }
+    .execution-step.cache { border-color:#eadbb7; border-left-color:#a36a13; background:#fffcf4; }
+    .execution-step-head { display:flex; align-items:center; gap:8px; min-width:0; font-size:12px; font-weight:700; color:#24445f; }
+    .execution-step-number { display:grid; place-items:center; flex:0 0 20px; width:20px; height:20px; border-radius:50%; background:#2364aa; color:#fff; font-size:11px; }
+    .execution-step.semantic .execution-step-number { background:#7c3aed; }
+    .execution-step.python .execution-step-number { background:#197a68; }
+    .execution-step.vector .execution-step-number { background:#5f8d23; }
+    .execution-step.cache .execution-step-number { background:#a36a13; }
+    .execution-step-label { min-width:0; overflow-wrap:anywhere; }
+    .execution-kind { border-radius:999px; padding:2px 6px; font-size:10px; color:#1f5592; background:#e7f0fb; }
+    .execution-step.semantic .execution-kind { background:#7c3aed; }
+    .execution-step.semantic .execution-kind { color:#fff; }
+    .execution-step.python .execution-kind { background:#197a68; color:#fff; }
+    .execution-step.vector .execution-kind { background:#5f8d23; color:#fff; }
+    .execution-step.cache .execution-kind { background:#a36a13; color:#fff; }
+    .execution-statement { display:block; margin:9px 0 0; padding:9px 10px; border:1px solid #dce6ef; border-radius:4px; background:#fff; white-space:pre-wrap; overflow-wrap:anywhere; font:11px/1.45 ui-monospace, SFMono-Regular, Consolas, monospace; color:#334b60; }
+    .execution-step.semantic .execution-statement { border-color:#e6daf7; background:#fff; }
+    .semantic-statement-operator { height:auto; min-height:0; margin:0; padding:0; border:0; background:transparent; color:#6f35ce; cursor:pointer; font:inherit; font-weight:700; line-height:inherit; vertical-align:baseline; text-decoration:underline dotted 1px; text-underline-offset:2px; }
+    .semantic-statement-operator:hover { color:#4c1d95; }
+    .semantic-statement-operator:focus-visible { outline:2px solid #7c3aed; outline-offset:2px; }
+    .semantic-operator-detail { margin-top:9px; padding:9px 10px; border:1px solid #e3d5f8; border-left:3px solid #7c3aed; border-radius:4px; background:#fff; color:#493367; font-size:11px; line-height:1.45; }
+    .semantic-operator-detail[hidden] { display:none; }
+    .semantic-operator-detail p { margin:0 0 7px; }
+    .semantic-operator-detail dl { display:grid; grid-template-columns:max-content minmax(0,1fr); gap:4px 8px; margin:0; }
+    .semantic-operator-detail dt { color:#6b4a91; font-weight:700; }
+    .semantic-operator-detail dd { min-width:0; margin:0; overflow-wrap:anywhere; }
     .budget-branch-control { display:flex; align-items:center; gap:7px; padding-right:10px; border-right:1px solid #d4e1ee; color:#4b6074; white-space:nowrap; }
     .budget-branch-control select, .summary-profile-control select { min-width:140px; height:28px; box-sizing:border-box; border:1px solid var(--line); border-radius:5px; color:#17324d; background:#fff; padding:0 6px; }
     .budget-table { min-width:780px; table-layout:fixed; }
@@ -250,42 +289,62 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
     .global-metric.tool-metric { color:#b78332; }
     .global-metric.skill-metric { color:#3c8c88; }
     .global-metric span { color:var(--muted); font-size:12px; }
+    .global-metric-database-button { grid-column:3; justify-self:start; display:inline-flex; align-items:center; justify-content:center; width:30px; height:30px; padding:0; border:0; border-radius:4px; background:transparent; color:currentColor; cursor:pointer; }
+    .global-metric-database-button:hover { background:rgba(35,100,170,.10); }
+    .global-metric-database-button:focus-visible { outline:2px solid #2364aa; outline-offset:2px; }
+    .global-metric-database-button svg { width:21px; height:21px; fill:none; stroke:currentColor; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; }
+    .global-metric-database-button[aria-expanded="true"] { background:rgba(35,100,170,.14); }
     .global-section { border:1px solid #c9def5; border-radius:7px; background:#fbfdff; padding:8px 12px 10px; }
+    #trajectoryCatalog { border-color:#edcbd5; background:#fff6f8; }
+    #trajectoryCatalog .table-wrap { border-color:#d4e3f1; background:#fff; }
+    #trajectoryCatalog thead, #trajectoryCatalog tbody tr { background:#fff; }
+    #trajectoryCatalog .table-wrap tbody tr:hover { background:#f5faff; }
+    #skillLibrary { border-color:#c7e3d0; background:#f2faf5; }
+    #skillLibrary .table-wrap { border-color:#d4e3f1; background:#fff; }
+    #skillLibrary thead, #skillLibrary tbody tr { background:#fff; }
+    #skillLibrary .table-wrap tbody tr:hover { background:#f5faff; }
     .global-section > h3 { margin:0 0 7px; color:#17202a; font-size:17px; font-weight:700; line-height:1.3; }
+    .global-section > h3.global-graph-heading { display:flex; align-items:center; gap:5px; }
+    .graph-collapse-toggle { display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; padding:0; border:0; border-radius:3px; background:transparent; color:#466986; font-size:15px; line-height:1; }
+    .graph-collapse-toggle:hover { background:#e7f0f8; color:#17324d; }
+    .graph-collapse-toggle:focus-visible { outline:2px solid #2364aa; outline-offset:2px; }
     .global-section > p { margin:0 0 7px; }
     .global-section .table-wrap { border-color:#d4e3f1; border-radius:6px; background:#fff; }
     .global-section .table-wrap tbody tr:hover { background:#f5faff; }
-    .trajectory-catalog-table { min-width:1120px; table-layout:fixed; }
-    .trajectory-catalog-table th, .trajectory-catalog-table td { text-align:center; vertical-align:middle; }
+    .trajectory-catalog-table { width:100%; min-width:0; table-layout:fixed; }
+    .trajectory-catalog-table th, .trajectory-catalog-table td { padding:7px 5px; text-align:center; vertical-align:middle; overflow-wrap:anywhere; }
     .global-skill-library-table { width:100%; table-layout:fixed; }
     .global-skill-library-table th, .global-skill-library-table td { text-align:center; vertical-align:middle; overflow-wrap:anywhere; }
     .global-skill-library-table th:nth-child(1), .global-skill-library-table td:nth-child(1) { width:42%; }
     .global-skill-library-table th:nth-child(2), .global-skill-library-table td:nth-child(2) { width:43%; }
     .global-skill-library-table th:nth-child(3), .global-skill-library-table td:nth-child(3) { width:15%; }
-    .trajectory-catalog-table th:nth-child(1), .trajectory-catalog-table td:nth-child(1) { width:145px; }
-    .trajectory-catalog-table th:nth-child(2), .trajectory-catalog-table td:nth-child(2) { width:105px; }
-    .trajectory-catalog-table th:nth-child(3), .trajectory-catalog-table td:nth-child(3) { width:195px; }
-    .trajectory-catalog-table th:nth-child(4), .trajectory-catalog-table td:nth-child(4) { width:55px; }
-    .trajectory-catalog-table th:nth-child(5), .trajectory-catalog-table td:nth-child(5) { width:65px; }
-    .trajectory-catalog-table th:nth-child(6), .trajectory-catalog-table td:nth-child(6) { width:320px; }
-    .trajectory-catalog-table th:nth-child(7), .trajectory-catalog-table td:nth-child(7) { width:235px; }
+    .trajectory-catalog-table th:nth-child(1), .trajectory-catalog-table td:nth-child(1) { width:14%; }
+    .trajectory-catalog-table th:nth-child(2), .trajectory-catalog-table td:nth-child(2) { width:10%; }
+    .trajectory-catalog-table th:nth-child(3), .trajectory-catalog-table td:nth-child(3) { width:16%; }
+    .trajectory-catalog-table th:nth-child(4), .trajectory-catalog-table td:nth-child(4) { width:6%; }
+    .trajectory-catalog-table th:nth-child(5), .trajectory-catalog-table td:nth-child(5) { width:7%; }
+    .trajectory-catalog-table th:nth-child(6), .trajectory-catalog-table td:nth-child(6) { width:8%; }
+    .trajectory-catalog-table th:nth-child(7), .trajectory-catalog-table td:nth-child(7) { width:22%; }
+    .trajectory-catalog-table th:nth-child(8), .trajectory-catalog-table td:nth-child(8) { width:17%; }
     .global-trajectory-id { display:block; font-family:inherit; font-size:12px; font-weight:700; overflow-wrap:anywhere; }
     .global-open-btn { display:block; margin:9px auto 0; }
-    .trajectory-catalog-table td:nth-child(7) .pill { max-width:100%; white-space:normal; overflow-wrap:anywhere; }
+    .trajectory-catalog-table td:nth-child(7) .pill, .trajectory-catalog-table td:nth-child(8) .pill { max-width:100%; white-space:normal; overflow-wrap:anywhere; }
     .global-related-skill { border:0; cursor:pointer; font:inherit; text-align:left; }
     .global-related-skill:hover { background:#d7ecdf; text-decoration:underline; }
     .global-related-skill:focus-visible { outline:2px solid #2364aa; outline-offset:2px; }
-    .global-relationship-graph { position:relative; min-height:350px; overflow:visible; border:1px solid #c9ddec; border-radius:7px; background:#fff; padding-bottom:64px; }
+    .global-relationship-graph { --relationship-edge:#2364aa; position:relative; min-height:350px; overflow:visible; border:1px solid #c9ddec; border-radius:7px; background:#fff; padding-bottom:64px; }
     .global-relationship-edges { position:absolute; inset:0; z-index:0; pointer-events:none; overflow:visible; }
-    .global-relationship-edges line { fill:none; stroke:#91abc3; stroke-width:2; opacity:.85; }
-    .global-relationship-edges path { stroke-width:2; opacity:.85; }
+    .global-relationship-edges line { fill:none; stroke:var(--relationship-edge); stroke-width:2; opacity:.85; }
+    .global-relationship-edges path { stroke:var(--relationship-edge); stroke-width:2; opacity:.85; }
     .global-relationship-edges path.trajectory-result { stroke-linejoin:round; opacity:.58; }
-    .global-relationship-edges line.uses-skill { stroke:#2f855a; }
-    .global-relationship-edges line.skill-action { stroke:#3c8c88; stroke-width:1; opacity:.58; }
-    .global-relationship-edges line.skill-trigger { stroke:#5d8f70; }
+    .global-relationship-edges line.uses-skill { stroke:var(--relationship-edge); }
+    .global-relationship-edges line.skill-action { stroke:var(--relationship-edge); stroke-width:1; opacity:.58; }
+    .global-relationship-edges line.skill-trigger { stroke:var(--relationship-edge); }
     .global-relationship-edges path.skill-usage { fill:none; stroke-width:3; opacity:.64; }
     .global-relationship-edges path.skill-action,
     .global-relationship-edges path.skill-trigger { fill:none; opacity:.58; }
+    .global-relationship-edges [data-global-edge] { opacity:0 !important; transition:opacity 140ms ease; }
+    .global-relationship-edges [data-global-edge].is-visible { opacity:.8 !important; }
     .global-relationship-columns { position:relative; z-index:1; display:grid; grid-template-columns:minmax(140px, 180px) minmax(190px, 250px) minmax(180px, 260px); justify-content:space-between; column-gap:24px; min-width:0; width:100%; box-sizing:border-box; padding:16px; transform:translateX(-10px); }
     .global-relationship-column { display:flex; min-height:0; flex-direction:column; }
     .global-relationship-column h3 { margin:0 0 9px; color:#355e87; font-size:13px; text-align:center; }
@@ -298,6 +357,9 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
     .global-relationship-column:last-child { position:relative; z-index:2; transform:translateX(-70px); }
     .global-relationship-column:nth-child(2) { position:relative; z-index:2; transform:translateX(225px); }
     .global-graph-node { min-height:0; border:1px solid #d4e1ee; border-left:4px solid #64748b; border-radius:6px; background:#fff; padding:8px 9px; box-shadow:0 1px 2px rgba(23,50,77,.05); overflow-wrap:anywhere; text-align:center; }
+    .global-graph-node { cursor:pointer; }
+    .global-graph-node:hover { box-shadow:0 2px 5px rgba(23,50,77,.14); }
+    .global-graph-node.is-active { outline:2px solid #2364aa; outline-offset:2px; }
     .global-graph-node.trajectory,
     .global-graph-node.skill { display:flex; align-items:center; justify-content:center; min-height:50px; }
     .global-graph-node.trajectory { position:relative; border-left-color:#9b4662; background:#fff7f8; }
@@ -405,10 +467,18 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
     .version-stat-content { display:inline-flex; align-items:center; gap:9px; }
     .version-stat-value { display:flex; flex-direction:column; align-items:center; gap:2px; line-height:1.15; }
     .version-stat-icon { width:25px; height:25px; fill:none; stroke:currentColor; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; }
+    .version-stat-database-button { display:inline-flex; align-items:center; justify-content:center; width:25px; height:25px; padding:0; border:0; border-radius:4px; background:transparent; color:inherit; cursor:pointer; }
+    .version-stat-database-button:hover { background:rgba(35,100,170,.10); }
+    .version-stat-database-button:focus-visible { outline:2px solid currentColor; outline-offset:2px; }
+    .version-stat-database-icon { width:21px; height:21px; fill:none; stroke:currentColor; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; }
     .version-stat.branches { color:#5b5bd6; }
     .version-stat.snapshots { color:#0f9f92; }
     .version-stat.events { color:#d14343; }
 .version-section { border:1px solid #c9def5; border-radius:7px; padding:8px 12px 10px; background:#fbfdff; }
+.version-section.version-branches-section { border-color:#d8cff2; background:#f8f5ff; }
+.version-section.version-snapshots-section { border-color:#c7e3d0; background:#f2faf5; }
+.version-section.version-history-section { border-color:#edcbd5; background:#fff6f8; }
+.version-history-section .version-timeline { border:1px solid #d4e3f1; border-radius:6px; background:#fff; padding:0 12px; }
 .version-section h3 { margin:0 0 7px; color:#17202a; font-size:16px; font-weight:700; line-height:1.3; }
 .version-section .table-wrap { border:1px solid #d4e3f1; border-radius:6px; background:#fff; }
 .version-section .version-table { min-width:820px; }
@@ -577,6 +647,8 @@ let defaultLlmProfileId = '';
 let summaryProfileId = '';
 let loadingElapsedTimer = null;
 let globalOverviewData = null;
+let globalGraphActiveNodeId = '';
+let globalSkillDetailIndex = null;
 const BRANCH_SCOPED_VIEWS = new Set(['current_prompt', 'summary', 'rl_dataset']);
 const viewBranches = {current_prompt: 'main', summary: 'main', rl_dataset: 'main'};
 const GRAPH_NODE_WIDTH = 210;
@@ -647,7 +719,7 @@ function bindSummaryProfileControls() {
   const button = $('generateSummary');
   if (select) select.onchange = () => {
     summaryProfileId = select.value;
-    if (!globalBusy && currentView === 'summary') loadView();
+    if (!globalBusy && currentView === 'summary') showViewExecution();
   };
   if (button) button.onclick = () => {
     summaryProfileId = select?.value || selectedSummaryProfile();
@@ -659,7 +731,7 @@ function bindViewBranchSelector(view) {
   if (!select) return;
   select.onchange = () => {
     viewBranches[view] = select.value;
-    if (!globalBusy && currentView === view) loadView();
+    if (!globalBusy && currentView === view) showViewExecution();
   };
 }
 function escapeRegExp(value) {
@@ -709,9 +781,101 @@ function compactGraphPayload(value) {
   }
   return value;
 }
+function graphFieldLabel(entries) {
+  return entries
+    .filter(([, value]) => value !== undefined && value !== null && value !== '')
+    .map(([key, value]) => `${displayGraphFieldName(key)}: ${compactGraphValue(value)}`)
+    .join('\n');
+}
+function displayGraphFieldName(key) {
+  return String(key).replaceAll('_', ' ');
+}
 function graphPayloadLabel(n) {
   if (!n.payload || typeof n.payload !== 'object') return displayNodeLabel(n);
-  return JSON.stringify(compactGraphPayload(n.payload), null, 2);
+  const payload = n.payload;
+  const eventType = n.event_type;
+  if (eventType === 'system_event' && eventPresentationType(n) === 'system_event') {
+    return graphFieldLabel([['text', payload.text]]);
+  }
+  if (eventPresentationType(n) === 'version_snapshot_created') {
+    const omittedSnapshotFields = new Set(['logical_context_only', 'snapshot_id', 'origin']);
+    return graphFieldLabel(Object.entries(payload).filter(([key]) => !omittedSnapshotFields.has(key)));
+  }
+  if (eventPresentationType(n) === 'version_decision') {
+    return graphFieldLabel(Object.entries(payload).filter(([key]) => key !== 'logical_context_only'));
+  }
+  if (eventPresentationType(n) === 'version_rollback_created') {
+    const omittedRollbackFields = new Set(['origin', 'logical_context_only', 'workspace_restored']);
+    return graphFieldLabel(Object.entries(payload).filter(([key]) => !omittedRollbackFields.has(key)));
+  }
+  if (eventPresentationType(n) === 'version_branch_created') {
+    const omittedBranchCreationFields = new Set(['branch_id', 'origin', 'logical_context_only']);
+    return graphFieldLabel(Object.entries(payload).filter(([key]) => !omittedBranchCreationFields.has(key)));
+  }
+  if (eventPresentationType(n) === 'version_repair_branch_suggested') {
+    const omittedBranchRecommendationFields = new Set([
+      'snapshot_id', 'suggested_branch_id', 'logical_context_only',
+    ]);
+    return graphFieldLabel(Object.entries(payload).filter(([key]) => !omittedBranchRecommendationFields.has(key)));
+  }
+  if (eventType === 'user_message' || eventType === 'assistant_message') {
+    return graphFieldLabel([['text', payload.text]]);
+  }
+  if (eventType === 'tool_call') {
+    return graphFieldLabel([
+      ['tool chain', toolChain(payload).join(' -> ')],
+      ['command', payload.command],
+    ]);
+  }
+  if (eventType === 'tool_result') {
+    return graphFieldLabel([
+      ['tool name', payload.tool_name],
+      ['command', payload.command],
+      ['status', payload.status],
+    ]);
+  }
+  if (eventType === 'skill_match') {
+    const matches = Array.isArray(payload.matches) ? payload.matches : [];
+    if (!matches.length) return 'No match.';
+    const omittedMatchFields = new Set([
+      'schema_version', 'match_reason', 'matched_trigger',
+      'skill_status', 'highlight_event_ids', 'source_trajectory_id',
+      'canonical_tool', 'canonical_command_template', 'strategy',
+      'support_event_ids', 'support_events', 'dedupe', 'confidence',
+    ]);
+    const compactMatchValue = value => {
+      if (Array.isArray(value)) return value.map(compactMatchValue);
+      if (value && typeof value === 'object') {
+        return Object.fromEntries(Object.entries(value)
+          .filter(([key]) => !omittedMatchFields.has(key))
+          .map(([key, childValue]) => [displayGraphFieldName(key), compactMatchValue(childValue)]));
+      }
+      return compactGraphPayload(value);
+    };
+    return matches.map(match => Object.entries(match || {})
+      .filter(([key]) => !omittedMatchFields.has(key))
+      .map(([key, value]) => {
+        const rendered = value && typeof value === 'object'
+          ? JSON.stringify(compactMatchValue(value))
+          : compactMatchValue(value);
+        return `${displayGraphFieldName(key)}: ${rendered}`;
+      })
+      .join('\n'))
+      .join('\n\n');
+  }
+  if (eventType === 'skill_decision') {
+    return graphFieldLabel(Object.entries(payload));
+  }
+  if (eventType === 'skill_recommendation') {
+    const agent = payload.agent_context || {};
+    return graphFieldLabel([
+      ['matched', payload.matched ?? agent.matched],
+      ['skill id', payload.skill_id || payload.matched_skill_id || agent.skill_id],
+      ['skill name', payload.skill_name || agent.skill_name],
+      ['match score', payload.match_score ?? agent.match_score],
+    ]);
+  }
+  return JSON.stringify(compactGraphPayload(payload), null, 2);
 }
 function playbackEventColorClass(event) {
   return `event-${eventPresentationType(event) || 'default'}`;
@@ -943,7 +1107,29 @@ function globalGraphNode(node) {
   const label = node.type === 'trajectory' ? node.trajectory_id : node.label;
   const detail = node.type === 'tool' ? `<span>${escapeHtml(node.detail || '')}</span>` : '';
   const sourceLogo = node.type === 'trajectory' ? globalTrajectorySourceLogo(node.detail) : '';
-  return `<div class="global-graph-node ${escapeHtml(node.type)}" data-global-node="${escapeHtml(node.id)}">${sourceLogo}<b>${escapeHtml(label || '')}</b>${detail}</div>`;
+  return `<div class="global-graph-node ${escapeHtml(node.type)}" data-global-node="${escapeHtml(node.id)}" role="button" tabindex="0" aria-pressed="false">${sourceLogo}<b>${escapeHtml(label || '')}</b>${detail}</div>`;
+}
+
+function updateGlobalRelationshipSelection() {
+  const graph = document.querySelector('.global-relationship-graph');
+  if (!graph) return;
+  const activeNodeId = globalGraphActiveNodeId;
+  graph.querySelectorAll('[data-global-node]').forEach(node => {
+    const active = Boolean(activeNodeId) && node.dataset.globalNode === activeNodeId;
+    node.classList.toggle('is-active', active);
+    node.setAttribute('aria-pressed', String(active));
+  });
+  graph.querySelectorAll('[data-global-edge]').forEach(edge => {
+    const connected = Boolean(activeNodeId) && (
+      edge.dataset.source === activeNodeId || edge.dataset.target === activeNodeId
+    );
+    edge.classList.toggle('is-visible', connected);
+  });
+}
+
+function toggleGlobalGraphNode(nodeId) {
+  globalGraphActiveNodeId = globalGraphActiveNodeId === nodeId ? '' : nodeId;
+  updateGlobalRelationshipSelection();
 }
 
 function drawGlobalRelationshipGraph(graphData) {
@@ -985,18 +1171,6 @@ function drawGlobalRelationshipGraph(graphData) {
     edges.appendChild(background);
   }
   const byId = new Map([...graph.querySelectorAll('[data-global-node]')].map(node => [node.dataset.globalNode, node]));
-  const trajectoryEdgeColors = ['#b55d78', '#b78332', '#5d8f70', '#4f7fa8', '#8069a5'];
-  const trajectoryColorById = new Map(
-    (graphData.nodes || [])
-      .filter(node => node.type === 'trajectory')
-      .map((node, index) => [node.id, trajectoryEdgeColors[index % trajectoryEdgeColors.length]])
-  );
-  const skillEdgeColors = ['#b55d78', '#b78332', '#8069a5', '#3c8c88', '#5d8f70'];
-  const skillColorById = new Map(
-    (graphData.nodes || [])
-      .filter(node => node.type === 'skill')
-      .map((node, index) => [node.id, skillEdgeColors[index % skillEdgeColors.length]])
-  );
   const skillUsageLaneByEdge = new Map(
     (graphData.edges || [])
       .filter(edge => edge.kind === 'skill_usage')
@@ -1009,6 +1183,12 @@ function drawGlobalRelationshipGraph(graphData) {
       .map(edge => `${edge.source}:${edge.target}`)
   );
   const resultBands = new Map();
+  const appendRelationshipEdge = (element, edge) => {
+    element.dataset.globalEdge = 'true';
+    element.dataset.source = edge.source;
+    element.dataset.target = edge.target;
+    edges.appendChild(element);
+  };
   const resultUnitWidth = 2;
   const skillRelationWidth = resultUnitWidth * 3;
   const resultBandGap = 2;
@@ -1059,14 +1239,14 @@ function drawGlobalRelationshipGraph(graphData) {
       const startHalfWidth = 1;
       const upperClusterY = targetCenterY + (band.top - targetCenterY) * .22;
       const lowerClusterY = targetCenterY + (band.bottom - targetCenterY) * .22;
-      const color = trajectoryColorById.get(edge.source) || '#4c78a8';
+      const color = '#2364aa';
       const curve = document.createElementNS('http://www.w3.org/2000/svg', 'path');
       curve.setAttribute('d', `M ${startX} ${sourceCenterY - startHalfWidth} C ${startControlX} ${sourceCenterY - startHalfWidth}, ${endControlX} ${upperClusterY}, ${endX} ${band.top} L ${endX} ${band.bottom} C ${endControlX} ${lowerClusterY}, ${startControlX} ${sourceCenterY + startHalfWidth}, ${startX} ${sourceCenterY + startHalfWidth} Z`);
       curve.setAttribute('class', 'results trajectory-result');
       curve.style.fill = color;
       curve.style.stroke = color;
       curve.setAttribute('stroke-width', '1');
-      edges.appendChild(curve);
+      appendRelationshipEdge(curve, edge);
       continue;
     }
     const isSkillToolRelation = (
@@ -1080,13 +1260,12 @@ function drawGlobalRelationshipGraph(graphData) {
       const horizontalDistance = Math.max(1, Math.abs(endX - startX));
       const startControlX = startX + direction * Math.min(126, horizontalDistance * .44);
       const endControlX = endX - direction * Math.min(150, horizontalDistance * .5);
-      const relatedSkill = source.classList.contains('skill') ? edge.source : edge.target;
       const curve = document.createElementNS('http://www.w3.org/2000/svg', 'path');
       curve.setAttribute('d', `M ${startX} ${sourceCenterY} C ${startControlX} ${sourceCenterY}, ${endControlX} ${targetCenterY}, ${endX} ${targetCenterY}`);
       curve.setAttribute('class', String(edge.kind).replaceAll('_', '-'));
       curve.style.strokeWidth = `${skillRelationWidth}px`;
-      curve.style.stroke = skillColorById.get(relatedSkill) || '#3c8c88';
-      edges.appendChild(curve);
+      curve.style.stroke = '#2364aa';
+      appendRelationshipEdge(curve, edge);
       continue;
     }
     const isSkillUsage = edge.kind === 'skill_usage' && source.classList.contains('skill') && target.classList.contains('trajectory');
@@ -1098,9 +1277,9 @@ function drawGlobalRelationshipGraph(graphData) {
       const route = document.createElementNS('http://www.w3.org/2000/svg', 'path');
       route.setAttribute('d', `M ${sourceRight} ${sourceCenterY} H ${sourceExitX} V ${bottomRouteY} H ${targetEntryX} V ${targetCenterY} H ${targetLeft}`);
       route.setAttribute('class', 'skill-usage');
-      route.style.stroke = skillColorById.get(edge.source) || '#8069a5';
+      route.style.stroke = '#2364aa';
       route.style.strokeWidth = '3px';
-      edges.appendChild(route);
+      appendRelationshipEdge(route, edge);
       continue;
     }
     const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
@@ -1110,10 +1289,9 @@ function drawGlobalRelationshipGraph(graphData) {
     line.setAttribute('y2', targetCenterY);
     line.setAttribute('class', String(edge.kind || '').replaceAll('_', '-'));
     line.setAttribute('stroke-width', '2');
-    const relatedSkill = source.classList.contains('skill') ? edge.source : (target.classList.contains('skill') ? edge.target : '');
-    if (relatedSkill && skillColorById.has(relatedSkill)) line.style.stroke = skillColorById.get(relatedSkill);
-    edges.appendChild(line);
+    appendRelationshipEdge(line, edge);
   }
+  updateGlobalRelationshipSelection();
 }
 
 function globalSkillSemanticSupportText(items) {
@@ -1139,6 +1317,12 @@ function showGlobalSkillDetail(index) {
   const container = $('globalSkillDetail');
   const skill = (globalOverviewData?.skills || [])[index];
   if (!container || !skill) return;
+  if (globalSkillDetailIndex === index && !container.hidden) {
+    container.hidden = true;
+    container.innerHTML = '';
+    globalSkillDetailIndex = null;
+    return;
+  }
   const detail = skill.detail || skill;
   const trigger = detail.trigger || {};
   const confidence = detail.confidence || {};
@@ -1154,6 +1338,7 @@ function showGlobalSkillDetail(index) {
     }).join('') || '<span class="muted">No support events.</span>';
     return `<tr><td><div class="learned-skill-action">${escapeHtml(command ? `Apply ${command}` : 'Apply successful repair')}</div></td><td>${supports}</td></tr>`;
   }).join('') || '<tr><td colspan="2" class="muted">No recommended actions.</td></tr>';
+  globalSkillDetailIndex = index;
   container.hidden = false;
   container.innerHTML = `<h4>${escapeHtml(detail.name || skill.name || skill.skill_id)}</h4>
     <p><span class="pill rule">Skill ID: ${escapeHtml(detail.skill_id || skill.skill_id)}</span></p>
@@ -1169,6 +1354,27 @@ function showGlobalSkillDetailForSkill(sourceTrajectoryId, skillId) {
   if (index < 0) return;
   showGlobalSkillDetail(index);
   $('globalSkillDetail')?.scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+function toggleGlobalSection(sectionId, trigger) {
+  const section = $(sectionId);
+  if (!section) return;
+  const show = section.hidden;
+  section.hidden = !show;
+  trigger?.setAttribute('aria-expanded', String(show));
+  if (show) section.scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+function toggleGlobalRelationshipGraph(trigger) {
+  const content = $('globalRelationshipGraphContent');
+  if (!content) return;
+  const show = content.hidden;
+  content.hidden = !show;
+  trigger.textContent = show ? '▾' : '▸';
+  trigger.setAttribute('aria-expanded', String(show));
+  trigger.setAttribute('aria-label', show ? 'Collapse relationship graph' : 'Expand relationship graph');
+  trigger.setAttribute('title', show ? 'Collapse relationship graph' : 'Expand relationship graph');
+  if (show) requestAnimationFrame(() => drawGlobalRelationshipGraph(globalOverviewData?.graph || {}));
 }
 
 function updateTrajectorySuggestions(trajectories) {
@@ -1187,6 +1393,8 @@ function updateTrajectorySuggestions(trajectories) {
 
 function renderGlobalOverview(data) {
   globalOverviewData = data;
+  globalGraphActiveNodeId = '';
+  globalSkillDetailIndex = null;
   const trajectories = data.trajectories || [];
   updateTrajectorySuggestions(trajectories);
   const skills = data.skills || [];
@@ -1212,24 +1420,33 @@ function renderGlobalOverview(data) {
       const count = skill.application_count || skill.support_count || 0;
       return `<button type="button" class="pill ok global-related-skill" title="${escapeHtml(skill.skill_id || '')}" onclick='showGlobalSkillDetailForSkill(${JSON.stringify(skill.source_trajectory_id)}, ${JSON.stringify(skill.skill_id)})'>${escapeHtml(skill.name || skill.skill_id)} (${escapeHtml(count)})</button>`;
     }).join('') || '<span class="muted">No learned or applied skills</span>';
-    return `<tr><td><b class="global-trajectory-id">${escapeHtml(row.trajectory_id)}</b><button class="small-btn global-open-btn" onclick='openTrajectoryFromGlobal(${JSON.stringify(row.trajectory_id)})'>Open</button></td><td>${escapeHtml(displaySource(row))}</td><td>${escapeHtml(displayVersionTimestamp(row.created_at))}<div class="muted">updated ${escapeHtml(displayVersionTimestamp(row.updated_at))}</div></td><td>${escapeHtml(row.event_count)}</td><td>${escapeHtml(row.branch_count || 0)}</td><td>${tools}</td><td>${relatedSkills}</td></tr>`;
-  }).join('') || '<tr><td colspan="7" class="muted">No trajectories have been recorded.</td></tr>';
+    return `<tr><td><b class="global-trajectory-id">${escapeHtml(row.trajectory_id)}</b><button class="small-btn global-open-btn" onclick='openTrajectoryFromGlobal(${JSON.stringify(row.trajectory_id)})'>Open</button></td><td>${escapeHtml(displaySource(row))}</td><td>${escapeHtml(displayVersionTimestamp(row.created_at))}<div class="muted">updated ${escapeHtml(displayVersionTimestamp(row.updated_at))}</div></td><td>${escapeHtml(row.event_count)}</td><td>${escapeHtml(row.branch_count || 0)}</td><td>${escapeHtml(row.snapshot_count || 0)}</td><td>${tools}</td><td>${relatedSkills}</td></tr>`;
+  }).join('') || '<tr><td colspan="8" class="muted">No trajectories have been recorded.</td></tr>';
   const skillRows = skills.map((skill, index) => `<tr><td><b>${escapeHtml(skill.name)}</b><div class="mono muted">${escapeHtml(skill.skill_id)}</div></td><td><button class="small-btn secondary" onclick='openTrajectoryFromGlobal(${JSON.stringify(skill.source_trajectory_id)})'>${escapeHtml(skill.source_trajectory_id)}</button></td><td><button class="small-btn" onclick="showGlobalSkillDetail(${index})">Details</button></td></tr>`).join('') || '<tr><td colspan="3" class="muted">No learned skills are currently materialized.</td></tr>';
   $('globalOut').innerHTML = `
     <div class="global-metrics">
-      <div class="global-metric trajectory-metric"><div class="global-metric-content"><svg class="global-metric-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="5" r="2"></circle><circle cx="18" cy="12" r="2"></circle><circle cx="6" cy="19" r="2"></circle><path d="M8 6.3 16 10.7M16 13.3 8 17.7"></path></svg><div class="global-metric-value"><b>${escapeHtml(data.trajectory_count)}</b><span>trajectories</span></div></div></div>
+      <div class="global-metric trajectory-metric"><div class="global-metric-content"><svg class="global-metric-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="5" r="2"></circle><circle cx="18" cy="12" r="2"></circle><circle cx="6" cy="19" r="2"></circle><path d="M8 6.3 16 10.7M16 13.3 8 17.7"></path></svg><div class="global-metric-value"><b>${escapeHtml(data.trajectory_count)}</b><span>trajectories</span></div><button type="button" class="global-metric-database-button" aria-label="Show Trajectory Catalog" title="Show Trajectory Catalog" aria-expanded="false" onclick="toggleGlobalSection('trajectoryCatalog', this)"><svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="5" rx="7" ry="3"></ellipse><path d="M5 5v7c0 1.7 3.1 3 7 3s7-1.3 7-3V5M5 12v7c0 1.7 3.1 3 7 3s7-1.3 7-3v-7"></path></svg></button></div></div>
       <div class="global-metric tool-metric"><div class="global-metric-content"><svg class="global-metric-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M14.7 6.3a4.5 4.5 0 0 0-5.9 5.9L3.5 17.5a2.1 2.1 0 0 0 3 3l5.3-5.3a4.5 4.5 0 0 0 5.9-5.9l-3.1 3.1-2.6-2.6z"></path></svg><div class="global-metric-value"><b>${escapeHtml(data.tool_count)}</b><span>tools</span></div></div></div>
-      <div class="global-metric skill-metric"><div class="global-metric-content"><svg class="global-metric-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3-1.2 4.8L6 9l4.8 1.2L12 15l1.2-4.8L18 9l-4.8-1.2zM19 15l-.7 2.3L16 18l2.3.7L19 21l.7-2.3L22 18l-2.3-.7zM5 15l-.5 1.5L3 17l1.5.5L5 19l.5-1.5L7 17l-1.5-.5z"></path></svg><div class="global-metric-value"><b>${escapeHtml(data.skill_count)}</b><span>skills</span></div></div></div>
+      <div class="global-metric skill-metric"><div class="global-metric-content"><svg class="global-metric-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3-1.2 4.8L6 9l4.8 1.2L12 15l1.2-4.8L18 9l-4.8-1.2zM19 15l-.7 2.3L16 18l2.3.7L19 21l.7-2.3L22 18l-2.3-.7zM5 15l-.5 1.5L3 17l1.5.5L5 19l.5-1.5L7 17l-1.5-.5z"></path></svg><div class="global-metric-value"><b>${escapeHtml(data.skill_count)}</b><span>skills</span></div><button type="button" class="global-metric-database-button" aria-label="Show Skill Library" title="Show Skill Library" aria-expanded="false" onclick="toggleGlobalSection('skillLibrary', this)"><svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="5" rx="7" ry="3"></ellipse><path d="M5 5v7c0 1.7 3.1 3 7 3s7-1.3 7-3V5M5 12v7c0 1.7 3.1 3 7 3s7-1.3 7-3v-7"></path></svg></button></div></div>
     </div>
-    <div class="summary-card global-section"><h3>Trajectory Catalog</h3><div class="table-wrap"><table class="trajectory-catalog-table"><thead><tr><th>Trajectory</th><th>Source</th><th>Created / updated</th><th>Events</th><th>Branches</th><th>Tools</th><th>Skills</th></tr></thead><tbody>${trajectoryRows}</tbody></table></div></div>
-    <div class="summary-card global-section"><h3>Skill Library</h3><div class="table-wrap"><table class="global-skill-library-table"><thead><tr><th>Skill</th><th>Source trajectory</th><th aria-label="Details"></th></tr></thead><tbody>${skillRows}</tbody></table></div><div id="globalSkillDetail" class="global-skill-detail" hidden></div></div>
-    <div class="summary-card global-section"><h3>Trajectory-Tool-Skill Graph</h3>
-      <div class="global-relationship-graph"><svg id="globalRelationshipEdges" class="global-relationship-edges"></svg><div class="global-relationship-columns">
+    <div id="trajectoryCatalog" class="summary-card global-section" hidden><h3>Trajectory Catalog</h3><div class="table-wrap"><table class="trajectory-catalog-table"><thead><tr><th>Trajectory</th><th>Source</th><th>Created / updated</th><th>Events</th><th>Branches</th><th>Snapshots</th><th>Tools</th><th>Skills</th></tr></thead><tbody>${trajectoryRows}</tbody></table></div></div>
+    <div id="skillLibrary" class="summary-card global-section" hidden><h3>Skill Library</h3><div class="table-wrap"><table class="global-skill-library-table"><thead><tr><th>Skill</th><th>Source trajectory</th><th aria-label="Details"></th></tr></thead><tbody>${skillRows}</tbody></table></div><div id="globalSkillDetail" class="global-skill-detail" hidden></div></div>
+    <div class="summary-card global-section"><h3 class="global-graph-heading">Trajectory-Tool-Skill Graph<button type="button" class="graph-collapse-toggle" aria-label="Expand relationship graph" title="Expand relationship graph" aria-expanded="false" onclick="toggleGlobalRelationshipGraph(this)">▸</button></h3>
+      <div id="globalRelationshipGraphContent" hidden><div class="global-relationship-graph"><svg id="globalRelationshipEdges" class="global-relationship-edges"></svg><div class="global-relationship-columns">
         <div class="global-relationship-column"><h3>Trajectories</h3><div class="global-relationship-stack">${nodeGroups.trajectory.map(globalGraphNode).join('') || '<span class="muted">None</span>'}</div></div>
         <div class="global-relationship-column"><h3>Tools</h3><div class="global-relationship-stack">${nodeGroups.tool.map(globalGraphNode).join('') || '<span class="muted">None</span>'}</div></div>
         <div class="global-relationship-column"><h3>Skills</h3><div class="global-relationship-stack">${nodeGroups.skill.map(globalGraphNode).join('') || '<span class="muted">None</span>'}</div></div>
-      </div></div>
+      </div></div></div>
     </div>`;
+  document.querySelectorAll('[data-global-node]').forEach(node => {
+    node.addEventListener('click', () => toggleGlobalGraphNode(node.dataset.globalNode));
+    node.addEventListener('keydown', event => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        toggleGlobalGraphNode(node.dataset.globalNode);
+      }
+    });
+  });
   requestAnimationFrame(() => drawGlobalRelationshipGraph(graph));
 }
 
@@ -1383,15 +1600,25 @@ function showDatabaseViewsPlaceholder() {
 function showError(message) {
   setOutput(`<div class="view-empty"><b>Request failed</b><br>${escapeHtml(message)}</div>`);
 }
+let currentHighlightSignature = null;
+function highlightSignature(eventIds, branchIds) {
+  const e = (eventIds || []).filter(Boolean).map(String).sort().join('\u0001');
+  const b = (branchIds || []).filter(Boolean).map(String).sort().join('\u0001');
+  return e + '\u0000' + b;
+}
 function clearHighlight() {
   document.querySelectorAll('.node').forEach(n => n.classList.remove('highlighted','dimmed'));
   document.querySelectorAll('svg.edges line').forEach(e => e.classList.remove('highlighted','dimmed'));
+  currentHighlightSignature = null;
 }
 function highlightGraph(eventIds = [], branchIds = []) {
+  const signature = highlightSignature(eventIds, branchIds);
+  if (signature === currentHighlightSignature) { clearHighlight(); return; }
   clearHighlight();
   const eventSet = new Set(eventIds.filter(Boolean));
   const branchSet = new Set(branchIds.filter(Boolean));
   if (!eventSet.size && !branchSet.size) return;
+  currentHighlightSignature = signature;
   document.querySelectorAll('.node').forEach(n => {
     const hit = eventSet.has(n.dataset.eventId) || branchSet.has(n.dataset.branchId);
     n.classList.toggle('highlighted', hit);
@@ -1405,19 +1632,19 @@ function highlightGraph(eventIds = [], branchIds = []) {
 }
 
 const QUERY_CATALOG = {
-failure_patterns: 'SELECT failure_event_id, branch_id, failed_tool, failed_command, likely_cause, normalized_signature, highlight_event_ids\nFROM failure_patterns\nWHERE trajectory_id = :trajectory_id;',
-repair_strategies: 'SELECT failure_event_id, success_event_id, failure_branch, repair_branch, command, strategy, primary_rule, why_linked, highlight_event_ids\nFROM repair_strategies\nWHERE trajectory_id = :trajectory_id\nORDER BY failure_event_id, success_event_id;',
-learned_skills: 'SELECT skill_id, name, status, confidence_json, trigger_json, highlight_event_ids\nFROM learned_skills\nWHERE trajectory_id = :trajectory_id;',
-skill_evidence: 'SELECT skill_id, action_id, failure_event_id, success_event_id, primary_rule, judgment_label\nFROM skill_evidence\nWHERE trajectory_id = :trajectory_id\nORDER BY skill_id, action_id;',
-skill_application_trace: 'SELECT event_id, branch_id, event_type, actor, timestamp, payload_json\nFROM skill_application_trace\nWHERE trajectory_id = :trajectory_id\nORDER BY timestamp;',
+failure_patterns: 'SELECT json_extract(pattern.value, \'$.failure_event_id\') AS failure_event_id, json_extract(pattern.value, \'$.branch_id\') AS branch_id, json_extract(pattern.value, \'$.failed_tool\') AS failed_tool, json_extract(pattern.value, \'$.failed_command\') AS failed_command, json_extract(pattern.value, \'$.likely_cause\') AS likely_cause, json_extract(pattern.value, \'$.normalized_signature\') AS normalized_signature, json_extract(pattern.value, \'$.highlight_event_ids\') AS highlight_event_ids\nFROM materialized_views AS view\nJOIN json_each(view.content_json) AS pattern\nWHERE view.trajectory_id = :trajectory_id AND view.branch_id = :branch_id AND view.view_name = \'failure_patterns\'\nORDER BY failure_event_id;',
+repair_strategies: 'SELECT json_extract(group_row.value, \'$.failure.failure_event_id\') AS failure_event_id, json_extract(repair.value, \'$.success_event_id\') AS success_event_id, json_extract(group_row.value, \'$.failure.branch_id\') AS failure_branch, json_extract(repair.value, \'$.branch_id\') AS repair_branch, json_extract(repair.value, \'$.command\') AS command, json_extract(repair.value, \'$.strategy\') AS strategy, json_extract(repair.value, \'$.primary_rule\') AS primary_rule, json_extract(repair.value, \'$.why_linked\') AS why_linked, json_extract(repair.value, \'$.highlight_event_ids\') AS highlight_event_ids\nFROM materialized_views AS view\nJOIN json_each(view.content_json) AS group_row\nJOIN json_each(json_extract(group_row.value, \'$.repair_candidates\')) AS repair\nWHERE view.trajectory_id = :trajectory_id AND view.branch_id = :branch_id AND view.view_name = \'repair_strategies\'\nORDER BY failure_event_id, success_event_id;',
+learned_skills: 'SELECT json_extract(skill.value, \'$.skill_id\') AS skill_id, json_extract(skill.value, \'$.name\') AS name, json_extract(skill.value, \'$.status\') AS status, json_extract(skill.value, \'$.confidence\') AS confidence_json, json_extract(skill.value, \'$.trigger\') AS trigger_json, json_extract(skill.value, \'$.highlight_event_ids\') AS highlight_event_ids\nFROM materialized_views AS view\nJOIN json_each(view.content_json) AS skill\nWHERE view.trajectory_id = :trajectory_id AND view.branch_id = :branch_id AND view.view_name = \'learned_skills\'\nORDER BY skill_id;',
+skill_evidence: 'SELECT json_extract(skill.value, \'$.skill_id\') AS skill_id, json_extract(action.value, \'$.action_id\') AS action_id, json_extract(evidence.value, \'$.failure_event_id\') AS failure_event_id, json_extract(evidence.value, \'$.success_event_id\') AS success_event_id, json_extract(evidence.value, \'$.primary_rule\') AS primary_rule, json_extract(evidence.value, \'$.judgment_label\') AS judgment_label\nFROM materialized_views AS view\nJOIN json_each(view.content_json) AS skill\nJOIN json_each(json_extract(skill.value, \'$.recommended_actions\')) AS action\nLEFT JOIN json_each(COALESCE(json_extract(action.value, \'$.support_events\'), \'[]\')) AS evidence ON 1 = 1\nWHERE view.trajectory_id = :trajectory_id AND view.branch_id = :branch_id AND view.view_name = \'learned_skills\'\nORDER BY skill_id, action_id;',
+skill_application_trace: 'SELECT json_extract(event_row.value, \'$.event_id\') AS event_id, json_extract(event_row.value, \'$.branch_id\') AS branch_id, json_extract(event_row.value, \'$.event_type\') AS event_type, json_extract(event_row.value, \'$.actor\') AS actor, json_extract(event_row.value, \'$.timestamp\') AS timestamp, json_extract(event_row.value, \'$.payload\') AS payload_json\nFROM materialized_views AS view\nJOIN json_each(view.content_json) AS event_row\nWHERE view.trajectory_id = :trajectory_id AND view.branch_id = :branch_id AND view.view_name = \'skill_application_trace\'\nORDER BY timestamp;',
 branches: 'SELECT branch_id, base_event_id, head_event_id, snapshot_id, metadata_json\nFROM branches\nWHERE trajectory_id = :trajectory_id\nORDER BY branch_id;',
 current_prompt: 'SELECT event_id, branch_id, event_type, actor, timestamp, text, tool_name, command, status, preview\nFROM events\nWHERE trajectory_id = :trajectory_id\nORDER BY timestamp DESC\nLIMIT 8;',
 summary: 'SELECT event_id, branch_id, event_type, actor, timestamp, text, tool_name, command, status, preview\nFROM events\nWHERE trajectory_id = :trajectory_id\nORDER BY timestamp DESC\nLIMIT 12;',
 context_budget: 'SELECT event_id, branch_id, event_type, actor, timestamp, text, tool_name, command, status, preview\nFROM events\nWHERE trajectory_id = :trajectory_id\nORDER BY timestamp DESC;',
 failures: 'SELECT event_id, branch_id, timestamp, tool_name, command, status, preview, error_signature\nFROM events\nWHERE trajectory_id = :trajectory_id AND status IN (\'failed\', \'error\', \'timeout\')\nORDER BY timestamp;',
-success_patterns: 'SELECT event_id AS success_event_id, branch_id, tool_name AS successful_tool, command AS successful_command, status AS outcome, preview, timestamp\nFROM events\nWHERE trajectory_id = :trajectory_id AND event_type = \'tool_result\' AND status = \'ok\'\nORDER BY timestamp;',
+success_patterns: 'SELECT json_extract(pattern.value, \'$.success_event_id\') AS success_event_id, json_extract(pattern.value, \'$.branch_id\') AS branch_id, json_extract(pattern.value, \'$.successful_tool\') AS successful_tool, json_extract(pattern.value, \'$.successful_command\') AS successful_command, json_extract(pattern.value, \'$.strategy\') AS strategy, json_extract(pattern.value, \'$.outcome\') AS outcome, json_extract(pattern.value, \'$.result_preview\') AS result_preview, json_extract(pattern.value, \'$.is_first_success_on_branch\') AS is_first_success_on_branch, json_extract(pattern.value, \'$.highlight_event_ids\') AS highlight_event_ids\nFROM materialized_views AS view\nJOIN json_each(view.content_json) AS pattern\nWHERE view.trajectory_id = :trajectory_id AND view.branch_id = :branch_id AND view.view_name = \'success_patterns\'\nORDER BY success_event_id;',
 semantic_repair_judgments: 'SELECT view_name, branch_id, created_at, event_count, object_key\nFROM materialized_views\nWHERE trajectory_id = :trajectory_id AND view_name = \'semantic_repair_judgments\'\nORDER BY created_at DESC;',
-skill_library: 'SELECT skill_id, name, status, trigger_json, confidence_json, highlight_event_ids\nFROM skills\nWHERE trajectory_id = :trajectory_id\nORDER BY skill_id;',
+skill_library: 'SELECT json_extract(skill.value, \'$.skill_id\') AS skill_id, json_extract(skill.value, \'$.name\') AS name, json_extract(skill.value, \'$.status\') AS status, json_extract(skill.value, \'$.trigger\') AS trigger_json, json_extract(skill.value, \'$.confidence\') AS confidence_json, json_extract(skill.value, \'$.highlight_event_ids\') AS highlight_event_ids\nFROM materialized_views AS view\nJOIN json_each(view.content_json) AS skill\nWHERE view.trajectory_id = :trajectory_id AND view.branch_id = :branch_id AND view.view_name = \'learned_skills\'\nORDER BY skill_id;',
 rl_dataset: 'SELECT event_id, branch_id, event_type, actor, timestamp, payload_json, refs_json\nFROM events\nWHERE trajectory_id = :trajectory_id\nORDER BY timestamp;',
 diff: 'SELECT branch_id, base_event_id, head_event_id, snapshot_id\nFROM branches\nWHERE trajectory_id = :trajectory_id\nORDER BY branch_id;'
 };
@@ -1460,7 +1687,7 @@ async function loadLlmProfiles(){
   }
 }
 function modelExecutionMessage(execution, fallback){const requested=execution.requested_model||fallback||'selected model',actual=execution.response_model;if(execution.verified)return 'Confirmed by API response: '+actual+' (request id '+(execution.response_id||'unavailable')+').';if(actual)return 'API responded with '+actual+' although '+requested+' was requested.';return 'Translation completed, but the API did not return model metadata; the model cannot be independently confirmed.';}
-async function runNaturalLanguageQuery(){const tid=getTid(),question=$('nlQuestion').value.trim(),profileId=$('nlProfile').value;if(!tid||!question||!profileId)return;setBusyControls(true);$('sqlMeta').textContent='translating...';const profileLabel=$('nlProfile').selectedOptions[0]?.textContent||profileId;$('sqlOut').innerHTML='<div class="loading-card"><div class="spinner" aria-hidden="true"></div><div class="loading-text"><b>Translating query with '+escapeHtml(profileLabel)+'</b><div class="progress"><div></div></div></div></div>';try{const data=await api('/api/v1/nl_sql',{trajectory_id:tid,question:question,profile_id:profileId});const translation=data.translation||{},execution=translation.execution||{};$('sqlInput').value=translation.sql||'';$('sqlMeta').textContent=execution.verified?'verified '+execution.response_model:'SQL translated';$('sqlOut').innerHTML='<div class="view-empty"><b>SQL ready for review.</b><br><span class="sql-translation-detail">'+escapeHtml(modelExecutionMessage(execution,translation.model))+'</span><br><span class="muted sql-translation-detail">'+escapeHtml(translation.reason||'Click Run SQL to execute the generated statement.')+'</span></div>';}catch(err){$('sqlMeta').textContent='translation error';$('sqlOut').innerHTML='<div class="view-empty"><b>Natural-language translation failed</b><br>'+escapeHtml(err.message)+'</div>';}finally{setBusyControls(false);}}
+async function runNaturalLanguageQuery(){const tid=getTid(),question=$('nlQuestion').value.trim(),profileId=$('nlProfile').value;if(!tid||!question||!profileId)return;setBusyControls(true);$('sqlMeta').textContent='translating...';const profileLabel=$('nlProfile').selectedOptions[0]?.textContent||profileId;$('sqlOut').innerHTML='<div class="loading-card"><div class="spinner" aria-hidden="true"></div><div class="loading-text"><b>Translating query with '+escapeHtml(profileLabel)+'</b><div class="progress"><div></div></div></div></div>';try{const data=await api('/api/v1/nl_sql',{trajectory_id:tid,question:question,profile_id:profileId});const translation=data.translation||{},execution=translation.execution||{},operator=translation.semantic_operator||{};$('sqlInput').value=translation.sql||'';$('sqlMeta').textContent=execution.verified?'verified '+execution.response_model:'SQL translated';$('sqlOut').innerHTML='<div class="view-empty"><b>SQL ready for review.</b><br><span class="sql-translation-detail">'+escapeHtml(modelExecutionMessage(execution,translation.model))+'</span><br><span class="muted sql-translation-detail">'+escapeHtml(translation.reason||'Click Run SQL to execute the generated statement.')+'</span>'+((operator.operator)?'<br><span class="muted sql-translation-detail">Semantic operator: '+escapeHtml(operator.operator)+' ('+escapeHtml(operator.lotus_alias||'')+')</span>':'')+'</div>';}catch(err){$('sqlMeta').textContent='translation error';$('sqlOut').innerHTML='<div class="view-empty"><b>Natural-language translation failed</b><br>'+escapeHtml(err.message)+'</div>';}finally{setBusyControls(false);}}
 
 function renderFailurePatterns(data) {
   const rows = Array.isArray(data.content) ? data.content : [];
@@ -1954,20 +2181,136 @@ function renderRlDataset(data) {
   bindViewBranchSelector('rl_dataset');
 }
 
+function semanticOperatorDefinition(alias) {
+  const definitions = {
+    sem_agg: {
+      description: 'A semantic aggregation operator. It evaluates a natural-language aggregation expression over a relation and produces aggregate values for each input group.',
+      input: 'relation R(group_key, value_1, ..., value_n)',
+      languageExpression: 'Aggregate the values in each group according to <aggregation criterion>.',
+      output: 'relation A(group_key, aggregate_value)',
+    },
+    sem_map: {
+      description: 'A semantic projection operator. It applies a natural-language expression to each input row and derives one or more output attributes.',
+      input: 'relation R(row_id, attribute_1, ..., attribute_n)',
+      languageExpression: 'Derive <semantic attribute> from each input row.',
+      output: 'relation M(row_id, attribute_1, ..., attribute_n, derived_attribute)',
+    },
+    sem_join: {
+      description: 'A semantic join operator. It evaluates a natural-language predicate for candidate row pairs from two relations and retains or annotates matching pairs.',
+      input: 'left relation L(left_row_id, ...), right relation R(right_row_id, ...)',
+      languageExpression: 'Determine whether each candidate pair satisfies <semantic predicate>.',
+      output: 'relation J(left_row_id, right_row_id, match_label[, score])',
+    },
+    sem_cluster_by: {
+      description: 'A semantic grouping operator. It assigns rows to groups according to semantic equivalence or similarity defined by a natural-language expression.',
+      input: 'relation R(row_id, attributes...)',
+      languageExpression: 'Group rows that are semantically equivalent under <grouping criterion>.',
+      output: 'relation C(cluster_id, row_id[, cluster_label])',
+    },
+    sem_topk: {
+      description: 'A semantic ranking operator. It scores candidate rows against a natural-language criterion, orders them by that score, and retains the highest-ranked rows.',
+      input: 'relation R(row_id, attributes...)',
+      languageExpression: 'Rank rows by <semantic relevance criterion> and retain the top k.',
+      output: 'relation T(row_id, rank, score)',
+    },
+  };
+  return definitions[alias] || {
+    description: 'A semantic relational operator that evaluates a natural-language expression over one or more input relations.',
+    input: 'one or more input relations',
+    languageExpression: 'Evaluate <semantic expression>.',
+    output: 'an output relation',
+  };
+}
+
+function bindSemanticOperatorDetails() {
+  document.querySelectorAll('.semantic-statement-operator').forEach(button => {
+    button.onclick = () => {
+      const detail = button.closest('.execution-step')?.querySelector('.semantic-operator-detail');
+      if (!detail) return;
+      const expanded = button.getAttribute('aria-expanded') === 'true';
+      button.setAttribute('aria-expanded', String(!expanded));
+      detail.hidden = expanded;
+    };
+  });
+}
+
+function renderSemanticStatement(statement, alias) {
+  const source = String(statement || '').trim();
+  const position = source.indexOf(alias);
+  if (position < 0) return escapeHtml(source);
+  const before = escapeHtml(source.slice(0, position));
+  const after = escapeHtml(source.slice(position + alias.length));
+  return `${before}<button type="button" class="semantic-statement-operator" title="Show ${escapeHtml(alias)} explanation" aria-expanded="false">${escapeHtml(alias)}</button>${after}`;
+}
+
+function appendViewExecutionPlan(plan, executeLabel = '') {
+  if (!plan || !Array.isArray(plan.operators) || !$('out')) return;
+  const steps = plan.operators.map((operator, index) => {
+    const semantic = String(operator.kind || '').toUpperCase() === 'SEMANTIC';
+    const semanticAlias = String(operator.lotus_alias || 'sem_op').toLowerCase();
+    const kind = `<span class="execution-kind">${escapeHtml(operator.kind || 'SQL')}</span>`;
+    const definition = semanticOperatorDefinition(semanticAlias);
+    const semanticDetail = semantic ? `<aside class="semantic-operator-detail" hidden>
+      <p>${escapeHtml(definition.description)}</p>
+      <dl><dt>input</dt><dd>${escapeHtml(definition.input)}</dd><dt>language expression</dt><dd>${escapeHtml(definition.languageExpression)}</dd><dt>output</dt><dd>${escapeHtml(definition.output)}</dd></dl>
+    </aside>` : '';
+    const stepClass = String(operator.kind || 'SQL').toLowerCase();
+    return `<div class="execution-flow-item"><div class="execution-step ${stepClass}">
+      <div class="execution-step-head"><span class="execution-step-number">${index + 1}</span>${kind}<span class="execution-step-label">${escapeHtml(operator.label || 'Operation')}</span></div>
+      <code class="execution-statement">${semantic ? renderSemanticStatement(operator.statement, semanticAlias) : escapeHtml(operator.statement || '')}</code>
+      ${semanticDetail}
+    </div></div>`;
+  }).join('');
+  const execute = executeLabel ? `<button id="executeViewPlan" class="small-btn">${escapeHtml(executeLabel)}</button>` : '';
+  const footer = execute ? `<div class="view-execution-plan-foot">${execute}</div>` : '';
+  $('out').insertAdjacentHTML('beforeend', `<section class="view-execution-plan"><div class="execution-flow">${steps}</div>${footer}</section>`);
+  bindSemanticOperatorDetails();
+}
+
+function renderViewExecution(plan, view) {
+  clearHighlight();
+  renderMetrics(null);
+  setOutput('');
+  appendViewExecutionPlan(plan, 'Excute');
+  $('executeViewPlan').onclick = () => {
+    if (!globalBusy && currentView === view) loadView();
+  };
+}
+
 function renderView(view, data) {
   clearHighlight();
-  if (view === 'current_prompt') return renderContextAssembly(data);
-  if (view === 'summary') return renderCompressionSummary(data);
-  if (view === 'context_budget') return renderContextBudget(data);
-  if (view === 'failure_patterns') return renderFailurePatterns(data);
-  if (view === 'success_patterns') return renderSuccessPatterns(data);
-  if (view === 'repair_strategies') return renderRepairStrategies(data);
-  if (view === 'semantic_repair_judgments') return renderSemanticJudgments(data);
-  if (view === 'learned_skills') return renderLearnedSkills(data);
-  if (view === 'skill_library') return renderSkillLibrary(data);
-  if (view === 'skill_application_trace') return renderSkillApplicationTrace(data);
-  if (view === 'rl_dataset') return renderRlDataset(data);
-  $('out').innerHTML = '<div class="view-empty">This view has no dashboard presentation.</div>';
+  if (view === 'current_prompt') renderContextAssembly(data);
+  else if (view === 'summary') renderCompressionSummary(data);
+  else if (view === 'context_budget') renderContextBudget(data);
+  else if (view === 'failure_patterns') renderFailurePatterns(data);
+  else if (view === 'success_patterns') renderSuccessPatterns(data);
+  else if (view === 'repair_strategies') renderRepairStrategies(data);
+  else if (view === 'semantic_repair_judgments') renderSemanticJudgments(data);
+  else if (view === 'learned_skills') renderLearnedSkills(data);
+  else if (view === 'skill_library') renderSkillLibrary(data);
+  else if (view === 'skill_application_trace') renderSkillApplicationTrace(data);
+  else if (view === 'rl_dataset') renderRlDataset(data);
+  else $('out').innerHTML = '<div class="view-empty">This view has no dashboard presentation.</div>';
+}
+
+async function showViewExecution() {
+  const tid = getTid(); if (!tid || !currentView) return;
+  const requestedView = currentView;
+  const seq = ++viewRequestSeq;
+  setBusyControls(true);
+  setLoadingOutput(requestedView, selectedViewBranch(requestedView));
+  try {
+    const plan = await api('/api/v1/view_execution', {view_name: requestedView});
+    if (seq !== viewRequestSeq || currentView !== requestedView) return;
+    renderViewExecution(plan, requestedView);
+  } catch (err) {
+    if (seq === viewRequestSeq) showError(err.message);
+  } finally {
+    if (seq === viewRequestSeq) {
+      clearLoadingElapsedTimer();
+      setBusyControls(false);
+    }
+  }
 }
 
 async function loadView(options = {}) {
@@ -2046,8 +2389,19 @@ function displayVersionTimestamp(value) {
   const zone = match[3] === 'Z' || match[3] === '+00:00' ? ' UTC' : (match[3] ? ` UTC${match[3]}` : '');
   return `${match[1]} ${match[2]}${zone}`;
 }
-function versionStat(label, value, kind, icon) {
-  return `<div class="context-stat version-stat ${kind}"><div class="version-stat-content"><svg class="version-stat-icon" viewBox="0 0 24 24" aria-hidden="true">${icon}</svg><div class="version-stat-value"><b>${escapeHtml(value)}</b><span>${escapeHtml(label)}</span></div></div></div>`;
+function versionStat(label, value, kind, icon, sectionId, sectionLabel) {
+  return `<div class="context-stat version-stat ${kind}"><div class="version-stat-content"><svg class="version-stat-icon" viewBox="0 0 24 24" aria-hidden="true">${icon}</svg><div class="version-stat-value"><b>${escapeHtml(value)}</b><span>${escapeHtml(label)}</span></div><button type="button" class="version-stat-database-button" aria-label="Show ${escapeHtml(sectionLabel)}" title="Show ${escapeHtml(sectionLabel)}" aria-expanded="false" data-section-label="${escapeHtml(sectionLabel)}" onclick="toggleVersionSection('${escapeHtml(sectionId)}', this)"><svg class="version-stat-database-icon" viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="5" rx="7" ry="3"></ellipse><path d="M5 5v7c0 1.7 3.1 3 7 3s7-1.3 7-3V5M5 12v7c0 1.7 3.1 3 7 3s7-1.3 7-3v-7"></path></svg></button></div></div>`;
+}
+function toggleVersionSection(sectionId, trigger) {
+  const section = $(sectionId);
+  if (!section) return;
+  const show = section.hidden;
+  section.hidden = !show;
+  const label = trigger?.dataset.sectionLabel || 'section';
+  trigger?.setAttribute('aria-expanded', String(show));
+  trigger?.setAttribute('aria-label', `${show ? 'Hide' : 'Show'} ${label}`);
+  trigger?.setAttribute('title', `${show ? 'Hide' : 'Show'} ${label}`);
+  if (show) section.scrollIntoView({behavior:'smooth', block:'nearest'});
 }
 function renderVersionControl(data) {
   const branches = data.branches || [];
@@ -2071,13 +2425,13 @@ function renderVersionControl(data) {
     <button class="small-btn" aria-label="Highlight version event ${escapeHtml(e.event_id || '')}" onclick='highlightGraph([${JSON.stringify(e.event_id)}], [])'>Highlight</button>
   </div>`).join('') || '<div class="view-empty">No version lifecycle events yet. Hook snapshots and Agent decisions will appear here.</div>';
   $('versionOut').innerHTML = `<div class="context-stat-grid version-summary">
-    ${versionStat('branches', branches.length, 'branches', '<circle cx="6" cy="5" r="2"></circle><circle cx="18" cy="12" r="2"></circle><circle cx="6" cy="19" r="2"></circle><path d="M8 6.3 16 10.7M16 13.3 8 17.7"></path>')}
-    ${versionStat('snapshots', snapshots.length, 'snapshots', '<rect x="4" y="5" width="16" height="14" rx="2"></rect><path d="M8 5v5h8V5M8 15h8"></path>')}
-    ${versionStat('version events', events.length, 'events', '<path d="M3 12a9 9 0 1 0 3-6.7"></path><path d="M3 4v5h5M12 7v5l3 2"></path>')}
+    ${versionStat('branches', branches.length, 'branches', '<circle cx="6" cy="5" r="2"></circle><circle cx="18" cy="12" r="2"></circle><circle cx="6" cy="19" r="2"></circle><path d="M8 6.3 16 10.7M16 13.3 8 17.7"></path>', 'versionBranchesSection', 'Branches')}
+    ${versionStat('snapshots', snapshots.length, 'snapshots', '<rect x="4" y="5" width="16" height="14" rx="2"></rect><path d="M8 5v5h8V5M8 15h8"></path>', 'versionSnapshotsSection', 'Snapshots')}
+    ${versionStat('version events', events.length, 'events', '<path d="M3 12a9 9 0 1 0 3-6.7"></path><path d="M3 4v5h5M12 7v5l3 2"></path>', 'versionHistorySection', 'Version History')}
   </div>
-  <div class="version-section"><h3>Branches</h3><div class="table-wrap"><table class="version-table"><thead><tr><th>Branch</th><th>Base Event</th><th>Head Event</th><th>Latest Snapshot</th><th></th></tr></thead><tbody>${branchRows}</tbody></table></div></div>
-  <div class="version-section"><h3>Snapshots</h3><div class="table-wrap"><table class="version-table"><thead><tr><th>Snapshot</th><th>Branch</th><th>Checkpoint Event</th><th>Message</th><th></th></tr></thead><tbody>${snapshotRows}</tbody></table></div></div>
-  <div class="version-section"><h3>Version History</h3><div class="version-timeline">${lifecycle}</div></div>`;
+  <div id="versionBranchesSection" class="version-section version-branches-section" hidden><h3>Branches</h3><div class="table-wrap"><table class="version-table"><thead><tr><th>Branch</th><th>Base Event</th><th>Head Event</th><th>Latest Snapshot</th><th></th></tr></thead><tbody>${branchRows}</tbody></table></div></div>
+  <div id="versionSnapshotsSection" class="version-section version-snapshots-section" hidden><h3>Snapshots</h3><div class="table-wrap"><table class="version-table"><thead><tr><th>Snapshot</th><th>Branch</th><th>Checkpoint Event</th><th>Message</th><th></th></tr></thead><tbody>${snapshotRows}</tbody></table></div></div>
+  <div id="versionHistorySection" class="version-section version-history-section" hidden><h3>Version History</h3><div class="version-timeline">${lifecycle}</div></div>`;
 }
 async function loadVersionControl() {
   const tid = getTid(); if (!tid) return;
@@ -2094,7 +2448,7 @@ document.querySelectorAll('.tabs button').forEach(btn => btn.onclick = () => {
     $('sqlInput').value = sql;
     $('sqlMeta').textContent = 'SQL updated';
   }
-  loadView();
+  showViewExecution();
 });
 $('runSql').onclick=()=>{if(!globalBusy)runSqlQuery();};$('runNaturalLanguage').onclick=()=>{if(!globalBusy)runNaturalLanguageQuery();};$('sqlInput').addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter'&&!globalBusy){e.preventDefault();runSqlQuery();}});$('nlQuestion').addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter'&&!globalBusy){e.preventDefault();runNaturalLanguageQuery();}});
 function setRightPanel(mode) {

@@ -39,7 +39,11 @@ def test_failure_patterns_cover_all_branches_and_contextql_relations():
 
                 sql = db.query_sql(
                     trajectory_id,
-                    "SELECT branch_id FROM failure_patterns ORDER BY branch_id",
+                    "SELECT json_extract(pattern.value, '$.branch_id') AS branch_id "
+                    "FROM materialized_views AS view "
+                    "JOIN json_each(view.content_json) AS pattern "
+                    "WHERE view.trajectory_id=:trajectory_id AND view.branch_id=:branch_id "
+                    "AND view.view_name='failure_patterns' ORDER BY branch_id",
                 )
                 assert [row["branch_id"] for row in sql["rows"]] == ["main", "repair"]
             finally:

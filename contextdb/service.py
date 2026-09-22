@@ -38,6 +38,11 @@ class ContextDB:
         self.store = SQLiteStore(root)
         self.vector_index = SQLiteVectorIndex(self.store.db_path)
 
+    def close(self) -> None:
+        """Release SQLite handles for short-lived scripts and tests."""
+        self.vector_index.close()
+        self.store.close()
+
     def create_trajectory(self, title: str, agent_id: str = "unknown-agent", source_id: str = "unknown-source", metadata: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         tid = new_id("traj")
         traj = Trajectory(trajectory_id=tid, title=title, agent_id=agent_id, source_id=source_id, metadata=metadata or {})
@@ -200,6 +205,7 @@ class ContextDB:
                 **trajectory,
                 "event_count": len(events),
                 "branch_count": len(self._branches(trajectory_id)),
+                "snapshot_count": len(self._snapshots(trajectory_id)),
                 "tool_call_count": sum(entry["call_count"] for entry in tools.values()),
                 "tools": tool_rows(tools),
                 "associated_skills": list(visible_skills.values()),
@@ -332,7 +338,10 @@ class ContextDB:
         return event
 
     def _all_events(self, trajectory_id: str) -> List[Dict[str, Any]]:
-        return sorted(list(self.store.scan_prefix(f"trajectories/{trajectory_id}/events")), key=lambda e: e.get("timestamp", ""))
+        rows = self.store.conn.execute(
+            "SELECT * FROM events WHERE trajectory_id=? ORDER BY timestamp,event_id", (trajectory_id,)
+        ).fetchall()
+        return [self.store._event(row) for row in rows if self.store._event(row) is not None]
 
     def _event_map(self, trajectory_id: str) -> Dict[str, Dict[str, Any]]:
         return {e["event_id"]: e for e in self._all_events(trajectory_id)}
@@ -353,12 +362,144 @@ class ContextDB:
         return reachable
 
     def list_events(self, trajectory_id: str, branch_id: Optional[str] = None) -> List[Dict[str, Any]]:
-        events = self._all_events(trajectory_id)
         if not branch_id:
-            return events
-        branch = self.get_branch(trajectory_id, branch_id)
-        reachable = self._reachable_event_ids(trajectory_id, branch.get("head_event_id"))
-        return [e for e in events if e.get("event_id") in reachable]
+            return self._all_events(trajectory_id)
+        rows = self.store.conn.execute(
+            """WITH RECURSIVE reachable(event_id) AS (
+                 SELECT head_event_id FROM branches
+                  WHERE trajectory_id=:trajectory_id AND branch_id=:branch_id AND head_event_id IS NOT NULL
+                 UNION
+                 SELECT edge.parent_event_id FROM event_edges AS edge
+                 JOIN reachable ON edge.child_event_id=reachable.event_id
+                  WHERE edge.trajectory_id=:trajectory_id
+               )
+               SELECT event.* FROM events AS event
+               JOIN reachable ON reachable.event_id=event.event_id
+               WHERE event.trajectory_id=:trajectory_id
+               ORDER BY event.timestamp,event.event_id""",
+            {"trajectory_id": trajectory_id, "branch_id": branch_id},
+        ).fetchall()
+        return [self.store._event(row) for row in rows if self.store._event(row) is not None]
+
+    def _branch_tool_result_contexts(
+        self,
+        trajectory_id: str,
+        outcome: str,
+        branch_id: Optional[str] = None,
+    ) -> List[Dict[str, Any]]:
+        """Return branch-owned tool results with SQL-derived causal neighbors.
+
+        A branch's visible history is still its event-DAG ancestry, but the
+        filtering and predecessor/successor association belong in SQLite rather
+        than in repeated Python list scans.  The returned IDs are resolved to
+        event objects by callers only when they need the flexible JSON payload.
+        """
+        if outcome == "failure":
+            status_predicate = "current.status IN ('failed','error','timeout')"
+        elif outcome == "success":
+            status_predicate = "current.status='ok'"
+        else:
+            raise ValueError(f"unsupported tool-result outcome: {outcome}")
+        rows = self.store.conn.execute(
+            f"""WITH RECURSIVE source_branches(branch_id,head_event_id) AS (
+                   SELECT branch_id,head_event_id FROM branches
+                   WHERE trajectory_id=:trajectory_id
+                     AND (:branch_id IS NULL OR branch_id=:branch_id)
+                 ), reachable(view_branch_id,event_id) AS (
+                   SELECT branch_id,head_event_id FROM source_branches
+                   WHERE head_event_id IS NOT NULL
+                   UNION
+                   SELECT reachable.view_branch_id,edge.parent_event_id
+                   FROM event_edges AS edge
+                   JOIN reachable ON edge.child_event_id=reachable.event_id
+                   WHERE edge.trajectory_id=:trajectory_id
+                 ), visible AS (
+                   SELECT reachable.view_branch_id,event.*,
+                     ROW_NUMBER() OVER (
+                       PARTITION BY reachable.view_branch_id
+                       ORDER BY event.timestamp,event.event_id
+                     ) AS event_rank
+                   FROM reachable
+                   JOIN events AS event ON event.event_id=reachable.event_id
+                   WHERE event.trajectory_id=:trajectory_id
+                 )
+                 SELECT current.view_branch_id,current.event_id,current.branch_id,
+                   (SELECT previous.event_id FROM visible AS previous
+                    WHERE previous.view_branch_id=current.view_branch_id
+                      AND previous.event_rank<current.event_rank
+                      AND previous.event_type='tool_call'
+                    ORDER BY previous.event_rank DESC LIMIT 1) AS tool_call_event_id,
+                   (SELECT previous.event_id FROM visible AS previous
+                    WHERE previous.view_branch_id=current.view_branch_id
+                      AND previous.event_rank<current.event_rank
+                      AND previous.event_type='assistant_message'
+                    ORDER BY previous.event_rank DESC LIMIT 1) AS assistant_event_id,
+                   CASE WHEN current.status='ok' THEN NOT EXISTS (
+                     SELECT 1 FROM events AS earlier
+                     WHERE earlier.trajectory_id=:trajectory_id
+                       AND earlier.branch_id=current.branch_id
+                       AND earlier.event_type='tool_result' AND earlier.status='ok'
+                       AND (earlier.timestamp<current.timestamp OR
+                            (earlier.timestamp=current.timestamp AND earlier.event_id<current.event_id))
+                   ) ELSE 0 END AS is_first_success_on_branch
+                 FROM visible AS current
+                 WHERE current.branch_id=current.view_branch_id
+                   AND current.event_type='tool_result' AND {status_predicate}
+                 ORDER BY current.timestamp,current.event_id""",
+            {"trajectory_id": trajectory_id, "branch_id": branch_id},
+        ).fetchall()
+        return [dict(row) for row in rows]
+
+    def _context_candidate_event_ids(self, trajectory_id: str, branch_id: str) -> Dict[str, List[str]]:
+        """Select Context Assembly's relational candidates in SQLite.
+
+        Vector memory retrieval, semantic summarization, truncation, and the
+        final priority-budget pass intentionally remain outside SQL.
+        """
+        rows = self.store.conn.execute(
+            """WITH RECURSIVE reachable(event_id) AS (
+                   SELECT head_event_id FROM branches
+                   WHERE trajectory_id=:trajectory_id AND branch_id=:branch_id
+                     AND head_event_id IS NOT NULL
+                   UNION
+                   SELECT edge.parent_event_id FROM event_edges AS edge
+                   JOIN reachable ON edge.child_event_id=reachable.event_id
+                   WHERE edge.trajectory_id=:trajectory_id
+                 ), visible AS (
+                   SELECT event.* FROM events AS event
+                   JOIN reachable ON reachable.event_id=event.event_id
+                   WHERE event.trajectory_id=:trajectory_id
+                 ), ranked AS (
+                   SELECT event_id,event_type,
+                     ROW_NUMBER() OVER (ORDER BY timestamp DESC,event_id DESC) AS recency_rank,
+                     ROW_NUMBER() OVER (
+                       PARTITION BY event_type ORDER BY timestamp DESC,event_id DESC
+                     ) AS type_recency_rank
+                   FROM visible
+                 )
+                 SELECT 'current_task' AS segment_id,event_id,1 AS item_order
+                 FROM ranked WHERE event_type='user_message' AND type_recency_rank=1
+                 UNION ALL
+                 SELECT 'recent_causal_trace',event_id,recency_rank
+                 FROM ranked WHERE recency_rank<=:recent_limit
+                 UNION ALL
+                 SELECT 'matched_skills',event_id,type_recency_rank
+                 FROM ranked WHERE event_type='skill_recommendation' AND type_recency_rank<=:skill_limit
+                 ORDER BY segment_id,item_order""",
+            {
+                "trajectory_id": trajectory_id,
+                "branch_id": branch_id,
+                "recent_limit": RECENT_CAUSAL_EVENT_LIMIT,
+                "skill_limit": 3,
+            },
+        ).fetchall()
+        result = {"current_task": [], "recent_causal_trace": [], "matched_skills": []}
+        for row in rows:
+            result[row["segment_id"]].append(row["event_id"])
+        # The SQL rank is newest-first; render causal context chronologically.
+        result["recent_causal_trace"].reverse()
+        result["matched_skills"].reverse()
+        return result
 
     def get_branch(self, trajectory_id: str, branch_id: str) -> Dict[str, Any]:
         obj = self.store.get_object(uris.branch_key(trajectory_id, branch_id))
@@ -462,7 +603,336 @@ class ContextDB:
         # _semantic_summary owns profile-scoped summary materialization.
         if view_name != "summary":
             self.store.put_object(uris.view_key(trajectory_id, branch_id, view_name), view_dict)
+        view_dict["execution_plan"] = self._view_execution_plan(view_name)
         return view_dict
+
+    def describe_view_execution(self, view_name: str) -> Dict[str, Any]:
+        """Return a view plan without reading, materializing, or summarizing data."""
+        return self._view_execution_plan(view_name)
+
+    @staticmethod
+    def _semantic_operator(
+        operator: str,
+        lotus_alias: str,
+        input_relation: str,
+        langex: str,
+        output_relation: str,
+    ) -> Dict[str, str]:
+        """Describe an LLM operation as a first-class semantic relation."""
+        return {
+            "operator": operator,
+            "lotus_alias": lotus_alias,
+            "input_relation": input_relation,
+            "langex": langex,
+            "output_relation": output_relation,
+        }
+
+    @classmethod
+    def _view_execution_plan(cls, view_name: str) -> Dict[str, Any]:
+        """Expose the relational/semantic operators behind each dashboard view."""
+        trajectory_scope = """SELECT event.*
+FROM events AS event
+WHERE event.trajectory_id=:trajectory_id
+ORDER BY event.timestamp,event.event_id;"""
+        branch_scope = """WITH RECURSIVE reachable(event_id) AS (
+  SELECT head_event_id FROM branches
+  WHERE trajectory_id=:trajectory_id AND branch_id=:branch_id AND head_event_id IS NOT NULL
+  UNION
+  SELECT edge.parent_event_id
+  FROM event_edges AS edge JOIN reachable ON edge.child_event_id=reachable.event_id
+  WHERE edge.trajectory_id=:trajectory_id
+)
+SELECT event.* FROM events AS event JOIN reachable ON reachable.event_id=event.event_id
+WHERE event.trajectory_id=:trajectory_id ORDER BY event.timestamp,event.event_id;"""
+        recent_causal_window = """WITH RECURSIVE reachable(event_id) AS (
+  SELECT head_event_id FROM branches
+  WHERE trajectory_id=:trajectory_id AND branch_id=:branch_id AND head_event_id IS NOT NULL
+  UNION
+  SELECT edge.parent_event_id
+  FROM event_edges AS edge JOIN reachable ON edge.child_event_id=reachable.event_id
+  WHERE edge.trajectory_id=:trajectory_id
+), ranked_events AS (
+  SELECT event.*, ROW_NUMBER() OVER (ORDER BY event.timestamp DESC,event.event_id DESC) AS recency_rank
+  FROM events AS event JOIN reachable ON reachable.event_id=event.event_id
+  WHERE event.trajectory_id=:trajectory_id
+)
+SELECT * FROM ranked_events WHERE recency_rank<=:recent_causal_event_limit
+ORDER BY timestamp,event_id;"""
+        context_segments = """WITH RECURSIVE reachable(event_id) AS (
+  SELECT head_event_id FROM branches
+  WHERE trajectory_id=:trajectory_id AND branch_id=:branch_id AND head_event_id IS NOT NULL
+  UNION
+  SELECT edge.parent_event_id FROM event_edges AS edge
+  JOIN reachable ON edge.child_event_id=reachable.event_id
+  WHERE edge.trajectory_id=:trajectory_id
+), visible_events AS (
+  SELECT event.* FROM events AS event JOIN reachable ON reachable.event_id=event.event_id
+  WHERE event.trajectory_id=:trajectory_id
+), current_task AS (
+  SELECT event_id,payload_json FROM visible_events WHERE event_type='user_message'
+  ORDER BY timestamp DESC,event_id DESC LIMIT 1
+), branch_state AS (
+  SELECT branch_id,head_event_id FROM branches
+  WHERE trajectory_id=:trajectory_id AND branch_id=:branch_id
+), recent_window AS (
+  SELECT event_id,payload_json,timestamp FROM visible_events
+  ORDER BY timestamp DESC,event_id DESC LIMIT :recent_causal_event_limit
+), matched_skills AS (
+  SELECT event_id,payload_json FROM visible_events WHERE event_type='skill_recommendation'
+  ORDER BY timestamp DESC,event_id DESC LIMIT :matched_skill_limit
+)
+SELECT 'current_task' AS segment_id,1 AS priority,payload_json AS text,event_id AS source_event_id FROM current_task
+UNION ALL SELECT 'branch_state',2,branch_id || ':' || head_event_id,NULL FROM branch_state
+UNION ALL SELECT 'recent_causal_window',3,payload_json,event_id FROM recent_window
+UNION ALL SELECT 'matched_skill',4,payload_json,event_id FROM matched_skills
+ORDER BY priority;"""
+        budget_pack = """WITH prioritized AS (
+  SELECT *, SUM(token_cost) OVER (ORDER BY priority) AS cumulative_tokens
+  FROM context_segments
+)
+SELECT segment_id,priority,token_cost,
+  CASE WHEN cumulative_tokens<=:token_budget THEN 'included'
+       WHEN cumulative_tokens-token_cost<:token_budget THEN 'truncated'
+       ELSE 'omitted' END AS selection_status
+FROM prioritized ORDER BY priority;"""
+        materialize = """INSERT INTO materialized_views(
+  object_key,trajectory_id,branch_id,view_name,content_json,source_events_json,created_at,metadata_json,event_count
+) VALUES (:object_key,:trajectory_id,:branch_id,:view_name,:content_json,:source_events_json,CURRENT_TIMESTAMP,:metadata_json,:event_count)
+ON CONFLICT(object_key) DO UPDATE SET content_json=excluded.content_json,source_events_json=excluded.source_events_json,
+  created_at=excluded.created_at,metadata_json=excluded.metadata_json,event_count=excluded.event_count;"""
+
+        failed_tool_results = """WITH branch_events AS (
+  SELECT event.*, ROW_NUMBER() OVER (PARTITION BY event.branch_id ORDER BY event.timestamp,event.event_id) AS event_rank
+  FROM events AS event WHERE event.trajectory_id=:trajectory_id
+)
+SELECT failed.event_id AS failure_event_id,failed.branch_id,failed.payload_json AS failed_result,
+  preceding.event_id AS preceding_event_id,preceding.payload_json AS preceding_action
+FROM branch_events AS failed
+LEFT JOIN branch_events AS preceding
+  ON preceding.branch_id=failed.branch_id AND preceding.event_rank=failed.event_rank-1
+WHERE failed.event_type='tool_result'
+  AND (json_extract(failed.payload_json,'$.ok')=0
+       OR lower(failed.payload_json) LIKE '%error%'
+       OR lower(failed.payload_json) LIKE '%failed%');"""
+        successful_tool_results = """WITH branch_events AS (
+  SELECT event.*, ROW_NUMBER() OVER (PARTITION BY event.branch_id ORDER BY event.timestamp,event.event_id) AS event_rank
+  FROM events AS event WHERE event.trajectory_id=:trajectory_id
+)
+SELECT success.event_id AS success_event_id,success.branch_id,success.payload_json AS successful_result,
+  preceding.event_id AS preceding_event_id,preceding.payload_json AS successful_action
+FROM branch_events AS success
+LEFT JOIN branch_events AS preceding
+  ON preceding.branch_id=success.branch_id AND preceding.event_rank=success.event_rank-1
+WHERE success.event_type='tool_result' AND json_extract(success.payload_json,'$.ok')=1;"""
+        repair_candidates = """WITH failures AS (
+  SELECT event_id,branch_id,timestamp,payload_json FROM events
+  WHERE trajectory_id=:trajectory_id AND event_type='tool_result'
+    AND (json_extract(payload_json,'$.ok')=0 OR lower(payload_json) LIKE '%error%')
+), successes AS (
+  SELECT event_id,branch_id,timestamp,payload_json FROM events
+  WHERE trajectory_id=:trajectory_id AND event_type='tool_result' AND json_extract(payload_json,'$.ok')=1
+)
+SELECT failure.event_id AS failure_event_id,success.event_id AS repair_event_id,
+  failure.branch_id AS failure_branch_id,success.branch_id AS repair_branch_id,
+  failure.payload_json AS failure_result,success.payload_json AS repair_result
+FROM failures AS failure JOIN successes AS success
+  ON success.timestamp>=failure.timestamp
+WHERE EXISTS (
+  SELECT 1 FROM branches AS repair_branch
+  WHERE repair_branch.trajectory_id=:trajectory_id
+    AND repair_branch.branch_id=success.branch_id
+);"""
+        semantic_judgment_cache = """SELECT object_key,content_json,source_events_json,metadata_json,created_at
+FROM materialized_views
+WHERE trajectory_id=:trajectory_id AND view_name='semantic_repair_judgments'
+ORDER BY created_at DESC;"""
+        learned_skill_relation = """WITH judgment_views AS (
+  SELECT content_json FROM materialized_views
+  WHERE trajectory_id=:trajectory_id AND view_name='semantic_repair_judgments'
+), accepted_pairs AS (
+  SELECT value AS repair_pair FROM judgment_views,json_each(judgment_views.content_json,'$.content')
+  WHERE json_extract(value,'$.label') IN ('likely_repair','partial_repair')
+    AND json_extract(value,'$.recommended')=1
+)
+SELECT repair_pair FROM accepted_pairs;"""
+        skill_library_relation = """WITH learned_skill_views AS (
+  SELECT object_key,content_json,created_at FROM materialized_views
+  WHERE trajectory_id=:trajectory_id AND view_name='learned_skills'
+), skill_rows AS (
+  SELECT json_extract(value,'$.skill_id') AS skill_id,value,created_at
+  FROM learned_skill_views,json_each(learned_skill_views.content_json,'$.content')
+), latest_skill AS (
+  SELECT *,ROW_NUMBER() OVER (PARTITION BY skill_id ORDER BY created_at DESC) AS row_rank FROM skill_rows
+)
+SELECT skill_id,value AS skill_json FROM latest_skill WHERE row_rank=1;"""
+        skill_application_relation = """WITH relevant_events AS (
+  SELECT event_id,event_type,branch_id,timestamp,payload_json
+  FROM events
+  WHERE trajectory_id=:trajectory_id
+    AND event_type IN ('skill_match','skill_recommendation','skill_decision','tool_call','tool_result')
+), correlated_events AS (
+  SELECT event.*,COALESCE(json_extract(event.payload_json,'$.skill_match_event_id'),
+    json_extract(event.payload_json,'$.recommendation_event_id'),event.event_id) AS application_ref
+  FROM relevant_events AS event
+)
+SELECT * FROM correlated_events ORDER BY timestamp,event_id;"""
+        rl_transition_relation = """WITH RECURSIVE reachable(event_id) AS (
+  SELECT head_event_id FROM branches
+  WHERE trajectory_id=:trajectory_id AND branch_id=:branch_id AND head_event_id IS NOT NULL
+  UNION SELECT edge.parent_event_id FROM event_edges AS edge
+  JOIN reachable ON edge.child_event_id=reachable.event_id WHERE edge.trajectory_id=:trajectory_id
+), visible_events AS (
+  SELECT event.*,ROW_NUMBER() OVER (ORDER BY event.timestamp,event.event_id) AS event_rank
+  FROM events AS event JOIN reachable ON reachable.event_id=event.event_id WHERE event.trajectory_id=:trajectory_id
+)
+SELECT action.event_id AS action_event_id,action.branch_id,action.payload_json AS action,
+  state.event_id AS state_event_id,state.payload_json AS state
+FROM visible_events AS action
+LEFT JOIN visible_events AS state ON state.event_rank BETWEEN action.event_rank-3 AND action.event_rank-1
+WHERE action.event_type='assistant_message'
+ORDER BY action.event_rank,state.event_rank;"""
+        rl_reward_relation = """WITH action_outcomes AS (
+  SELECT action.event_id AS action_event_id,
+    (SELECT result.payload_json FROM events AS result
+     WHERE result.trajectory_id=:trajectory_id AND result.branch_id=action.branch_id
+       AND result.event_type='tool_result' AND result.timestamp>=action.timestamp
+     ORDER BY result.timestamp,result.event_id LIMIT 1) AS next_tool_result
+  FROM events AS action WHERE action.trajectory_id=:trajectory_id AND action.event_type='assistant_message'
+)
+SELECT action_event_id,CASE json_extract(next_tool_result,'$.ok')
+  WHEN 1 THEN 1 WHEN 0 THEN -1 ELSE 0 END AS reward_hint FROM action_outcomes;"""
+
+        def semantic(label: str, spec: Dict[str, str]) -> Dict[str, str]:
+            return {
+                "kind": "SEMANTIC", "label": label, **spec,
+                "statement": f"{spec['lotus_alias']}(\n  {spec['input_relation']},\n  langex => '{spec['langex']}'\n) -> {spec['output_relation']}",
+            }
+
+        def relational(label: str, statement: str) -> Dict[str, str]:
+            """Present deterministic derived relations in SQL-style notation."""
+            return {"kind": "SQL", "label": label, "statement": statement}
+
+        branch_scoped_views = {"summary", "current_prompt", "context_budget", "memory", "failures", "rl_dataset"}
+        scope_label = "Branch-visible event relation" if view_name in branch_scoped_views else "Trajectory event relation"
+        scope_statement = branch_scope if view_name in branch_scoped_views else trajectory_scope
+        operators: List[Dict[str, str]] = [{"kind": "SQL", "label": scope_label, "statement": scope_statement}]
+        if view_name == "summary":
+            operators.append(semantic("Trajectory-prefix digest", cls._semantic_operator(
+                "SemAgg", "sem_agg", "earlier_events(event_id, event_type, text, command, preview)",
+                "Produce a factual compact digest of {{event_type}}, {{text}}, {{command}}, and {{preview}}.",
+                "summary, key_facts, open_items",
+            )))
+        if view_name in {"current_prompt", "context_budget"}:
+            operators.append({"kind": "SQL", "label": "Context candidate selection", "statement": """WITH RECURSIVE reachable(event_id) AS ( ... branch ancestry ... ),
+visible AS (SELECT event.* FROM events JOIN reachable USING(event_id)),
+ranked AS (SELECT event_id,event_type,ROW_NUMBER() OVER (ORDER BY timestamp DESC,event_id DESC) AS recency_rank FROM visible)
+SELECT latest_user_message, recent_events, latest_skill_recommendations FROM ranked;"""})
+            operators.append(semantic("Historical-prefix compression", cls._semantic_operator(
+                "SemAgg", "sem_agg", "earlier_events(event_id, event_type, text, command, preview)",
+                "Compress the earlier completed prefix into factual context, preserving key facts and open items.",
+                "earlier_trajectory_digest(summary, key_facts, open_items)",
+            )))
+            operators.append({"kind": "SQL", "label": "Budget allocation", "statement": """WITH context_segments AS (
+  SELECT segment_id,priority,token_cost FROM assembled_context_segments
+), prioritized AS (
+  SELECT *,SUM(token_cost) OVER (ORDER BY priority) AS cumulative_tokens
+  FROM context_segments
+)
+SELECT segment_id,priority,token_cost,
+  CASE WHEN cumulative_tokens<=:token_budget THEN 'included'
+       WHEN cumulative_tokens-token_cost<:token_budget THEN 'truncated'
+       ELSE 'omitted' END AS selection_status
+FROM prioritized ORDER BY priority;"""})
+        if view_name == "failure_patterns":
+            operators.append({"kind": "SQL", "label": "Per-branch causal failure relation", "statement": """WITH RECURSIVE reachable(view_branch_id,event_id) AS ( ... each branch head and ancestry ... ),
+visible AS (SELECT event.*,ROW_NUMBER() OVER (PARTITION BY view_branch_id ORDER BY timestamp,event_id) AS event_rank FROM ...)
+SELECT failed result plus nearest preceding tool_call and assistant_message
+FROM visible WHERE event_type='tool_result' AND status IN ('failed','error','timeout');"""})
+            operators.append(semantic("Failure-cause projection", cls._semantic_operator(
+                "SemProj", "sem_map", "failed_tool_results(failed_tool, failed_command, error_signature, preceding_action)",
+                "Classify the reusable likely cause from {{failed_tool}}, {{failed_command}}, {{error_signature}}, and {{preceding_action}}.",
+                "likely_cause",
+            )))
+        if view_name == "success_patterns":
+            operators.append({"kind": "SQL", "label": "Per-branch causal success relation", "statement": """WITH RECURSIVE reachable(view_branch_id,event_id) AS ( ... each branch head and ancestry ... ),
+visible AS (SELECT event.*,ROW_NUMBER() OVER (PARTITION BY view_branch_id ORDER BY timestamp,event_id) AS event_rank FROM ...)
+SELECT successful result plus nearest preceding tool_call, assistant_message, and first-success-on-branch flag
+FROM visible WHERE event_type='tool_result' AND status='ok';"""})
+        if view_name == "repair_strategies":
+            operators.append({"kind": "SQL", "label": "Per-branch failure and success relations", "statement": """WITH RECURSIVE source_branches(branch_id,head_event_id) AS (
+  SELECT branch_id,head_event_id FROM branches
+  WHERE trajectory_id=:trajectory_id
+), reachable(view_branch_id,event_id) AS (
+  SELECT branch_id,head_event_id FROM source_branches WHERE head_event_id IS NOT NULL
+  UNION
+  SELECT reachable.view_branch_id,edge.parent_event_id
+  FROM event_edges AS edge JOIN reachable ON edge.child_event_id=reachable.event_id
+  WHERE edge.trajectory_id=:trajectory_id
+), visible AS (
+  SELECT reachable.view_branch_id,event.* FROM reachable
+  JOIN events AS event ON event.event_id=reachable.event_id
+  WHERE event.trajectory_id=:trajectory_id
+)
+SELECT * FROM visible
+WHERE branch_id=view_branch_id AND event_type='tool_result'
+  AND status IN ('failed','error','timeout','ok')
+ORDER BY timestamp,event_id;"""})
+            operators.append(relational("Structural repair-link evaluation", """WITH failure_success_pairs AS (SELECT * FROM failures JOIN successes ON success.timestamp>=failure.timestamp),
+structural_links AS (SELECT pair.* FROM failure_success_pairs AS pair WHERE same_branch_first_success OR branch_base_event_ancestry OR rollback_snapshot_ancestry)
+SELECT *, command_variant_evidence FROM structural_links;"""))
+        if view_name == "semantic_repair_judgments":
+            operators.append(relational("Structural repair candidates", """WITH structural_repair_candidates AS (
+  SELECT * FROM repair_links WHERE primary_rule IS NOT NULL
+) SELECT * FROM structural_repair_candidates;"""))
+            operators.append(semantic("Failure-repair semantic join", cls._semantic_operator(
+                "SemJoin", "sem_join", "failure_patterns AS failure JOIN repair_candidates AS repair",
+                "Does {{repair.command}} semantically repair {{failure.failed_command}} with {{failure.error_signature}}?",
+                "repair_label, confidence, reason",
+            )))
+        if view_name == "learned_skills":
+            operators.append(relational("Recommended repair-pair selection", """SELECT * FROM semantic_repair_judgments
+WHERE enabled=TRUE AND error IS NULL
+  AND label IN ('likely_repair','partial_repair')
+  AND recommended_for_skill=TRUE;"""))
+            operators.append(semantic("Failure-trigger clustering", cls._semantic_operator(
+                "SemClusterBy", "sem_cluster_by", "accepted_repair_pairs(failed_tool, normalized_signature, likely_cause)",
+                "Cluster semantically equivalent failure triggers using {{failed_tool}}, {{normalized_signature}}, and {{likely_cause}}.",
+                "skill_trigger_groups",
+            )))
+            operators.append(semantic("Recommended-action clustering", cls._semantic_operator(
+                "SemClusterBy", "sem_cluster_by", "accepted_repair_pairs(successful_action, strategy, outcome)",
+                "Cluster semantically equivalent {{successful_action}}, {{strategy}}, and {{outcome}} into reusable repairs.",
+                "recommended_actions, action_groups",
+            )))
+        if view_name == "skill_library":
+            operators.append(relational("Latest learned-skill materialization", """WITH skill_rows AS (
+  SELECT json_extract(value,'$.skill_id') AS skill_id,value,created_at
+  FROM materialized_views,json_each(content_json,'$.content')
+  WHERE trajectory_id=:trajectory_id AND view_name='learned_skills'
+), ranked AS (
+  SELECT *,ROW_NUMBER() OVER (PARTITION BY skill_id ORDER BY created_at DESC) AS row_rank FROM skill_rows
+) SELECT skill_id,value FROM ranked WHERE row_rank=1;"""))
+        if view_name == "skill_application_trace":
+            operators.append(relational("Skill application correlation", """WITH skill_lifecycle AS (
+  SELECT * FROM events WHERE trajectory_id=:trajectory_id
+    AND event_type IN ('skill_match','skill_recommendation','skill_decision','tool_call','tool_result','assistant_message')
+), correlated AS (
+  SELECT *,COALESCE(json_extract(refs_json,'$.skill_match_event_id'),json_extract(refs_json,'$.skill_id'),event_id) AS application_ref
+  FROM skill_lifecycle
+) SELECT * FROM correlated ORDER BY timestamp,event_id;"""))
+        if view_name == "rl_dataset":
+            operators.append(relational("Action-state transition extraction", """WITH ranked_events AS (
+  SELECT event.*,ROW_NUMBER() OVER (ORDER BY timestamp,event_id) AS event_rank FROM visible_events
+), actions AS (SELECT * FROM ranked_events WHERE event_type='assistant_message')
+SELECT action.*,state.event_id AS state_event_id
+FROM actions AS action LEFT JOIN ranked_events AS state
+  ON state.event_rank BETWEEN action.event_rank-3 AND action.event_rank-1;"""))
+            operators.append(relational("Outcome-derived reward", """SELECT action_event_id,
+  CASE first_tool_result_status WHEN 'ok' THEN 1
+    WHEN 'failed' THEN -1 WHEN 'error' THEN -1 WHEN 'timeout' THEN -1 ELSE 0 END AS reward_hint
+FROM action_outcomes;"""))
+        operators.append({"kind": "SQL", "label": "View materialization", "statement": materialize})
+        return {"engine": "SQLite", "view_name": view_name, "operators": operators}
 
     def _semantic_summary(
         self,
@@ -496,6 +966,11 @@ class ContextDB:
                 "compression_ratio": 0.0,
                 "materialization": {"cache_hit": True, "generation_mode": "not_needed", "previous_covered_event_count": 0, "profile_id": judge.profile_id or None},
                 "llm": {"enabled": False, "profile_id": judge.profile_id or None, "provider": None, "model": None, "reason": "The complete trajectory fits in the recent causal window; no earlier prefix needs compression.", "error": None, "execution": {}},
+                "semantic_operator": self._semantic_operator(
+                    "SemAgg", "sem_agg", "earlier_events(event_type, text, command, preview)",
+                    "Produce a factual compact digest of {{event_type}}, {{text}}, {{command}}, and {{preview}}.",
+                    "summary, key_facts, open_items",
+                ),
             }
         summary_key = uris.summary_view_key(trajectory_id, branch_id, profile_identity)
         cached_view = self.store.get_object(summary_key) or {}
@@ -562,6 +1037,11 @@ class ContextDB:
                 "error": result.get("error"),
                 "execution": result.get("execution") or result.get("_contextdb_execution") or {},
             },
+            "semantic_operator": self._semantic_operator(
+                "SemAgg", "sem_agg", "earlier_events(event_type, text, command, preview)",
+                "Produce a factual compact digest of {{event_type}}, {{text}}, {{command}}, and {{preview}}.",
+                "summary, key_facts, open_items",
+            ),
         }
         view = View(
             view_name="summary", trajectory_id=trajectory_id, branch_id=branch_id,
@@ -581,18 +1061,31 @@ class ContextDB:
     ) -> Dict[str, Any]:
         """Pack short-term, retrieved, and compressed context with provenance."""
         budget = max(1, int(token_budget or 2000))
-        recent_events = events[-RECENT_CAUSAL_EVENT_LIMIT:]
+        events_by_id = {event["event_id"]: event for event in events}
+        candidates = self._context_candidate_event_ids(trajectory_id, branch_id)
+        recent_events = [
+            events_by_id[event_id]
+            for event_id in candidates["recent_causal_trace"]
+            if event_id in events_by_id
+        ]
         summary = self._semantic_summary(
             trajectory_id, branch_id, events, profile_id=profile_id, force_refresh=refresh_summary,
         )
-        current_task_event = next((event for event in reversed(events) if event.get("event_type") == "user_message"), None)
+        current_task_event = next(
+            (events_by_id[event_id] for event_id in candidates["current_task"] if event_id in events_by_id),
+            None,
+        )
         current_task = self._payload_text(current_task_event) or "No user request has been recorded on this branch."
 
         task_ids = [current_task_event["event_id"]] if current_task_event else []
         recent_text = "\n".join(f"- {self._event_line(event, 420)}" for event in recent_events)
         branch_state = self._context_branch_state(trajectory_id, branch_id)
         memories = self._retrieve_context_memories(trajectory_id, events, current_task)
-        matched_skills = self._context_matched_skills(events)
+        matched_skills = self._context_matched_skills([
+            events_by_id[event_id]
+            for event_id in candidates["matched_skills"]
+            if event_id in events_by_id
+        ])
         memory_text = "\n".join(f"- {item['fact']}" for item in memories)
         skill_text = "\n".join(f"- {item['instruction']}" for item in matched_skills)
         digest_text = str(summary.get("summary") or "")
@@ -767,12 +1260,7 @@ class ContextDB:
             {"name": "event_edges", "columns": ["trajectory_id", "parent_event_id", "child_event_id"]},
             {"name": "branches", "columns": ["trajectory_id", "branch_id", "base_event_id", "head_event_id", "snapshot_id", "metadata_json"]},
             {"name": "snapshots", "columns": ["snapshot_id", "trajectory_id", "branch_id", "event_id", "message", "created_at"]},
-            {"name": "skills", "columns": ["skill_id", "trajectory_id", "name", "status", "trigger_json", "confidence_json", "highlight_event_ids"]},
-            {"name": "skill_evidence", "columns": ["skill_id", "trajectory_id", "failure_event_id", "success_event_id", "action_id", "primary_rule", "judgment_label"]},
-            {"name": "failure_patterns", "columns": ["trajectory_id", "failure_event_id", "branch_id", "failed_tool", "failed_command", "likely_cause", "error_signature", "normalized_signature", "preceding_action", "source_event_ids", "highlight_event_ids"]},
-            {"name": "repair_strategies", "columns": ["trajectory_id", "failure_event_id", "success_event_id", "failure_branch", "repair_branch", "tool", "command", "strategy", "outcome", "primary_rule", "why_linked", "evidence_json", "highlight_event_ids"]},
-            {"name": "learned_skills", "columns": ["skill_id", "trajectory_id", "name", "status", "trigger_json", "recommended_actions_json", "confidence_json", "highlight_event_ids"]},
-            {"name": "skill_application_trace", "columns": ["trajectory_id", "event_id", "branch_id", "event_type", "actor", "timestamp", "payload_json", "refs_json"]},
+            {"name": "materialized_views", "columns": ["object_key", "trajectory_id", "branch_id", "view_name", "content_json", "source_events_json", "created_at", "metadata_json", "event_count"], "notes": "Dashboard-derived data is stored here. Use json_each(content_json) to query rows from a materialized view after that view has been generated."},
         ]
         translation = SemanticRepairJudge(provider=provider, model=model, profile_id=profile_id).translate_contextql(question, relations)
         sql = str(translation.get("sql") or "").strip()
@@ -781,6 +1269,11 @@ class ContextDB:
         # Apply the same read-only grammar gate now, while deferring execution to /api/v1/sql.
         validated_sql = ContextQLExecutor(self)._validate(sql)
         translation["sql"] = validated_sql
+        translation["semantic_operator"] = self._semantic_operator(
+            "SemProj", "sem_map", "query_request(question, relations)",
+            "Translate {{question}} into exactly one read-only SQL statement over {{relations}}.",
+            "sql, reason",
+        )
         return {"schema_version": "contextql_nl_translation.v1", "trajectory_id": trajectory_id, "branch_id": resolved_branch_id, "question": question, "translation": translation}
 
     def natural_language_query(self, trajectory_id: str, question: str, branch_id: Optional[str] = None, profile_id: Optional[str] = None, provider: Optional[str] = None, model: Optional[str] = None) -> Dict[str, Any]:
@@ -1058,89 +1551,78 @@ class ContextDB:
         A branch-local filter prevents an inherited ancestor event from being
         emitted repeatedly for every descendant branch.
         """
-        events_by_branch = (
-            {branch_id: self.list_events(trajectory_id, branch_id)}
-            if branch_id is not None
-            else self._events_by_branch(trajectory_id)
-        )
+        events = self._event_map(trajectory_id)
         patterns = []
-        for current_branch_id, events in events_by_branch.items():
-            for i, event in enumerate(events):
-                if event.get("branch_id") != current_branch_id or not self._is_failed_tool_result(event):
-                    continue
-                tool_call = self._previous_event(events, i, "tool_call")
-                assistant = self._previous_event(events, i, "assistant_message")
-                repair_events = self._following_repair_events(events, i)
-                signature = self._result_signature(event)
-                normalized_signature = self._normalize_signature(signature)
-                result_tool = self._tool_name(event)
-                result_command = self._command_text(event) or self._command_text(tool_call)
-                cause_judgment = self._llm_likely_cause(
-                    trajectory_id,
-                    event,
-                    {
-                        "failed_tool": result_tool,
-                        "failed_command": result_command,
-                        "error_signature": signature,
-                        "normalized_signature": normalized_signature,
-                        "preceding_action": self._payload_text(assistant),
-                    },
-                )
-                patterns.append({
-                    "schema_version": "experience_mining.v2",
-                    "pattern_id": f"fp_{event['event_id'].split('_')[-1]}",
-                    "failure_event_id": event["event_id"],
-                    "branch_id": current_branch_id,
+        for context in self._branch_tool_result_contexts(trajectory_id, "failure", branch_id):
+            event = events.get(context["event_id"])
+            if not event:
+                continue
+            tool_call = events.get(context.get("tool_call_event_id"))
+            assistant = events.get(context.get("assistant_event_id"))
+            signature = self._result_signature(event)
+            normalized_signature = self._normalize_signature(signature)
+            result_tool = self._tool_name(event)
+            result_command = self._command_text(event) or self._command_text(tool_call)
+            cause_judgment = self._llm_likely_cause(
+                trajectory_id,
+                event,
+                {
                     "failed_tool": result_tool,
                     "failed_command": result_command,
                     "error_signature": signature,
                     "normalized_signature": normalized_signature,
                     "preceding_action": self._payload_text(assistant),
-                    "likely_cause": cause_judgment.get("likely_cause"),
-                    "likely_cause_judgment": cause_judgment,
-                    "repair_status": "not_evaluated",
-                    "repair_events_after_failure": repair_events,
-                    # The visible source of a failure pattern is its direct
-                    # non-failure action; the full causal chain remains below.
-                    "source_event_ids": self._compact_ids([tool_call]),
-                    "evidence_event_ids": self._compact_ids([assistant, tool_call, event]),
-                    "highlight_event_ids": self._compact_ids([event]),
-                })
+                },
+            )
+            patterns.append({
+                "schema_version": "experience_mining.v2",
+                "pattern_id": f"fp_{event['event_id'].split('_')[-1]}",
+                "failure_event_id": event["event_id"],
+                "branch_id": context["branch_id"],
+                "failed_tool": result_tool,
+                "failed_command": result_command,
+                "error_signature": signature,
+                "normalized_signature": normalized_signature,
+                "preceding_action": self._payload_text(assistant),
+                "likely_cause": cause_judgment.get("likely_cause"),
+                "likely_cause_judgment": cause_judgment,
+                "repair_status": "not_evaluated",
+                # The visible source of a failure pattern is its direct
+                # non-failure action; the full causal chain remains below.
+                "source_event_ids": self._compact_ids([tool_call]),
+                "evidence_event_ids": self._compact_ids([assistant, tool_call, event]),
+                "highlight_event_ids": self._compact_ids([event]),
+            })
         return patterns
 
     def success_patterns(self, trajectory_id: str) -> List[Dict[str, Any]]:
-        events_by_branch = self._events_by_branch(trajectory_id)
+        events = self._event_map(trajectory_id)
         patterns = []
-        for branch_id, events in events_by_branch.items():
-            for i, event in enumerate(events):
-                if event.get("branch_id") != branch_id:
-                    continue
-                if not self._is_success_tool_result(event):
-                    continue
-                tool_call = self._previous_event(events, i, "tool_call")
-                assistant = self._previous_event(events, i, "assistant_message")
-                is_first = self._is_first_success_on_branch(trajectory_id, branch_id, event["event_id"])
-                patterns.append({
-                    "schema_version": "experience_mining.v1",
-                    "pattern_id": f"sp_{event['event_id'].split('_')[-1]}",
-                    "success_event_id": event["event_id"],
-                    "branch_id": branch_id,
-                    "successful_tool": self._tool_name(event),
-                    "successful_command": self._command_text(event) or self._command_text(tool_call),
-                    "strategy": self._payload_text(assistant),
-                    "outcome": event.get("payload", {}).get("status"),
-                    "result_preview": event.get("payload", {}).get("preview", ""),
-                    "is_first_success_on_branch": is_first,
-                    "source_event_ids": self._compact_ids([tool_call]),
-                    "evidence_event_ids": self._compact_ids([assistant, tool_call, event]),
-                    "highlight_event_ids": self._compact_ids([event]),
-                })
+        for context in self._branch_tool_result_contexts(trajectory_id, "success"):
+            event = events.get(context["event_id"])
+            if not event:
+                continue
+            tool_call = events.get(context.get("tool_call_event_id"))
+            assistant = events.get(context.get("assistant_event_id"))
+            patterns.append({
+                "schema_version": "experience_mining.v1",
+                "pattern_id": f"sp_{event['event_id'].split('_')[-1]}",
+                "success_event_id": event["event_id"],
+                "branch_id": context["branch_id"],
+                "successful_tool": self._tool_name(event),
+                "successful_command": self._command_text(event) or self._command_text(tool_call),
+                "strategy": self._payload_text(assistant),
+                "outcome": event.get("payload", {}).get("status"),
+                "result_preview": event.get("payload", {}).get("preview", ""),
+                "is_first_success_on_branch": bool(context["is_first_success_on_branch"]),
+                "source_event_ids": self._compact_ids([tool_call]),
+                "evidence_event_ids": self._compact_ids([assistant, tool_call, event]),
+                "highlight_event_ids": self._compact_ids([event]),
+            })
         return patterns
 
     def repair_strategies(self, trajectory_id: str) -> List[Dict[str, Any]]:
-        failures = []
-        for branch in self._branches(trajectory_id):
-            failures.extend(self.failure_patterns(trajectory_id, branch["branch_id"]))
+        failures = self.failure_patterns(trajectory_id)
         successes = self.success_patterns(trajectory_id)
         events = self._event_map(trajectory_id)
         branches = {b["branch_id"]: b for b in self._branches(trajectory_id)}
@@ -1252,6 +1734,11 @@ class ContextDB:
                     "repair_candidate": candidate,
                     "structural_rule": candidate.get("primary_rule") or candidate.get("link_type"),
                     "judgment": judgment,
+                    "semantic_operator": self._semantic_operator(
+                        "SemJoin", "sem_join", "failure_patterns AS failure JOIN repair_candidates AS repair",
+                        "Does {{repair.command}} semantically repair {{failure.failed_command}} with {{failure.error_signature}}?",
+                        "repair_label, confidence, reason",
+                    ),
                     "highlight_event_ids": self._dedupe_ids([failure.get("failure_event_id"), candidate.get("success_event_id")]),
                 })
 
@@ -1332,6 +1819,11 @@ class ContextDB:
                     "confidence": group.get("confidence"),
                     "reason": group.get("reason") or failure_grouping.get("reason"),
                     "failure_event_ids": failure_ids,
+                    "semantic_operator": self._semantic_operator(
+                        "SemClusterBy", "sem_cluster_by", "failure_patterns(failed_tool, normalized_signature, likely_cause)",
+                        "Cluster failures that have semantically equivalent reusable repair triggers using {{failed_tool}}, {{normalized_signature}}, and {{likely_cause}}.",
+                        "failure_groups",
+                    ),
                 },
                 "recommended_actions": [],
                 "avoid_actions": [],
@@ -1390,6 +1882,11 @@ class ContextDB:
                 "reason": grouping.get("reason"),
                 "error": grouping.get("error"),
                 "unassigned_support_event_ids": grouping.get("unassigned_support_event_ids", []),
+                "semantic_operator": self._semantic_operator(
+                    "SemClusterBy", "sem_cluster_by", "accepted_repair_pairs(successful_action, strategy, outcome)",
+                    "Cluster semantically equivalent successful repair actions using {{successful_action}}, {{strategy}}, and {{outcome}}.",
+                    "action_groups",
+                ),
             }
             skill["recommended_actions"] = self._materialize_grouped_actions(grouping, support_events)
         return list(grouped.values())
@@ -1447,6 +1944,11 @@ class ContextDB:
                 "model": llm_match.get("model"),
                 "reason": llm_match.get("reason"),
                 "error": llm_match.get("error"),
+                "semantic_operator": self._semantic_operator(
+                    "SemOrderBy", "sem_topk", "learned_skills AS skill, input_failure AS failure",
+                    "Rank {{skill.trigger}} by semantic fit to {{failure.command}} and {{failure.error_signature}}.",
+                    "top_k matched skills",
+                ),
             },
             "matches": rows[:top_k],
             "materialized": bool(cached_views),
@@ -2194,7 +2696,14 @@ class ContextDB:
         if self._is_reusable_likely_cause_cache(cached, fingerprint, judge):
             return cached
         result = judge.classify_likely_cause(fingerprint)
+        result.pop("confidence", None)
+        result.pop("reason", None)
         result["input"] = fingerprint
+        result["semantic_operator"] = self._semantic_operator(
+            "SemProj", "sem_map", "failed_tool_results(failed_tool, failed_command, error_signature, preceding_action)",
+            "Classify the reusable likely cause from {{failed_tool}}, {{failed_command}}, {{error_signature}}, and {{preceding_action}}.",
+            "likely_cause",
+        )
         # Keep diagnostics, but allow a later configured/healthy LLM to retry unavailable or failed calls.
         metadata["likely_cause_judgment"] = result
         self.store.put_object(uris.event_key(trajectory_id, event["event_id"]), event)
