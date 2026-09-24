@@ -19,6 +19,7 @@
     main { display:grid; grid-template-columns: 760px minmax(0, 1fr); gap:16px; padding:16px; min-height: calc(100vh - 64px); }
     section { background:var(--panel); border:1px solid var(--line); border-radius:8px; min-width:0; }
     .panel-head { display:flex; justify-content:space-between; align-items:center; padding:12px 14px; border-bottom:1px solid var(--line); }
+    .dag-actions { display:flex; align-items:center; gap:10px; padding:10px 14px; border-top:1px solid var(--line); background:#fbfcfd; }
     .panel-head h2 { margin:0; color:#17324d; font-size:16px; font-weight:700; }
     .content { padding:14px; }
     .graph { position:relative; min-height:520px; overflow:hidden; background:linear-gradient(#fff, #f9fbfc); }
@@ -275,6 +276,7 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
     .timeline-body p { margin:4px 0; }
     .flow-meta { display:flex; flex-wrap:wrap; align-items:center; gap:4px; margin-top:6px; }
     .mode-btn.active { background:#2364aa; border-color:#2364aa; color:#fff; }
+    .hidden { display:none !important; }
     .page.hidden { display:none; }
     .global-page { display:block; padding:16px; min-height:calc(100vh - 64px); }
     .global-page > section { min-height:calc(100vh - 96px); }
@@ -413,7 +415,7 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
     .step-card pre { max-width:100%; max-height:none; white-space:pre-wrap; overflow:visible; overflow-wrap:anywhere; word-break:break-all; }
     .event-detail-table { width:100%; min-width:0; table-layout:fixed; border:1px solid var(--event-divider); border-radius:6px; overflow:hidden; background:transparent; }
     .event-detail-table th, .event-detail-table td { position:static; padding:8px 7px; background:transparent; }
-    .event-detail-table th { width:28%; color:var(--ink); font-size:11px; text-transform:none; letter-spacing:0; }
+    .event-detail-table th { width:15%; color:var(--ink); font-size:11px; text-transform:none; letter-spacing:0; }
     .event-detail-table td { min-width:0; overflow-wrap:anywhere; word-break:break-word; }
     .event-value-string { white-space:pre-wrap; line-height:1.45; }
     .event-value-null { color:var(--muted); font-style:italic; }
@@ -508,6 +510,24 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
 
     @media (max-width: 1200px) { main { grid-template-columns:1fr; } }
     @media (max-width: 900px) { main, .playback-layout { grid-template-columns:1fr; } input { min-width: 160px; width:100%; } header { height:auto; display:flex; gap:10px; align-items:flex-start; flex-direction:column; padding:12px; } h1 { width:100%; text-align:center; } .controls { width:100%; flex-wrap:wrap; justify-self:auto; } .playback-progress { flex-basis:100%; } }
+    /* Trajectory Overview dot graph */
+    .detail-toolbar { display:flex; flex-wrap:wrap; align-items:center; gap:10px; padding:10px 14px; border-top:1px solid var(--line); background:#fbfcfd; }
+    .detail-toolbar.hidden { display:none; }
+    .detail-toolbar .event-detail-tabs { flex:0 0 auto; }
+    .detail-toolbar .playback-progress { flex:1 1 200px; min-width:180px; }
+    .overview-graph { overflow:hidden; }
+    .node.dot-node { width:16px; height:16px; min-height:16px; padding:0; border:2px solid #fff; border-left:2px solid #fff; border-radius:50%; box-shadow:0 0 0 1px rgba(23,50,77,.18), 0 1px 3px rgba(23,50,77,.28); background:var(--gray); cursor:pointer; }
+    .node.dot-node .type, .node.dot-node .label, .node.dot-node .badge { display:none; }
+    .node.dot-node.selected { outline:3px solid #f0b429; outline-offset:2px; z-index:6; }
+    .node.dot-node.dimmed { opacity:.28; }
+    .event-detail-panel { position:absolute; width:420px; max-width:calc(100% - 24px); max-height:min(calc(100% - 24px), 420px); overflow:auto; z-index:20; }
+    .event-detail-panel.hidden { display:none; }
+    .event-detail-tabs { display:inline-flex; gap:4px; border:1px solid var(--line); border-radius:6px; padding:3px; background:#fbfcfd; }
+    .event-detail-tabs button { height:26px; padding:0 10px; border:0; border-radius:4px; background:transparent; color:#63758a; font-size:12px; font-weight:700; white-space:nowrap; }
+    .event-detail-tabs button.active { background:#2364aa; color:#fff; }
+    .event-detail-panel .step-card { position:relative; }
+    .event-detail-close { position:absolute; top:8px; right:8px; width:26px; height:26px; padding:0; border:0; border-radius:50%; background:rgba(255,255,255,.92); color:#315d89; font-size:18px; line-height:1; box-shadow:0 1px 3px rgba(23,50,77,.22); cursor:pointer; z-index:2; }
+    .event-detail-close:hover { background:#fff; }
   </style>
 </head>
 <body>
@@ -515,7 +535,6 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
     <h1>Agent ContextDB</h1>
     <div class="controls">
       <button id="globalMode" class="secondary mode-btn active">Global Overview</button>
-      <button id="traceMode" class="secondary mode-btn">Trajectory Playback</button>
       <button id="finalMode" class="secondary mode-btn">Trajectory Overview</button>
       <input id="tid" list="trajectorySuggestions" placeholder="trajectory_id" autocomplete="off">
       <datalist id="trajectorySuggestions"></datalist>
@@ -532,15 +551,27 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
         <span class="pill"><span class="legend-dot dot-tool_call"></span>tool call</span>
         <span class="pill"><span class="legend-dot dot-tool_result"></span>tool result</span>
         <span class="pill"><span class="legend-dot dot-skill_match"></span>skill match</span>
-        <span class="pill"><span class="legend-dot dot-skill_recommendation"></span>skill recommendation</span>
         <span class="pill"><span class="legend-dot dot-skill_decision"></span>skill decision</span>
+        <span class="pill"><span class="legend-dot dot-skill_recommendation"></span>skill recommendation</span>
         <span class="pill"><span class="legend-dot dot-version_snapshot_created"></span>snapshot</span>
         <span class="pill"><span class="legend-dot dot-version_repair_branch_suggested"></span>branch recommendation</span>
         <span class="pill"><span class="legend-dot dot-version_branch_created"></span>branch creation</span>
         <span class="pill"><span class="legend-dot dot-version_rollback_created"></span>rollback</span>
         <span class="pill"><span class="legend-dot dot-version_decision"></span>version decision</span>
       </div>
-      <div id="graph" class="graph"><svg id="edges" class="edges"></svg></div>
+      <div id="dagActions" class="dag-actions"><button id="allEventsBtn" class="small-btn secondary">Trajectory details</button></div>
+      <div id="detailToolbar" class="detail-toolbar hidden">
+        <button id="detailBack" class="small-btn secondary">← Back</button>
+        <div id="detailSeqTabs" class="event-detail-tabs" aria-label="Trajectory state">
+          <button id="detailSegment" class="active">Change</button>
+          <button id="detailComplete">History</button>
+        </div>
+        <div class="playback-progress"><input id="detailSlider" type="range" min="0" max="0" value="0"><span id="detailMeta" class="badge playback-step"></span></div>
+        <button id="detailPrev" class="small-btn">Prev</button>
+        <button id="detailPlay" class="small-btn">Play</button>
+        <button id="detailNext" class="small-btn">Next</button>
+      </div>
+      <div id="graph" class="graph overview-graph"><svg id="edges" class="edges"></svg><div id="eventDetailPanel" class="event-detail-panel hidden"></div></div>
     </section>
     <section>
       <div class="explorer-head">
@@ -592,38 +623,6 @@ ORDER BY timestamp;</textarea>
       </div>
     </section>
   </main>
-  <div id="tracePage" class="page playback-page hidden">
-    <section>
-      <div class="panel-head"><h2>Versioned Trajectory DAG</h2></div>
-      <div class="event-legend">
-        <span class="pill"><span class="legend-dot dot-system_event"></span>system event</span>
-        <span class="pill"><span class="legend-dot dot-user_message"></span>user message</span>
-        <span class="pill"><span class="legend-dot dot-assistant_message"></span>assistant message</span>
-        <span class="pill"><span class="legend-dot dot-tool_call"></span>tool call</span>
-        <span class="pill"><span class="legend-dot dot-tool_result"></span>tool result</span>
-        <span class="pill"><span class="legend-dot dot-skill_match"></span>skill match</span>
-        <span class="pill"><span class="legend-dot dot-skill_recommendation"></span>skill recommendation</span>
-        <span class="pill"><span class="legend-dot dot-skill_decision"></span>skill decision</span>
-        <span class="pill"><span class="legend-dot dot-version_snapshot_created"></span>snapshot</span>
-        <span class="pill"><span class="legend-dot dot-version_repair_branch_suggested"></span>branch recommendation</span>
-        <span class="pill"><span class="legend-dot dot-version_branch_created"></span>branch creation</span>
-        <span class="pill"><span class="legend-dot dot-version_rollback_created"></span>rollback</span>
-        <span class="pill"><span class="legend-dot dot-version_decision"></span>version decision</span>
-      </div>
-      <div class="content playback-layout">
-        <div>
-          <div class="playback-controls">
-            <button id="stepPrev" class="small-btn">Prev</button>
-            <button id="stepNext" class="small-btn">Next</button>
-            <button id="stepPlay" class="small-btn">Play</button>
-            <div class="playback-progress"><input id="stepSlider" type="range" min="0" max="0" value="0"><span id="playbackMeta" class="badge playback-step">step 0 / 0</span></div>
-          </div>
-          <div id="playbackGraph" class="playback-graph"><svg id="playbackEdges" class="edges"></svg></div>
-        </div>
-        <div id="stepDetail" class="step-card"><h3>No trajectory loaded</h3><p class="muted">Load a trajectory, then step through its events.</p></div>
-      </div>
-    </section>
-  </div>
   <main id="globalPage" class="page global-page">
     <section>
       <div id="globalOut" class="global-overview-content"><div class="view-empty">Load the global view to inspect all trajectories and the shared Skill Library.</div></div>
@@ -639,9 +638,12 @@ let contextBudgetRange = null;
 let graphData = null;
 let viewRequestSeq = 0;
 let globalBusy = false;
-let playbackStep = 0;
-let playbackTimer = null;
-let playbackDetailRequest = 0;
+let overviewView = 'dag';
+let overviewNode = null;
+let overviewSeqKind = 'segment';
+let overviewStep = 0;
+let overviewCardEvent = null;
+let overviewTimer = null;
 let llmProfiles = [];
 let defaultLlmProfileId = '';
 let summaryProfileId = '';
@@ -651,8 +653,6 @@ let globalGraphActiveNodeId = '';
 let globalSkillDetailIndex = null;
 const BRANCH_SCOPED_VIEWS = new Set(['current_prompt', 'summary', 'rl_dataset']);
 const viewBranches = {current_prompt: 'main', summary: 'main', rl_dataset: 'main'};
-const GRAPH_NODE_WIDTH = 210;
-const SAME_ROW_EDGE_OFFSET = 36;
 const GRAPH_PAYLOAD_VALUE_LIMIT = 96;
 async function api(path, body) {
   const opts = body ? {method:'POST', body:JSON.stringify(body)} : {cache:'no-store'};
@@ -897,10 +897,10 @@ function renderPlaybackValue(value, depth = 0) {
   return `<span class="event-value-scalar">${escapeHtml(value)}</span>`;
 }
 function renderPlaybackTable(entries, depth = 0) {
-  const rows = entries.map(([key, value]) => `<tr><th scope="row">${escapeHtml(key)}</th><td>${renderPlaybackValue(value, depth)}</td></tr>`).join('');
+  const rows = entries.map(([key, value]) => `<tr><th scope="row">${escapeHtml(key)}</th><td>${key === 'timestamp' ? escapeHtml(displayVersionTimestamp(value)) : renderPlaybackValue(value, depth)}</td></tr>`).join('');
   return `<table class="event-detail-table"><tbody>${rows}</tbody></table>`;
 }
-const PLAYBACK_CARD_OMITTED_FIELDS = new Set(['trajectory_id', 'event_type', 'event_id', 'id', 'branch_id', 'actor', 'type', 'label']);
+const PLAYBACK_CARD_OMITTED_FIELDS = new Set(['trajectory_id', 'event_type', 'event_id', 'id', 'branch_id', 'actor', 'type', 'label', 'snapshots', 'is_branch_head', 'branch_heads', 'branch_head', 'version_operation']);
 function playbackDetailEntries(event) {
   return Object.entries(event).filter(([key]) => !PLAYBACK_CARD_OMITTED_FIELDS.has(key));
 }
@@ -909,186 +909,595 @@ function renderPlaybackEventCard(event) {
   const meta = `<span class="pill">${escapeHtml(event.branch_id || 'main')}</span><span class="event-id">${escapeHtml(event.id || '')}</span>`;
   return `<div class="step-card-head"><div><h3 class="event-type-chip">${escapeHtml(displayEventType(eventPresentationType(event)))}</h3></div>${actor}</div><p class="step-card-meta">${meta}</p>${renderPlaybackTable(playbackDetailEntries(event))}`;
 }
-function renderPlaybackDetailLoading(event) {
-  const actor = event.actor ? `<span class="event-actor">actor: ${escapeHtml(event.actor)}</span>` : '';
-  const meta = `<span class="pill">${escapeHtml(event.branch_id || 'main')}</span><span class="event-id">${escapeHtml(event.id || '')}</span>`;
-  return `<div class="step-card-head"><div><h3 class="event-type-chip">${escapeHtml(displayEventType(eventPresentationType(event)))}</h3></div>${actor}</div><p class="step-card-meta">${meta}</p><p class="muted">Loading complete event payload...</p>`;
+const EVENT_DOT_COLORS = {
+  system_event: 'var(--system-event-accent)',
+  user_message: 'var(--blue)',
+  assistant_message: 'var(--violet)',
+  tool_call: 'var(--gold)',
+  tool_result: 'var(--green)',
+  memory_update: 'var(--teal)',
+  skill_match: 'var(--skill-match-accent)',
+  skill_recommendation: '#0284c7',
+  skill_decision: '#c2410c',
+  version_snapshot_created: '#0f9f92',
+  version_repair_branch_suggested: '#6f8f12',
+  version_branch_created: '#5b5bd6',
+  version_rollback_created: '#a63fa6',
+  version_decision: '#d14343',
+};
+const DOT_SIZE = 16;
+const DETAIL_DOT_RENDERED_SIZE = DOT_SIZE;
+const NS = 'http://www.w3.org/2000/svg';
+const BRANCH_COLORS = ['#2364aa', '#9a6b16', '#2f855a', '#6b46c1', '#b83232', '#087ea4', '#c2410c', '#0f9f92', '#5b5bd6', '#be185d'];
+const DAG_SEG = 150;
+const DAG_MAX_LANE_GAP = 180;
+const DAG_TOP = 60;
+const DAG_PAD = 64;
+const SERP_PAD = 48;
+const SERP_MIN_COL_GAP = 30;
+const SERP_MAX_COL_GAP = 320;
+const SERP_MAX_SEG = 200;
+const SERP_TARGET_H = 620;
+const TURN_BOW = 44;
+const REPAIR_TRACK_OFFSET = 40;
+const DETAIL_BRANCH_ROW_GAP = 72;
+const DETAIL_BRANCH_START_GAP = 108;
+let currentLanes = {};
+const markerCache = new Map();
+function detailHorizontalGap(canvasW) {
+  const usableWidth = Math.max(0, canvasW - 2 * SERP_PAD);
+  const branchCount = Math.max(1, new Set((graphData?.nodes || []).map(node => node.branch_id || 'main')).size);
+  return Math.min(132, Math.max(48, (usableWidth - Math.max(0, branchCount - 1) * 48) / (branchCount * 2)));
 }
-async function loadPlaybackEventDetail(summaryEvent) {
-  const tid = getTid();
-  const requestId = ++playbackDetailRequest;
-  if (!tid || !summaryEvent?.id) return;
-  try {
-    const detail = await api(`/api/v1/event?trajectory_id=${encodeURIComponent(tid)}&event_id=${encodeURIComponent(summaryEvent.id)}`);
-    if (requestId !== playbackDetailRequest) return;
-    $('stepDetail').className = `step-card ${playbackEventColorClass(detail)}`;
-    $('stepDetail').innerHTML = renderPlaybackEventCard(detail);
-  } catch (err) {
-    if (requestId !== playbackDetailRequest) return;
-    $('stepDetail').className = `step-card ${playbackEventColorClass(summaryEvent)}`;
-    $('stepDetail').innerHTML = `${renderPlaybackEventCard(summaryEvent)}<p class="muted">Complete event payload unavailable: ${escapeHtml(err.message)}</p>`;
+function eventById(id) { return graphData ? graphData.nodes.find(n => n.id === id) : null; }
+function nodeIndex(id) { return graphData?.nodeIndexMap?.[id] ?? -1; }
+function overviewKeptNodes() {
+  if (!graphData) return [];
+  const keep = new Map();
+  for (const b of graphData.branches) {
+    const branchEvents = graphData.nodes.filter(n => n.branch_id === b.branch_id);
+    if (branchEvents.length) keep.set(branchEvents[0].id, branchEvents[0]);
+    if (b.base_event_id) { const base = eventById(b.base_event_id); if (base) keep.set(base.id, base); }
+    if (b.head_event_id) { const head = eventById(b.head_event_id); if (head) keep.set(head.id, head); }
   }
+  for (const n of graphData.nodes) if (n.snapshots && n.snapshots.length) keep.set(n.id, n);
+  const kept = graphData.nodes.filter(n => keep.has(n.id));
+  return kept.length ? kept : graphData.nodes;
 }
-function estimatedNodeHeight(el) {
-  const label = el.querySelector('.label')?.textContent || '';
-  const visualLines = label.split('\n').reduce((count, line) => count + Math.max(1, Math.ceil(line.length / 22)), 0);
-  return 48 + visualLines * 17;
+function overviewPreviousNode(node) {
+  const i = nodeIndex(node.id);
+  const kept = overviewKeptNodes().filter(n => n.branch_id === node.branch_id);
+  let prev = null;
+  for (const k of kept) {
+    const ki = nodeIndex(k.id);
+    if (ki < i && (prev === null || ki > nodeIndex(prev.id))) prev = k;
+  }
+  if (prev) return prev;
+  const b = graphData.branches.find(x => x.branch_id === node.branch_id);
+  if (b && b.base_event_id) {
+    const base = eventById(b.base_event_id);
+    if (base && nodeIndex(base.id) < i) return base;
+  }
+  return null;
 }
-function measureNodeHeight(el) {
-  const rectHeight = el.getBoundingClientRect?.().height || 0;
-  const rendered = Math.max(el.scrollHeight || 0, rectHeight);
-  if (rectHeight > 0) return Math.max(72, Math.ceil(rendered));
-  return Math.max(72, estimatedNodeHeight(el));
+function overviewAncestors(nodeId) {
+  const parentMap = {};
+  for (const e of graphData.edges) {
+    if (e.kind === 'parent') (parentMap[e.target] ||= []).push(e.source);
+  }
+  const seen = new Set();
+  const stack = [nodeId];
+  while (stack.length) {
+    const id = stack.pop();
+    if (!id || seen.has(id)) continue;
+    seen.add(id);
+    for (const p of parentMap[id] || []) stack.push(p);
+  }
+  return seen;
 }
-function layoutRenderedNodes(nodes, elements, availableWidth = 860, preferredColumns = null, spreadColumns = true) {
-  const nodeWidth = 210;
-  const minColumnGap = 30;
-  const rowGap = 30;
-  const left = 32;
-  const top = 32;
-  const usableWidth = Math.max(nodeWidth, availableWidth - left * 2);
-  const automaticColumns = Math.floor((usableWidth + minColumnGap) / (nodeWidth + minColumnGap));
-  const columns = Math.max(1, Math.min(nodes.length || 1, preferredColumns || automaticColumns));
-  const minimumCanvasWidth = nodeWidth * columns + minColumnGap * Math.max(0, columns - 1);
-  const canvasWidth = spreadColumns ? Math.max(usableWidth, minimumCanvasWidth) : minimumCanvasWidth;
-  const columnGap = columns > 1 ? (spreadColumns ? Math.max(minColumnGap, (canvasWidth - nodeWidth * columns) / (columns - 1)) : minColumnGap) : 0;
-  const rowHeights = [];
-  nodes.forEach((n, i) => {
-    const row = Math.floor(i / columns);
-    rowHeights[row] = Math.max(rowHeights[row] || 0, measureNodeHeight(elements.get(n.id)));
-  });
-  const rowTops = [];
-  rowHeights.reduce((y, height, row) => {
-    rowTops[row] = y;
-    return y + height + rowGap;
-  }, top);
-  const positions = new Map();
-  nodes.forEach((n, i) => {
-    const row = Math.floor(i / columns);
-    positions.set(n.id, {x: left + (i % columns) * (nodeWidth + columnGap), y: rowTops[row], height: measureNodeHeight(elements.get(n.id))});
-  });
-  const totalHeight = top + rowHeights.reduce((sum, height) => sum + height + rowGap, 0) + 34;
-  const totalWidth = Math.max(availableWidth, left * 2 + nodeWidth * columns + columnGap * Math.max(0, columns - 1));
-  return {positions, totalHeight, totalWidth};
+function overviewSequencesFor(node) {
+  const completeIds = overviewAncestors(node.id);
+  const complete = graphData.nodes.filter(n => completeIds.has(n.id));
+  const prev = overviewPreviousNode(node);
+  const prevIds = prev ? overviewAncestors(prev.id) : new Set();
+  const segment = graphData.nodes.filter(n => completeIds.has(n.id) && !prevIds.has(n.id));
+  return { complete, segment, prev, index: nodeIndex(node.id) };
 }
-function createGraphNode(n, includeHead = false) {
+function branchLaneIndex(branchId) { return currentLanes[branchId] ?? 0; }
+function branchColor(branchId) { return BRANCH_COLORS[branchLaneIndex(branchId) % BRANCH_COLORS.length]; }
+function computeBranchLanes() {
+  const firstIndex = {};
+  graphData.nodes.forEach((n, i) => { if (n.branch_id && !(n.branch_id in firstIndex)) firstIndex[n.branch_id] = i; });
+  const branchIds = [...new Set(graphData.nodes.map(n => n.branch_id).filter(Boolean))];
+  branchIds.sort((a, b) => (firstIndex[a] ?? Infinity) - (firstIndex[b] ?? Infinity));
+  const lanes = {};
+  branchIds.forEach((bid, i) => { lanes[bid] = i; });
+  currentLanes = lanes;
+  return { lanes, branchIds };
+}
+function arrowMarkerId(edgesEl, color) {
+  const key = edgesEl.id + '|' + color;
+  if (markerCache.has(key)) return markerCache.get(key);
+  const id = `${edgesEl.id}-m${markerCache.size}`;
+  const marker = document.createElementNS(NS, 'marker');
+  marker.setAttribute('id', id);
+  marker.setAttribute('viewBox', '0 0 8 8');
+  marker.setAttribute('refX', '7');
+  marker.setAttribute('refY', '4');
+  marker.setAttribute('markerWidth', '7');
+  marker.setAttribute('markerHeight', '7');
+  marker.setAttribute('orient', 'auto');
+  const arrow = document.createElementNS(NS, 'path');
+  arrow.setAttribute('d', 'M 0 0 L 8 4 L 0 8 z');
+  arrow.setAttribute('fill', color);
+  marker.appendChild(arrow);
+  edgesEl.appendChild(marker);
+  markerCache.set(key, id);
+  return id;
+}
+function createDotNode(n) {
   const el = document.createElement('div');
   const presentationType = eventPresentationType(n);
-  el.className = `node ${presentationType}`;
+  el.className = 'node dot-node';
   el.dataset.eventId = n.id;
   el.dataset.branchId = n.branch_id || '';
-  el.style.left = '0px';
-  el.style.top = '0px';
-  el.style.visibility = 'hidden';
-  el.innerHTML = `<div class="type">${displayEventType(presentationType)}<span class="badge">${n.branch_id}</span>${includeHead && n.branch_head ? `<span class="badge">HEAD:${n.branch_head}</span>` : ''}${n.snapshots.length ? '<span class="badge">snapshot</span>' : ''}</div><div class="label"></div>`;
-  el.querySelector('.label').textContent = graphPayloadLabel(n);
+  el.style.background = EVENT_DOT_COLORS[presentationType] || 'var(--gray)';
+  el.title = `${displayEventType(presentationType)} · ${n.id}${n.branch_id ? ' · ' + n.branch_id : ''}\n${graphPayloadLabel(n)}`;
   return el;
 }
-function placeGraphNode(el, pos) {
-  el.style.left = pos.x + 'px';
-  el.style.top = pos.y + 'px';
-  el.style.visibility = 'visible';
+function drawArrowEdge(edgesEl, source, target, a, b, color) {
+  const dx = b.cx - a.cx, dy = b.cy - a.cy;
+  const len = Math.hypot(dx, dy) || 1;
+  const ux = dx / len, uy = dy / len;
+  const gap = DOT_SIZE / 2 + 2;
+  const line = document.createElementNS(NS, 'line');
+  line.setAttribute('x1', a.cx + ux * gap); line.setAttribute('y1', a.cy + uy * gap);
+  line.setAttribute('x2', b.cx - ux * gap); line.setAttribute('y2', b.cy - uy * gap);
+  line.dataset.source = source;
+  line.dataset.target = target;
+  line.setAttribute('stroke', color);
+  line.setAttribute('stroke-width', '2');
+  line.setAttribute('marker-end', `url(#${arrowMarkerId(edgesEl, color)})`);
+  edgesEl.appendChild(line);
 }
-function edgeEndpoints(source, target) {
-  const sameLevel = Math.abs(source.y - target.y) < 1;
-  if (sameLevel) {
-    const laneY = source.y + SAME_ROW_EDGE_OFFSET;
-    const sourceIsLeft = source.x <= target.x;
-    return {
-      x1: sourceIsLeft ? source.x + GRAPH_NODE_WIDTH : source.x,
-      y1: laneY,
-      x2: sourceIsLeft ? target.x : target.x + GRAPH_NODE_WIDTH,
-      y2: laneY,
-    };
+function drawOrthogonalEdge(edgesEl, source, target, a, b, color) {
+  const dx = b.cx - a.cx, dy = b.cy - a.cy;
+  if (Math.abs(dx) < 1 || Math.abs(dy) < 1) {
+    drawArrowEdge(edgesEl, source, target, a, b, color);
+    return;
   }
-
-  if (target.y > source.y) {
-    const targetIsLeft = target.x < source.x;
-    return {
-      x1: targetIsLeft ? source.x : source.x + GRAPH_NODE_WIDTH,
-      y1: source.y + source.height,
-      x2: target.x + GRAPH_NODE_WIDTH / 2,
-      y2: target.y,
-    };
-  }
-
-  const targetIsLeft = target.x < source.x;
-  return {
-    x1: targetIsLeft ? source.x : source.x + GRAPH_NODE_WIDTH,
-    y1: source.y,
-    x2: target.x + GRAPH_NODE_WIDTH / 2,
-    y2: target.y + target.height,
-  };
+  const gap = DOT_SIZE / 2 + 2;
+  const direction = dy > 0 ? 1 : -1;
+  const sourceY = a.cy + direction * gap;
+  const targetY = b.cy - direction * gap;
+  const middleY = (sourceY + targetY) / 2;
+  const path = document.createElementNS(NS, 'path');
+  path.setAttribute('d', `M ${a.cx} ${sourceY} L ${a.cx} ${middleY} L ${b.cx} ${middleY} L ${b.cx} ${targetY}`);
+  path.setAttribute('fill', 'none');
+  path.dataset.source = source;
+  path.dataset.target = target;
+  path.setAttribute('stroke', color);
+  path.setAttribute('stroke-width', '2');
+  path.setAttribute('marker-end', `url(#${arrowMarkerId(edgesEl, color)})`);
+  edgesEl.appendChild(path);
 }
-function addDagArrowMarkers(edges) {
-  const prefix = edges.id || 'dagEdges';
-  const definitions = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
-  [
-    ['event', '#9aa7b2'],
-    ['branch', '#9a6b16'],
-  ].forEach(([kind, color]) => {
-    const marker = document.createElementNS('http://www.w3.org/2000/svg', 'marker');
-    marker.setAttribute('id', `${prefix}-${kind}-arrow`);
-    marker.setAttribute('viewBox', '0 0 8 8');
-    marker.setAttribute('refX', '7');
-    marker.setAttribute('refY', '4');
-    marker.setAttribute('markerWidth', '7');
-    marker.setAttribute('markerHeight', '7');
-    marker.setAttribute('orient', 'auto');
-    const arrow = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    arrow.setAttribute('d', 'M 0 0 L 8 4 L 0 8 z');
-    arrow.setAttribute('fill', color);
-    marker.appendChild(arrow);
-    definitions.appendChild(marker);
+function drawCurveEdge(edgesEl, source, target, a, b, color, downward) {
+  const r = DOT_SIZE / 2 + 2;
+  const sign = downward ? 1 : -1;
+  const x1 = a.cx, y1 = a.cy + sign * r;
+  const x2 = b.cx, y2 = b.cy + sign * r;
+  const cy = y1 + sign * TURN_BOW;
+  const path = document.createElementNS(NS, 'path');
+  path.setAttribute('d', `M ${x1} ${y1} C ${x1} ${cy}, ${x2} ${cy}, ${x2} ${y2}`);
+  path.setAttribute('fill', 'none');
+  path.dataset.source = source;
+  path.dataset.target = target;
+  path.setAttribute('stroke', color);
+  path.setAttribute('stroke-width', '2');
+  path.setAttribute('marker-end', `url(#${arrowMarkerId(edgesEl, color)})`);
+  edgesEl.appendChild(path);
+}
+function drawVerticalTurnEdge(edgesEl, source, target, a, b, color) {
+  drawArrowEdge(edgesEl, source, target, a, b, color);
+}
+function drawForkEdge(edgesEl, source, target, a, b, color) {
+  drawArrowEdge(edgesEl, source, target, a, b, color);
+}
+function layoutLaneNodes(shownNodes, canvasW, seg = DAG_SEG, maxLaneGap = DAG_MAX_LANE_GAP) {
+  const byBranch = {};
+  shownNodes.forEach(n => { (byBranch[n.branch_id] ||= []).push(n); });
+  const { lanes } = computeBranchLanes();
+  const branchIds = Object.keys(byBranch);
+  branchIds.forEach(bid => byBranch[bid].sort((a, b) => nodeIndex(a.id) - nodeIndex(b.id)));
+  branchIds.sort((a, b) => nodeIndex(byBranch[a][0].id) - nodeIndex(byBranch[b][0].id));
+  const laneCount = Math.max(1, branchIds.length);
+  const laneGap = laneCount > 1 ? Math.min(maxLaneGap, (canvasW - 2 * DAG_PAD - DOT_SIZE) / (laneCount - 1)) : 0;
+  const positions = new Map();
+  const yOf = new Map();
+  const remaining = new Set(branchIds);
+  while (remaining.size) {
+    let progressed = false;
+    for (const bid of [...remaining]) {
+      const b = graphData.branches.find(x => x.branch_id === bid);
+      const baseId = b?.base_event_id;
+      const baseReady = !baseId || !eventById(baseId) || yOf.has(baseId);
+      if (!baseReady) continue;
+      const startY = baseId && yOf.has(baseId) ? yOf.get(baseId) + seg : DAG_TOP;
+      byBranch[bid].forEach((n, k) => {
+        const x = DAG_PAD + lanes[bid] * laneGap;
+        const y = startY + k * seg;
+        positions.set(n.id, { x, y, cx: x + DOT_SIZE / 2, cy: y + DOT_SIZE / 2, lane: lanes[bid] });
+        yOf.set(n.id, y);
+      });
+      remaining.delete(bid);
+      progressed = true;
+    }
+    if (!progressed) break;
+  }
+  remaining.forEach(bid => {
+    byBranch[bid].forEach((n, k) => {
+      const x = DAG_PAD + lanes[bid] * laneGap;
+      const y = DAG_TOP + k * seg;
+      positions.set(n.id, { x, y, cx: x + DOT_SIZE / 2, cy: y + DOT_SIZE / 2, lane: lanes[bid] });
+    });
   });
-  edges.appendChild(definitions);
+  let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+  for (const p of positions.values()) {
+    minX = Math.min(minX, p.x); maxX = Math.max(maxX, p.x);
+    minY = Math.min(minY, p.y); maxY = Math.max(maxY, p.y);
+  }
+  if (!positions.size) { minX = maxX = DAG_PAD; minY = maxY = DAG_TOP; }
+  return { positions, graphW: maxX - minX + DOT_SIZE, graphH: maxY - minY + DOT_SIZE, minX, minY };
 }
-function drawGraph(data) {
-  graphData = data;
+function laneEdges(nodes, includeForks = true) {
+  const edges = [];
+  const nodeSet = new Set(nodes.map(n => n.id));
+  const byBranch = {};
+  nodes.forEach(n => { (byBranch[n.branch_id] ||= []).push(n); });
+  for (const bid of Object.keys(byBranch)) {
+    const list = byBranch[bid].sort((a, b) => nodeIndex(a.id) - nodeIndex(b.id));
+    for (let k = 1; k < list.length; k++) edges.push({ source: list[k - 1].id, target: list[k].id, color: branchColor(bid), branch_id: bid });
+  }
+  if (includeForks) {
+    for (const e of graphData.edges) {
+      if (e.kind === 'branch' && nodeSet.has(e.source) && nodeSet.has(e.target)) {
+        edges.push({ source: e.source, target: e.target, color: branchColor(e.branch_id), branch_id: e.branch_id });
+      }
+    }
+  }
+  return edges;
+}
+function layoutCompactDetailNodes(seq, canvasW) {
+  const byBranch = {};
+  seq.forEach(node => { (byBranch[node.branch_id || 'main'] ||= []).push(node); });
+  computeBranchLanes();
+  const branchIds = Object.keys(byBranch).sort((a, b) => {
+    const firstA = Math.min(...byBranch[a].map(node => nodeIndex(node.id)));
+    const firstB = Math.min(...byBranch[b].map(node => nodeIndex(node.id)));
+    return firstA - firstB;
+  });
+  branchIds.forEach(branchId => byBranch[branchId].sort((a, b) => nodeIndex(a.id) - nodeIndex(b.id)));
+  const positions = new Map();
+  const yOf = new Map();
+  const usableWidth = Math.max(0, canvasW - 2 * SERP_PAD);
+  const columnGap = detailHorizontalGap(canvasW);
+  const maxSnakeColumns = Math.max(1, Math.floor(usableWidth / columnGap) + 1);
+  const placeSnake = (branchId, startY) => {
+    const nodes = byBranch[branchId] || [];
+    const columns = Math.max(1, Math.min(nodes.length, maxSnakeColumns));
+    const startX = SERP_PAD + (usableWidth - (columns - 1) * columnGap) / 2;
+    const lane = branchIds.indexOf(branchId);
+    nodes.forEach((node, index) => {
+      const row = Math.floor(index / columns);
+      const column = index % columns;
+      const snakeColumn = row % 2 === 0 ? column : columns - 1 - column;
+      const x = startX + snakeColumn * columnGap;
+      const y = startY + row * DETAIL_BRANCH_ROW_GAP;
+      positions.set(node.id, { x, y, cx: x + DOT_SIZE / 2, cy: y + DOT_SIZE / 2, lane });
+      yOf.set(node.id, y);
+    });
+    return nodes.length ? startY + Math.floor((nodes.length - 1) / columns) * DETAIL_BRANCH_ROW_GAP : startY;
+  };
+
+  // The main branch is the primary timeline: let it use the full canvas first.
+  // Descendant branches then receive independent full-width tracks below it.
+  const rootBranchId = byBranch.main ? 'main' : branchIds[0];
+  let nextBranchY = placeSnake(rootBranchId, SERP_PAD) + DETAIL_BRANCH_START_GAP;
+  const remaining = new Set(branchIds.filter(branchId => branchId !== rootBranchId));
+  while (remaining.size) {
+    let progressed = false;
+    for (const branchId of [...remaining]) {
+      const branch = graphData.branches.find(item => item.branch_id === branchId);
+      const baseId = branch?.base_event_id;
+      if (baseId && eventById(baseId) && !yOf.has(baseId)) continue;
+      const startY = Math.max(nextBranchY, baseId && yOf.has(baseId) ? yOf.get(baseId) + DETAIL_BRANCH_START_GAP : nextBranchY);
+      nextBranchY = placeSnake(branchId, startY) + DETAIL_BRANCH_START_GAP;
+      remaining.delete(branchId);
+      progressed = true;
+    }
+    if (!progressed) {
+      for (const branchId of remaining) nextBranchY = placeSnake(branchId, nextBranchY) + DETAIL_BRANCH_START_GAP;
+      break;
+    }
+  }
+  let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+  for (const p of positions.values()) {
+    minX = Math.min(minX, p.x); maxX = Math.max(maxX, p.x);
+    minY = Math.min(minY, p.y); maxY = Math.max(maxY, p.y);
+  }
+  if (!positions.size) { minX = maxX = SERP_PAD; minY = maxY = SERP_PAD; }
+  return { positions, graphW: maxX - minX + DOT_SIZE, graphH: maxY - minY + DOT_SIZE, minX, minY };
+}
+function layoutHistoryDetailNodes(seq, canvasW) {
+  const nodes = [...seq].sort((a, b) => nodeIndex(a.id) - nodeIndex(b.id));
+  const usableWidth = Math.max(0, canvasW - 2 * SERP_PAD);
+  const columnGap = detailHorizontalGap(canvasW);
+  const columns = Math.max(1, Math.min(nodes.length, Math.floor(usableWidth / columnGap) + 1));
+  const startX = SERP_PAD + (usableWidth - (columns - 1) * columnGap) / 2;
+  const positions = new Map();
+  nodes.forEach((node, index) => {
+    const row = Math.floor(index / columns);
+    const column = index % columns;
+    const snakeColumn = row % 2 === 0 ? column : columns - 1 - column;
+    const x = startX + snakeColumn * columnGap;
+    const y = SERP_PAD + row * DETAIL_BRANCH_ROW_GAP;
+    positions.set(node.id, { x, y, cx: x + DOT_SIZE / 2, cy: y + DOT_SIZE / 2, lane: 0, phase: 'history' });
+  });
+  let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+  for (const position of positions.values()) {
+    minX = Math.min(minX, position.x); maxX = Math.max(maxX, position.x);
+    minY = Math.min(minY, position.y); maxY = Math.max(maxY, position.y);
+  }
+  if (!positions.size) { minX = maxX = SERP_PAD; minY = maxY = SERP_PAD; }
+  return { positions, graphW: maxX - minX + DOT_SIZE, graphH: maxY - minY + DOT_SIZE, minX, minY };
+}
+function layoutTrajectoryDetailNodes(seq, canvasW) {
+  const byBranch = {};
+  seq.forEach(node => { (byBranch[node.branch_id || 'main'] ||= []).push(node); });
+  const branchIds = Object.keys(byBranch).sort((a, b) => nodeIndex(byBranch[a][0].id) - nodeIndex(byBranch[b][0].id));
+  branchIds.forEach(branchId => byBranch[branchId].sort((a, b) => nodeIndex(a.id) - nodeIndex(b.id)));
+  const rootBranchId = byBranch.main ? 'main' : branchIds[0];
+  const childBranchIds = branchIds.filter(branchId => branchId !== rootBranchId);
+  if (!childBranchIds.length) return layoutCompactDetailNodes(seq, canvasW);
+
+  const forkIndex = Math.min(...childBranchIds.map(branchId => {
+    const branch = graphData.branches.find(item => item.branch_id === branchId);
+    return nodeIndex(branch?.base_event_id);
+  }).filter(index => index >= 0));
+  if (!Number.isFinite(forkIndex)) return layoutCompactDetailNodes(seq, canvasW);
+
+  const rootNodes = byBranch[rootBranchId];
+  const prefixNodes = rootNodes.filter(node => nodeIndex(node.id) <= forkIndex);
+  const rootTrackNodes = rootNodes.filter(node => nodeIndex(node.id) > forkIndex);
+  const usableWidth = Math.max(0, canvasW - 2 * SERP_PAD);
+  const trackIds = [rootBranchId, ...childBranchIds];
+  const trackSnakeColumns = 3;
+  const trackSnakeGap = detailHorizontalGap(canvasW);
+  const maxSnakeColumns = Math.max(1, Math.floor(usableWidth / trackSnakeGap) + 1);
+  const positions = new Map();
+  const yOf = new Map();
+  const prefixColumns = Math.max(1, Math.min(prefixNodes.length, maxSnakeColumns));
+  const prefixGap = trackSnakeGap;
+  const prefixLeft = SERP_PAD + (usableWidth - (prefixColumns - 1) * prefixGap) / 2;
+  prefixNodes.forEach((node, index) => {
+    const row = Math.floor(index / prefixColumns);
+    const column = index % prefixColumns;
+    const snakeColumn = row % 2 === 0 ? column : prefixColumns - 1 - column;
+    const baseX = prefixLeft + snakeColumn * prefixGap;
+    const isTurnTarget = row > 0 && column === 0;
+    const turnSide = row % 2 === 0 ? -1 : 1;
+    const x = baseX;
+    const y = SERP_PAD + row * DETAIL_BRANCH_ROW_GAP;
+    const position = {x, y, cx:x + DOT_SIZE / 2, cy:y + DOT_SIZE / 2, lane:0, phase:'prefix'};
+    if (isTurnTarget) position.turnHeadX = baseX + DETAIL_DOT_RENDERED_SIZE / 2 + turnSide * (DOT_SIZE / 2 + 2);
+    positions.set(node.id, position);
+    yOf.set(node.id, y);
+  });
+  const prefixBottom = prefixNodes.length ? Math.max(...prefixNodes.map(node => yOf.get(node.id))) : SERP_PAD;
+  const trackSnakeSpan = trackSnakeGap * (trackSnakeColumns - 1);
+  const trackBandGap = trackIds.length > 1
+    ? Math.max(48, (usableWidth - trackIds.length * trackSnakeSpan) / (trackIds.length - 1))
+    : 0;
+  const trackTop = prefixBottom + DETAIL_BRANCH_START_GAP;
+  const placeTrack = (branchId, nodes, lane, startY) => {
+    const trackBandStart = SERP_PAD + lane * (trackSnakeSpan + trackBandGap);
+    let anchorX = trackIds.length === 1
+      ? canvasW / 2
+      : trackBandStart + (lane === trackIds.length - 1 ? trackSnakeSpan : 0);
+    if (branchId.startsWith('repair')) anchorX += REPAIR_TRACK_OFFSET;
+    const direction = lane === trackIds.length - 1 ? -1 : 1;
+    let previousPosition = null;
+    nodes.forEach((node, index) => {
+      let row = Math.floor(index / trackSnakeColumns);
+      const column = index % trackSnakeColumns;
+      const snakeColumn = row % 2 === 0 ? column : trackSnakeColumns - 1 - column;
+      let x = anchorX + direction * snakeColumn * trackSnakeGap;
+      let y = startY + row * DETAIL_BRANCH_ROW_GAP;
+      if (branchId.startsWith('rollback') && index === nodes.length - 1 && previousPosition) {
+        x = previousPosition.x;
+        y = previousPosition.y + DETAIL_BRANCH_ROW_GAP;
+        row = previousPosition.trackRow + 1;
+      }
+      const position = {
+        x, y, cx:x + DOT_SIZE / 2, cy:y + DOT_SIZE / 2, lane, phase:'track',
+        trackRow: row, trackTurnSide: row % 2 === 0 ? direction : -direction,
+      };
+      positions.set(node.id, position);
+      yOf.set(node.id, y);
+      previousPosition = position;
+    });
+  };
+  placeTrack(rootBranchId, rootTrackNodes, 0, trackTop);
+  const remaining = new Set(childBranchIds);
+  while (remaining.size) {
+    let progressed = false;
+    for (const branchId of [...remaining]) {
+      const branch = graphData.branches.find(item => item.branch_id === branchId);
+      const baseId = branch?.base_event_id;
+      if (baseId && eventById(baseId) && !yOf.has(baseId)) continue;
+      const startY = Math.max(trackTop, baseId && yOf.has(baseId) ? yOf.get(baseId) + DETAIL_BRANCH_START_GAP : trackTop);
+      placeTrack(branchId, byBranch[branchId], trackIds.indexOf(branchId), startY);
+      remaining.delete(branchId);
+      progressed = true;
+    }
+    if (!progressed) {
+      for (const branchId of remaining) placeTrack(branchId, byBranch[branchId], trackIds.indexOf(branchId), trackTop);
+      break;
+    }
+  }
+  let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+  for (const position of positions.values()) {
+    minX = Math.min(minX, position.x); maxX = Math.max(maxX, position.x);
+    minY = Math.min(minY, position.y); maxY = Math.max(maxY, position.y);
+  }
+  if (!positions.size) { minX = maxX = SERP_PAD; minY = maxY = SERP_PAD; }
+  return {positions, graphW:maxX - minX + DOT_SIZE, graphH:maxY - minY + DOT_SIZE, minX, minY};
+}
+function layoutDetailNodes(seq, canvasW) {
+  if (overviewSeqKind === 'all') return layoutTrajectoryDetailNodes(seq, canvasW);
+  if (overviewSeqKind === 'complete') return layoutHistoryDetailNodes(seq, canvasW);
+  return layoutCompactDetailNodes(seq, canvasW);
+}
+function detailEdges(nodes) {
+  const nodeSet = new Set(nodes.map(node => node.id));
+  const edges = [];
+  const seen = new Set();
+  const add = (source, target, branchId, kind) => {
+    if (!nodeSet.has(source) || !nodeSet.has(target) || source === target) return;
+    const key = `${source}\u0001${target}`;
+    if (seen.has(key)) return;
+    seen.add(key);
+    edges.push({source, target, branch_id: branchId || eventById(target)?.branch_id || 'main', kind});
+  };
+  for (const edge of graphData.edges || []) add(edge.source, edge.target, edge.branch_id, edge.kind);
+
+  // Some imported traces only provide branch-local ordering. Fill those gaps
+  // without ever creating an edge between two different branch lanes.
+  const byBranch = {};
+  nodes.forEach(node => { (byBranch[node.branch_id || 'main'] ||= []).push(node); });
+  for (const [branchId, list] of Object.entries(byBranch)) {
+    list.sort((a, b) => nodeIndex(a.id) - nodeIndex(b.id));
+    for (let index = 1; index < list.length; index++) {
+      const source = list[index - 1].id;
+      const target = list[index].id;
+      const hasIncomingLocalEdge = edges.some(edge => edge.target === target && eventById(edge.source)?.branch_id === branchId);
+      if (!hasIncomingLocalEdge) add(source, target, branchId, 'sequence');
+    }
+  }
+  return edges;
+}
+function historyEdges(nodes) {
+  const ordered = [...nodes].sort((a, b) => nodeIndex(a.id) - nodeIndex(b.id));
+  return ordered.slice(1).map((node, index) => ({
+    source: ordered[index].id,
+    target: node.id,
+    branch_id: node.branch_id || 'main',
+    kind: 'sequence',
+  }));
+}
+function updateGraphMeta(text) {
+  $('graphMeta').textContent = text;
+}
+function drawDagView(data) {
+  if (data) {
+    graphData = data;
+    graphData.nodeIndexMap = {};
+    graphData.nodes.forEach((n, i) => { graphData.nodeIndexMap[n.id] = i; });
+  }
+  if (!graphData) return;
   const graph = $('graph');
+  const edges = $('edges');
+  if (!graph || !edges) return;
   graph.querySelectorAll('.node').forEach(n => n.remove());
-  const edges = $('edges'); edges.innerHTML = '';
-  addDagArrowMarkers(edges);
-  const elements = new Map();
-  data.nodes.forEach((n) => {
-    const el = createGraphNode(n, true);
-    elements.set(n.id, el);
+  edges.innerHTML = '';
+  markerCache.clear();
+  const kept = overviewKeptNodes();
+  const canvasW = Math.max(graph.clientWidth || 900, 640);
+  const { positions, graphW, graphH, minX, minY } = layoutLaneNodes(kept, canvasW);
+  const offsetX = (canvasW - graphW) / 2 - minX;
+  const offsetY = DAG_TOP - minY;
+  kept.forEach(n => {
+    const p = positions.get(n.id);
+    p.x += offsetX; p.y += offsetY; p.cx += offsetX; p.cy += offsetY;
+    const el = createDotNode(n);
+    el.style.left = p.x + 'px';
+    el.style.top = p.y + 'px';
+    el.style.boxShadow = `0 0 0 2px ${branchColor(n.branch_id)}, 0 1px 2px rgba(23,50,77,.22)`;
+    el.addEventListener('click', () => openDetailView(n));
     graph.appendChild(el);
   });
-  const {positions: byId, totalHeight, totalWidth} = layoutRenderedNodes(data.nodes, elements, graph.clientWidth || 860, 3, false);
-  data.nodes.forEach((n) => placeGraphNode(elements.get(n.id), byId.get(n.id)));
-  graph.style.minHeight = Math.max(520, totalHeight) + 'px';
-  edges.setAttribute('width', totalWidth);
-  edges.setAttribute('height', Math.max(520, totalHeight));
-  data.edges.forEach(e => {
-    if (!byId.has(e.source) || !byId.has(e.target)) return;
-    const a = byId.get(e.source), b = byId.get(e.target);
-    const points = edgeEndpoints(a, b);
-    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-    line.setAttribute('x1', points.x1); line.setAttribute('y1', points.y1);
-    line.setAttribute('x2', points.x2); line.setAttribute('y2', points.y2);
-    line.dataset.source = e.source;
-    line.dataset.target = e.target;
-    line.dataset.branchId = e.branch_id || '';
-    line.setAttribute('stroke', e.kind === 'branch' ? '#9a6b16' : '#9aa7b2');
-    line.setAttribute('stroke-width', e.kind === 'branch' ? '2' : '1.5');
-    line.setAttribute('marker-end', `url(#${edges.id}-${e.kind === 'branch' ? 'branch' : 'event'}-arrow)`);
-    edges.appendChild(line);
+  const totalH = Math.max(640, graphH + 2 * DAG_TOP);
+  graph.style.minHeight = totalH + 'px';
+  edges.setAttribute('width', canvasW);
+  edges.setAttribute('height', totalH);
+  laneEdges(kept).forEach(e => {
+    const a = positions.get(e.source), b = positions.get(e.target);
+    if (a && b) drawArrowEdge(edges, e.source, e.target, a, b, e.color);
   });
-  $('graphMeta').textContent = `${data.nodes.length} events, ${data.branches.length} branches`;
+  updateGraphMeta(`${graphData.nodes.length} events · ${graphData.branches.length} branches`);
+}
+function drawDetailView() {
+  if (!graphData || (overviewSeqKind !== 'all' && !overviewNode)) return;
+  const graph = $('graph');
+  const edges = $('edges');
+  if (!graph || !edges) return;
+  graph.querySelectorAll('.node').forEach(n => n.remove());
+  edges.innerHTML = '';
+  markerCache.clear();
+  computeBranchLanes();
+  const seq = overviewCurrentSeq();
+  overviewStep = Math.max(0, Math.min(overviewStep, seq.length - 1));
+  const canvasW = Math.max(graph.clientWidth || 900, 640);
+  const { positions, graphW, graphH, minX, minY } = layoutDetailNodes(seq, canvasW);
+  const offsetX = (canvasW - graphW) / 2 - minX;
+  const offsetY = SERP_PAD - minY;
+  const shown = seq.slice(0, overviewStep + 1);
+  shown.forEach(n => {
+    const p = positions.get(n.id);
+    p.x += offsetX; p.y += offsetY;
+    p.cx = p.x + DETAIL_DOT_RENDERED_SIZE / 2;
+    p.cy = p.y + DETAIL_DOT_RENDERED_SIZE / 2;
+    if (p.turnHeadX != null) p.turnHeadX += offsetX;
+    const el = createDotNode(n);
+    el.style.left = p.x + 'px';
+    el.style.top = p.y + 'px';
+    el.style.boxShadow = `0 0 0 2px ${EVENT_DOT_COLORS[eventPresentationType(n)] || 'var(--gray)'}, 0 1px 2px rgba(23,50,77,.22)`;
+    el.addEventListener('click', () => detailStepTo(n.id));
+    graph.appendChild(el);
+  });
+  const totalH = Math.max(640, graphH + 2 * SERP_PAD);
+  graph.style.minHeight = totalH + 'px';
+  edges.setAttribute('width', canvasW);
+  edges.setAttribute('height', totalH);
+  const viewEdges = overviewSeqKind === 'complete' ? historyEdges(shown) : detailEdges(shown);
+  for (const edge of viewEdges) {
+    const a = positions.get(edge.source), b = positions.get(edge.target);
+    if (!a || !b) continue;
+    const color = branchColor(edge.branch_id);
+    if (overviewSeqKind === 'all' && (edge.kind === 'branch' || a.phase !== b.phase || a.lane !== b.lane)) {
+      drawForkEdge(edges, edge.source, edge.target, a, b, color);
+    } else if (overviewSeqKind === 'all' && a.phase === 'prefix' && b.phase === 'prefix' && Math.abs(a.cy - b.cy) > 1) {
+      drawVerticalTurnEdge(edges, edge.source, edge.target, a, b, color);
+    } else if (overviewSeqKind === 'all' && a.phase === 'track' && b.phase === 'track' && a.trackRow !== b.trackRow && Math.abs(a.cx - b.cx) > 1) {
+      drawVerticalTurnEdge(edges, edge.source, edge.target, a, b, color);
+    } else if (overviewSeqKind !== 'all' && a.lane !== b.lane) {
+      drawOrthogonalEdge(edges, edge.source, edge.target, a, b, color);
+    } else {
+      drawArrowEdge(edges, edge.source, edge.target, a, b, color);
+    }
+  }
+  syncDetailSlider();
+  highlightDetailStep();
+  updateGraphMeta(`${seq.length} events · ${overviewSeqKind === 'segment' ? 'change' : overviewSeqKind === 'complete' ? 'history' : 'trajectory details'}`);
 }
 function setMode(mode) {
-  const trace = mode === 'trace';
   const global = mode === 'global';
-  $('tracePage').classList.toggle('hidden', !trace);
-  $('finalPage').classList.toggle('hidden', trace || global);
+  $('finalPage').classList.toggle('hidden', global);
   $('globalPage').classList.toggle('hidden', !global);
-  $('traceMode').classList.toggle('active', trace);
-  $('finalMode').classList.toggle('active', !trace && !global);
+  $('finalMode').classList.toggle('active', !global);
   $('globalMode').classList.toggle('active', global);
-  if (trace) drawPlayback();
-  else if (global) loadGlobalOverview();
-  else if (graphData) requestAnimationFrame(() => drawGraph(graphData));
+  if (global) loadGlobalOverview();
+  else if (graphData) requestAnimationFrame(() => (overviewView === 'dag' ? drawDagView() : drawDetailView()));
 }
 
 function globalTrajectorySourceLogo(source) {
@@ -1465,74 +1874,190 @@ async function loadGlobalOverview() {
 
 function openTrajectoryFromGlobal(trajectoryId) {
   $('tid').value = trajectoryId;
-  setMode('trace');
+  setMode('final');
   loadAll().catch(err => { showError(err.message); $('graphMeta').textContent = 'load failed'; });
 }
-function playbackNodes() { return graphData ? graphData.nodes.slice(0, playbackStep + 1) : []; }
-function drawPlayback() {
-  const graph = $('playbackGraph');
-  const edges = $('playbackEdges');
-  if (!graph || !edges) return;
-  graph.querySelectorAll('.node').forEach(n => n.remove());
-  edges.innerHTML = '';
-  addDagArrowMarkers(edges);
-  if (!graphData || !graphData.nodes.length) {
-    playbackDetailRequest += 1;
-    $('playbackMeta').textContent = 'no trajectory';
-    $('stepDetail').innerHTML = '<h3>No trajectory loaded</h3><p class="muted">Load a trajectory first.</p>';
+function overviewCurrentSeq() {
+  if (overviewSeqKind === 'all') {
+    if (!graphData) return [];
+    const byBranch = {};
+    graphData.nodes.forEach(n => { (byBranch[n.branch_id] ||= []).push(n); });
+    const branchIds = Object.keys(byBranch);
+    branchIds.sort((a, b) => nodeIndex(byBranch[a][0].id) - nodeIndex(byBranch[b][0].id));
+    const grouped = [];
+    branchIds.forEach(bid => grouped.push(...byBranch[bid]));
+    return grouped;
+  }
+  if (!overviewNode) return [];
+  const seqs = overviewSequencesFor(overviewNode);
+  return overviewSeqKind === 'complete' ? seqs.complete : seqs.segment;
+}
+function openDetailView(node) {
+  overviewView = 'detail';
+  overviewNode = node;
+  overviewSeqKind = 'segment';
+  stopOverviewTimer();
+  $('detailToolbar').classList.remove('hidden');
+  $('detailSeqTabs').classList.remove('hidden');
+  $('dagActions').classList.add('hidden');
+  $('eventDetailPanel').classList.add('hidden');
+  updateDetailTabs();
+  overviewStep = 0;
+  overviewCardEvent = null;
+  drawDetailView();
+  detailTogglePlay();
+}
+function openAllEventsView() {
+  if (!graphData) return;
+  overviewView = 'all';
+  overviewNode = null;
+  overviewSeqKind = 'all';
+  stopOverviewTimer();
+  $('detailToolbar').classList.remove('hidden');
+  $('detailSeqTabs').classList.add('hidden');
+  $('dagActions').classList.add('hidden');
+  $('eventDetailPanel').classList.add('hidden');
+  overviewStep = 0;
+  overviewCardEvent = null;
+  drawDetailView();
+  detailTogglePlay();
+}
+function closeDetailView() {
+  overviewView = 'dag';
+  overviewNode = null;
+  overviewCardEvent = null;
+  stopOverviewTimer();
+  $('detailToolbar').classList.add('hidden');
+  $('dagActions').classList.remove('hidden');
+  $('eventDetailPanel').classList.add('hidden');
+  drawDagView();
+}
+function setDetailSeq(kind) {
+  if (overviewSeqKind === kind || !overviewNode) return;
+  overviewSeqKind = kind;
+  stopOverviewTimer();
+  updateDetailTabs();
+  overviewStep = 0;
+  overviewCardEvent = null;
+  $('eventDetailPanel').classList.add('hidden');
+  drawDetailView();
+}
+function updateDetailTabs() {
+  if (!overviewNode) return;
+  const seqs = overviewSequencesFor(overviewNode);
+  $('detailSegment').textContent = `Change (${seqs.segment.length})`;
+  $('detailComplete').textContent = `History (${seqs.complete.length})`;
+  $('detailSegment').classList.toggle('active', overviewSeqKind === 'segment');
+  $('detailComplete').classList.toggle('active', overviewSeqKind === 'complete');
+}
+function syncDetailSlider() {
+  const slider = $('detailSlider');
+  if (!slider) return;
+  const seq = overviewCurrentSeq();
+  slider.max = Math.max(0, seq.length - 1);
+  slider.value = overviewStep;
+  const pct = seq.length > 1 ? (overviewStep / (seq.length - 1)) * 100 : 100;
+  slider.style.setProperty('--playback-progress', `${pct}%`);
+  $('detailMeta').textContent = `step ${overviewStep + 1} / ${seq.length}`;
+}
+function highlightDetailStep() {
+  const seq = overviewCurrentSeq();
+  const target = overviewCardEvent || seq[overviewStep];
+  const currentId = target?.id;
+  document.querySelectorAll('#graph .node.dot-node').forEach(el => el.classList.toggle('selected', el.dataset.eventId === currentId));
+}
+function renderDetailCard() {
+  const event = overviewCardEvent;
+  const panel = $('eventDetailPanel');
+  if (!panel || !event) return;
+  panel.classList.remove('hidden');
+  panel.innerHTML = `<div class="step-card ${playbackEventColorClass(event)}">${renderPlaybackEventCard(event)}<button class="event-detail-close" title="Close" aria-label="Close event detail">&times;</button></div>`;
+  panel.querySelector('.event-detail-close').onclick = () => { panel.classList.add('hidden'); overviewCardEvent = null; };
+  positionDetailCard();
+}
+function positionDetailCard() {
+  const panel = $('eventDetailPanel');
+  const graph = $('graph');
+  if (!panel || !graph || panel.classList.contains('hidden')) return;
+  const seq = overviewCurrentSeq();
+  const target = overviewCardEvent || seq[overviewStep];
+  if (!target) return;
+  const nodeEl = graph.querySelector(`.node.dot-node[data-event-id="${target.id}"]`);
+  if (!nodeEl) return;
+  const n = nodeEl.getBoundingClientRect();
+  const g = graph.getBoundingClientRect();
+  const nodeLeft = n.left - g.left;
+  const nodeTop = n.top - g.top;
+  const nodeRight = nodeLeft + n.width;
+  const nodeBottom = nodeTop + n.height;
+  const W = g.width, H = g.height, m = 12, gap = 16;
+  const panelW = panel.offsetWidth, panelH = panel.offsetHeight;
+  const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
+  const setPosition = (left, top) => {
+    panel.style.left = `${left}px`;
+    panel.style.top = `${top}px`;
+    panel.style.right = 'auto';
+    panel.style.bottom = 'auto';
+  };
+  const centredX = clamp(nodeLeft + n.width / 2 - panelW / 2, m, Math.max(m, W - panelW - m));
+  const centredY = clamp(nodeTop + n.height / 2 - panelH / 2, m, Math.max(m, H - panelH - m));
+  const placements = {
+    right: { fits: nodeRight + gap + panelW <= W - m, left: nodeRight + gap, top: centredY },
+    left: { fits: nodeLeft - gap - panelW >= m, left: nodeLeft - gap - panelW, top: centredY },
+    below: { fits: nodeBottom + gap + panelH <= H - m, left: centredX, top: nodeBottom + gap },
+    above: { fits: nodeTop - gap - panelH >= m, left: centredX, top: nodeTop - gap - panelH },
+  };
+  const nodeCenterY = nodeTop + n.height / 2;
+  const horizontalOrder = nodeLeft + n.width / 2 <= W / 2 ? ['right', 'left'] : ['left', 'right'];
+  const verticalOrder = nodeCenterY >= H * 0.66
+    ? ['above', ...horizontalOrder, 'below']
+    : nodeCenterY <= H * 0.34
+      ? ['below', ...horizontalOrder, 'above']
+      : [...horizontalOrder, nodeTop > H - nodeBottom ? 'above' : 'below', nodeTop > H - nodeBottom ? 'below' : 'above'];
+  for (const direction of verticalOrder) {
+    const placement = placements[direction];
+    if (!placement.fits) continue;
+    setPosition(placement.left, placement.top);
     return;
   }
-  playbackStep = Math.max(0, Math.min(playbackStep, graphData.nodes.length - 1));
-  $('stepSlider').max = graphData.nodes.length - 1;
-  $('stepSlider').value = playbackStep;
-  const playbackTotal = graphData.nodes.length - 1;
-  const playbackPercent = playbackTotal > 0 ? (playbackStep / playbackTotal) * 100 : 100;
-  $('stepSlider').style.setProperty('--playback-progress', `${playbackPercent}%`);
-  const shown = new Set(playbackNodes().map(n => n.id));
-  const elements = new Map();
-  graphData.nodes.forEach((n) => {
-    const el = createGraphNode(n, false);
-    elements.set(n.id, el);
-    if (shown.has(n.id)) graph.appendChild(el);
-  });
-  const {positions: byId, totalHeight, totalWidth} = layoutRenderedNodes(graphData.nodes, elements, graph.clientWidth || 860, null, false);
-  graphData.nodes.forEach((n) => {
-    if (shown.has(n.id)) placeGraphNode(elements.get(n.id), byId.get(n.id));
-  });
-  graph.style.minHeight = Math.max(650, totalHeight) + 'px';
-  edges.setAttribute('width', totalWidth);
-  edges.setAttribute('height', Math.max(650, totalHeight));
-  graphData.edges.forEach(e => {
-    if (!shown.has(e.source) || !shown.has(e.target) || !byId.has(e.source) || !byId.has(e.target)) return;
-    const a = byId.get(e.source), b = byId.get(e.target);
-    const points = edgeEndpoints(a, b);
-    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-    line.setAttribute('x1', points.x1); line.setAttribute('y1', points.y1);
-    line.setAttribute('x2', points.x2); line.setAttribute('y2', points.y2);
-    line.setAttribute('stroke', e.kind === 'branch' ? '#9a6b16' : '#9aa7b2');
-    line.setAttribute('stroke-width', e.kind === 'branch' ? '2' : '1.5');
-    line.setAttribute('marker-end', `url(#${edges.id}-${e.kind === 'branch' ? 'branch' : 'event'}-arrow)`);
-    edges.appendChild(line);
-  });
-  const event = graphData.nodes[playbackStep];
-  $('playbackMeta').textContent = `step ${playbackStep + 1} / ${graphData.nodes.length}`;
-  $('stepDetail').className = `step-card ${playbackEventColorClass(event)}`;
-  $('stepDetail').innerHTML = renderPlaybackDetailLoading(event);
-  void loadPlaybackEventDetail(event);
+  const expandedHeight = Math.ceil(nodeBottom + gap + panelH + m);
+  graph.style.minHeight = `${Math.max(graph.clientHeight, expandedHeight)}px`;
+  $('edges').setAttribute('height', String(Math.max(graph.clientHeight, expandedHeight)));
+  setPosition(centredX, nodeBottom + gap);
 }
-function stepPlayback(delta) {
-  if (!graphData) return;
-  playbackStep = Math.max(0, Math.min(playbackStep + delta, graphData.nodes.length - 1));
-  drawPlayback();
+function overviewAdvance(step, showCard) {
+  const seq = overviewCurrentSeq();
+  overviewStep = Math.max(0, Math.min(step, seq.length - 1));
+  if (showCard) overviewCardEvent = seq[overviewStep];
+  drawDetailView();
+  if (showCard) renderDetailCard();
 }
-function togglePlayback() {
-  if (playbackTimer) {
-    clearInterval(playbackTimer); playbackTimer = null; $('stepPlay').textContent = 'Play'; return;
-  }
-  $('stepPlay').textContent = 'Pause';
-  playbackTimer = setInterval(() => {
-    if (!graphData || playbackStep >= graphData.nodes.length - 1) { togglePlayback(); return; }
-    stepPlayback(1);
+function detailStepTo(id) {
+  const seq = overviewCurrentSeq();
+  const event = seq.find(n => n.id === id);
+  if (!event) return;
+  overviewCardEvent = event;
+  highlightDetailStep();
+  renderDetailCard();
+}
+function stopOverviewTimer() {
+  if (overviewTimer) { clearInterval(overviewTimer); overviewTimer = null; }
+  const btn = $('detailPlay');
+  if (btn) btn.textContent = 'Play';
+}
+function detailStepBy(delta) {
+  overviewAdvance(overviewStep + delta, true);
+}
+function detailTogglePlay() {
+  if (overviewTimer) { stopOverviewTimer(); return; }
+  const seq = overviewCurrentSeq();
+  if (overviewStep >= seq.length - 1) overviewAdvance(0, true);
+  else { overviewCardEvent = seq[overviewStep]; renderDetailCard(); }
+  $('detailPlay').textContent = 'Pause';
+  overviewTimer = setInterval(() => {
+    const s = overviewCurrentSeq();
+    if (overviewStep >= s.length - 1) { stopOverviewTimer(); return; }
+    overviewAdvance(overviewStep + 1, true);
   }, 700);
 }
 
@@ -1560,7 +2085,7 @@ function viewLabel(view) {
 }
 function setBusyControls(busy) {
   globalBusy = busy;
-  document.querySelectorAll('.tabs button, #load, #runSql, #runNaturalLanguage, #nlProfile, #summaryProfile, #generateSummary, #viewsMode, #queryMode, #versionMode, #traceMode, #finalMode, #globalMode, [data-view-branch]').forEach(el => el.disabled = busy);
+  document.querySelectorAll('.tabs button, #load, #runSql, #runNaturalLanguage, #nlProfile, #summaryProfile, #generateSummary, #viewsMode, #queryMode, #versionMode, #finalMode, #globalMode, #allEventsBtn, #detailBack, #detailSegment, #detailComplete, #detailPrev, #detailPlay, #detailNext, #detailSlider, [data-view-branch]').forEach(el => el.disabled = busy);
 }
 function clearLoadingElapsedTimer() {
   if (loadingElapsedTimer !== null) {
@@ -2359,9 +2884,15 @@ async function loadAll() {
   try {
     $('graphMeta').textContent = 'loading...';
     const data = await api('/api/v1/graph?trajectory_id=' + encodeURIComponent(tid));
-    drawGraph(data);
-    playbackStep = Math.min(playbackStep, Math.max(0, data.nodes.length - 1));
-    drawPlayback();
+    overviewView = 'dag';
+    overviewNode = null;
+    overviewSeqKind = 'segment';
+    overviewCardEvent = null;
+    stopOverviewTimer();
+    $('detailToolbar').classList.add('hidden');
+    $('dagActions').classList.remove('hidden');
+    $('eventDetailPanel').classList.add('hidden');
+    drawDagView(data);
     if (currentView) await loadView();
     else showDatabaseViewsPlaceholder();
     if (!$('versionControlPanel').classList.contains('hidden')) await loadVersionControl();
@@ -2465,13 +2996,16 @@ function setRightPanel(mode) {
 $('viewsMode').onclick = () => setRightPanel('views');
 $('queryMode').onclick = () => setRightPanel('query');
 $('versionMode').onclick = () => setRightPanel('version');
-$('traceMode').onclick = () => setMode('trace');
 $('finalMode').onclick = () => setMode('final');
 $('globalMode').onclick = () => setMode('global');
-$('stepPrev').onclick = () => stepPlayback(-1);
-$('stepNext').onclick = () => stepPlayback(1);
-$('stepPlay').onclick = () => togglePlayback();
-$('stepSlider').oninput = e => { playbackStep = Number(e.target.value || 0); drawPlayback(); };
+$('allEventsBtn').onclick = () => openAllEventsView();
+$('detailBack').onclick = () => closeDetailView();
+$('detailSegment').onclick = () => setDetailSeq('segment');
+$('detailComplete').onclick = () => setDetailSeq('complete');
+$('detailPrev').onclick = () => detailStepBy(-1);
+$('detailNext').onclick = () => detailStepBy(1);
+$('detailPlay').onclick = () => detailTogglePlay();
+$('detailSlider').oninput = e => { overviewAdvance(Number(e.target.value || 0), true); };
 $('load').onclick = () => { if (!globalBusy) { showDatabaseViewsPlaceholder(); loadAll().catch(err => { showError(err.message); $('graphMeta').textContent = 'load failed'; setBusyControls(false); }); } };
 window.addEventListener('resize', () => {
   if (!$('globalPage').classList.contains('hidden') && globalOverviewData) {
