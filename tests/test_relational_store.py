@@ -53,7 +53,7 @@ def test_contextql_reads_persistent_event_relation_and_view_exposes_plan():
         assert "langex =>" not in digest_operator["statement"]
         assert {operator["operator"] for operator in ContextDB._view_execution_plan("learned_skills")["operators"] if operator["kind"] == "SEMANTIC"} == {"SemClusterBy"}
         cluster_operator = next(operator for operator in ContextDB._view_execution_plan("learned_skills")["operators"] if operator["kind"] == "SEMANTIC")
-        assert cluster_operator["statement"].startswith("-- sem_cluster_by\nWITH labeled_rows AS")
+        assert cluster_operator["statement"].startswith("WITH labeled_rows AS")
         assert next(operator for operator in ContextDB._view_execution_plan("semantic_repair_judgments")["operators"] if operator["kind"] == "SEMANTIC")["operator"] == "SemJoin"
         db.close()
 

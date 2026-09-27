@@ -210,11 +210,13 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
     .execution-step.cache .execution-kind { background:#a36a13; color:#fff; }
     .execution-statement { display:block; margin:9px 0 0; padding:9px 10px; border:1px solid #dce6ef; border-radius:4px; background:#fff; white-space:pre-wrap; overflow-wrap:anywhere; font:11px/1.45 ui-monospace, SFMono-Regular, Consolas, monospace; color:#334b60; }
     .execution-step.semantic .execution-statement { border-color:#e6daf7; background:#fff; }
-    .semantic-statement-operator { height:auto; min-height:0; margin:0; padding:0; border:0; background:transparent; color:#6f35ce; cursor:pointer; font:inherit; font-weight:700; line-height:inherit; vertical-align:baseline; text-decoration:underline dotted 1px; text-underline-offset:2px; }
-    .semantic-statement-operator:hover { color:#4c1d95; }
-    .semantic-statement-operator:focus-visible { outline:2px solid #7c3aed; outline-offset:2px; }
+    button.execution-statement { width:100%; height:auto; min-height:0; text-align:left; cursor:pointer; }
+    button.execution-statement.semantic-statement:hover { border-color:#bca5e9; background:#fcfaff; }
+    button.execution-statement.semantic-statement:focus-visible { outline:2px solid #7c3aed; outline-offset:2px; }
     .semantic-operator-detail { margin-top:9px; padding:9px 10px; border:1px solid #e3d5f8; border-left:3px solid #7c3aed; border-radius:4px; background:#fff; color:#493367; font-size:11px; line-height:1.45; }
     .semantic-operator-detail[hidden] { display:none; }
+    .semantic-operator-name { margin:0 0 6px; color:#6f35ce; font-weight:700; }
+    .semantic-operator-name code { font:inherit; }
     .semantic-operator-detail p { margin:0 0 7px; }
     .semantic-operator-detail dl { display:grid; grid-template-columns:max-content minmax(0,1fr); gap:4px 8px; margin:0; }
     .semantic-operator-detail dt { color:#6b4a91; font-weight:700; }
@@ -2998,7 +3000,7 @@ function semanticOperatorDefinition(alias) {
 }
 
 function bindSemanticOperatorDetails() {
-  document.querySelectorAll('.semantic-statement-operator').forEach(button => {
+  document.querySelectorAll('.semantic-statement').forEach(button => {
     button.onclick = () => {
       const detail = button.closest('.execution-step')?.querySelector('.semantic-operator-detail');
       if (!detail) return;
@@ -3009,15 +3011,6 @@ function bindSemanticOperatorDetails() {
   });
 }
 
-function renderSemanticStatement(statement, alias) {
-  const source = String(statement || '').trim();
-  const position = source.indexOf(alias);
-  if (position < 0) return escapeHtml(source);
-  const before = escapeHtml(source.slice(0, position));
-  const after = escapeHtml(source.slice(position + alias.length));
-  return `${before}<button type="button" class="semantic-statement-operator" title="Show ${escapeHtml(alias)} explanation" aria-expanded="false">${escapeHtml(alias)}</button>${after}`;
-}
-
 function appendViewExecutionPlan(plan, executeLabel = '') {
   if (!plan || !Array.isArray(plan.operators) || !$('out')) return;
   const steps = plan.operators.map((operator, index) => {
@@ -3026,13 +3019,16 @@ function appendViewExecutionPlan(plan, executeLabel = '') {
     const kind = `<span class="execution-kind">${escapeHtml(operator.kind || 'SQL')}</span>`;
     const definition = semanticOperatorDefinition(semanticAlias);
     const semanticDetail = semantic ? `<aside class="semantic-operator-detail" hidden>
+      <p class="semantic-operator-name"><code>${escapeHtml(semanticAlias)}</code></p>
       <p>${escapeHtml(definition.description)}</p>
       <dl><dt>input</dt><dd>${escapeHtml(definition.input)}</dd><dt>language expression</dt><dd>${escapeHtml(definition.languageExpression)}</dd><dt>output</dt><dd>${escapeHtml(definition.output)}</dd></dl>
     </aside>` : '';
     const stepClass = String(operator.kind || 'SQL').toLowerCase();
     return `<div class="execution-flow-item"><div class="execution-step ${stepClass}">
       <div class="execution-step-head"><span class="execution-step-number">${index + 1}</span>${kind}<span class="execution-step-label">${escapeHtml(operator.label || 'Operation')}</span></div>
-      <code class="execution-statement">${semantic ? renderSemanticStatement(operator.statement, semanticAlias) : escapeHtml(operator.statement || '')}</code>
+      ${semantic
+        ? `<button type="button" class="execution-statement semantic-statement" title="Show ${escapeHtml(semanticAlias)} explanation" aria-expanded="false">${escapeHtml(operator.statement || '')}</button>`
+        : `<code class="execution-statement">${escapeHtml(operator.statement || '')}</code>`}
       ${semanticDetail}
     </div></div>`;
   }).join('');

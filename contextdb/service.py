@@ -818,20 +818,17 @@ SELECT sem_agg(
 ) AS digest
 FROM earlier_events;"""
             if alias == "sem_map":
-                return f"""-- sem_map
-SELECT
+                return f"""SELECT
   *,
   s'{langex}' AS likely_cause
 FROM failed_tool_results;"""
             if alias == "sem_join":
-                return f"""-- sem_join
-SELECT failure.*,repair.*
+                return f"""SELECT failure.*,repair.*
 FROM failure_patterns AS failure
 JOIN repair_candidates AS repair
   ON s'{langex}';"""
             if alias == "sem_cluster_by":
-                return f"""-- sem_cluster_by
-WITH labeled_rows AS (
+                return f"""WITH labeled_rows AS (
   SELECT
     *,
     s'{langex}' AS semantic_group
@@ -840,8 +837,7 @@ WITH labeled_rows AS (
 SELECT semantic_group,COUNT(*) AS group_size
 FROM labeled_rows
 GROUP BY semantic_group;"""
-            return f"""-- {alias}
-SELECT s'{langex}' AS {spec['output_relation']}
+            return f"""SELECT s'{langex}' AS {spec['output_relation']}
 FROM {spec['input_relation']};"""
 
         def semantic(label: str, spec: Dict[str, str]) -> Dict[str, str]:
