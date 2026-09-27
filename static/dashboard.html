@@ -538,6 +538,7 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
     .trajectory-track:last-child { border-bottom:0; }
     .trajectory-track-label { display:flex; align-items:center; justify-content:flex-end; padding:0 8px; color:#4b6074; background:#f1f6fb; font-size:11px; font-weight:700; text-align:right; }
     .trajectory-track-rail { position:relative; min-height:24px; background:#fff; }
+    .trajectory-track-rail.change-range { background:linear-gradient(to right, #fff 0 var(--change-start), #f3fbf6 var(--change-start) var(--change-end), #fff var(--change-end) 100%); }
     .trajectory-track-rail::before { content:''; position:absolute; right:0; left:0; top:50%; border-top:1px dashed #e7eef5; }
     .trajectory-track-marker { position:absolute; top:50%; width:11px; height:10px; margin:0; padding:0; border:1px solid rgba(23,50,77,.2); border-radius:2px; background:var(--track-color); box-shadow:0 1px 1px rgba(23,50,77,.14); cursor:pointer; transform:translate(-50%,-50%); z-index:1; }
     .trajectory-track-marker.edge-start { transform:translate(0,-50%); }
@@ -555,10 +556,14 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
     .trajectory-session-event.branch-start::before { top:4px; border-radius:0 0 3px 0; }
     .trajectory-session-event:hover, .trajectory-session-event.current { background:#f1f6fc; }
     .trajectory-session-event.current { box-shadow:inset 3px 0 0 #2364aa; }
+    .trajectory-session-event.change-added { background:#f3fbf6; }
+    .trajectory-session-event.change-added.current { background:#edf8f1; box-shadow:inset 3px 0 0 #2364aa; }
     .trajectory-session-type { position:relative; display:flex; justify-content:flex-end; align-items:center; min-width:0; }
+    .trajectory-session-event.change-added .trajectory-session-type::before { position:absolute; left:0; color:#17754e; content:'+'; font:700 14px/1 ui-monospace, SFMono-Regular, Consolas, monospace; }
     .trajectory-session-type-chip { display:inline-flex; align-items:center; justify-content:flex-end; min-height:18px; max-width:82px; padding:2px 5px; border:1px solid var(--session-accent); border-radius:3px; background:var(--session-accent); color:#fff; font-size:11px; font-weight:700; line-height:1.15; text-align:right; text-transform:lowercase; white-space:normal; }
     .trajectory-session-branch { position:absolute; top:-14px; left:-7px; z-index:1; overflow:visible; border:1px solid var(--branch-color); border-radius:999px; background:#fff; color:var(--branch-color); padding:1px 5px; font-size:9px; font-weight:700; line-height:1.1; white-space:nowrap; }
     .trajectory-session-summary { min-width:0; overflow:hidden; color:#26394c; font:11px/1.35 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; text-overflow:ellipsis; white-space:nowrap; }
+    .trajectory-session-change-label { display:inline-block; margin-right:6px; padding:1px 4px; border:1px solid #84cba8; border-radius:3px; background:#fff; color:#17754e; font:700 9px/1.15 ui-sans-serif, system-ui, sans-serif; vertical-align:1px; }
     .trajectory-track-modal { position:fixed; inset:0; display:grid; place-items:center; padding:8px; background:rgba(16,35,55,.28); z-index:80; }
     .trajectory-track-modal.hidden { display:none; }
     .trajectory-track-dialog { display:flex; flex-direction:column; width:min(var(--trajectory-dialog-width), calc(100vw - 16px), 1680px); max-height:calc(100vh - 16px); overflow:hidden; border:1px solid #a8c7e6; border-radius:8px; background:#fff; box-shadow:0 18px 48px rgba(11,42,76,.28); }
@@ -597,7 +602,7 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
       <div id="dagActions" class="dag-actions"><button id="allEventsBtn" class="small-btn secondary">Trajectory details</button></div>
       <div id="detailToolbar" class="detail-toolbar hidden">
         <button id="detailBack" class="small-btn secondary">← Back</button>
-        <div id="detailSeqTabs" class="event-detail-tabs" aria-label="Trajectory state">
+        <div id="detailSeqTabs" class="event-detail-tabs hidden" aria-label="Trajectory state">
           <button id="detailSegment" class="active">Change</button>
           <button id="detailComplete">History</button>
         </div>
@@ -1038,6 +1043,15 @@ function overviewSequencesFor(node) {
   const segment = graphData.nodes.filter(n => completeIds.has(n.id) && !prevIds.has(n.id));
   return { complete, segment, prev, index: nodeIndex(node.id) };
 }
+function nodeChangeIds() {
+  if (!overviewNode) return new Set();
+  return new Set(overviewSequencesFor(overviewNode).segment.map(event => event.id));
+}
+function nodePlaybackStart(seq = overviewCurrentSeq()) {
+  if (overviewSeqKind !== 'node') return 0;
+  const changeIds = nodeChangeIds();
+  return Math.max(0, seq.findIndex(event => changeIds.has(event.id)));
+}
 function branchLaneIndex(branchId) { return currentLanes[branchId] ?? 0; }
 function branchColor(branchId) { return BRANCH_COLORS[branchLaneIndex(branchId) % BRANCH_COLORS.length]; }
 function computeBranchLanes() {
@@ -1111,36 +1125,54 @@ function trajectorySessionTypeLabel(type) {
 function expandedTrajectoryRailWidth(seq) {
   return Math.max(900, seq.length * 12 + 8);
 }
-function renderTrajectoryTrackRows(seq, expanded = false) {
+function trajectoryTrackMarkerPosition(index, seq, expanded, railWidth) {
+  if (expanded) {
+    const centreInset = 9.5;
+    return seq.length < 2
+      ? railWidth / 2
+      : centreInset + index / (seq.length - 1) * (railWidth - centreInset * 2);
+  }
+  return seq.length < 2 ? 0 : 99.4 * index / (seq.length - 1);
+}
+function trajectoryChangeRange(seq, changeIds, expanded, railWidth) {
+  if (!changeIds.size || !seq.length) return null;
+  const startIndex = seq.findIndex(event => changeIds.has(event.id));
+  const nodeIndexInSequence = overviewNode ? seq.findIndex(event => event.id === overviewNode.id) : -1;
+  const endIndex = nodeIndexInSequence >= startIndex
+    ? nodeIndexInSequence
+    : Math.max(...seq.map((event, index) => changeIds.has(event.id) ? index : -1));
+  if (startIndex < 0 || endIndex < startIndex) return null;
+  const start = trajectoryTrackMarkerPosition(startIndex, seq, expanded, railWidth);
+  const end = trajectoryTrackMarkerPosition(endIndex, seq, expanded, railWidth);
+  return expanded
+    ? { start: `calc(${start.toFixed(1)}px - 5.5px)`, end: `calc(${end.toFixed(1)}px + 5.5px)` }
+    : { start: `calc(${start.toFixed(3)}% - 6px)`, end: `calc(${end.toFixed(3)}% + 6px)` };
+}
+function renderTrajectoryTrackRows(seq, expanded = false, changeIds = new Set()) {
   const railWidth = expandedTrajectoryRailWidth(seq);
+  const changeRange = trajectoryChangeRange(seq, changeIds, expanded, railWidth);
   return Object.entries(TRAJECTORY_DETAIL_LANES).map(([laneId, lane]) => {
     const laneEvents = seq
       .map((event, index) => ({event, index}))
       .filter(({event}) => trajectoryDetailLane(event) === laneId);
     const markers = laneEvents.map(({event, index}) => {
       const type = eventPresentationType(event);
-      let left;
-      if (expanded) {
-        const edgeInset = 4;
-        const centreInset = edgeInset + 5.5;
-        left = seq.length < 2
-          ? railWidth / 2
-          : centreInset + index / (seq.length - 1) * (railWidth - centreInset * 2);
-      } else {
-        left = seq.length < 2 ? 0 : 99.4 * index / (seq.length - 1);
-      }
+      const left = trajectoryTrackMarkerPosition(index, seq, expanded, railWidth);
       const selected = event.id === (overviewCardEvent || seq[overviewStep])?.id;
       const edgeClass = expanded ? '' : (index === 0 ? ' edge-start' : (index === seq.length - 1 ? ' edge-end' : ''));
       const leftValue = expanded ? `${left.toFixed(1)}px` : `${left.toFixed(3)}%`;
-      return `<button type="button" class="trajectory-track-marker${edgeClass}${selected ? ' current' : ''}" data-track-event-id="${escapeHtml(event.id)}" style="left:${leftValue};--track-color:${escapeHtml(EVENT_DOT_COLORS[type] || 'var(--gray)')}" title="${escapeHtml(`${displayEventType(type)} · ${event.id}\n${trajectorySessionExcerpt(event)}`)}" aria-label="Show ${escapeHtml(displayEventType(type))} details"${selected ? ' aria-current="step"' : ''}></button>`;
+      const changeTitle = changeIds.has(event.id) ? ' · added in selected node' : '';
+      return `<button type="button" class="trajectory-track-marker${edgeClass}${selected ? ' current' : ''}" data-track-event-id="${escapeHtml(event.id)}" style="left:${leftValue};--track-color:${escapeHtml(EVENT_DOT_COLORS[type] || 'var(--gray)')}" title="${escapeHtml(`${displayEventType(type)} · ${event.id}${changeTitle}\n${trajectorySessionExcerpt(event)}`)}" aria-label="Show ${escapeHtml(displayEventType(type))} details"${selected ? ' aria-current="step"' : ''}></button>`;
     }).join('');
-    return `<div class="trajectory-track"><div class="trajectory-track-label">${lane.label}</div><div class="trajectory-track-rail">${markers}</div></div>`;
+    const rangeClass = changeRange ? ' change-range' : '';
+    const rangeStyle = changeRange ? ` style="--change-start:${changeRange.start};--change-end:${changeRange.end}"` : '';
+    return `<div class="trajectory-track"><div class="trajectory-track-label">${lane.label}</div><div class="trajectory-track-rail${rangeClass}"${rangeStyle}>${markers}</div></div>`;
   }).join('');
 }
 function closeTrajectoryTrackModal() {
   document.getElementById('trajectoryTrackModal')?.remove();
 }
-function openTrajectoryTrackModal(seq) {
+function openTrajectoryTrackModal(seq, changeIds = new Set()) {
   closeTrajectoryTrackModal();
   const railWidth = expandedTrajectoryRailWidth(seq);
   const dialogWidth = railWidth + 62 + 16;
@@ -1149,7 +1181,7 @@ function openTrajectoryTrackModal(seq) {
   modal.className = 'trajectory-track-modal';
   modal.innerHTML = `<div class="trajectory-track-dialog" style="--trajectory-dialog-width:${dialogWidth}px" role="dialog" aria-modal="true" aria-label="Expanded trajectory event tracks">
     <div class="trajectory-track-dialog-head"><span class="trajectory-track-dialog-title">Event Tracks</span><button type="button" class="trajectory-track-dialog-close" aria-label="Close expanded event tracks" title="Close">&times;</button></div>
-    <div class="trajectory-track-dialog-body"><div class="trajectory-tracks" style="--expanded-rail-width:${railWidth}px" aria-label="Expanded trajectory event tracks">${renderTrajectoryTrackRows(seq, true)}</div></div>
+    <div class="trajectory-track-dialog-body"><div class="trajectory-tracks" style="--expanded-rail-width:${railWidth}px" aria-label="Expanded trajectory event tracks">${renderTrajectoryTrackRows(seq, true, changeIds)}</div></div>
   </div>`;
   let onKeyDown;
   const close = () => {
@@ -1174,15 +1206,15 @@ function openTrajectoryTrackModal(seq) {
   document.body.appendChild(modal);
   modal.querySelector('.trajectory-track-dialog-close').focus();
 }
-function drawTrajectoryDetailsSessionView(graph, edges, seq) {
+function drawTrajectoryDetailsSessionView(graph, edges, seq, {showAll = false, changeIds = new Set(), meta = 'trajectory details'} = {}) {
   const panel = $('eventDetailPanel');
   graph.querySelectorAll('.node, .trajectory-details-surface').forEach(el => el.remove());
   edges.innerHTML = '';
   edges.hidden = true;
   computeBranchLanes();
-  const shown = seq.slice(0, overviewStep + 1);
+  const shown = showAll ? seq : seq.slice(0, overviewStep + 1);
   const selectedId = (overviewCardEvent || seq[overviewStep])?.id || '';
-  const trackRows = renderTrajectoryTrackRows(seq);
+  const trackRows = renderTrajectoryTrackRows(seq, false, changeIds);
   const seenBranches = new Set();
   const sessionRows = shown.map(event => {
     const type = eventPresentationType(event);
@@ -1190,9 +1222,10 @@ function drawTrajectoryDetailsSessionView(graph, edges, seq) {
     const branchStart = !seenBranches.has(branchId);
     seenBranches.add(branchId);
     const selected = event.id === selectedId;
-    return `<button type="button" class="trajectory-session-event${branchStart ? ' branch-start' : ''}${selected ? ' current' : ''}" data-session-event-id="${escapeHtml(event.id)}" style="--session-accent:${escapeHtml(EVENT_DOT_COLORS[type] || 'var(--gray)')};--branch-color:${escapeHtml(branchColor(branchId))}" title="Show full event details">
+    const added = changeIds.has(event.id);
+    return `<button type="button" class="trajectory-session-event${branchStart ? ' branch-start' : ''}${added ? ' change-added' : ''}${selected ? ' current' : ''}" data-session-event-id="${escapeHtml(event.id)}" style="--session-accent:${escapeHtml(EVENT_DOT_COLORS[type] || 'var(--gray)')};--branch-color:${escapeHtml(branchColor(branchId))}" title="${added ? 'Added in selected node · ' : ''}Show full event details">
       <span class="trajectory-session-type">${branchStart ? `<span class="trajectory-session-branch">${escapeHtml(branchId)}</span>` : ''}<span class="trajectory-session-type-chip">${escapeHtml(trajectorySessionTypeLabel(type))}</span></span>
-      <span class="trajectory-session-summary">${escapeHtml(trajectorySessionExcerpt(event))}</span>
+      <span class="trajectory-session-summary">${added ? '<span class="trajectory-session-change-label">New</span>' : ''}${escapeHtml(trajectorySessionExcerpt(event))}</span>
     </button>`;
   }).join('') || '<div class="muted">No events to display.</div>';
   const surface = document.createElement('div');
@@ -1207,11 +1240,11 @@ function drawTrajectoryDetailsSessionView(graph, edges, seq) {
     });
   });
   const tracks = surface.querySelector('.trajectory-tracks-trigger');
-  tracks.addEventListener('click', () => openTrajectoryTrackModal(seq));
+  tracks.addEventListener('click', () => openTrajectoryTrackModal(seq, changeIds));
   tracks.addEventListener('keydown', event => {
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
-      openTrajectoryTrackModal(seq);
+      openTrajectoryTrackModal(seq, changeIds);
     }
   });
   surface.querySelectorAll('[data-session-event-id]').forEach(row => {
@@ -1222,7 +1255,7 @@ function drawTrajectoryDetailsSessionView(graph, edges, seq) {
   edges.setAttribute('height', graph.style.minHeight.replace('px', ''));
   syncDetailSlider();
   highlightDetailStep();
-  updateGraphMeta(`${seq.length} events · trajectory details`);
+  updateGraphMeta(`${seq.length} events · ${meta}`);
 }
 function drawArrowEdge(edgesEl, source, target, a, b, color) {
   const dx = b.cx - a.cx, dy = b.cy - a.cy;
@@ -1626,6 +1659,14 @@ function drawDetailView() {
   overviewStep = Math.max(0, Math.min(overviewStep, seq.length - 1));
   if (overviewSeqKind === 'all') {
     drawTrajectoryDetailsSessionView(graph, edges, seq);
+    return;
+  }
+  if (overviewSeqKind === 'node') {
+    const changeIds = nodeChangeIds();
+    drawTrajectoryDetailsSessionView(graph, edges, seq, {
+      changeIds,
+      meta: `node view · ${changeIds.size} new`,
+    });
     return;
   }
   edges.hidden = false;
@@ -2077,19 +2118,20 @@ function overviewCurrentSeq() {
   }
   if (!overviewNode) return [];
   const seqs = overviewSequencesFor(overviewNode);
+  if (overviewSeqKind === 'node') return seqs.complete;
   return overviewSeqKind === 'complete' ? seqs.complete : seqs.segment;
 }
 function openDetailView(node) {
   overviewView = 'detail';
   overviewNode = node;
-  overviewSeqKind = 'segment';
+  overviewSeqKind = 'node';
   stopOverviewTimer();
   $('detailToolbar').classList.remove('hidden');
-  $('detailSeqTabs').classList.remove('hidden');
+  $('detailSeqTabs').classList.add('hidden');
   $('dagActions').classList.add('hidden');
   $('eventDetailPanel').classList.add('hidden');
-  updateDetailTabs();
-  overviewStep = 0;
+  const seqs = overviewSequencesFor(node);
+  overviewStep = Math.max(0, seqs.complete.findIndex(event => event.id === seqs.segment[0]?.id));
   overviewCardEvent = null;
   drawDetailView();
   detailTogglePlay();
@@ -2120,7 +2162,7 @@ function closeDetailView() {
   drawDagView();
 }
 function setDetailSeq(kind) {
-  if (overviewSeqKind === kind || !overviewNode) return;
+  if (overviewSeqKind === kind || !overviewNode || overviewSeqKind === 'node') return;
   overviewSeqKind = kind;
   stopOverviewTimer();
   updateDetailTabs();
@@ -2130,7 +2172,7 @@ function setDetailSeq(kind) {
   drawDetailView();
 }
 function updateDetailTabs() {
-  if (!overviewNode) return;
+  if (!overviewNode || overviewSeqKind === 'node') return;
   const seqs = overviewSequencesFor(overviewNode);
   $('detailSegment').textContent = `Change (${seqs.segment.length})`;
   $('detailComplete').textContent = `History (${seqs.complete.length})`;
@@ -2259,7 +2301,7 @@ function detailTogglePlay() {
     }, 700);
     return;
   }
-  if (overviewStep >= seq.length - 1) overviewAdvance(0, true);
+  if (overviewStep >= seq.length - 1) overviewAdvance(nodePlaybackStart(seq), true);
   else { overviewCardEvent = seq[overviewStep]; renderDetailCard(); }
   $('detailPlay').textContent = 'Pause';
   overviewTimer = setInterval(() => {
