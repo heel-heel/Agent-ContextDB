@@ -520,14 +520,64 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
     .node.dot-node .type, .node.dot-node .label, .node.dot-node .badge { display:none; }
     .node.dot-node.selected { outline:3px solid #f0b429; outline-offset:2px; z-index:6; }
     .node.dot-node.dimmed { opacity:.28; }
-    .event-detail-panel { position:absolute; width:420px; max-width:calc(100% - 24px); max-height:min(calc(100% - 24px), 420px); overflow:auto; z-index:20; }
+    .event-detail-panel { position:absolute; width:540px; max-width:calc(100% - 24px); max-height:min(calc(100% - 24px), 460px); overflow:auto; z-index:20; }
     .event-detail-panel.hidden { display:none; }
     .event-detail-tabs { display:inline-flex; gap:4px; border:1px solid var(--line); border-radius:6px; padding:3px; background:#fbfcfd; }
     .event-detail-tabs button { height:26px; padding:0 10px; border:0; border-radius:4px; background:transparent; color:#63758a; font-size:12px; font-weight:700; white-space:nowrap; }
     .event-detail-tabs button.active { background:#2364aa; color:#fff; }
     .event-detail-panel .step-card { position:relative; }
-    .event-detail-close { position:absolute; top:8px; right:8px; width:26px; height:26px; padding:0; border:0; border-radius:50%; background:rgba(255,255,255,.92); color:#315d89; font-size:18px; line-height:1; box-shadow:0 1px 3px rgba(23,50,77,.22); cursor:pointer; z-index:2; }
+    .event-detail-panel .step-card-head { padding-right:42px; }
+    .event-detail-close { position:sticky; top:8px; display:grid; place-items:center; width:26px; height:26px; margin:8px 8px -34px auto; padding:0; border:0; border-radius:50%; background:rgba(255,255,255,.92); color:#315d89; font-size:18px; line-height:1; box-shadow:0 1px 3px rgba(23,50,77,.22); cursor:pointer; z-index:4; }
     .event-detail-close:hover { background:#fff; }
+    /* Trajectory details: compact harness-style timeline and event session. */
+    .trajectory-details-surface { padding:14px; }
+    .trajectory-tracks { overflow:hidden; border:1px solid #c9def5; border-top:3px solid #2364aa; border-radius:6px; background:#f8fbff; }
+    .trajectory-tracks-trigger { cursor:pointer; }
+    .trajectory-tracks-trigger:focus-visible { outline:2px solid #2364aa; outline-offset:3px; }
+    .trajectory-track { display:grid; grid-template-columns:60px minmax(0,1fr); min-height:24px; border-bottom:1px solid #edf3f8; }
+    .trajectory-track:last-child { border-bottom:0; }
+    .trajectory-track-label { display:flex; align-items:center; justify-content:flex-end; padding:0 8px; color:#4b6074; background:#f1f6fb; font-size:11px; font-weight:700; text-align:right; }
+    .trajectory-track-rail { position:relative; min-height:24px; background:#fff; }
+    .trajectory-track-rail::before { content:''; position:absolute; right:0; left:0; top:50%; border-top:1px dashed #e7eef5; }
+    .trajectory-track-marker { position:absolute; top:50%; width:11px; height:10px; margin:0; padding:0; border:1px solid rgba(23,50,77,.2); border-radius:2px; background:var(--track-color); box-shadow:0 1px 1px rgba(23,50,77,.14); cursor:pointer; transform:translate(-50%,-50%); z-index:1; }
+    .trajectory-track-marker.edge-start { transform:translate(0,-50%); }
+    .trajectory-track-marker.edge-end { transform:translate(-100%,-50%); }
+    .trajectory-track-marker:hover { transform:translate(-50%,-50%) scale(1.2); z-index:2; }
+    .trajectory-track-marker.edge-start:hover { transform:translate(0,-50%) scale(1.2); }
+    .trajectory-track-marker.edge-end:hover { transform:translate(-100%,-50%) scale(1.2); }
+    .trajectory-track-marker.current { outline:2px solid #f0b429; outline-offset:2px; z-index:3; }
+    .trajectory-session-list { margin-top:0; overflow:hidden; border:1px solid #c9def5; border-radius:6px; background:#fff; padding-top:12px; }
+    .trajectory-session-event { position:relative; display:grid; grid-template-columns:82px minmax(0,1fr); align-items:center; gap:7px; width:100%; height:auto; min-height:27px; margin:0; padding:3px 8px 3px 10px; border:0; border-bottom:1px solid #e0e8f0; border-radius:0; background:#fff; color:#17324d; font:inherit; text-align:left; cursor:pointer; }
+    .trajectory-session-event:last-child { border-bottom:0; }
+    .trajectory-session-event::before { position:absolute; top:-1px; bottom:-1px; left:0; width:3px; background:var(--branch-color); content:''; }
+    .trajectory-session-event.branch-start { margin-top:12px; border-top:1px solid #d5e3f0; }
+    .trajectory-session-event.branch-start:first-child { margin-top:0; }
+    .trajectory-session-event.branch-start::before { top:4px; border-radius:0 0 3px 0; }
+    .trajectory-session-event:hover, .trajectory-session-event.current { background:#f1f6fc; }
+    .trajectory-session-event.current { box-shadow:inset 3px 0 0 #2364aa; }
+    .trajectory-session-type { position:relative; display:flex; justify-content:flex-end; align-items:center; min-width:0; }
+    .trajectory-session-type-chip { display:inline-flex; align-items:center; justify-content:flex-end; min-height:18px; max-width:82px; padding:2px 5px; border:1px solid var(--session-accent); border-radius:3px; background:var(--session-accent); color:#fff; font-size:11px; font-weight:700; line-height:1.15; text-align:right; text-transform:lowercase; white-space:normal; }
+    .trajectory-session-branch { position:absolute; top:-14px; left:-7px; z-index:1; overflow:visible; border:1px solid var(--branch-color); border-radius:999px; background:#fff; color:var(--branch-color); padding:1px 5px; font-size:9px; font-weight:700; line-height:1.1; white-space:nowrap; }
+    .trajectory-session-summary { min-width:0; overflow:hidden; color:#26394c; font:11px/1.35 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; text-overflow:ellipsis; white-space:nowrap; }
+    .trajectory-track-modal { position:fixed; inset:0; display:grid; place-items:center; padding:8px; background:rgba(16,35,55,.28); z-index:80; }
+    .trajectory-track-modal.hidden { display:none; }
+    .trajectory-track-dialog { display:flex; flex-direction:column; width:min(var(--trajectory-dialog-width), calc(100vw - 16px), 1680px); max-height:calc(100vh - 16px); overflow:hidden; border:1px solid #a8c7e6; border-radius:8px; background:#fff; box-shadow:0 18px 48px rgba(11,42,76,.28); }
+    .trajectory-track-dialog-head { display:flex; align-items:center; justify-content:space-between; min-height:34px; padding:0 8px 0 12px; border-bottom:1px solid #d9e6f2; background:#f7fbff; }
+    .trajectory-track-dialog-title { color:#17324d; font-size:13px; font-weight:700; }
+    .trajectory-track-dialog-close { display:grid; place-items:center; width:24px; height:24px; padding:0; border:0; border-radius:4px; background:transparent; color:#315d89; font-size:19px; line-height:1; cursor:pointer; }
+    .trajectory-track-dialog-close:hover { background:#e9f2fb; }
+    .trajectory-track-dialog-body { padding:8px; overflow:auto; }
+    .trajectory-track-dialog .trajectory-tracks { width:calc(var(--expanded-rail-width) + 62px); min-width:100%; cursor:default; }
+    .trajectory-track-dialog .trajectory-track { grid-template-columns:62px minmax(0, 1fr); min-height:24px; }
+    .trajectory-track-dialog .trajectory-track-label { padding-right:6px; font-size:11px; }
+    .trajectory-track-dialog .trajectory-track-rail { min-height:24px; }
+    .trajectory-track-dialog .trajectory-track-marker { width:11px; height:10px; }
+    @media (max-width: 720px) {
+      .trajectory-track { grid-template-columns:52px minmax(0,1fr); }
+      .trajectory-track-label { padding:0 6px; font-size:10px; }
+      .trajectory-session-event { grid-template-columns:76px minmax(0,1fr); gap:4px 6px; }
+      .trajectory-session-type-chip { max-width:76px; }
+    }
   </style>
 </head>
 <body>
@@ -544,21 +594,6 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
   <main id="finalPage" class="page hidden">
     <section>
       <div class="panel-head"><h2>Versioned Trajectory DAG</h2><span id="graphMeta" class="badge">idle</span></div>
-      <div class="event-legend">
-        <span class="pill"><span class="legend-dot dot-system_event"></span>system event</span>
-        <span class="pill"><span class="legend-dot dot-user_message"></span>user message</span>
-        <span class="pill"><span class="legend-dot dot-assistant_message"></span>assistant message</span>
-        <span class="pill"><span class="legend-dot dot-tool_call"></span>tool call</span>
-        <span class="pill"><span class="legend-dot dot-tool_result"></span>tool result</span>
-        <span class="pill"><span class="legend-dot dot-skill_match"></span>skill match</span>
-        <span class="pill"><span class="legend-dot dot-skill_decision"></span>skill decision</span>
-        <span class="pill"><span class="legend-dot dot-skill_recommendation"></span>skill recommendation</span>
-        <span class="pill"><span class="legend-dot dot-version_snapshot_created"></span>snapshot</span>
-        <span class="pill"><span class="legend-dot dot-version_repair_branch_suggested"></span>branch recommendation</span>
-        <span class="pill"><span class="legend-dot dot-version_branch_created"></span>branch creation</span>
-        <span class="pill"><span class="legend-dot dot-version_rollback_created"></span>rollback</span>
-        <span class="pill"><span class="legend-dot dot-version_decision"></span>version decision</span>
-      </div>
       <div id="dagActions" class="dag-actions"><button id="allEventsBtn" class="small-btn secondary">Trajectory details</button></div>
       <div id="detailToolbar" class="detail-toolbar hidden">
         <button id="detailBack" class="small-btn secondary">← Back</button>
@@ -701,7 +736,7 @@ function selectedSummaryProfile() {
 function llmProfileOptions(selected) {
   if (!llmProfiles.length) return '<option value="">Loading models...</option>';
   const value = selectedSummaryProfile() || selected;
-  return llmProfiles.map(profile => `<option value="${escapeHtml(profile.profile_id)}"${profile.profile_id === value ? ' selected' : ''}>${escapeHtml(profile.model)}</option>`).join('');
+  return llmProfiles.map(profile => `<option value="${escapeHtml(profile.profile_id)}"${profile.profile_id === value ? ' selected' : ''}>${escapeHtml(profile.label || profile.model)}</option>`).join('');
 }
 function viewSummaryProfileSelector() {
   return `<label class="summary-profile-control">LLM profile <select id="summaryProfile" aria-label="Context Digest LLM profile"${llmProfiles.length ? '' : ' disabled'}>${llmProfileOptions(summaryProfileId)}</select></label>`;
@@ -1044,6 +1079,150 @@ function createDotNode(n) {
   el.style.background = EVENT_DOT_COLORS[presentationType] || 'var(--gray)';
   el.title = `${displayEventType(presentationType)} · ${n.id}${n.branch_id ? ' · ' + n.branch_id : ''}\n${graphPayloadLabel(n)}`;
   return el;
+}
+const TRAJECTORY_DETAIL_LANES = {
+  message: { label: 'Message', types: new Set(['system_event', 'user_message', 'assistant_message']) },
+  tool: { label: 'Tool', types: new Set(['tool_call', 'tool_result', 'skill_match', 'skill_decision', 'skill_recommendation']) },
+  version: { label: 'Version', types: new Set(['version_snapshot_created', 'version_repair_branch_suggested', 'version_branch_created', 'version_rollback_created', 'version_decision']) },
+};
+const TRAJECTORY_SESSION_TYPE_LABELS = {
+  system_event: 'system',
+  user_message: 'user',
+  assistant_message: 'assistant',
+  tool_call: 'call',
+  tool_result: 'result',
+  skill_match: 'match',
+  skill_recommendation: 'recommend',
+  skill_decision: 'decision',
+  version_repair_branch_suggested: 'recommend',
+  version_branch_created: 'creation',
+  version_decision: 'decision',
+};
+function trajectoryDetailLane(event) {
+  const type = eventPresentationType(event);
+  return Object.entries(TRAJECTORY_DETAIL_LANES).find(([, lane]) => lane.types.has(type))?.[0] || 'message';
+}
+function trajectorySessionExcerpt(event) {
+  return String(graphPayloadLabel(event) || displayNodeLabel(event) || 'No event details.').replace(/\s+/g, ' ').trim();
+}
+function trajectorySessionTypeLabel(type) {
+  return TRAJECTORY_SESSION_TYPE_LABELS[type] || displayEventType(type);
+}
+function expandedTrajectoryRailWidth(seq) {
+  return Math.max(900, seq.length * 12 + 8);
+}
+function renderTrajectoryTrackRows(seq, expanded = false) {
+  const railWidth = expandedTrajectoryRailWidth(seq);
+  return Object.entries(TRAJECTORY_DETAIL_LANES).map(([laneId, lane]) => {
+    const laneEvents = seq
+      .map((event, index) => ({event, index}))
+      .filter(({event}) => trajectoryDetailLane(event) === laneId);
+    const markers = laneEvents.map(({event, index}) => {
+      const type = eventPresentationType(event);
+      let left;
+      if (expanded) {
+        const edgeInset = 4;
+        const centreInset = edgeInset + 5.5;
+        left = seq.length < 2
+          ? railWidth / 2
+          : centreInset + index / (seq.length - 1) * (railWidth - centreInset * 2);
+      } else {
+        left = seq.length < 2 ? 0 : 99.4 * index / (seq.length - 1);
+      }
+      const selected = event.id === (overviewCardEvent || seq[overviewStep])?.id;
+      const edgeClass = expanded ? '' : (index === 0 ? ' edge-start' : (index === seq.length - 1 ? ' edge-end' : ''));
+      const leftValue = expanded ? `${left.toFixed(1)}px` : `${left.toFixed(3)}%`;
+      return `<button type="button" class="trajectory-track-marker${edgeClass}${selected ? ' current' : ''}" data-track-event-id="${escapeHtml(event.id)}" style="left:${leftValue};--track-color:${escapeHtml(EVENT_DOT_COLORS[type] || 'var(--gray)')}" title="${escapeHtml(`${displayEventType(type)} · ${event.id}\n${trajectorySessionExcerpt(event)}`)}" aria-label="Show ${escapeHtml(displayEventType(type))} details"${selected ? ' aria-current="step"' : ''}></button>`;
+    }).join('');
+    return `<div class="trajectory-track"><div class="trajectory-track-label">${lane.label}</div><div class="trajectory-track-rail">${markers}</div></div>`;
+  }).join('');
+}
+function closeTrajectoryTrackModal() {
+  document.getElementById('trajectoryTrackModal')?.remove();
+}
+function openTrajectoryTrackModal(seq) {
+  closeTrajectoryTrackModal();
+  const railWidth = expandedTrajectoryRailWidth(seq);
+  const dialogWidth = railWidth + 62 + 16;
+  const modal = document.createElement('div');
+  modal.id = 'trajectoryTrackModal';
+  modal.className = 'trajectory-track-modal';
+  modal.innerHTML = `<div class="trajectory-track-dialog" style="--trajectory-dialog-width:${dialogWidth}px" role="dialog" aria-modal="true" aria-label="Expanded trajectory event tracks">
+    <div class="trajectory-track-dialog-head"><span class="trajectory-track-dialog-title">Event Tracks</span><button type="button" class="trajectory-track-dialog-close" aria-label="Close expanded event tracks" title="Close">&times;</button></div>
+    <div class="trajectory-track-dialog-body"><div class="trajectory-tracks" style="--expanded-rail-width:${railWidth}px" aria-label="Expanded trajectory event tracks">${renderTrajectoryTrackRows(seq, true)}</div></div>
+  </div>`;
+  let onKeyDown;
+  const close = () => {
+    document.removeEventListener('keydown', onKeyDown);
+    closeTrajectoryTrackModal();
+  };
+  modal.addEventListener('click', event => { if (event.target === modal) close(); });
+  modal.querySelector('.trajectory-track-dialog-close').addEventListener('click', close);
+  modal.querySelectorAll('[data-track-event-id]').forEach(marker => {
+    marker.addEventListener('click', () => {
+      const index = seq.findIndex(event => event.id === marker.dataset.trackEventId);
+      close();
+      if (index >= 0) overviewAdvance(index, true);
+    });
+  });
+  onKeyDown = event => {
+    if (event.key === 'Escape') {
+      close();
+    }
+  };
+  document.addEventListener('keydown', onKeyDown);
+  document.body.appendChild(modal);
+  modal.querySelector('.trajectory-track-dialog-close').focus();
+}
+function drawTrajectoryDetailsSessionView(graph, edges, seq) {
+  const panel = $('eventDetailPanel');
+  graph.querySelectorAll('.node, .trajectory-details-surface').forEach(el => el.remove());
+  edges.innerHTML = '';
+  edges.hidden = true;
+  computeBranchLanes();
+  const shown = seq.slice(0, overviewStep + 1);
+  const selectedId = (overviewCardEvent || seq[overviewStep])?.id || '';
+  const trackRows = renderTrajectoryTrackRows(seq);
+  const seenBranches = new Set();
+  const sessionRows = shown.map(event => {
+    const type = eventPresentationType(event);
+    const branchId = event.branch_id || 'main';
+    const branchStart = !seenBranches.has(branchId);
+    seenBranches.add(branchId);
+    const selected = event.id === selectedId;
+    return `<button type="button" class="trajectory-session-event${branchStart ? ' branch-start' : ''}${selected ? ' current' : ''}" data-session-event-id="${escapeHtml(event.id)}" style="--session-accent:${escapeHtml(EVENT_DOT_COLORS[type] || 'var(--gray)')};--branch-color:${escapeHtml(branchColor(branchId))}" title="Show full event details">
+      <span class="trajectory-session-type">${branchStart ? `<span class="trajectory-session-branch">${escapeHtml(branchId)}</span>` : ''}<span class="trajectory-session-type-chip">${escapeHtml(trajectorySessionTypeLabel(type))}</span></span>
+      <span class="trajectory-session-summary">${escapeHtml(trajectorySessionExcerpt(event))}</span>
+    </button>`;
+  }).join('') || '<div class="muted">No events to display.</div>';
+  const surface = document.createElement('div');
+  surface.className = 'trajectory-details-surface';
+  surface.innerHTML = `<div class="trajectory-tracks trajectory-tracks-trigger" aria-label="Trajectory event tracks" title="Open expanded event tracks" tabindex="0">${trackRows}</div><div class="trajectory-session-list" aria-label="Trajectory event session">${sessionRows}</div>`;
+  graph.insertBefore(surface, panel);
+  surface.querySelectorAll('[data-track-event-id]').forEach(marker => {
+    marker.addEventListener('click', event => {
+      event.stopPropagation();
+      const index = seq.findIndex(event => event.id === marker.dataset.trackEventId);
+      if (index >= 0) overviewAdvance(index, true);
+    });
+  });
+  const tracks = surface.querySelector('.trajectory-tracks-trigger');
+  tracks.addEventListener('click', () => openTrajectoryTrackModal(seq));
+  tracks.addEventListener('keydown', event => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      openTrajectoryTrackModal(seq);
+    }
+  });
+  surface.querySelectorAll('[data-session-event-id]').forEach(row => {
+    row.addEventListener('click', () => detailStepTo(row.dataset.sessionEventId));
+  });
+  graph.style.minHeight = `${Math.max(320, surface.offsetHeight + 28)}px`;
+  edges.setAttribute('width', String(Math.max(graph.clientWidth || 900, 640)));
+  edges.setAttribute('height', graph.style.minHeight.replace('px', ''));
+  syncDetailSlider();
+  highlightDetailStep();
+  updateGraphMeta(`${seq.length} events · trajectory details`);
 }
 function drawArrowEdge(edgesEl, source, target, a, b, color) {
   const dx = b.cx - a.cx, dy = b.cy - a.cy;
@@ -1408,6 +1587,8 @@ function drawDagView(data) {
   const graph = $('graph');
   const edges = $('edges');
   if (!graph || !edges) return;
+  edges.hidden = false;
+  graph.querySelectorAll('.trajectory-details-surface').forEach(surface => surface.remove());
   graph.querySelectorAll('.node').forEach(n => n.remove());
   edges.innerHTML = '';
   markerCache.clear();
@@ -1441,12 +1622,18 @@ function drawDetailView() {
   const graph = $('graph');
   const edges = $('edges');
   if (!graph || !edges) return;
+  const seq = overviewCurrentSeq();
+  overviewStep = Math.max(0, Math.min(overviewStep, seq.length - 1));
+  if (overviewSeqKind === 'all') {
+    drawTrajectoryDetailsSessionView(graph, edges, seq);
+    return;
+  }
+  edges.hidden = false;
+  graph.querySelectorAll('.trajectory-details-surface').forEach(surface => surface.remove());
   graph.querySelectorAll('.node').forEach(n => n.remove());
   edges.innerHTML = '';
   markerCache.clear();
   computeBranchLanes();
-  const seq = overviewCurrentSeq();
-  overviewStep = Math.max(0, Math.min(overviewStep, seq.length - 1));
   const canvasW = Math.max(graph.clientWidth || 900, 640);
   const { positions, graphW, graphH, minX, minY } = layoutDetailNodes(seq, canvasW);
   const offsetX = (canvasW - graphW) / 2 - minX;
@@ -1965,13 +2152,19 @@ function highlightDetailStep() {
   const target = overviewCardEvent || seq[overviewStep];
   const currentId = target?.id;
   document.querySelectorAll('#graph .node.dot-node').forEach(el => el.classList.toggle('selected', el.dataset.eventId === currentId));
+  document.querySelectorAll('#graph [data-track-event-id]').forEach(el => {
+    const selected = el.dataset.trackEventId === currentId;
+    el.classList.toggle('current', selected);
+    el.toggleAttribute('aria-current', selected);
+  });
+  document.querySelectorAll('#graph [data-session-event-id]').forEach(el => el.classList.toggle('current', el.dataset.sessionEventId === currentId));
 }
 function renderDetailCard() {
   const event = overviewCardEvent;
   const panel = $('eventDetailPanel');
   if (!panel || !event) return;
   panel.classList.remove('hidden');
-  panel.innerHTML = `<div class="step-card ${playbackEventColorClass(event)}">${renderPlaybackEventCard(event)}<button class="event-detail-close" title="Close" aria-label="Close event detail">&times;</button></div>`;
+  panel.innerHTML = `<button class="event-detail-close" title="Close" aria-label="Close event detail">&times;</button><div class="step-card ${playbackEventColorClass(event)}">${renderPlaybackEventCard(event)}</div>`;
   panel.querySelector('.event-detail-close').onclick = () => { panel.classList.add('hidden'); overviewCardEvent = null; };
   positionDetailCard();
 }
@@ -1982,7 +2175,8 @@ function positionDetailCard() {
   const seq = overviewCurrentSeq();
   const target = overviewCardEvent || seq[overviewStep];
   if (!target) return;
-  const nodeEl = graph.querySelector(`.node.dot-node[data-event-id="${target.id}"]`);
+  const nodeEl = graph.querySelector(`.node.dot-node[data-event-id="${target.id}"]`)
+    || graph.querySelector(`[data-session-event-id="${target.id}"]`);
   if (!nodeEl) return;
   const n = nodeEl.getBoundingClientRect();
   const g = graph.getBoundingClientRect();
@@ -2029,6 +2223,10 @@ function overviewAdvance(step, showCard) {
   const seq = overviewCurrentSeq();
   overviewStep = Math.max(0, Math.min(step, seq.length - 1));
   if (showCard) overviewCardEvent = seq[overviewStep];
+  else if (overviewSeqKind === 'all') {
+    overviewCardEvent = null;
+    $('eventDetailPanel').classList.add('hidden');
+  }
   drawDetailView();
   if (showCard) renderDetailCard();
 }
@@ -2051,6 +2249,16 @@ function detailStepBy(delta) {
 function detailTogglePlay() {
   if (overviewTimer) { stopOverviewTimer(); return; }
   const seq = overviewCurrentSeq();
+  if (overviewSeqKind === 'all') {
+    if (overviewStep >= seq.length - 1) overviewAdvance(0, false);
+    $('detailPlay').textContent = 'Pause';
+    overviewTimer = setInterval(() => {
+      const events = overviewCurrentSeq();
+      if (overviewStep >= events.length - 1) { stopOverviewTimer(); return; }
+      overviewAdvance(overviewStep + 1, false);
+    }, 700);
+    return;
+  }
   if (overviewStep >= seq.length - 1) overviewAdvance(0, true);
   else { overviewCardEvent = seq[overviewStep]; renderDetailCard(); }
   $('detailPlay').textContent = 'Pause';
@@ -2200,7 +2408,7 @@ async function loadLlmProfiles(){
     defaultLlmProfileId=data.default_profile||llmProfiles[0]?.profile_id||'';
     if (!summaryProfileId) summaryProfileId=defaultLlmProfileId;
     select.innerHTML='';
-    llmProfiles.forEach(profile=>{const option=document.createElement('option');option.value=profile.profile_id;option.textContent=profile.model;option.dataset.ready=profile.ready?'true':'false';select.appendChild(option);});
+    llmProfiles.forEach(profile=>{const option=document.createElement('option');option.value=profile.profile_id;option.textContent=profile.label||profile.model;option.dataset.ready=profile.ready?'true':'false';select.appendChild(option);});
     if(defaultLlmProfileId)select.value=defaultLlmProfileId;
     populateSummaryProfileSelector();
     bindSummaryProfileControls();

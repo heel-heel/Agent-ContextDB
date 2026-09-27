@@ -41,6 +41,23 @@ def test_background_llm_transport_policy_can_be_configured_independently(monkeyp
     assert judge._retry_window_seconds() == 75.0
 
 
+def test_selected_deepseek_profiles_use_the_official_deepseek_transport(monkeypatch):
+    monkeypatch.setenv("CONTEXTDB_BACKGROUND_LLM_API_KEY", "deepseek-test-key")
+    monkeypatch.setenv("CONTEXTDB_BACKGROUND_LLM_BASE_URL", "https://api.deepseek.com")
+
+    flash = SemanticRepairJudge(profile_id="deepseek-v4.1-flash")
+    pro = SemanticRepairJudge(profile_id="deepseek-v4-pro")
+
+    assert flash.provider == "openai-compatible"
+    assert flash.model == "deepseek-flash"
+    assert flash._api_key == "deepseek-test-key"
+    assert flash._base_url == "https://api.deepseek.com"
+    assert pro.provider == "openai-compatible"
+    assert pro.model == "deepseek-v4-pro"
+    assert pro._api_key == "deepseek-test-key"
+    assert pro._base_url == "https://api.deepseek.com"
+
+
 def test_remote_disconnect_is_reported_as_llm_diagnostic(monkeypatch):
     monkeypatch.setenv("CONTEXTDB_LLM_PROVIDER", "bailian")
     monkeypatch.setenv("CONTEXTDB_LLM_API_KEY", "test-key")
@@ -53,20 +70,20 @@ def test_remote_disconnect_is_reported_as_llm_diagnostic(monkeypatch):
 
     assert result["enabled"] is True
     assert "remote LLM endpoint closed or reset" in result["error"]
-    assert "CONTEXTDB_LLM_BASE_URL" in result["error"]
+    assert "selected LLM profile base URL" in result["error"]
 
 
-def test_incomplete_default_profile_reports_missing_endpoint(monkeypatch):
+def test_default_deepseek_profile_uses_the_official_base_url(monkeypatch):
     monkeypatch.delenv("CONTEXTDB_LLM_PROVIDER", raising=False)
     monkeypatch.delenv("CONTEXTDB_LLM_API_KEY", raising=False)
-    monkeypatch.setenv("DASHSCOPE_API_KEY", "test-key")
-    monkeypatch.delenv("CONTEXTDB_LLM_BASE_URL", raising=False)
+    monkeypatch.setenv("CONTEXTDB_BACKGROUND_LLM_API_KEY", "deepseek-test-key")
+    monkeypatch.delenv("CONTEXTDB_BACKGROUND_LLM_BASE_URL", raising=False)
     judge = SemanticRepairJudge()
 
-    result = judge._openai_json_call("system", "prompt", {"enabled": False}, "Semantic judge failed.")
-
-    assert result["enabled"] is False
-    assert result["error"] == "LLM profile 'deepseek-v4.1-flash' is not ready: CONTEXTDB_LLM_BASE_URL is not configured."
+    assert judge.profile_id == "deepseek-v4.1-flash"
+    assert judge.provider == "openai-compatible"
+    assert judge.model == "deepseek-flash"
+    assert judge._base_url == "https://api.deepseek.com"
 
 
 def test_refused_connection_has_network_diagnostic(monkeypatch):

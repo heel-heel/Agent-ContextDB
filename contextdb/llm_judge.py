@@ -566,9 +566,9 @@ class SemanticRepairJudge:
                 "model": self.model,
                 "error": (
                     f"LLM profile '{self.profile_id}' is not ready: "
-                    "CONTEXTDB_LLM_BASE_URL is not configured."
+                    "the configured base URL is not available."
                 ),
-                "reason": "Configure the Bailian workspace endpoint, then restart the ContextDB dashboard service.",
+                "reason": "Configure the selected LLM profile endpoint, then restart the ContextDB dashboard service.",
             })
             return result
         base_url = (self._base_url or os.environ.get("CONTEXTDB_LLM_BASE_URL", "https://dashscope.aliyuncs.com/compatible-mode/v1")).rstrip("/")
@@ -640,7 +640,7 @@ class SemanticRepairJudge:
                 elif isinstance(exc, OSError):
                     detail = (
                         f"The remote LLM endpoint closed or reset the connection after {attempt} attempt(s) {wait_description}: {detail}. "
-                        "Verify CONTEXTDB_LLM_BASE_URL for the selected Bailian workspace and any proxy/firewall settings."
+                        "Verify the selected LLM profile base URL and any proxy/firewall settings."
                     )
                 result = dict(disabled_result)
                 result.update({"enabled": True, "provider": self.provider, "model": self.model, "error": detail, "reason": failure_reason, "_contextdb_execution": {"profile_id": self.profile_id or None, "provider": self.provider, "requested_model": self.model, "response_model": None, "response_id": None, "verified": False}})

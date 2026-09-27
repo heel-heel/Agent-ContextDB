@@ -4,18 +4,20 @@
   "profiles": {
     "deepseek-v4.1-flash": {
       "label": "Deepseek-v4.1-flash",
-      "provider": "bailian",
-      "model": "deepseek-v4.1-flash",
-      "api_key_env": "DASHSCOPE_API_KEY",
-      "base_url_env": "CONTEXTDB_LLM_BASE_URL",
+      "provider": "openai-compatible",
+      "model": "deepseek-flash",
+      "api_key_env": "CONTEXTDB_BACKGROUND_LLM_API_KEY",
+      "base_url_env": "CONTEXTDB_BACKGROUND_LLM_BASE_URL",
+      "base_url": "https://api.deepseek.com",
       "supports_json_response_format": false
     },
     "deepseek-v4-pro": {
       "label": "Deepseek-v4-pro",
-      "provider": "bailian",
+      "provider": "openai-compatible",
       "model": "deepseek-v4-pro",
-      "api_key_env": "DASHSCOPE_API_KEY",
-      "base_url_env": "CONTEXTDB_LLM_BASE_URL",
+      "api_key_env": "CONTEXTDB_BACKGROUND_LLM_API_KEY",
+      "base_url_env": "CONTEXTDB_BACKGROUND_LLM_BASE_URL",
+      "base_url": "https://api.deepseek.com",
       "supports_json_response_format": false
     },
     "qwen3.8-max": {

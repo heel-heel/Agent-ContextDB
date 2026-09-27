@@ -802,10 +802,52 @@ ORDER BY action.event_rank,state.event_rank;"""
 SELECT action_event_id,CASE json_extract(next_tool_result,'$.ok')
   WHEN 1 THEN 1 WHEN 0 THEN -1 ELSE 0 END AS reward_hint FROM action_outcomes;"""
 
+        def semantic_statement(spec: Dict[str, str]) -> str:
+            """Render semantic plan nodes as SemaSQL-style statements for the dashboard."""
+            alias = spec["lotus_alias"]
+            langex = spec["langex"].replace("{{", "{").replace("}}", "}")
+            if alias == "sem_agg":
+                return f"""WITH earlier_events AS (
+  SELECT event_id,event_type,text,command,preview
+  FROM visible_events
+  ORDER BY timestamp,event_id
+  LIMIT :earlier_event_limit
+)
+SELECT sem_agg(
+  s'{langex}'
+) AS digest
+FROM earlier_events;"""
+            if alias == "sem_map":
+                return f"""-- sem_map
+SELECT
+  *,
+  s'{langex}' AS likely_cause
+FROM failed_tool_results;"""
+            if alias == "sem_join":
+                return f"""-- sem_join
+SELECT failure.*,repair.*
+FROM failure_patterns AS failure
+JOIN repair_candidates AS repair
+  ON s'{langex}';"""
+            if alias == "sem_cluster_by":
+                return f"""-- sem_cluster_by
+WITH labeled_rows AS (
+  SELECT
+    *,
+    s'{langex}' AS semantic_group
+  FROM accepted_repair_pairs
+)
+SELECT semantic_group,COUNT(*) AS group_size
+FROM labeled_rows
+GROUP BY semantic_group;"""
+            return f"""-- {alias}
+SELECT s'{langex}' AS {spec['output_relation']}
+FROM {spec['input_relation']};"""
+
         def semantic(label: str, spec: Dict[str, str]) -> Dict[str, str]:
             return {
                 "kind": "SEMANTIC", "label": label, **spec,
-                "statement": f"{spec['lotus_alias']}(\n  {spec['input_relation']},\n  langex => '{spec['langex']}'\n) -> {spec['output_relation']}",
+                "statement": semantic_statement(spec),
             }
 
         def relational(label: str, statement: str) -> Dict[str, str]:

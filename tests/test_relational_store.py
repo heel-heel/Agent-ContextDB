@@ -47,7 +47,13 @@ def test_contextql_reads_persistent_event_relation_and_view_exposes_plan():
         operators = view["execution_plan"]["operators"]
         assert operators[0]["kind"] == "SQL"
         assert any(operator["kind"] == "SEMANTIC" for operator in operators)
+        digest_operator = next(operator for operator in operators if operator["lotus_alias"] == "sem_agg")
+        assert "SELECT sem_agg(" in digest_operator["statement"]
+        assert "s'Compress the earlier completed prefix" in digest_operator["statement"]
+        assert "langex =>" not in digest_operator["statement"]
         assert {operator["operator"] for operator in ContextDB._view_execution_plan("learned_skills")["operators"] if operator["kind"] == "SEMANTIC"} == {"SemClusterBy"}
+        cluster_operator = next(operator for operator in ContextDB._view_execution_plan("learned_skills")["operators"] if operator["kind"] == "SEMANTIC")
+        assert cluster_operator["statement"].startswith("-- sem_cluster_by\nWITH labeled_rows AS")
         assert next(operator for operator in ContextDB._view_execution_plan("semantic_repair_judgments")["operators"] if operator["kind"] == "SEMANTIC")["operator"] == "SemJoin"
         db.close()
 
