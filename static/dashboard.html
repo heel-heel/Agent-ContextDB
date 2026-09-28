@@ -355,7 +355,7 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
     .global-relationship-edges .global-edge-label.is-visible { pointer-events:auto; }
     .global-edge-label rect { fill:#fff; stroke:#c9ddec; stroke-width:1; opacity:.94; }
     .global-edge-label text { fill:#355e87; font-family:inherit; font-size:10px; text-anchor:middle; dominant-baseline:middle; }
-    .global-relationship-columns { position:relative; z-index:1; display:grid; grid-template-columns:180px 180px 235px; justify-content:space-between; column-gap:24px; min-width:0; width:100%; box-sizing:border-box; padding:16px; }
+    .global-relationship-columns { position:relative; z-index:1; display:grid; grid-template-columns:180px 180px 235px; justify-content:space-between; column-gap:24px; min-width:0; width:100%; box-sizing:border-box; padding:16px; pointer-events:none; }
     .global-relationship-column { display:flex; min-width:0; min-height:0; flex-direction:column; }
     .global-relationship-column h3 { margin:0 0 9px; color:#355e87; font-size:13px; text-align:center; }
     .global-relationship-stack { display:flex; flex:1; min-height:0; flex-direction:column; justify-content:center; gap:9px; }
@@ -364,7 +364,7 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
     .global-relationship-column:first-child { transform:translateX(120px); }
     .global-relationship-column:last-child { transform:translateX(-120px); }
     .global-graph-node { box-sizing:border-box; width:100%; min-height:0; border:1px solid #d4e1ee; border-left:4px solid #64748b; border-radius:6px; background:#fff; padding:8px 9px; box-shadow:0 1px 2px rgba(23,50,77,.05); overflow-wrap:anywhere; text-align:center; }
-    .global-graph-node { cursor:pointer; }
+    .global-graph-node { cursor:pointer; pointer-events:auto; }
     .global-graph-node:hover { box-shadow:0 2px 5px rgba(23,50,77,.14); }
     .global-graph-node.is-active { outline:2px solid #2364aa; outline-offset:2px; }
     .global-graph-node.trajectory,
@@ -527,7 +527,7 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
 
     @media (max-width: 1200px) { main { grid-template-columns:1fr; } }
     @media (max-width: 900px) { main, .playback-layout { grid-template-columns:1fr; } input { min-width: 160px; width:100%; } header { height:auto; display:flex; gap:10px; align-items:flex-start; flex-direction:column; padding:12px; } h1 { width:100%; text-align:center; } .controls { width:100%; flex-wrap:wrap; justify-self:auto; } .playback-progress { flex-basis:100%; } }
-    /* Trajectory Overview dot graph */
+    /* Trajectory Details dot graph */
     .detail-toolbar { display:flex; flex-wrap:wrap; align-items:center; gap:10px; padding:10px 14px; border-top:1px solid var(--line); background:#fbfcfd; }
     .detail-toolbar.hidden { display:none; }
     .detail-toolbar .event-detail-tabs { flex:0 0 auto; }
@@ -568,9 +568,11 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
     .trajectory-session-event { position:relative; display:grid; grid-template-columns:82px minmax(0,1fr); align-items:center; gap:7px; width:100%; height:auto; min-height:27px; margin:0; padding:3px 8px 3px 10px; border:0; border-bottom:1px solid #e0e8f0; border-radius:0; background:#fff; color:#17324d; font:inherit; text-align:left; cursor:pointer; }
     .trajectory-session-event:last-child { border-bottom:0; }
     .trajectory-session-event::before { position:absolute; top:-1px; bottom:-1px; left:0; width:3px; background:var(--branch-color); content:''; }
+    .trajectory-session-event::after { position:absolute; top:-1px; right:0; bottom:-1px; width:3px; background:var(--branch-color); content:''; pointer-events:none; }
     .trajectory-session-event.branch-start { margin-top:12px; border-top:1px solid #d5e3f0; }
     .trajectory-session-event.branch-start:first-child { margin-top:0; }
     .trajectory-session-event.branch-start::before { top:4px; border-radius:0 0 3px 0; }
+    .trajectory-session-event.branch-start::after { top:4px; border-radius:0 0 0 3px; }
     .trajectory-session-event:hover, .trajectory-session-event.current { background:#f1f6fc; }
     .trajectory-session-event.current { box-shadow:inset 3px 0 0 #2364aa; }
     .trajectory-session-event.change-added { background:#f3fbf6; }
@@ -622,7 +624,7 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
     <h1>Agent ContextDB</h1>
     <div class="controls">
       <button id="globalMode" class="secondary mode-btn active">Global Overview</button>
-      <button id="finalMode" class="secondary mode-btn">Trajectory Overview</button>
+      <button id="finalMode" class="secondary mode-btn">Trajectory Details</button>
       <input id="tid" list="trajectorySuggestions" placeholder="trajectory_id" autocomplete="off">
       <datalist id="trajectorySuggestions"></datalist>
       <button id="load">Load</button>
@@ -631,7 +633,7 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
   <main id="finalPage" class="page hidden">
     <section>
       <div class="panel-head"><h2>Versioned Trajectory DAG</h2><span id="graphMeta" class="badge">idle</span></div>
-      <div id="dagActions" class="dag-actions"><button id="allEventsBtn" class="small-btn secondary">Trajectory details</button></div>
+      <div id="dagActions" class="dag-actions"><button id="allEventsBtn" class="small-btn secondary">Full trajectory</button></div>
       <div id="detailToolbar" class="detail-toolbar hidden">
         <button id="detailBack" class="small-btn secondary">← Back</button>
         <div id="detailSeqTabs" class="event-detail-tabs hidden" aria-label="Trajectory state">
@@ -666,7 +668,7 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
           <div class="view-group-row">
             <div class="view-group">
               <div class="view-group-title">Skill Generation</div>
-              <div class="view-group-buttons"><button data-view="semantic_repair_judgments">Semantic Judge</button><button data-view="learned_skills">Learned Skills</button><button data-view="skill_application_trace">Application Trace</button></div>
+              <div class="view-group-buttons"><button data-view="semantic_repair_judgments">Semantic Judge</button><button data-view="learned_skills">Learned Skills</button><button data-view="skill_application_trace">Workflow Trace</button></div>
             </div>
           </div>
         </div>
@@ -1241,7 +1243,7 @@ function openTrajectoryTrackModal(seq, changeIds = new Set()) {
   document.body.appendChild(modal);
   modal.querySelector('.trajectory-track-dialog-close').focus();
 }
-function drawTrajectoryDetailsSessionView(graph, edges, seq, {showAll = false, changeIds = new Set(), meta = 'trajectory details'} = {}) {
+function drawTrajectoryDetailsSessionView(graph, edges, seq, {showAll = false, changeIds = new Set(), meta = 'full trajectory'} = {}) {
   const panel = $('eventDetailPanel');
   graph.querySelectorAll('.node, .trajectory-details-surface').forEach(el => el.remove());
   edges.innerHTML = '';
@@ -1751,7 +1753,7 @@ function drawDetailView() {
   }
   syncDetailSlider();
   highlightDetailStep();
-  updateGraphMeta(`${seq.length} events · ${overviewSeqKind === 'segment' ? 'change' : overviewSeqKind === 'complete' ? 'history' : 'trajectory details'}`);
+  updateGraphMeta(`${seq.length} events · ${overviewSeqKind === 'segment' ? 'change' : overviewSeqKind === 'complete' ? 'history' : 'full trajectory'}`);
 }
 function setMode(mode) {
   const global = mode === 'global';
@@ -2006,9 +2008,7 @@ async function showGlobalRelationshipEdgeDetail(edge) {
         String((event.payload || {}).tool_name || (event.payload || {}).result_tool_name || (event.payload || {}).invoked_tool || (event.payload || {}).tool || '')
       ])
       .filter(([, toolName]) => toolName));
-    const toolCallsById = new Map(allEvents
-      .filter(event => event.event_type === 'tool_call')
-      .map(event => [event.id, event]));
+    const eventsById = new Map(allEvents.map(event => [event.id, event]));
     const eventToolName = event => {
       const payload = event.payload || {};
       const directToolName = payload.tool_name || payload.result_tool_name || payload.invoked_tool || payload.tool;
@@ -2022,15 +2022,32 @@ async function showGlobalRelationshipEdgeDetail(edge) {
     const relatedToolResults = allEvents.filter(event => (
       event.event_type === 'tool_result' && toolNames.has(eventToolName(event))
     ));
+    const matchingToolCallAncestors = event => {
+      const queue = [...(event.parent_event_ids || [])];
+      const seen = new Set();
+      const matches = [];
+      while (queue.length) {
+        const eventId = queue.shift();
+        if (!eventId || seen.has(eventId)) continue;
+        seen.add(eventId);
+        const ancestor = eventsById.get(eventId);
+        if (!ancestor) continue;
+        if (ancestor.event_type === 'tool_call' && toolNames.has(eventToolName(ancestor))) {
+          matches.push(eventId);
+          continue;
+        }
+        queue.push(...(ancestor.parent_event_ids || []));
+      }
+      return matches;
+    };
     const relatedToolCallIds = new Set(relatedToolResults
-      .flatMap(event => event.parent_event_ids || [])
-      .filter(eventId => {
-        const toolCall = toolCallsById.get(eventId);
-        return toolCall && toolNames.has(eventToolName(toolCall));
-      }));
-    const relatedToolCalls = relatedToolCallIds.size
+      .flatMap(matchingToolCallAncestors));
+    const namedToolCalls = allEvents.filter(event => (
+      event.event_type === 'tool_call' && toolNames.has(eventToolName(event))
+    ));
+    const relatedToolCalls = relatedToolCallIds.size === relatedToolResults.length
       ? allEvents.filter(event => relatedToolCallIds.has(event.id))
-      : allEvents.filter(event => event.event_type === 'tool_call' && toolNames.has(eventToolName(event)));
+      : namedToolCalls;
     const relatedEvents = edge.kind === 'results'
       ? relatedToolCalls
       : (edge.kind === 'skill_action'
@@ -2341,6 +2358,10 @@ function drawGlobalRelationshipGraph(graphData) {
         curve.style.stroke = 'var(--relationship-edge)';
         curve.style.strokeWidth = `${skillRelationWidth}px`;
         appendRelationshipEdge(curve, edge);
+        const labelT = .48;
+        const labelX = cubicPoint(startX, startControlX, endControlX, endX, labelT);
+        const labelY = cubicPoint(sourceCenterY, sourceCenterY, targetCenterY, targetCenterY, labelT);
+        appendRelationshipLabel(edge, labelX, labelY - 10);
         continue;
       }
       const band = resultBands.get(edge) || {top: targetCenterY - 1, bottom: targetCenterY + 1};
@@ -2797,7 +2818,7 @@ function viewLabel(view) {
   const labels = {
     current_prompt:'Context Assembly', summary:'Context Digest', context_budget:'Context Assembly', failures:'Failures', failure_patterns:'Failure Patterns',
     success_patterns:'Success Patterns', repair_strategies:'Repair Links', semantic_repair_judgments:'Semantic Judge',
-    learned_skills:'Learned Skills', skill_library:'Skill Library', skill_application_trace:'Application Trace', rl_dataset:'RL Rows', diff:'Diff'
+    learned_skills:'Learned Skills', skill_library:'Skill Library', skill_application_trace:'Workflow Trace', rl_dataset:'RL Rows', diff:'Diff'
   };
   return labels[view] || view;
 }
@@ -3180,7 +3201,7 @@ function timelineStep(type, title, body, eventIds = [], meta = '') {
 function renderSkillApplicationTrace(data) {
   const rows = Array.isArray(data.content) ? data.content : [];
   renderMetrics(null);
-  if (!rows.length) return setOutput('<div class="view-empty">No skill application events yet.</div>');
+  if (!rows.length) return setOutput('<div class="view-empty">No skill workflow events yet.</div>');
   const byBranch = new Map();
   rows.forEach(e => {
     const branch = e.branch_id || 'main';
@@ -3248,7 +3269,7 @@ function renderSkillApplicationTrace(data) {
         steps.push(timelineStep('tool_result', details.matched ? 'Execution Outcome' : 'No Skill Applied', '', [result.event_id], resultMeta));
       }
       cards.push(`<div class="summary-card app-flow">
-        <div class="app-flow-title"><h3>Skill Application ${cards.length + 1}</h3><button class="small-btn" onclick='highlightGraph(${JSON.stringify(eventIds)}, [])'>Highlight Workflow</button></div>
+        <div class="app-flow-title"><h3>Skill Workflow ${cards.length + 1}</h3><button class="small-btn" onclick='highlightGraph(${JSON.stringify(eventIds)}, [])'>Highlight Workflow</button></div>
         <p class="app-flow-status"><span class="pill ${details.matched && result ? 'ok' : 'excluded'}">${details.matched ? ['failure', 'match', hasRecommendation ? 'recommend' : 'no recommendation', ...(hasRecommendation && decision ? ['decide'] : []), ...(call ? ['execute'] : []), ...(result ? ['outcome'] : [])].join(' -> ') : 'failure -> match attempted -> recommend attempted'}</span></p>
         <div class="timeline">${steps.join('')}</div>
       </div>`);

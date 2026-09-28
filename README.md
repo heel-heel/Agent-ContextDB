@@ -211,7 +211,7 @@ or another MCP-capable harness:
   preserve the Agent's choice to continue, repair on a new branch, or roll
   back, together with the active branch and pending repair advice.
 
-The resulting application trace is explicit:
+The resulting skill workflow trace is explicit:
 
 ```text
 tool failure -> skill_match -> skill_recommendation delivered
@@ -220,7 +220,7 @@ tool failure -> skill_match -> skill_recommendation delivered
 
 This distinction is intentional: a matched skill is evidence retrieval; a
 delivered skill is context injection; only an Agent-recorded normal tool call
-is an application. The ContextDB dashboard's **Application Trace** view shows
+is an application. The ContextDB dashboard's **Workflow Trace** view shows
 these states separately.
 
 ### Version Control for Live Agents
@@ -332,7 +332,7 @@ watcher mode above when that is required.
 Every real-time adapter uses the same `contextdb.agent_hook.v1` envelope and
 the pair `(source, session_id)`. An Agent can integrate through either the HTTP
 hook response, the native-exec wrapper, or MCP, while ContextDB stores one
-trajectory and one application trace for that pair. Future Agent-specific
+trajectory and one skill workflow trace for that pair. Future Agent-specific
 adapters only need to map their tool start/result callbacks to this contract;
 they do not need a separate memory or skill storage implementation.
 

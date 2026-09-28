@@ -951,7 +951,7 @@ WHERE enabled=TRUE AND error IS NULL
   SELECT *,ROW_NUMBER() OVER (PARTITION BY skill_id ORDER BY created_at DESC) AS row_rank FROM skill_rows
 ) SELECT skill_id,value FROM ranked WHERE row_rank=1;"""))
         if view_name == "skill_application_trace":
-            operators.append(relational("Skill application correlation", """WITH skill_lifecycle AS (
+            operators.append(relational("Skill workflow correlation", """WITH skill_lifecycle AS (
   SELECT * FROM events WHERE trajectory_id=:trajectory_id
     AND event_type IN ('skill_match','skill_recommendation','skill_decision','tool_call','tool_result','assistant_message')
 ), correlated AS (
