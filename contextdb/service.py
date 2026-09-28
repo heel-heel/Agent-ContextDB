@@ -1534,6 +1534,8 @@ FROM action_outcomes;"""))
                 "timestamp": e.get("timestamp"),
                 "label": self._event_line(e),
                 "payload": e.get("payload", {}),
+                "parent_event_ids": e.get("parent_event_ids", []),
+                "refs": e.get("refs", {}),
                 "is_branch_head": eid in branch_heads,
                 "branch_heads": branch_heads.get(eid, []),
                 "branch_head": ",".join(branch_heads.get(eid, [])),

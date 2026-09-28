@@ -336,31 +336,34 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
     .global-related-skill { border:0; cursor:pointer; font:inherit; text-align:left; }
     .global-related-skill:hover { background:#d7ecdf; text-decoration:underline; }
     .global-related-skill:focus-visible { outline:2px solid #2364aa; outline-offset:2px; }
-    .global-relationship-graph { --relationship-edge:#2364aa; position:relative; min-height:350px; overflow:visible; border:1px solid #c9ddec; border-radius:7px; background:#fff; padding-bottom:64px; }
-    .global-relationship-edges { position:absolute; inset:0; z-index:0; pointer-events:none; overflow:visible; }
+    .global-relationship-graph { --relationship-edge:#2364aa; position:relative; min-height:360px; overflow:visible; border:1px solid #c9ddec; border-radius:7px; background:#fff; padding:14px 0 48px; }
+    .global-relationship-edges { position:absolute; inset:0; z-index:3; pointer-events:none; overflow:visible; }
+    .global-relationship-graph.has-expanded-tool-cluster .global-relationship-edges { z-index:1; }
     .global-relationship-edges line { fill:none; stroke:var(--relationship-edge); stroke-width:2; opacity:.85; }
     .global-relationship-edges path { stroke:var(--relationship-edge); stroke-width:2; opacity:.85; }
     .global-relationship-edges path.trajectory-result { stroke-linejoin:round; opacity:.58; }
     .global-relationship-edges line.uses-skill { stroke:var(--relationship-edge); }
     .global-relationship-edges line.skill-action { stroke:var(--relationship-edge); stroke-width:1; opacity:.58; }
     .global-relationship-edges line.skill-trigger { stroke:var(--relationship-edge); }
-    .global-relationship-edges path.skill-usage { fill:none; stroke-width:3; opacity:.64; }
+    .global-relationship-edges path.skill-usage { fill:none; stroke-width:2; stroke-dasharray:4 3; opacity:.64; }
     .global-relationship-edges path.skill-action,
     .global-relationship-edges path.skill-trigger { fill:none; opacity:.58; }
     .global-relationship-edges [data-global-edge] { opacity:0 !important; transition:opacity 140ms ease; }
     .global-relationship-edges [data-global-edge].is-visible { opacity:.8 !important; }
-    .global-relationship-columns { position:relative; z-index:1; display:grid; grid-template-columns:minmax(140px, 180px) minmax(190px, 250px) minmax(180px, 260px); justify-content:space-between; column-gap:24px; min-width:0; width:100%; box-sizing:border-box; padding:16px; transform:translateX(-10px); }
-    .global-relationship-column { display:flex; min-height:0; flex-direction:column; }
+    .global-relationship-edges [data-global-edge] { pointer-events:none; }
+    .global-relationship-edges .global-edge-label { cursor:pointer; pointer-events:none; }
+    .global-relationship-edges .global-edge-label.is-visible { pointer-events:auto; }
+    .global-edge-label rect { fill:#fff; stroke:#c9ddec; stroke-width:1; opacity:.94; }
+    .global-edge-label text { fill:#355e87; font-family:inherit; font-size:10px; text-anchor:middle; dominant-baseline:middle; }
+    .global-relationship-columns { position:relative; z-index:1; display:grid; grid-template-columns:180px 180px 235px; justify-content:space-between; column-gap:24px; min-width:0; width:100%; box-sizing:border-box; padding:16px; }
+    .global-relationship-column { display:flex; min-width:0; min-height:0; flex-direction:column; }
     .global-relationship-column h3 { margin:0 0 9px; color:#355e87; font-size:13px; text-align:center; }
-    .global-relationship-stack { display:flex; flex:1; min-height:0; flex-direction:column; gap:9px; }
-    .global-relationship-column:first-child .global-relationship-stack,
-    .global-relationship-column:last-child .global-relationship-stack { justify-content:space-between; }
-    .global-relationship-column:first-child { position:relative; z-index:2; transform:translateX(90px); }
-    .global-relationship-column:first-child .global-relationship-stack { padding:100px 0; }
-    .global-relationship-column:last-child .global-relationship-stack { justify-content:center; gap:9px; }
-    .global-relationship-column:last-child { position:relative; z-index:2; transform:translateX(-70px); }
-    .global-relationship-column:nth-child(2) { position:relative; z-index:2; transform:translateX(225px); }
-    .global-graph-node { min-height:0; border:1px solid #d4e1ee; border-left:4px solid #64748b; border-radius:6px; background:#fff; padding:8px 9px; box-shadow:0 1px 2px rgba(23,50,77,.05); overflow-wrap:anywhere; text-align:center; }
+    .global-relationship-stack { display:flex; flex:1; min-height:0; flex-direction:column; justify-content:center; gap:9px; }
+    .global-relationship-column { position:relative; z-index:2; }
+    .global-relationship-column.has-expanded-tool-cluster { z-index:4; }
+    .global-relationship-column:first-child { transform:translateX(120px); }
+    .global-relationship-column:last-child { transform:translateX(-120px); }
+    .global-graph-node { box-sizing:border-box; width:100%; min-height:0; border:1px solid #d4e1ee; border-left:4px solid #64748b; border-radius:6px; background:#fff; padding:8px 9px; box-shadow:0 1px 2px rgba(23,50,77,.05); overflow-wrap:anywhere; text-align:center; }
     .global-graph-node { cursor:pointer; }
     .global-graph-node:hover { box-shadow:0 2px 5px rgba(23,50,77,.14); }
     .global-graph-node.is-active { outline:2px solid #2364aa; outline-offset:2px; }
@@ -372,13 +375,25 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
     .global-source-logo.codex img { transform:scale(1.5); }
     .global-source-logo.swe-agent img { transform:scale(1.2); }
     .global-graph-node.tool { border-left-color:#9a6b16; background:#fffaf0; }
-    .global-graph-node.skill { border-left-color:#2f855a; background:#f2fbf5; }
+    .global-graph-node.tool-cluster { position:relative; width:180px; height:50px; min-height:50px; justify-self:center; padding:8px 11px; }
+    .global-tool-cluster-summary { margin-top:4px; color:#7a5b1f; font-size:11px; }
+    .global-tool-cluster-members { position:absolute; z-index:5; top:calc(100% + 8px); left:50%; display:none; width:210px; max-height:220px; overflow:auto; transform:translateX(-50%); border:1px solid #c9ddec; border-radius:6px; background:#fff; box-shadow:0 10px 22px rgba(23,50,77,.18); padding:7px; text-align:left; }
+    .global-graph-node.tool-cluster.is-expanded { z-index:6; }
+    .global-graph-node.tool-cluster.is-expanded .global-tool-cluster-members { display:block; }
+    .global-tool-cluster-members strong { display:block; margin:1px 3px 5px; color:#355e87; font-size:11px; }
+    .global-graph-node .global-tool-cluster-member { display:flex; align-items:center; justify-content:space-between; width:100%; min-height:0; margin:0; gap:8px; padding:5px 4px; border-top:1px solid #e6edf3; border-radius:0; background:transparent; color:#30485e; font:11px/1.25 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; text-decoration:none; }
+    .global-graph-node .global-tool-cluster-member:hover { background:#f4f8fd; text-decoration:none; }
+    .global-tool-cluster-member:first-of-type { border-top:0; }
+    .global-tool-cluster-member span:last-child { flex:0 0 auto; color:#7a5b1f; font-family:inherit; white-space:nowrap; }
+    .global-graph-node.skill { width:235px; height:50px; min-height:50px; border-left-color:#2f855a; background:#f2fbf5; }
     .global-graph-node b { display:block; font-size:12px; }
     .global-graph-node.trajectory b { transform:translateX(16px); }
     .global-graph-node.skill b { white-space:normal; }
     .global-graph-node span { display:block; margin-top:3px; color:var(--muted); font-size:11px; }
     .global-graph-node button { width:100%; height:auto; min-height:20px; margin-top:5px; padding:2px 5px; border:0; background:transparent; color:#1f5592; text-align:left; font-size:11px; }
     .global-graph-node button:hover { text-decoration:underline; }
+    .global-relationship-graph.has-selection .global-graph-node:not(.is-related) { opacity:.28; }
+    .global-relationship-graph.has-selection .global-graph-node.is-related { opacity:1; }
     .playback-page { padding:16px; min-height:calc(100vh - 64px); }
     .playback-layout { display:grid; grid-template-columns:minmax(0,1.45fr) minmax(390px,.85fr); gap:16px; align-items:start; }
     .playback-graph { position:relative; min-width:0; min-height:650px; overflow:hidden; background:linear-gradient(#fff, #f9fbfc); }
@@ -574,12 +589,27 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
     .trajectory-track-dialog-close { display:grid; place-items:center; width:24px; height:24px; padding:0; border:0; border-radius:4px; background:transparent; color:#315d89; font-size:19px; line-height:1; cursor:pointer; }
     .trajectory-track-dialog-close:hover { background:#e9f2fb; }
     .trajectory-track-dialog-body { padding:8px; overflow:auto; }
+    .global-edge-detail-dialog { width:min(760px, calc(100vw - 24px)); }
+    .global-edge-detail-dialog .trajectory-track-dialog-body { padding:12px; }
+    .global-edge-detail-summary { display:grid; grid-template-columns:76px minmax(0, 1fr); gap:6px 10px; margin-bottom:12px; padding:9px 10px; border:1px solid #d9e6f2; border-radius:6px; background:#f7fbff; }
+    .global-edge-detail-summary b { color:#355e87; font-size:10px; line-height:1.35; text-transform:uppercase; letter-spacing:.04em; }
+    .global-edge-detail-summary > span { color:#24384d; font:12px/1.35 ui-sans-serif, system-ui, sans-serif; overflow-wrap:anywhere; }
+    .global-edge-detail-events { border-top:1px solid #d9e6f2; }
+    .global-edge-detail-events-title { display:block; margin:10px 0 6px; color:#355e87; font-size:11px; font-weight:700; }
+    .global-edge-detail-event { margin:6px 0; padding:8px 9px; border:1px solid #e1ebf4; border-radius:5px; background:#fbfdff; }
+    .global-edge-detail-event-meta { display:flex; align-items:center; flex-wrap:wrap; gap:4px 7px; }
+    .global-edge-detail-event-type { color:#315d89; font-size:10px; font-weight:700; text-transform:capitalize; }
+    .global-edge-detail-event-id, .global-edge-detail-event-time { color:#60758a; font:10px/1.25 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .global-edge-detail-event-summary { margin-top:5px; color:#24384d; font:11px/1.35 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; white-space:pre-wrap; overflow-wrap:anywhere; }
     .trajectory-track-dialog .trajectory-tracks { width:calc(var(--expanded-rail-width) + 62px); min-width:100%; cursor:default; }
     .trajectory-track-dialog .trajectory-track { grid-template-columns:62px minmax(0, 1fr); min-height:24px; }
     .trajectory-track-dialog .trajectory-track-label { padding-right:6px; font-size:11px; }
     .trajectory-track-dialog .trajectory-track-rail { min-height:24px; }
     .trajectory-track-dialog .trajectory-track-marker { width:11px; height:10px; }
     @media (max-width: 720px) {
+      .global-relationship-columns { grid-template-columns:132px 180px 235px; column-gap:12px; }
+      .global-relationship-column:first-child { transform:translateX(12px); }
+      .global-relationship-column:last-child { transform:translateX(-12px); }
       .trajectory-track { grid-template-columns:52px minmax(0,1fr); }
       .trajectory-track-label { padding:0 6px; font-size:10px; }
       .trajectory-session-event { grid-template-columns:76px minmax(0,1fr); gap:4px 6px; }
@@ -692,6 +722,9 @@ let summaryProfileId = '';
 let loadingElapsedTimer = null;
 let globalOverviewData = null;
 let globalGraphActiveNodeId = '';
+let globalRelationshipDisplayGraph = null;
+let globalExpandedToolClusterId = '';
+let globalFocusedToolId = '';
 let globalSkillDetailIndex = null;
 const BRANCH_SCOPED_VIEWS = new Set(['current_prompt', 'summary', 'rl_dataset']);
 const viewBranches = {current_prompt: 'main', summary: 'main', rl_dataset: 'main'};
@@ -1742,33 +1775,412 @@ function globalTrajectorySourceLogo(source) {
   return `<span class="global-source-logo ${logo.className}" title="${escapeHtml(logo.label)}"><img src="/assets/${logo.asset}" alt="${escapeHtml(logo.label)} logo"></span>`;
 }
 
+function globalToolClusterInfo(tool) {
+  const value = `${tool.label || ''} ${tool.detail || ''}`.toLowerCase();
+  if (/contextdb|\bmcp\b/.test(value)) return {key:'contextdb', label:'ContextDB MCP'};
+  if (/glob|file|filesystem|directory|path|editor|read|write|get-content|set-content/.test(value)) return {key:'filesystem', label:'Filesystem'};
+  if (/\bgit\b/.test(value)) return {key:'general', label:'General utilities'};
+  if (/\b(shell|bash|powershell|terminal|cmd|exec)\b/.test(value)) return {key:'shell', label:'Command runners'};
+  if (/database|sqlite|\bsql\b|query|postgres|mysql/.test(value)) return {key:'database', label:'Database'};
+  if (/web|browser|http|search|fetch/.test(value)) return {key:'web', label:'Web'};
+  return {key:'general', label:'General utilities'};
+}
+
+function globalToolCallCount(tool) {
+  const match = String(tool.detail || '').match(/(\d+)\s+(?:results|calls?)/i);
+  return match ? Number(match[1]) : 0;
+}
+
+function buildGlobalRelationshipDisplayGraph(graph, focusedToolId = '') {
+  const nodes = graph?.nodes || [];
+  const allTools = nodes.filter(node => node.type === 'tool');
+  const toolToCluster = new Map();
+  const clusters = new Map();
+  const clusterTotals = new Map();
+  let focusedTool = null;
+  for (const tool of allTools) {
+    const cluster = globalToolClusterInfo(tool);
+    const id = `tool-cluster:${cluster.key}`;
+    const total = clusterTotals.get(id) || {callCount:0};
+    total.callCount += globalToolCallCount(tool);
+    clusterTotals.set(id, total);
+  }
+  for (const tool of allTools) {
+    if (tool.id === focusedToolId) {
+      focusedTool = tool;
+      continue;
+    }
+    const cluster = globalToolClusterInfo(tool);
+    const id = `tool-cluster:${cluster.key}`;
+    toolToCluster.set(tool.id, id);
+    const entry = clusters.get(id) || {
+      id,
+      type:'tool_cluster',
+      label:cluster.label,
+      members:[],
+      callCount:0,
+    };
+    const callCount = globalToolCallCount(tool);
+    entry.members.push({id:tool.id, label:tool.label || tool.id, callCount});
+    entry.callCount += callCount;
+    clusters.set(id, entry);
+  }
+  const groupedNodes = nodes
+    .filter(node => node.type !== 'tool')
+    .concat([...clusters.values()].sort((left, right) => (
+      (clusterTotals.get(right.id)?.callCount || 0) - (clusterTotals.get(left.id)?.callCount || 0)
+      || left.label.localeCompare(right.label)
+    )))
+    .concat(focusedTool ? [focusedTool] : []);
+  const mergedEdges = new Map();
+  for (const edge of graph?.edges || []) {
+    const source = toolToCluster.get(edge.source) || edge.source;
+    const target = toolToCluster.get(edge.target) || edge.target;
+    if (source === target) continue;
+    const key = `${source}\u0000${target}\u0000${edge.kind || ''}`;
+    const grouped = mergedEdges.get(key) || {source, target, kind:edge.kind, count:0};
+    grouped.count += Math.max(1, Number(edge.count) || 1);
+    mergedEdges.set(key, grouped);
+  }
+  return {nodes:groupedNodes, edges:[...mergedEdges.values()]};
+}
+
 function globalGraphNode(node) {
   const label = node.type === 'trajectory' ? node.trajectory_id : node.label;
-  const detail = node.type === 'tool' ? `<span>${escapeHtml(node.detail || '')}</span>` : '';
+  const isToolCluster = node.type === 'tool_cluster';
+  const detail = node.type === 'tool'
+    ? `<span>${escapeHtml(node.detail || '')}</span>`
+    : (isToolCluster ? `<span class="global-tool-cluster-summary">${escapeHtml(`${node.members.length} tools · ${node.callCount} calls`)}</span>` : '');
   const sourceLogo = node.type === 'trajectory' ? globalTrajectorySourceLogo(node.detail) : '';
-  return `<div class="global-graph-node ${escapeHtml(node.type)}" data-global-node="${escapeHtml(node.id)}" role="button" tabindex="0" aria-pressed="false">${sourceLogo}<b>${escapeHtml(label || '')}</b>${detail}</div>`;
+  const members = isToolCluster ? `<div class="global-tool-cluster-members" role="dialog" aria-label="${escapeHtml(label)} tools"><strong>${escapeHtml(label)} tools</strong>${node.members.map(member => `<button type="button" class="global-tool-cluster-member" data-global-tool-member="${escapeHtml(member.id)}"><span>${escapeHtml(member.label)}</span><span>${escapeHtml(member.callCount)} calls</span></button>`).join('')}</div>` : '';
+  const classes = isToolCluster ? 'tool tool-cluster' : node.type;
+  const expansionState = isToolCluster ? ' aria-expanded="false"' : '';
+  return `<div class="global-graph-node ${escapeHtml(classes)}" data-global-node="${escapeHtml(node.id)}" role="button" tabindex="0" aria-pressed="false"${expansionState}>${sourceLogo}<b>${escapeHtml(label || '')}</b>${detail}${members}</div>`;
+}
+
+function globalGraphNodeById(nodeId) {
+  return (globalRelationshipDisplayGraph?.nodes || []).find(node => node.id === nodeId);
+}
+
+function globalRelationshipNodeLabel(nodeId) {
+  const node = globalGraphNodeById(nodeId)
+    || (globalOverviewData?.graph?.nodes || []).find(item => item.id === nodeId);
+  if (node?.type === 'trajectory') return node.trajectory_id || node.label || nodeId;
+  return node?.label || nodeId;
+}
+
+function globalRelationshipSkillForEdge(edge) {
+  const skillNodeId = [edge.source, edge.target].find(nodeId => String(nodeId).startsWith('skill:'));
+  return (globalOverviewData?.skills || []).find(skill => skill.node_id === skillNodeId) || null;
+}
+
+function globalRelationshipSkillEvidenceEvents(events, skill, trajectoryId) {
+  const skillId = skill?.skill_id;
+  const sourceTrajectoryId = skill?.source_trajectory_id;
+  if (!skillId || !trajectoryId) return [];
+  const hasSkillReference = event => {
+    const payload = event.payload || {};
+    const refs = event.refs || {};
+    if (payload.skill_id === skillId || refs.skill_id === skillId) return true;
+    if (event.event_type !== 'skill_match') return false;
+    return (payload.matches || []).some(match => (
+      match?.matched_skill_id === skillId
+      && (!sourceTrajectoryId || !match.source_trajectory_id || match.source_trajectory_id === sourceTrajectoryId)
+    ));
+  };
+  const decisions = events.filter(event => (
+    event.trajectory_id === trajectoryId
+    && event.event_type === 'skill_decision'
+    && hasSkillReference(event)
+  ));
+  if (decisions.length || trajectoryId !== sourceTrajectoryId) return decisions;
+
+  // Imported trajectories may have learned a skill offline, without recording
+  // a live skill_decision event. Surface its persisted repair judgment instead.
+  const detail = skill.detail || {};
+  const evidence = (detail.evidence_refs || [])[0]
+    || (detail.recommended_actions || []).flatMap(action => action.support_events || [])[0];
+  if (!evidence) return [];
+  const failureId = evidence.failure_event_id || '';
+  const successId = evidence.success_event_id || '';
+  const successEvent = events.find(event => event.id === successId);
+  const failureEvent = events.find(event => event.id === failureId);
+  const relation = [failureId && `failure ${failureId}`, successId && `repair ${successId}`]
+    .filter(Boolean)
+    .join(' -> ');
+  return [{
+    id: `learned-skill-evidence:${skillId}:${failureId || successId || 'source'}`,
+    event_type: 'skill_decision',
+    timestamp: successEvent?.timestamp || failureEvent?.timestamp || '',
+    payload: {
+      decision: evidence.judgment_label || 'likely_repair',
+      reason: `${evidence.reason || 'Persisted learned-skill evidence.'}${relation ? ` Evidence: ${relation}.` : ''}`,
+    },
+  }];
+}
+
+function globalRelationshipDetailMeta(edge) {
+  if (edge.kind === 'results') return {relation:'Calls', countLabel:'Calls', eventLabel:'Supporting tool calls', eventCount:true};
+  if (edge.kind === 'skill_action') return {relation:'Skill application', countLabel:'Applied tool results', eventLabel:'Applied tool results', eventCount:true};
+  if (edge.kind === 'skill_trigger') return {relation:'Skill trigger', countLabel:'Trigger evidence', eventLabel:'Skill decision evidence', eventCount:false};
+  return {relation:'Skill usage', countLabel:'Associated trajectories', eventLabel:'Skill relationship evidence', eventCount:false};
+}
+
+function globalRelationshipToolNames(edge) {
+  const toolId = [edge.source, edge.target].find(nodeId => {
+    const value = String(nodeId);
+    return value.startsWith('tool:') || value.startsWith('tool-cluster:');
+  });
+  const tool = globalGraphNodeById(toolId);
+  if (tool?.type === 'tool_cluster') return (tool.members || []).map(member => String(member.id).replace(/^tool:/, ''));
+  return toolId ? [String(toolId).replace(/^tool:/, '')] : [];
+}
+
+function globalRelationshipEventTypeLabel(eventType) {
+  return String(eventType || 'event').replaceAll('_', ' ').replace(/\b\w/g, letter => letter.toUpperCase());
+}
+
+function globalRelationshipEventSummary(event) {
+  const payload = event.payload || {};
+  if (event.event_type === 'tool_call') {
+    const toolName = payload.result_tool_name || payload.tool_name || toolChain(payload).at(-1) || payload.agent_tool_name || '';
+    const command = payload.command || payload.arguments?.command || (payload.arguments ? JSON.stringify(payload.arguments) : '');
+    return [toolName && `Tool: ${toolName}`, command && `Command: ${command}`]
+      .filter(Boolean)
+      .join('\n');
+  }
+  if (event.event_type === 'skill_match') {
+    const failure = payload.input_failure || {};
+    const matchedCount = Array.isArray(payload.matches) ? payload.matches.length : 0;
+    return `${failure.tool || 'Tool'} failure matched against ${matchedCount || 'available'} learned skill${matchedCount === 1 ? '' : 's'}.`;
+  }
+  if (event.event_type === 'skill_recommendation') {
+    const action = payload.selected_action?.name || payload.selected_action?.strategy || '';
+    return action ? `Recommended action: ${action}` : `Recommended ${payload.skill_name || 'a learned skill'}.`;
+  }
+  if (event.event_type === 'skill_decision') {
+    return `${payload.decision || 'Recorded'}: ${payload.reason || 'No rationale recorded.'}`;
+  }
+  return payload.command || payload.preview || payload.text || event.label || '';
+}
+
+function globalRelationshipEventDetail(event) {
+  const summary = globalRelationshipEventSummary(event);
+  return `<article class="global-edge-detail-event"><div class="global-edge-detail-event-meta"><span class="global-edge-detail-event-type">${escapeHtml(globalRelationshipEventTypeLabel(event.event_type))}</span><code class="global-edge-detail-event-id">${escapeHtml(event.id || '')}</code><time class="global-edge-detail-event-time">${escapeHtml(displayVersionTimestamp(event.timestamp || ''))}</time></div><div class="global-edge-detail-event-summary">${escapeHtml(String(summary))}</div></article>`;
+}
+
+async function showGlobalRelationshipEdgeDetail(edge) {
+  document.getElementById('globalRelationshipEdgeDetail')?.remove();
+  const detailMeta = globalRelationshipDetailMeta(edge);
+  const modal = document.createElement('div');
+  modal.id = 'globalRelationshipEdgeDetail';
+  modal.className = 'trajectory-track-modal';
+  modal.innerHTML = `<div class="trajectory-track-dialog global-edge-detail-dialog" role="dialog" aria-modal="true" aria-label="Relationship details"><div class="trajectory-track-dialog-head"><span class="trajectory-track-dialog-title">${escapeHtml(detailMeta.relation)} relationship</span><button type="button" class="trajectory-track-dialog-close" aria-label="Close relationship details" title="Close">&times;</button></div><div class="trajectory-track-dialog-body"><div class="global-edge-detail-summary"><b>From</b><span>${escapeHtml(globalRelationshipNodeLabel(edge.source))}</span><b>To</b><span>${escapeHtml(globalRelationshipNodeLabel(edge.target))}</span><b>${escapeHtml(detailMeta.countLabel)}</b><span>${escapeHtml(edge.count || 1)}</span></div><div class="global-edge-detail-events"><span class="muted">Loading related events...</span></div></div></div>`;
+  const close = () => modal.remove();
+  modal.addEventListener('click', event => { if (event.target === modal) close(); });
+  modal.querySelector('.trajectory-track-dialog-close').addEventListener('click', close);
+  document.body.appendChild(modal);
+  modal.querySelector('.trajectory-track-dialog-close').focus();
+
+  const eventsContainer = modal.querySelector('.global-edge-detail-events');
+  try {
+    const trajectoryIds = new Set();
+    if (edge.kind === 'results') trajectoryIds.add(String(edge.source).replace(/^trajectory:/, ''));
+    const skill = globalRelationshipSkillForEdge(edge);
+    if (skill?.source_trajectory_id) trajectoryIds.add(skill.source_trajectory_id);
+    if (edge.kind === 'skill_action') (globalOverviewData?.trajectories || []).forEach(trajectory => trajectoryIds.add(trajectory.trajectory_id));
+    const trajectoryNodeId = [edge.source, edge.target].find(nodeId => String(nodeId).startsWith('trajectory:'));
+    if (trajectoryNodeId) trajectoryIds.add(String(trajectoryNodeId).replace(/^trajectory:/, ''));
+    const graphs = await Promise.all([...trajectoryIds].map(async trajectoryId => ({
+      trajectoryId,
+      graph: await api('/api/v1/graph?trajectory_id=' + encodeURIComponent(trajectoryId))
+    })));
+    const allEvents = graphs.flatMap(({trajectoryId, graph}) => (graph.nodes || []).map(node => ({...node, trajectory_id:trajectoryId})))
+      .filter(node => node.type === 'event')
+      .sort((left, right) => String(left.timestamp || '').localeCompare(String(right.timestamp || '')));
+    const toolNames = new Set(globalRelationshipToolNames(edge));
+    const toolCallNames = new Map(allEvents
+      .filter(event => event.event_type === 'tool_call')
+      .map(event => [
+        event.id,
+        String((event.payload || {}).tool_name || (event.payload || {}).result_tool_name || (event.payload || {}).invoked_tool || (event.payload || {}).tool || '')
+      ])
+      .filter(([, toolName]) => toolName));
+    const toolCallsById = new Map(allEvents
+      .filter(event => event.event_type === 'tool_call')
+      .map(event => [event.id, event]));
+    const eventToolName = event => {
+      const payload = event.payload || {};
+      const directToolName = payload.tool_name || payload.result_tool_name || payload.invoked_tool || payload.tool;
+      if (directToolName) return String(directToolName);
+      return (event.parent_event_ids || []).map(eventId => toolCallNames.get(eventId)).find(Boolean) || '';
+    };
+    const skillResults = allEvents.filter(event => event.event_type === 'tool_result' && event.refs?.skill_id === skill?.skill_id);
+    const evidenceTrajectoryId = trajectoryNodeId
+      ? String(trajectoryNodeId).replace(/^trajectory:/, '')
+      : (skill?.source_trajectory_id || '');
+    const relatedToolResults = allEvents.filter(event => (
+      event.event_type === 'tool_result' && toolNames.has(eventToolName(event))
+    ));
+    const relatedToolCallIds = new Set(relatedToolResults
+      .flatMap(event => event.parent_event_ids || [])
+      .filter(eventId => {
+        const toolCall = toolCallsById.get(eventId);
+        return toolCall && toolNames.has(eventToolName(toolCall));
+      }));
+    const relatedToolCalls = relatedToolCallIds.size
+      ? allEvents.filter(event => relatedToolCallIds.has(event.id))
+      : allEvents.filter(event => event.event_type === 'tool_call' && toolNames.has(eventToolName(event)));
+    const relatedEvents = edge.kind === 'results'
+      ? relatedToolCalls
+      : (edge.kind === 'skill_action'
+        ? skillResults.filter(event => toolNames.has(eventToolName(event)))
+        : globalRelationshipSkillEvidenceEvents(allEvents, skill, evidenceTrajectoryId));
+    const visibleEvents = relatedEvents.slice(0, detailMeta.eventCount ? Number(edge.count || 1) : 12);
+    const totalEventCount = Number(edge.count || 1);
+    const eventCountLabel = detailMeta.eventCount && visibleEvents.length < totalEventCount
+      ? `${visibleEvents.length} of ${totalEventCount}`
+      : `${visibleEvents.length}`;
+    eventsContainer.innerHTML = visibleEvents.length
+      ? `<span class="global-edge-detail-events-title">${escapeHtml(detailMeta.eventLabel)} (${eventCountLabel})</span>${visibleEvents.map(globalRelationshipEventDetail).join('')}`
+      : '<span class="muted">No individual event records are available for this aggregated relationship.</span>';
+  } catch (error) {
+    eventsContainer.innerHTML = `<span class="muted">Unable to load related events: ${escapeHtml(error.message || String(error))}</span>`;
+  }
+}
+
+function globalRelationshipSelection(activeNodeId) {
+  const selected = new Set(activeNodeId ? [activeNodeId] : []);
+  const edges = globalRelationshipDisplayGraph?.edges || [];
+  if (!activeNodeId) return {nodes:selected, edges:new Set()};
+  const activeNode = globalGraphNodeById(activeNodeId);
+  const directEdges = edges.filter(edge => edge.source === activeNodeId || edge.target === activeNodeId);
+  directEdges.forEach(edge => {
+    selected.add(edge.source);
+    selected.add(edge.target);
+  });
+  const visibleEdges = new Set(directEdges);
+  if (activeNode?.type === 'trajectory' || activeNode?.type === 'tool' || activeNode?.type === 'tool_cluster') {
+    for (const edge of edges) {
+      const isPathConnector = edge.kind === 'skill_action' || edge.kind === 'skill_trigger' || edge.kind === 'skill_usage';
+      if (isPathConnector && selected.has(edge.source) && selected.has(edge.target)) visibleEdges.add(edge);
+    }
+  }
+  if (activeNode?.type === 'skill') {
+    for (const edge of edges) {
+      if (edge.kind === 'results' && selected.has(edge.source) && selected.has(edge.target)) visibleEdges.add(edge);
+    }
+  }
+  return {nodes:selected, edges:visibleEdges};
+}
+
+function globalRelationshipEdgeColor(node) {
+  if (node?.type === 'trajectory') return '#9b4662';
+  if (node?.type === 'tool' || node?.type === 'tool_cluster') return '#9a6b16';
+  if (node?.type === 'skill') return '#2f855a';
+  return '#2364aa';
 }
 
 function updateGlobalRelationshipSelection() {
   const graph = document.querySelector('.global-relationship-graph');
   if (!graph) return;
   const activeNodeId = globalGraphActiveNodeId;
+  const activeNode = globalGraphNodeById(activeNodeId);
+  const selection = globalRelationshipSelection(activeNodeId);
+  graph.style.setProperty('--relationship-edge', globalRelationshipEdgeColor(activeNode));
+  graph.classList.toggle('has-selection', Boolean(activeNodeId));
+  graph.classList.toggle('has-expanded-tool-cluster', Boolean(globalExpandedToolClusterId));
   graph.querySelectorAll('[data-global-node]').forEach(node => {
     const active = Boolean(activeNodeId) && node.dataset.globalNode === activeNodeId;
     node.classList.toggle('is-active', active);
+    node.classList.toggle('is-related', selection.nodes.has(node.dataset.globalNode));
+    node.classList.toggle('is-expanded', node.dataset.globalNode === globalExpandedToolClusterId);
     node.setAttribute('aria-pressed', String(active));
+    if (node.classList.contains('tool-cluster')) node.setAttribute('aria-expanded', String(node.dataset.globalNode === globalExpandedToolClusterId));
   });
+  graph.querySelector('.global-relationship-column:nth-child(2)')
+    ?.classList.toggle('has-expanded-tool-cluster', Boolean(globalExpandedToolClusterId));
   graph.querySelectorAll('[data-global-edge]').forEach(edge => {
-    const connected = Boolean(activeNodeId) && (
-      edge.dataset.source === activeNodeId || edge.dataset.target === activeNodeId
+    const connected = Boolean(activeNodeId) && [...selection.edges].some(selectedEdge =>
+      selectedEdge.source === edge.dataset.source && selectedEdge.target === edge.dataset.target && selectedEdge.kind === edge.dataset.kind
     );
     edge.classList.toggle('is-visible', connected);
+    if (edge.classList.contains('global-edge-label')) edge.setAttribute('tabindex', connected ? '0' : '-1');
   });
 }
 
 function toggleGlobalGraphNode(nodeId) {
-  globalGraphActiveNodeId = globalGraphActiveNodeId === nodeId ? '' : nodeId;
-  updateGlobalRelationshipSelection();
+  const wasActive = globalGraphActiveNodeId === nodeId;
+  const node = globalGraphNodeById(nodeId);
+  if (node?.type === 'tool' && globalFocusedToolId === nodeId && wasActive) {
+    globalFocusedToolId = '';
+    globalRelationshipDisplayGraph = buildGlobalRelationshipDisplayGraph(globalOverviewData?.graph || {});
+    globalGraphActiveNodeId = '';
+    globalExpandedToolClusterId = '';
+    refreshGlobalRelationshipGraph();
+    return;
+  }
+  if (node?.type === 'tool_cluster' && globalFocusedToolId) {
+    globalFocusedToolId = '';
+    globalRelationshipDisplayGraph = buildGlobalRelationshipDisplayGraph(globalOverviewData?.graph || {});
+    globalGraphActiveNodeId = nodeId;
+    globalExpandedToolClusterId = nodeId;
+    refreshGlobalRelationshipGraph();
+    return;
+  }
+  globalGraphActiveNodeId = wasActive ? '' : nodeId;
+  globalExpandedToolClusterId = node?.type === 'tool_cluster' && !wasActive ? nodeId : '';
+  requestAnimationFrame(() => drawGlobalRelationshipGraph(globalRelationshipDisplayGraph || {}));
+}
+
+function selectGlobalToolMember(toolId) {
+  globalFocusedToolId = toolId;
+  globalGraphActiveNodeId = toolId;
+  globalExpandedToolClusterId = '';
+  globalRelationshipDisplayGraph = buildGlobalRelationshipDisplayGraph(globalOverviewData?.graph || {}, toolId);
+  refreshGlobalRelationshipGraph();
+}
+
+function globalRelationshipGraphMarkup() {
+  const nodes = globalRelationshipDisplayGraph?.nodes || [];
+  const trajectories = nodes.filter(node => node.type === 'trajectory');
+  const tools = nodes.filter(node => node.type === 'tool_cluster' || node.type === 'tool');
+  const skills = nodes.filter(node => node.type === 'skill');
+  const toolHeading = 'Tools';
+  return `<div class="global-relationship-graph"><svg id="globalRelationshipEdges" class="global-relationship-edges"></svg><div class="global-relationship-columns">
+    <div class="global-relationship-column"><h3>Trajectories</h3><div class="global-relationship-stack">${trajectories.map(globalGraphNode).join('') || '<span class="muted">None</span>'}</div></div>
+    <div class="global-relationship-column"><h3>${toolHeading}</h3><div class="global-relationship-stack">${tools.map(globalGraphNode).join('') || '<span class="muted">None</span>'}</div></div>
+    <div class="global-relationship-column"><h3>Skills</h3><div class="global-relationship-stack">${skills.map(globalGraphNode).join('') || '<span class="muted">None</span>'}</div></div>
+  </div></div>`;
+}
+
+function bindGlobalRelationshipGraphInteractions() {
+  const content = $('globalRelationshipGraphContent');
+  if (!content) return;
+  content.querySelectorAll('[data-global-node]').forEach(node => {
+    node.addEventListener('click', () => toggleGlobalGraphNode(node.dataset.globalNode));
+    node.addEventListener('keydown', event => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        toggleGlobalGraphNode(node.dataset.globalNode);
+      }
+    });
+  });
+  content.querySelectorAll('[data-global-tool-member]').forEach(member => {
+    member.addEventListener('click', event => {
+      event.preventDefault();
+      event.stopPropagation();
+      selectGlobalToolMember(member.dataset.globalToolMember);
+    });
+  });
+}
+
+function refreshGlobalRelationshipGraph() {
+  const content = $('globalRelationshipGraphContent');
+  if (!content) return;
+  content.innerHTML = globalRelationshipGraphMarkup();
+  bindGlobalRelationshipGraphInteractions();
+  if (!content.hidden) requestAnimationFrame(() => drawGlobalRelationshipGraph(globalRelationshipDisplayGraph || {}));
 }
 
 function drawGlobalRelationshipGraph(graphData) {
@@ -1777,42 +2189,26 @@ function drawGlobalRelationshipGraph(graphData) {
   if (!graph || !edges) return;
   const trajectoryNodes = [...graph.querySelectorAll('.global-graph-node.trajectory')];
   const toolNodes = [...graph.querySelectorAll('.global-graph-node.tool')];
-  const skillNodes = [...graph.querySelectorAll('.global-graph-node.skill')];
-  const skillStack = graph.querySelector('.global-relationship-column:last-child .global-relationship-stack');
-  skillNodes.forEach(node => { node.style.height = ''; });
-  const sharedSkillHeight = Math.max(50, ...toolNodes.map(node => Math.ceil(node.getBoundingClientRect().height)));
-  skillNodes.forEach(node => { node.style.height = `${sharedSkillHeight}px`; });
-  const trajectoryGaps = trajectoryNodes.slice(1).map((node, index) => {
-    const previousBox = trajectoryNodes[index].getBoundingClientRect();
-    return node.getBoundingClientRect().top - previousBox.bottom;
-  });
-  if (skillStack) skillStack.style.gap = '';
-  if (skillStack && trajectoryGaps.length) {
-    skillStack.style.gap = `${trajectoryGaps.reduce((sum, gap) => sum + gap, 0) / trajectoryGaps.length}px`;
-  }
+  const activeNode = globalGraphNodeById(globalGraphActiveNodeId);
+  const emphasizeTrajectorySide = activeNode?.type === 'tool' || activeNode?.type === 'tool_cluster';
+  const showSimpleSkillResults = activeNode?.type === 'skill';
+  const showSpacedGeneralUtilityEvidence = activeNode?.id === 'tool-cluster:general';
+  const showSpacedGitEvidence = activeNode?.id === 'tool:git';
+  const showSpacedEvidence = showSpacedGeneralUtilityEvidence || showSpacedGitEvidence;
   const bounds = graph.getBoundingClientRect();
-  const width = Math.max(graph.scrollWidth, Math.ceil(bounds.width));
-  const height = Math.max(graph.scrollHeight, Math.ceil(bounds.height));
+  const width = Math.ceil(bounds.width);
+  const height = Math.ceil(bounds.height);
   edges.setAttribute('width', width);
   edges.setAttribute('height', height);
   edges.setAttribute('viewBox', `0 0 ${width} ${height}`);
   edges.innerHTML = '';
-  for (const column of graph.querySelectorAll('.global-relationship-column')) {
-    const columnBox = column.getBoundingClientRect();
-    const background = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-    background.setAttribute('x', columnBox.left - bounds.left + graph.scrollLeft - 10);
-    background.setAttribute('y', columnBox.top - bounds.top + graph.scrollTop - 10);
-    background.setAttribute('width', columnBox.width + 20);
-    background.setAttribute('height', columnBox.height + 20);
-    background.setAttribute('rx', '6');
-    background.setAttribute('fill', '#e2f0fc');
-    background.setAttribute('fill-opacity', '.68');
-    edges.appendChild(background);
-  }
   const byId = new Map([...graph.querySelectorAll('[data-global-node]')].map(node => [node.dataset.globalNode, node]));
+  const skillUsageEdges = (graphData.edges || []).filter(edge => edge.kind === 'skill_usage');
+  const routedSkillUsageEdges = showSimpleSkillResults
+    ? skillUsageEdges.filter(edge => edge.source === activeNode?.id)
+    : skillUsageEdges;
   const skillUsageLaneByEdge = new Map(
-    (graphData.edges || [])
-      .filter(edge => edge.kind === 'skill_usage')
+    routedSkillUsageEdges
       .sort((left, right) => `${left.source}:${left.target}`.localeCompare(`${right.source}:${right.target}`))
       .map((edge, index) => [edge, index])
   );
@@ -1822,14 +2218,71 @@ function drawGlobalRelationshipGraph(graphData) {
       .map(edge => `${edge.source}:${edge.target}`)
   );
   const resultBands = new Map();
+  const lowestNodeBottom = Math.max(0, ...[...byId.values()].map(node => {
+    const box = node.getBoundingClientRect();
+    return box.bottom - bounds.top + graph.scrollTop;
+  }));
+  const evidenceLaneGap = showSimpleSkillResults ? 20 : (showSpacedEvidence ? 18 : 12);
+  const highestSkillUsageLane = Math.max(0, ...skillUsageLaneByEdge.values());
+  const requiredRouteHeight = lowestNodeBottom + 10 + highestSkillUsageLane * evidenceLaneGap + 12;
+  if (height < requiredRouteHeight) {
+    graph.style.minHeight = `${Math.ceil(requiredRouteHeight)}px`;
+    requestAnimationFrame(() => drawGlobalRelationshipGraph(graphData));
+    return;
+  }
+  const edgeLabelText = edge => edge.kind === 'results'
+    ? `calls × ${edge.count || 1}`
+    : (edge.kind === 'skill_action'
+      ? `action × ${edge.count || 1}`
+      : `evidence × ${edge.count || 1}`);
   const appendRelationshipEdge = (element, edge) => {
     element.dataset.globalEdge = 'true';
     element.dataset.source = edge.source;
     element.dataset.target = edge.target;
+    element.dataset.kind = edge.kind || '';
     edges.appendChild(element);
   };
+  const appendRelationshipLabel = (edge, x, y) => {
+    const label = edgeLabelText(edge);
+    const labelWidth = Math.max(38, label.length * 6 + 10);
+    const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    group.setAttribute('class', 'global-edge-label');
+    group.dataset.globalEdge = 'true';
+    group.dataset.source = edge.source;
+    group.dataset.target = edge.target;
+    group.dataset.kind = edge.kind || '';
+    group.setAttribute('role', 'button');
+    group.setAttribute('tabindex', '0');
+    group.setAttribute('aria-label', `${label}; show relationship details`);
+    const background = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    background.setAttribute('x', `${x - labelWidth / 2}`);
+    background.setAttribute('y', `${y - 8}`);
+    background.setAttribute('width', `${labelWidth}`);
+    background.setAttribute('height', '16');
+    background.setAttribute('rx', '4');
+    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    text.setAttribute('x', `${x}`);
+    text.setAttribute('y', `${y}`);
+    text.textContent = label;
+    group.append(background, text);
+    group.addEventListener('click', event => {
+      event.stopPropagation();
+      showGlobalRelationshipEdgeDetail(edge);
+    });
+    group.addEventListener('keydown', event => {
+      if (event.key !== 'Enter' && event.key !== ' ') return;
+      event.preventDefault();
+      showGlobalRelationshipEdgeDetail(edge);
+    });
+    edges.appendChild(group);
+  };
   const resultUnitWidth = 2;
-  const skillRelationWidth = resultUnitWidth * 3;
+  const visualResultWeight = edge => Math.min(5, Math.max(1, Math.ceil((Number(edge.count) || 1) / 3)));
+  const skillRelationWidth = resultUnitWidth * 2;
+  const cubicPoint = (start, controlA, controlB, end, t) => {
+    const inverseT = 1 - t;
+    return inverseT ** 3 * start + 3 * inverseT ** 2 * t * controlA + 3 * inverseT * t ** 2 * controlB + t ** 3 * end;
+  };
   const resultBandGap = 2;
   const resultEdgesByTool = new Map();
   for (const edge of graphData.edges || []) {
@@ -1844,10 +2297,16 @@ function drawGlobalRelationshipGraph(graphData) {
     const target = byId.get(toolId);
     const targetBox = target.getBoundingClientRect();
     toolEdges.sort((left, right) => byId.get(left.source).getBoundingClientRect().top - byId.get(right.source).getBoundingClientRect().top);
-    const totalWidth = toolEdges.reduce((sum, edge) => sum + Math.max(1, Number(edge.count) || 1) * resultUnitWidth, 0) + Math.max(0, toolEdges.length - 1) * resultBandGap;
+    if (emphasizeTrajectorySide) {
+      const centerY = targetBox.top - bounds.top + graph.scrollTop + targetBox.height / 2;
+      toolEdges.forEach(edge => resultBands.set(edge, {top: centerY - 1, bottom: centerY + 1}));
+      continue;
+    }
+    const bandWidthForEdge = edge => visualResultWeight(edge) * resultUnitWidth;
+    const totalWidth = toolEdges.reduce((sum, edge) => sum + bandWidthForEdge(edge), 0) + Math.max(0, toolEdges.length - 1) * resultBandGap;
     let cursor = targetBox.top - bounds.top + graph.scrollTop + (targetBox.height - totalWidth) / 2;
     for (const edge of toolEdges) {
-      const bandWidth = Math.max(1, Number(edge.count) || 1) * resultUnitWidth;
+      const bandWidth = bandWidthForEdge(edge);
       resultBands.set(edge, {top: cursor, bottom: cursor + bandWidth});
       cursor += bandWidth + resultBandGap;
     }
@@ -1874,11 +2333,21 @@ function drawGlobalRelationshipGraph(graphData) {
       const horizontalDistance = Math.max(1, Math.abs(endX - startX));
       const startControlX = startX + direction * Math.min(126, horizontalDistance * .44);
       const endControlX = endX - direction * Math.min(150, horizontalDistance * .5);
+      if (showSimpleSkillResults) {
+        const curve = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        curve.setAttribute('d', `M ${startX} ${sourceCenterY} C ${startControlX} ${sourceCenterY}, ${endControlX} ${targetCenterY}, ${endX} ${targetCenterY}`);
+        curve.setAttribute('class', 'results trajectory-result skill-context-result');
+        curve.style.fill = 'none';
+        curve.style.stroke = 'var(--relationship-edge)';
+        curve.style.strokeWidth = `${skillRelationWidth}px`;
+        appendRelationshipEdge(curve, edge);
+        continue;
+      }
       const band = resultBands.get(edge) || {top: targetCenterY - 1, bottom: targetCenterY + 1};
-      const startHalfWidth = 1;
+      const startHalfWidth = emphasizeTrajectorySide ? visualResultWeight(edge) * resultUnitWidth / 2 : 1;
       const upperClusterY = targetCenterY + (band.top - targetCenterY) * .22;
       const lowerClusterY = targetCenterY + (band.bottom - targetCenterY) * .22;
-      const color = '#2364aa';
+      const color = 'var(--relationship-edge)';
       const curve = document.createElementNS('http://www.w3.org/2000/svg', 'path');
       curve.setAttribute('d', `M ${startX} ${sourceCenterY - startHalfWidth} C ${startControlX} ${sourceCenterY - startHalfWidth}, ${endControlX} ${upperClusterY}, ${endX} ${band.top} L ${endX} ${band.bottom} C ${endControlX} ${lowerClusterY}, ${startControlX} ${sourceCenterY + startHalfWidth}, ${startX} ${sourceCenterY + startHalfWidth} Z`);
       curve.setAttribute('class', 'results trajectory-result');
@@ -1886,6 +2355,10 @@ function drawGlobalRelationshipGraph(graphData) {
       curve.style.stroke = color;
       curve.setAttribute('stroke-width', '1');
       appendRelationshipEdge(curve, edge);
+      const labelT = .48;
+      const labelX = cubicPoint(startX, startControlX, endControlX, endX, labelT);
+      const labelLineY = cubicPoint(sourceCenterY - startHalfWidth, sourceCenterY - startHalfWidth, upperClusterY, band.top, labelT);
+      appendRelationshipLabel(edge, labelX, labelLineY - 10);
       continue;
     }
     const isSkillToolRelation = (
@@ -1903,22 +2376,26 @@ function drawGlobalRelationshipGraph(graphData) {
       curve.setAttribute('d', `M ${startX} ${sourceCenterY} C ${startControlX} ${sourceCenterY}, ${endControlX} ${targetCenterY}, ${endX} ${targetCenterY}`);
       curve.setAttribute('class', String(edge.kind).replaceAll('_', '-'));
       curve.style.strokeWidth = `${skillRelationWidth}px`;
-      curve.style.stroke = '#2364aa';
+      curve.style.stroke = 'var(--relationship-edge)';
       appendRelationshipEdge(curve, edge);
+      appendRelationshipLabel(edge, startX + (endX - startX) * .5, sourceCenterY + (targetCenterY - sourceCenterY) * .5 - 10);
       continue;
     }
     const isSkillUsage = edge.kind === 'skill_usage' && source.classList.contains('skill') && target.classList.contains('trajectory');
     if (isSkillUsage) {
       const lane = skillUsageLaneByEdge.get(edge) || 0;
-      const bottomRouteY = height - 13 - lane * 7;
-      const sourceExitX = sourceRight + 28 + lane * 7;
-      const targetEntryX = targetLeft - 28 - lane * 7;
+      const bottomRouteY = height - 12 - lane * evidenceLaneGap;
+      const horizontalLaneOffset = lane * 12;
+      const sourceExitX = sourceRight + 28 + horizontalLaneOffset;
+      const targetEntryX = targetLeft - 28 - horizontalLaneOffset;
+      const cornerRadius = Math.min(14, Math.max(6, (bottomRouteY - Math.max(sourceCenterY, targetCenterY)) / 2));
       const route = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-      route.setAttribute('d', `M ${sourceRight} ${sourceCenterY} H ${sourceExitX} V ${bottomRouteY} H ${targetEntryX} V ${targetCenterY} H ${targetLeft}`);
+      route.setAttribute('d', `M ${sourceRight} ${sourceCenterY} H ${sourceExitX - cornerRadius} Q ${sourceExitX} ${sourceCenterY} ${sourceExitX} ${sourceCenterY + cornerRadius} V ${bottomRouteY - cornerRadius} Q ${sourceExitX} ${bottomRouteY} ${sourceExitX - cornerRadius} ${bottomRouteY} H ${targetEntryX + cornerRadius} Q ${targetEntryX} ${bottomRouteY} ${targetEntryX} ${bottomRouteY - cornerRadius} V ${targetCenterY + cornerRadius} Q ${targetEntryX} ${targetCenterY} ${targetEntryX + cornerRadius} ${targetCenterY} H ${targetLeft}`);
       route.setAttribute('class', 'skill-usage');
-      route.style.stroke = '#2364aa';
-      route.style.strokeWidth = '3px';
+      route.style.stroke = 'var(--relationship-edge)';
+      route.style.strokeWidth = '2px';
       appendRelationshipEdge(route, edge);
+      appendRelationshipLabel(edge, (sourceExitX + targetEntryX) / 2 + (lane - highestSkillUsageLane / 2) * 78, bottomRouteY - (showSpacedEvidence ? 9 : 11));
       continue;
     }
     const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
@@ -1929,6 +2406,7 @@ function drawGlobalRelationshipGraph(graphData) {
     line.setAttribute('class', String(edge.kind || '').replaceAll('_', '-'));
     line.setAttribute('stroke-width', '2');
     appendRelationshipEdge(line, edge);
+    appendRelationshipLabel(edge, ((forward ? sourceRight : sourceLeft) + (forward ? targetLeft : targetRight)) / 2, (sourceCenterY + targetCenterY) / 2 - 10);
   }
   updateGlobalRelationshipSelection();
 }
@@ -2013,7 +2491,7 @@ function toggleGlobalRelationshipGraph(trigger) {
   trigger.setAttribute('aria-expanded', String(show));
   trigger.setAttribute('aria-label', show ? 'Collapse relationship graph' : 'Expand relationship graph');
   trigger.setAttribute('title', show ? 'Collapse relationship graph' : 'Expand relationship graph');
-  if (show) requestAnimationFrame(() => drawGlobalRelationshipGraph(globalOverviewData?.graph || {}));
+  if (show) requestAnimationFrame(() => drawGlobalRelationshipGraph(globalRelationshipDisplayGraph || {}));
 }
 
 function updateTrajectorySuggestions(trajectories) {
@@ -2033,17 +2511,14 @@ function updateTrajectorySuggestions(trajectories) {
 function renderGlobalOverview(data) {
   globalOverviewData = data;
   globalGraphActiveNodeId = '';
+  globalExpandedToolClusterId = '';
+  globalFocusedToolId = '';
   globalSkillDetailIndex = null;
   const trajectories = data.trajectories || [];
   updateTrajectorySuggestions(trajectories);
   const skills = data.skills || [];
   const graph = data.graph || {nodes: [], edges: []};
-  const nodes = graph.nodes || [];
-  const nodeGroups = {
-    trajectory: nodes.filter(node => node.type === 'trajectory'),
-    tool: nodes.filter(node => node.type === 'tool'),
-    skill: nodes.filter(node => node.type === 'skill'),
-  };
+  globalRelationshipDisplayGraph = buildGlobalRelationshipDisplayGraph(graph);
   const displaySource = row => {
     const value = String(row.agent_id || row.source_id || '');
     if (value === 'claude-code') return 'Claude Code';
@@ -2070,23 +2545,14 @@ function renderGlobalOverview(data) {
     </div>
     <div id="trajectoryCatalog" class="summary-card global-section" hidden><h3>Trajectory Catalog</h3><div class="table-wrap"><table class="trajectory-catalog-table"><thead><tr><th>Trajectory</th><th>Source</th><th>Created / updated</th><th>Events</th><th>Branches</th><th>Snapshots</th><th>Tools</th><th>Skills</th></tr></thead><tbody>${trajectoryRows}</tbody></table></div></div>
     <div id="skillLibrary" class="summary-card global-section" hidden><h3>Skill Library</h3><div class="table-wrap"><table class="global-skill-library-table"><thead><tr><th>Skill</th><th>Source trajectory</th><th aria-label="Details"></th></tr></thead><tbody>${skillRows}</tbody></table></div><div id="globalSkillDetail" class="global-skill-detail" hidden></div></div>
-    <div class="summary-card global-section"><h3 class="global-graph-heading">Trajectory-Tool-Skill Graph<button type="button" class="graph-collapse-toggle" aria-label="Expand relationship graph" title="Expand relationship graph" aria-expanded="false" onclick="toggleGlobalRelationshipGraph(this)">▸</button></h3>
-      <div id="globalRelationshipGraphContent" hidden><div class="global-relationship-graph"><svg id="globalRelationshipEdges" class="global-relationship-edges"></svg><div class="global-relationship-columns">
-        <div class="global-relationship-column"><h3>Trajectories</h3><div class="global-relationship-stack">${nodeGroups.trajectory.map(globalGraphNode).join('') || '<span class="muted">None</span>'}</div></div>
-        <div class="global-relationship-column"><h3>Tools</h3><div class="global-relationship-stack">${nodeGroups.tool.map(globalGraphNode).join('') || '<span class="muted">None</span>'}</div></div>
-        <div class="global-relationship-column"><h3>Skills</h3><div class="global-relationship-stack">${nodeGroups.skill.map(globalGraphNode).join('') || '<span class="muted">None</span>'}</div></div>
-      </div></div></div>
+    <div class="summary-card global-section"><h3 class="global-graph-heading">Trajectory-Tool-Skill Graph<button type="button" class="graph-collapse-toggle" aria-label="Expand relationship graph" title="Expand relationship graph" aria-expanded="false">▸</button></h3>
+      <div id="globalRelationshipGraphContent" hidden></div>
     </div>`;
-  document.querySelectorAll('[data-global-node]').forEach(node => {
-    node.addEventListener('click', () => toggleGlobalGraphNode(node.dataset.globalNode));
-    node.addEventListener('keydown', event => {
-      if (event.key === 'Enter' || event.key === ' ') {
-        event.preventDefault();
-        toggleGlobalGraphNode(node.dataset.globalNode);
-      }
-    });
+  refreshGlobalRelationshipGraph();
+  document.querySelector('.graph-collapse-toggle')?.addEventListener('click', event => {
+    event.preventDefault();
+    toggleGlobalRelationshipGraph(event.currentTarget);
   });
-  requestAnimationFrame(() => drawGlobalRelationshipGraph(graph));
 }
 
 async function loadGlobalOverview() {
@@ -3255,7 +3721,7 @@ $('detailSlider').oninput = e => { overviewAdvance(Number(e.target.value || 0), 
 $('load').onclick = () => { if (!globalBusy) { showDatabaseViewsPlaceholder(); loadAll().catch(err => { showError(err.message); $('graphMeta').textContent = 'load failed'; setBusyControls(false); }); } };
 window.addEventListener('resize', () => {
   if (!$('globalPage').classList.contains('hidden') && globalOverviewData) {
-    requestAnimationFrame(() => drawGlobalRelationshipGraph(globalOverviewData.graph || {}));
+    requestAnimationFrame(() => drawGlobalRelationshipGraph(globalRelationshipDisplayGraph || {}));
   }
 });
 loadLlmProfiles();
