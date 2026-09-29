@@ -550,8 +550,12 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
     /* Trajectory details: compact harness-style timeline and event session. */
     .trajectory-details-surface { padding:14px; }
     .trajectory-tracks { overflow:hidden; border:1px solid #c9def5; border-top:3px solid #2364aa; border-radius:6px; background:#f8fbff; }
-    .trajectory-tracks-trigger { cursor:pointer; }
-    .trajectory-tracks-trigger:focus-visible { outline:2px solid #2364aa; outline-offset:3px; }
+    .trajectory-tracks-scroll { max-width:100%; overflow-x:auto; overflow-y:hidden; border:1px solid #c9def5; border-top:3px solid #2364aa; border-radius:6px; background:#f8fbff; scrollbar-color:#9db9d5 #f1f6fb; }
+    .trajectory-tracks-scroll > .trajectory-tracks { width:calc(var(--expanded-rail-width) + 62px); min-width:100%; overflow:visible; border:0; border-radius:0; background:transparent; cursor:default; }
+    .trajectory-tracks-scroll > .trajectory-tracks .trajectory-track { grid-template-columns:62px minmax(0,1fr); min-height:24px; }
+    .trajectory-tracks-scroll > .trajectory-tracks .trajectory-track-label { position:sticky; left:0; z-index:5; padding-right:6px; box-shadow:1px 0 0 #d9e6f2; font-size:11px; }
+    .trajectory-tracks-scroll > .trajectory-tracks .trajectory-track-rail { min-height:24px; }
+    .trajectory-tracks-scroll > .trajectory-tracks .trajectory-track-marker { width:11px; height:10px; }
     .trajectory-track { display:grid; grid-template-columns:60px minmax(0,1fr); min-height:24px; border-bottom:1px solid #edf3f8; }
     .trajectory-track:last-child { border-bottom:0; }
     .trajectory-track-label { display:flex; align-items:center; justify-content:flex-end; padding:0 8px; color:#4b6074; background:#f1f6fb; font-size:11px; font-weight:700; text-align:right; }
@@ -1263,7 +1267,8 @@ function drawTrajectoryDetailsSessionView(graph, edges, seq, {showAll = false, c
   const shown = showAll ? seq : seq.slice(0, overviewStep + 1);
   const selectedId = (overviewCardEvent || seq[overviewStep])?.id || '';
   const hasHighlight = highlightEventIds.size || highlightBranchIds.size;
-  const trackRows = renderTrajectoryTrackRows(seq, false, changeIds, highlightEventIds, highlightBranchIds);
+  const railWidth = expandedTrajectoryRailWidth(seq);
+  const trackRows = renderTrajectoryTrackRows(seq, true, changeIds, highlightEventIds, highlightBranchIds);
   const seenBranches = new Set();
   const sessionRows = shown.map(event => {
     const type = eventPresentationType(event);
@@ -1280,7 +1285,7 @@ function drawTrajectoryDetailsSessionView(graph, edges, seq, {showAll = false, c
   }).join('') || '<div class="muted">No events to display.</div>';
   const surface = document.createElement('div');
   surface.className = 'trajectory-details-surface';
-  surface.innerHTML = `<div class="trajectory-tracks trajectory-tracks-trigger" aria-label="Trajectory event tracks" title="Open expanded event tracks" tabindex="0">${trackRows}</div><div class="trajectory-session-list" aria-label="Trajectory event session">${sessionRows}</div>`;
+  surface.innerHTML = `<div class="trajectory-tracks-scroll" aria-label="Trajectory event tracks"><div class="trajectory-tracks" style="--expanded-rail-width:${railWidth}px">${trackRows}</div></div><div class="trajectory-session-list" aria-label="Trajectory event session">${sessionRows}</div>`;
   graph.insertBefore(surface, panel);
   surface.querySelectorAll('[data-track-event-id]').forEach(marker => {
     marker.addEventListener('click', event => {
@@ -1288,14 +1293,6 @@ function drawTrajectoryDetailsSessionView(graph, edges, seq, {showAll = false, c
       const index = seq.findIndex(event => event.id === marker.dataset.trackEventId);
       if (index >= 0) overviewAdvance(index, true);
     });
-  });
-  const tracks = surface.querySelector('.trajectory-tracks-trigger');
-  tracks.addEventListener('click', () => openTrajectoryTrackModal(seq, changeIds, highlightEventIds, highlightBranchIds));
-  tracks.addEventListener('keydown', event => {
-    if (event.key === 'Enter' || event.key === ' ') {
-      event.preventDefault();
-      openTrajectoryTrackModal(seq, changeIds, highlightEventIds, highlightBranchIds);
-    }
   });
   surface.querySelectorAll('[data-session-event-id]').forEach(row => {
     row.addEventListener('click', () => detailStepTo(row.dataset.sessionEventId));
@@ -2769,7 +2766,26 @@ function positionDetailCard() {
   $('edges').setAttribute('height', String(Math.max(graph.clientHeight, expandedHeight)));
   setPosition(centredX, nodeBottom + gap);
 }
-function overviewAdvance(step, showCard) {
+function followCurrentTrajectoryTrack(smooth = false) {
+  const current = document.querySelector('#graph .trajectory-tracks-scroll [data-track-event-id].current');
+  const scroller = current?.closest('.trajectory-tracks-scroll');
+  if (!current || !scroller) return;
+  const marker = current.getBoundingClientRect();
+  const viewport = scroller.getBoundingClientRect();
+  const inset = Math.min(88, Math.max(40, scroller.clientWidth * 0.16));
+  const leftLimit = viewport.left + inset;
+  const rightLimit = viewport.right - inset;
+  if (marker.left >= leftLimit && marker.right <= rightLimit) return;
+  const targetLeft = marker.left < leftLimit
+    ? scroller.scrollLeft + marker.left - leftLimit
+    : scroller.scrollLeft + marker.right - rightLimit;
+  const maxLeft = Math.max(0, scroller.scrollWidth - scroller.clientWidth);
+  scroller.scrollTo({left:Math.max(0, Math.min(targetLeft, maxLeft)), behavior:smooth ? 'smooth' : 'auto'});
+}
+function overviewAdvance(step, showCard, {followTrack = false} = {}) {
+  const previousScrollLeft = followTrack
+    ? document.querySelector('#graph .trajectory-tracks-scroll')?.scrollLeft
+    : null;
   const seq = overviewCurrentSeq();
   overviewStep = Math.max(0, Math.min(step, seq.length - 1));
   if (showCard) overviewCardEvent = seq[overviewStep];
@@ -2778,6 +2794,13 @@ function overviewAdvance(step, showCard) {
     $('eventDetailPanel').classList.add('hidden');
   }
   drawDetailView();
+  if (followTrack) requestAnimationFrame(() => {
+    const scroller = document.querySelector('#graph .trajectory-tracks-scroll');
+    if (scroller && Number.isFinite(previousScrollLeft)) {
+      scroller.scrollLeft = Math.min(previousScrollLeft, Math.max(0, scroller.scrollWidth - scroller.clientWidth));
+    }
+    followCurrentTrajectoryTrack(true);
+  });
   if (showCard) renderDetailCard();
 }
 function detailStepTo(id) {
@@ -2800,22 +2823,22 @@ function detailTogglePlay() {
   if (overviewTimer) { stopOverviewTimer(); return; }
   const seq = overviewCurrentSeq();
   if (overviewSeqKind === 'all') {
-    if (overviewStep >= seq.length - 1) overviewAdvance(0, false);
+    if (overviewStep >= seq.length - 1) overviewAdvance(0, false, {followTrack:true});
     $('detailPlay').textContent = 'Pause';
     overviewTimer = setInterval(() => {
       const events = overviewCurrentSeq();
       if (overviewStep >= events.length - 1) { stopOverviewTimer(); return; }
-      overviewAdvance(overviewStep + 1, false);
+      overviewAdvance(overviewStep + 1, false, {followTrack:true});
     }, 700);
     return;
   }
-  if (overviewStep >= seq.length - 1) overviewAdvance(nodePlaybackStart(seq), true);
-  else { overviewCardEvent = seq[overviewStep]; renderDetailCard(); }
+  if (overviewStep >= seq.length - 1) overviewAdvance(nodePlaybackStart(seq), true, {followTrack:true});
+  else { overviewCardEvent = seq[overviewStep]; renderDetailCard(); requestAnimationFrame(() => followCurrentTrajectoryTrack(true)); }
   $('detailPlay').textContent = 'Pause';
   overviewTimer = setInterval(() => {
     const s = overviewCurrentSeq();
     if (overviewStep >= s.length - 1) { stopOverviewTimer(); return; }
-    overviewAdvance(overviewStep + 1, true);
+    overviewAdvance(overviewStep + 1, true, {followTrack:true});
   }, 700);
 }
 
