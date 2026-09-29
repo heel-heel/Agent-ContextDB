@@ -80,17 +80,31 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
     .repair-table th:nth-child(3), .repair-table td:nth-child(3) { width:29%; line-height:1.45; }
     .repair-table th:nth-child(4), .repair-table td:nth-child(4) { width:13%; white-space:nowrap; }
     .repair-failure-title { font-size:16px !important; }
-    .repair-failure-title .mono { font-size:16px; }
+    .repair-failure-title > .mono:not(.repair-failure-event-id) { color:#9f2a2a; font-size:16px; }
     .repair-failure-event-id { color:#315d89; white-space:nowrap; }
     .repair-likely-cause { font-size:13px; line-height:1.35 !important; }
     .repair-strategy-card { border-color:#b9d5ec; border-left:4px solid #2364aa; background:#fbfdff; }
     .repair-table td { overflow-wrap:anywhere; }
     .repair-table .mono { white-space:pre-wrap; overflow-wrap:anywhere; }
-    .success-patterns-wrap, .failure-patterns-wrap { overflow-x:hidden; border:1px solid #c9def5; border-top:4px solid #2364aa; background:#fff; box-shadow:0 2px 6px rgba(35,100,170,.08); }
-    .success-patterns-table thead th, .failure-patterns-table thead th { padding:8px 10px; background:#f3f8fe; color:#315d89; border-bottom-color:#c9def5; font-size:12px; }
-    .success-patterns-table tbody td, .failure-patterns-table tbody td { padding:8px 10px; background:#fff; border-bottom-color:#dfeaf5; line-height:1.4; }
-    .success-patterns-table tbody tr, .failure-patterns-table tbody tr { transition:background-color 140ms ease; }
-    .success-patterns-table tbody tr:hover td, .failure-patterns-table tbody tr:hover td { background:#f5faff; }
+    .repair-candidates-wrap { border-color:#c5e5d0; border-top:4px solid #2f855a; box-shadow:0 2px 6px rgba(47,133,90,.08); }
+    .repair-candidates-wrap .repair-table th { background:#f1faf4; color:#256c45; border-bottom-color:#c5e5d0; }
+    .repair-candidates-wrap .repair-table td { border-bottom-color:#dcefe3; }
+    .repair-candidates-wrap .repair-table tbody tr:hover td { background:#f6fcf8; }
+    .repair-excluded-wrap { border-color:#efd8aa; border-top:4px solid #9a6b16; box-shadow:0 2px 6px rgba(154,107,22,.08); }
+    .repair-excluded-wrap .repair-excluded-table th { background:#fff9ed; color:#7a4d07; border-bottom-color:#efd8aa; }
+    .repair-excluded-wrap .repair-excluded-table td { border-bottom-color:#f4e7c9; }
+    .repair-excluded-wrap .repair-excluded-table tbody tr:hover td { background:#fffcf5; }
+    .success-patterns-wrap, .failure-patterns-wrap { overflow-x:hidden; background:#fff; }
+    .failure-patterns-wrap { border:1px solid #efcaca; border-top:4px solid #b83232; box-shadow:0 2px 6px rgba(184,50,50,.08); }
+    .failure-patterns-table thead th { padding:8px 10px; background:#fff5f5; color:#8f2727; border-bottom-color:#efcaca; font-size:12px; }
+    .failure-patterns-table tbody td { padding:8px 10px; background:#fff; border-bottom-color:#f4dddd; line-height:1.4; }
+    .failure-patterns-table tbody tr { transition:background-color 140ms ease; }
+    .failure-patterns-table tbody tr:hover td { background:#fff8f8; }
+    .success-patterns-wrap { border:1px solid #c5e5d0; border-top:4px solid #2f855a; box-shadow:0 2px 6px rgba(47,133,90,.08); }
+    .success-patterns-table thead th { padding:8px 10px; background:#f1faf4; color:#256c45; border-bottom-color:#c5e5d0; font-size:12px; }
+    .success-patterns-table tbody td { padding:8px 10px; background:#fff; border-bottom-color:#dcefe3; line-height:1.4; }
+    .success-patterns-table tbody tr { transition:background-color 140ms ease; }
+    .success-patterns-table tbody tr:hover td { background:#f6fcf8; }
     .success-patterns-table .mono, .failure-patterns-table .mono { line-height:1.4; }
     .success-patterns-table { width:100%; min-width:0; table-layout:fixed; }
     .success-patterns-table th:nth-child(1), .success-patterns-table td:nth-child(1) { width:17%; }
@@ -114,6 +128,12 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
     .learned-skills-table th:nth-child(1), .learned-skills-table td:nth-child(1) { width:42%; }
     .learned-skills-table th:nth-child(2), .learned-skills-table td:nth-child(2) { width:58%; }
     .learned-skills-table td { overflow-wrap:anywhere; }
+    .learned-skill-card .skill-trigger { border-color:#efcaca; border-left:3px solid #b83232; background:#fff6f6; }
+    .learned-skill-card .skill-trigger > b { color:#9f2a2a; }
+    .learned-skill-card .learned-skills-wrap { border-color:#c5e5d0; border-top:4px solid #2f855a; box-shadow:0 2px 6px rgba(47,133,90,.08); }
+    .learned-skill-card .learned-skills-table th { background:#f1faf4; color:#256c45; border-bottom-color:#c5e5d0; }
+    .learned-skill-card .learned-skills-table td { border-bottom-color:#dcefe3; }
+    .learned-skill-card .learned-skills-table tbody tr:hover td { background:#f6fcf8; }
     .learned-skill-action { font-weight:400; }
     .global-skill-detail { margin-top:10px; border:1px solid #b9d5ec; border-left:4px solid #2364aa; border-radius:6px; background:#fbfdff; padding:12px; }
     .global-skill-detail[hidden] { display:none; }
@@ -134,6 +154,8 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
     .semantic-judgments-table th:nth-child(4), .semantic-judgments-table td:nth-child(4) { width:20%; }
     .semantic-judgments-table th:nth-child(5), .semantic-judgments-table td:nth-child(5) { width:13%; white-space:nowrap; }
     .semantic-judgments-table .mono { white-space:pre-wrap; overflow-wrap:anywhere; }
+    .semantic-failure-command { color:#9f2a2a; }
+    .semantic-candidate-command { color:#256c45; }
     .repair-excluded-table { width:100%; min-width:0; table-layout:fixed; }
     .repair-excluded-table th:nth-child(1), .repair-excluded-table td:nth-child(1) { width:18%; }
     .repair-excluded-table th:nth-child(2), .repair-excluded-table td:nth-child(2) { width:57%; }
@@ -170,19 +192,21 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
     .context-evidence-list { display:inline-flex; flex-wrap:wrap; align-items:center; gap:3px; }
     .context-evidence-label { color:var(--muted); }
     .rendered-context { border:1px solid #cbd9e8; background:#f7faff; padding:11px; white-space:pre-wrap; overflow-wrap:anywhere; line-height:1.45; font-size:12px; }
+    .context-assembly .summary-card .rendered-context { border-color:#e2d4f7; background:#faf7ff; }
+    .digest-summary-card { border:1px solid #e2d4f7; border-top:4px solid #7c3aed; background:#faf7ff; }
+    .digest-summary-heading { margin:0 0 7px; color:#6f35ce; font-size:13px; }
+    .context-assembly .digest-summary-card .rendered-context { border:0; background:transparent; padding:0; }
     .summary-status { margin:0; }
     .summary-profile-control { display:flex; align-items:center; gap:7px; color:#4b6074; white-space:nowrap; }
     .digest-insights { display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:14px; margin:14px 0; }
-    .digest-insight { min-width:0; padding:4px 0 4px 12px; border-left:3px solid #237b7d; }
-    .digest-insight.open-items { border-left-color:#b77218; }
+    .digest-insight { min-width:0; padding:4px 9px 4px 12px; border-left:3px solid #237b7d; background:#f3fbf8; }
+    .digest-insight.open-items { border-left-color:#b77218; background:#fffaf1; }
     .digest-insight h3 { margin:0 0 7px; color:#204f52; font-size:13px; }
     .digest-insight.open-items h3 { color:#7a4d11; }
     .digest-insight-list { margin:0; padding:0; list-style:none; }
     .digest-insight-list li { position:relative; padding:6px 0 6px 13px; border-top:1px solid #e1e9ed; color:#314256; font-size:12px; line-height:1.45; overflow-wrap:anywhere; }
     .digest-insight-list li::before { content:'•'; position:absolute; left:1px; color:#237b7d; font-weight:700; }
     .digest-insight.open-items li::before { color:#b77218; }
-    .digest-sources { min-width:0; margin-top:14px; padding:4px 0 4px 12px; border-left:3px solid #315d89; }
-    .digest-sources h3 { margin:0 0 7px; color:#315d89; font-size:13px; }
     .budget-control { display:flex; flex-wrap:wrap; align-items:center; gap:10px; padding:10px; background:#f7faff; border:1px solid #d4e1ee; }
     .budget-control label { font-size:12px; font-weight:700; }
     .budget-control input { flex:1 1 260px; padding:0; height:16px; border:0; }
@@ -224,20 +248,25 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
     .budget-branch-control { display:flex; align-items:center; gap:7px; padding-right:10px; border-right:1px solid #d4e1ee; color:#4b6074; white-space:nowrap; }
     .budget-branch-control select, .summary-profile-control select { min-width:140px; height:28px; box-sizing:border-box; border:1px solid var(--line); border-radius:5px; color:#17324d; background:#fff; padding:0 6px; }
     .budget-table { min-width:780px; table-layout:fixed; }
-    .budget-table .budget-candidate-column { width:72px; }
-    .budget-table .budget-loaded-column { width:68px; }
-    .budget-table .budget-state-column { width:118px; }
-    .budget-table .budget-sources-column { width:370px; }
+    .budget-table .budget-candidate-column { width:105px; }
+    .budget-table .budget-loaded-column { width:100px; }
+    .budget-table .budget-state-column { width:130px; }
+    .budget-table .budget-sources-column { width:100px; }
     .budget-table td:last-child { overflow-wrap:anywhere; }
     .context-plan-row { cursor:pointer; }
-    .context-plan-row:hover td { background:#f5f9fd; }
-    .context-plan-row.selected td { background:#eaf3ff; }
-    .context-plan-table-wrap { position:relative; }
-    .context-plan-detail { position:absolute; inset:0; z-index:3; overflow:auto; border:1px solid #9db9d5; background:#f7faff; padding:12px; box-shadow:0 4px 16px rgba(31,85,146,.16); }
-    .context-plan-detail h3 { margin:0 0 7px; font-size:14px; }
+    .context-plan-row:hover td { background:#f8f4ff; }
+    .context-plan-row.selected td { background:#f0e8ff; }
+    .context-plan-table-wrap { position:relative; border-color:#e2d4f7; border-top:4px solid #7c3aed; box-shadow:0 2px 6px rgba(124,58,237,.08); }
+    .context-plan-table-wrap .budget-table th { background:#faf7ff; color:#493367; border-bottom-color:#e2d4f7; }
+    .context-plan-table-wrap .budget-table td { border-bottom-color:#ede4fb; }
+    .context-plan-detail { position:absolute; inset:0; z-index:3; overflow:auto; border:0; border-radius:inherit; background:#faf7ff; padding:12px; box-shadow:none; }
+    .context-plan-table-wrap.is-detail-open { overflow:visible; }
+    .context-plan-table-wrap.is-detail-open .budget-table { display:none; }
+    .context-plan-table-wrap.is-detail-open .context-plan-detail { position:relative; inset:auto; overflow:visible; }
+    .context-plan-detail h3 { margin:0 0 7px; color:#6f35ce; font-size:14px; }
     .context-plan-detail-meta { display:flex; flex-wrap:wrap; align-items:center; gap:6px 9px; margin-bottom:8px; color:#4b6074; font-size:12px; }
-    .context-plan-detail-text { margin:8px 0; padding:10px; border:1px solid #d8e4ef; background:#fff; white-space:pre-wrap; overflow-wrap:anywhere; line-height:1.45; font-size:12px; }
-    .context-plan-detail-close { position:absolute; top:8px; right:8px; width:28px; height:28px; padding:0; border-radius:5px; background:#fff; color:#315d89; font-size:19px; line-height:1; }
+    .context-plan-detail-text { margin:8px 0; padding:10px; border:1px solid #e2d4f7; background:#fff; white-space:pre-wrap; overflow-wrap:anywhere; line-height:1.45; font-size:12px; }
+    .context-plan-detail-close { position:absolute; top:8px; right:8px; width:28px; height:28px; padding:0; border:1px solid #e2d4f7; border-radius:5px; background:#fff; color:#6f35ce; font-size:19px; line-height:1; }
     .budget-state.included { color:#256c45; font-weight:700; }
     .budget-state.truncated { color:#8a5b12; font-weight:700; }
     .budget-state.omitted, .budget-state.not_available { color:#68798b; font-weight:700; }
@@ -262,6 +291,8 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
     .dot-version_decision { background:#d14343; }
     .dot-system_event { background:var(--system-event-accent); }
     .app-flow { display:flex; flex-direction:column; gap:12px; border-color:#b9d5ec; border-left:4px solid #2364aa; background:#fbfdff; }
+    .app-flow.is-complete { border-color:#c5e5d0; border-left-color:#2f855a; background:#f5fcf8; }
+    .app-flow.is-incomplete { border-color:#efd8aa; border-left-color:#9a6b16; background:#fffaf1; }
     .app-flow-status { margin:-4px 0 !important; line-height:1.2 !important; }
     .app-flow-title, .timeline-title { display:flex; align-items:center; gap:8px; }
     .summary-card .app-flow-title h3 { margin:0; font-size:16px; }
@@ -3111,13 +3142,13 @@ function renderRepairStrategies(data) {
         <td>${escapeHtml(c.why_linked)}</td>
         <td><button class="small-btn" onclick='highlightFullTrajectory(${JSON.stringify(c.highlight_event_ids || [])}, [])'>Highlight</button></td>
       </tr>`).join('') : '<tr><td colspan="4" class="muted">No repair candidate.</td></tr>';
-    const excludedRows = excluded.length ? `<div class="table-wrap repair-table-wrap"><table class="repair-excluded-table"><thead><tr><th>Excluded Event</th><th>Command</th><th>Why Excluded</th></tr></thead><tbody>${excluded.map(x => `
+    const excludedRows = excluded.length ? `<div class="table-wrap repair-table-wrap repair-excluded-wrap"><table class="repair-excluded-table"><thead><tr><th>Excluded Event</th><th>Command</th><th>Why Excluded</th></tr></thead><tbody>${excluded.map(x => `
       <tr><td><span class="pill excluded">${escapeHtml(x.branch_id)}</span><div class="mono">${escapeHtml(x.success_event_id)}</div></td><td class="mono">${escapeHtml(x.command)}</td><td>${escapeHtml(excludedReasonText(x.reason))}</td></tr>`).join('')}</tbody></table></div>` : '<p class="muted">No excluded later successes for this failure.</p>';
     return `<div class="summary-card repair-strategy-card">
       <h3 class="repair-failure-title">Failure ${idx + 1}: <span class="mono">${escapeHtml(f.command)}</span>${toolCallEventId ? ` <span class="pill mono repair-failure-event-id">${escapeHtml(toolCallEventId)}</span>` : ''}</h3>
       <p><span class="pill failed">${escapeHtml(f.branch_id)}</span><span class="pill mono">${escapeHtml(f.failure_event_id || '')}</span><span class="pill">${escapeHtml(g.candidate_count)} candidates</span></p>
       <p class="repair-likely-cause"><b>Likely cause:</b> ${escapeHtml(f.likely_cause)}</p>
-      <div class="table-wrap repair-table-wrap"><table class="repair-table"><thead><tr><th>Repair Event</th><th>Command</th><th>Why Linked</th><th></th></tr></thead><tbody>${candidateRows}</tbody></table></div>
+      <div class="table-wrap repair-table-wrap repair-candidates-wrap"><table class="repair-table"><thead><tr><th>Repair Event</th><th>Command</th><th>Why Linked</th><th></th></tr></thead><tbody>${candidateRows}</tbody></table></div>
       ${excludedRows}
     </div>`;
   }).join('');
@@ -3131,10 +3162,10 @@ function renderSemanticJudgments(data) {
     const j = r.judgment || {}; const f = r.failure || {}; const c = r.repair_candidate || {};
     const cls = j.label === 'likely_repair' || j.label === 'partial_repair' ? 'ok' : (j.label === 'not_evaluated' ? '' : 'excluded');
     return `<tr>
-      <td><div class="mono">${escapeHtml(f.command)}</div><span class="pill failed">${escapeHtml(f.branch_id || '')}</span><span class="pill mono">${escapeHtml(r.failure_event_id)}</span></td>
-      <td><div class="mono">${escapeHtml(c.command)}</div><span class="pill ok">${escapeHtml(c.branch_id || '')}</span><span class="pill mono">${escapeHtml(r.success_event_id)}</span></td>
+      <td><div class="mono semantic-failure-command">${escapeHtml(f.command)}</div><span class="pill failed">${escapeHtml(f.branch_id || '')}</span><span class="pill mono">${escapeHtml(r.failure_event_id)}</span></td>
+      <td><div class="mono${cls === 'ok' ? ' semantic-candidate-command' : ''}">${escapeHtml(c.command)}</div><span class="pill ok">${escapeHtml(c.branch_id || '')}</span><span class="pill mono">${escapeHtml(r.success_event_id)}</span></td>
       <td><span class="pill ${cls}">${escapeHtml(j.label)}</span><div class="muted">Confidence: ${escapeHtml(j.confidence ?? '')}</div><div class="muted">Recommended for skill: ${j.recommended_for_skill ? 'true' : 'false'}</div></td>
-      <td>${escapeHtml(j.reason)}${j.error ? `<div class="muted">${escapeHtml(j.error)}</div>` : ''}</td>
+      <td class="semantic-judgment-reason">${escapeHtml(j.reason)}${j.error ? `<div class="muted">${escapeHtml(j.error)}</div>` : ''}</td>
       <td><button class="small-btn" onclick='highlightFullTrajectory(${JSON.stringify(r.highlight_event_ids || [])}, [])'>Highlight</button></td>
     </tr>`;
   }).join('')}</tbody></table></div>`;
@@ -3375,7 +3406,7 @@ function renderSkillApplicationTrace(data) {
         const resultMeta = traceEventMeta(result.branch_id || branch, result.event_id, resultStatus === 'ok' ? 'ok' : resultStatus === 'failed' ? 'failed' : '');
         steps.push(timelineStep('tool_result', details.matched ? 'Execution Outcome' : 'No Skill Applied', '', [result.event_id], resultMeta));
       }
-      cards.push(`<div class="summary-card app-flow">
+      cards.push(`<div class="summary-card app-flow ${details.matched && result ? 'is-complete' : 'is-incomplete'}">
         <div class="app-flow-title"><h3>Skill Workflow ${cards.length + 1}</h3><button class="small-btn" onclick='highlightFullTrajectory(${JSON.stringify(eventIds)}, [])'>Highlight Workflow</button></div>
         <p class="app-flow-status"><span class="pill ${details.matched && result ? 'ok' : 'excluded'}">${details.matched ? ['failure', 'match', hasRecommendation ? 'recommend' : 'no recommendation', ...(hasRecommendation && decision ? ['decide'] : []), ...(call ? ['execute'] : []), ...(result ? ['outcome'] : [])].join(' -> ') : 'failure -> match attempted -> recommend attempted'}</span></p>
         <div class="timeline">${steps.join('')}</div>
@@ -3391,6 +3422,11 @@ function contextEvidenceButton(ids, label = 'Source event IDs') {
   const idsHtml = clean.map(id => `<button class="context-evidence mono" onclick='highlightFullTrajectory(${JSON.stringify([id])}, [])'>${escapeHtml(id)}</button>`).join('');
   const prefix = label ? `<span class="context-evidence-label">${escapeHtml(label)}:</span>` : '';
   return `<span class="context-evidence-list">${prefix}${idsHtml}</span>`;
+}
+function contextHighlightButton(ids) {
+  const clean = [...new Set((ids || []).filter(Boolean))];
+  if (!clean.length) return '<span class="muted">No source events</span>';
+  return `<button class="small-btn" onclick='event.stopPropagation();highlightFullTrajectory(${JSON.stringify(clean)}, [])'>Highlight</button>`;
 }
 function contextStat(label, value) {
   return `<div class="context-stat"><b>${escapeHtml(value)}</b><span>${escapeHtml(label)}</span></div>`;
@@ -3460,7 +3496,7 @@ function renderContextAssembly(data) {
     .filter(({segment}) => Number(segment.token_cost || 0) > 0)
     .map(({segment, index}) => {
     const state = segment.selection_status || 'omitted';
-    return `<tr class="context-plan-row" data-context-segment-index="${index}" onclick="showContextSegmentDetail(${index})"><td><b>${escapeHtml(displayContextSegmentTitle(segment))}</b><div class="muted">${escapeHtml(segment.selection_reason || '')}</div></td><td>${escapeHtml(segment.token_cost ?? 0)}</td><td>${escapeHtml(segment.loaded_token_cost ?? 0)}</td><td><span class="budget-state ${escapeHtml(state)}">${escapeHtml(state.replace('_', ' '))}</span><div class="muted">${escapeHtml(displayContextOmissionReason(segment.omission_reason))}</div></td><td>${contextEvidenceButton(segment.source_event_ids, '')}</td></tr>`;
+    return `<tr class="context-plan-row" data-context-segment-index="${index}" onclick="showContextSegmentDetail(${index})"><td><b>${escapeHtml(displayContextSegmentTitle(segment))}</b><div class="muted">${escapeHtml(segment.selection_reason || '')}</div></td><td>${escapeHtml(segment.token_cost ?? 0)}</td><td>${escapeHtml(segment.loaded_token_cost ?? 0)}</td><td><span class="budget-state ${escapeHtml(state)}">${escapeHtml(state.replace('_', ' '))}</span><div class="muted">${escapeHtml(displayContextOmissionReason(segment.omission_reason))}</div></td><td>${contextHighlightButton(segment.source_event_ids)}</td></tr>`;
   }).join('') || '<tr><td colspan="5" class="muted">No context fragments are available on this branch.</td></tr>';
   setOutput(`<div class="context-assembly">${renderContextStats(content)}
     <section class="budget-control">${viewBranchInlineSelector('current_prompt')}<label for="contextBudgetRange">Budget (${escapeHtml(bounds.min)}-${escapeHtml(bounds.max)})</label><input id="contextBudgetRange" type="range" min="${escapeHtml(bounds.min)}" max="${escapeHtml(bounds.max)}" step="${escapeHtml(bounds.step)}" value="${escapeHtml(displayedBudget)}"><output id="contextBudgetValue" class="budget-value">${escapeHtml(displayedBudget)} tokens</output></section>
@@ -3492,6 +3528,7 @@ function showContextSegmentDetail(index) {
   const explanation = segment.selection_reason || displayContextOmissionReason(segment.omission_reason);
   const detail = $('contextSegmentDetail');
   detail.hidden = false;
+  detail.closest('.context-plan-table-wrap')?.classList.add('is-detail-open');
   detail.innerHTML = `<button class="context-plan-detail-close" title="Close context fragment detail" aria-label="Close context fragment detail" onclick="hideContextSegmentDetail()">&times;</button><h3>${escapeHtml(displayContextSegmentTitle(segment))}</h3>
     <div class="context-plan-detail-meta"><span class="pill ${state === 'included' ? 'ok' : state === 'truncated' ? 'excluded' : ''}">${escapeHtml(state.replace('_', ' '))}</span><span>${escapeHtml(segment.loaded_token_cost ?? 0)} / ${escapeHtml(segment.token_cost ?? 0)} tokens</span></div>
     <div class="context-plan-detail-meta"><span>${escapeHtml(explanation)}</span></div>
@@ -3501,6 +3538,7 @@ function showContextSegmentDetail(index) {
 function hideContextSegmentDetail() {
   const detail = $('contextSegmentDetail');
   if (detail) detail.hidden = true;
+  detail?.closest('.context-plan-table-wrap')?.classList.remove('is-detail-open');
   document.querySelectorAll('.context-plan-row').forEach(row => row.classList.remove('selected'));
 }
 function renderCompressionSummary(data) {
@@ -3526,14 +3564,14 @@ function renderCompressionSummary(data) {
       ${contextStat('Compression ratio', `${content.compression_ratio || 0}%`)}
     </div>
     <section class="budget-control summary-status">${viewBranchStatusSelector('summary')}${viewSummaryProfileSelector()}<button id="generateSummary" class="small-btn"${llmProfiles.length ? '' : ' disabled'}>Generate Digest</button></section>
-    <section class="summary-card">
-      ${summaryBody}
+    <section class="summary-card digest-summary-card">
+      <h3 class="digest-summary-heading">Digest</h3>${summaryBody}
       ${insights}
-      <section class="digest-sources"><h3>Source Events</h3>${contextEvidenceButton(content.source_event_ids, '')}</section>
     </section>
   </div>`);
   bindViewBranchSelector('summary');
   bindSummaryProfileControls();
+  highlightFullTrajectory(content.source_event_ids || [], []);
 }
 function renderContextBudget(data) {
   return renderContextAssembly(data);
@@ -3783,17 +3821,17 @@ function renderVersionControl(data) {
     <td class="mono">${escapeHtml(b.base_event_id || '')}</td>
     <td class="mono">${escapeHtml(b.head_event_id || '')}</td>
     <td>${escapeHtml(b.snapshot_id || '')}</td>
-    <td><button class="small-btn" onclick='highlightGraph([], [${JSON.stringify(b.branch_id)}])'>Highlight</button></td>
+    <td><button class="small-btn" onclick='highlightFullTrajectory([], [${JSON.stringify(b.branch_id)}])'>Highlight</button></td>
   </tr>`; }).join('') || '<tr><td colspan="5" class="muted">No branches.</td></tr>';
   const snapshotRows = snapshots.map(s => `<tr>
     <td><b>${escapeHtml(s.snapshot_id)}</b><div class="muted">${escapeHtml(displayVersionTimestamp(s.created_at))}</div></td>
     <td>${escapeHtml(s.branch_id || '')}</td><td class="mono">${escapeHtml(s.event_id || '')}</td>
     <td>${escapeHtml(s.message || '')}</td>
-    <td><button class="small-btn" aria-label="Highlight snapshot ${escapeHtml(s.snapshot_id || '')}" onclick='highlightGraph([${JSON.stringify(s.event_id)}], [])'>Highlight</button></td>
+    <td><button class="small-btn" aria-label="Highlight snapshot ${escapeHtml(s.snapshot_id || '')}" onclick='highlightFullTrajectory([${JSON.stringify(s.event_id)}], [])'>Highlight</button></td>
   </tr>`).join('') || '<tr><td colspan="5" class="muted">No snapshots.</td></tr>';
   const lifecycle = events.slice().reverse().map(e => `<div class="version-event event-${escapeHtml(e.event_type || '')}">
     <div><div class="version-event-meta"><span class="version-event-operation">${escapeHtml(versionOperationLabel(e))}</span><span class="version-event-time">${escapeHtml(displayVersionTimestamp(e.timestamp))}</span></div><div class="version-event-identity">${traceEventMeta(e.branch_id || 'main', e.event_id, 'excluded')}</div><p>${escapeHtml(versionEventText(e))}</p></div>
-    <button class="small-btn" aria-label="Highlight version event ${escapeHtml(e.event_id || '')}" onclick='highlightGraph([${JSON.stringify(e.event_id)}], [])'>Highlight</button>
+    <button class="small-btn" aria-label="Highlight version event ${escapeHtml(e.event_id || '')}" onclick='highlightFullTrajectory([${JSON.stringify(e.event_id)}], [])'>Highlight</button>
   </div>`).join('') || '<div class="view-empty">No version lifecycle events yet. Hook snapshots and Agent decisions will appear here.</div>';
   $('versionOut').innerHTML = `<div class="context-stat-grid version-summary">
     ${versionStat('branches', branches.length, 'branches', '<circle cx="6" cy="5" r="2"></circle><circle cx="18" cy="12" r="2"></circle><circle cx="6" cy="19" r="2"></circle><path d="M8 6.3 16 10.7M16 13.3 8 17.7"></path>', 'versionBranchesSection', 'Branches')}
