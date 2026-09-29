@@ -555,21 +555,18 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
     .trajectory-tracks-scroll > .trajectory-tracks .trajectory-track { grid-template-columns:62px minmax(0,1fr); min-height:24px; }
     .trajectory-tracks-scroll > .trajectory-tracks .trajectory-track-label { position:sticky; left:0; z-index:5; padding-right:6px; box-shadow:1px 0 0 #d9e6f2; font-size:11px; }
     .trajectory-tracks-scroll > .trajectory-tracks .trajectory-track-rail { min-height:24px; }
-    .trajectory-tracks-scroll > .trajectory-tracks .trajectory-track-marker { width:11px; height:10px; }
+    .trajectory-tracks-scroll > .trajectory-tracks .trajectory-track-marker { width:var(--track-width, 11px); height:10px; }
     .trajectory-track { display:grid; grid-template-columns:60px minmax(0,1fr); min-height:24px; border-bottom:1px solid #edf3f8; }
     .trajectory-track:last-child { border-bottom:0; }
     .trajectory-track-label { display:flex; align-items:center; justify-content:flex-end; padding:0 8px; color:#4b6074; background:#f1f6fb; font-size:11px; font-weight:700; text-align:right; }
     .trajectory-track-rail { position:relative; min-height:24px; background:#fff; }
     .trajectory-track-rail.change-range { background:linear-gradient(to right, #fff 0 var(--change-start), #f3fbf6 var(--change-start) var(--change-end), #fff var(--change-end) 100%); }
-    .trajectory-track-rail::before { content:''; position:absolute; right:0; left:0; top:50%; border-top:1px dashed #e7eef5; }
-    .trajectory-track-marker { position:absolute; top:50%; width:11px; height:10px; margin:0; padding:0; border:1px solid rgba(23,50,77,.2); border-radius:2px; background:var(--track-color); box-shadow:0 1px 1px rgba(23,50,77,.14); cursor:pointer; transform:translate(-50%,-50%); z-index:1; }
-    .trajectory-track-marker.edge-start { transform:translate(0,-50%); }
-    .trajectory-track-marker.edge-end { transform:translate(-100%,-50%); }
-    .trajectory-track-marker:hover { transform:translate(-50%,-50%) scale(1.2); z-index:2; }
-    .trajectory-track-marker.edge-start:hover { transform:translate(0,-50%) scale(1.2); }
-    .trajectory-track-marker.edge-end:hover { transform:translate(-100%,-50%) scale(1.2); }
-    .trajectory-track-marker.current { outline:2px solid #f0b429; outline-offset:2px; z-index:3; }
-    .trajectory-track-marker.highlighted { outline:2px solid #f0b429; outline-offset:2px; z-index:4; }
+    .trajectory-track-branch-range { position:absolute; top:0; bottom:0; width:var(--branch-width); left:var(--branch-left); border-top:2px solid var(--branch-color); background:var(--branch-tint); pointer-events:none; z-index:0; }
+    .trajectory-track-rail::before { content:''; position:absolute; right:0; left:0; top:50%; border-top:1px dashed #e7eef5; pointer-events:none; z-index:1; }
+    .trajectory-track-marker { position:absolute; top:50%; width:var(--track-width, 11px); height:10px; margin:0; padding:0; border:1px solid rgba(23,50,77,.2); border-radius:2px; background:var(--track-color); box-shadow:0 1px 1px rgba(23,50,77,.14); cursor:pointer; transform:translateY(-50%); transform-origin:left center; z-index:2; }
+    .trajectory-track-marker:hover { transform:translateY(-50%) scaleY(1.18); z-index:3; }
+    .trajectory-track-marker.current { outline:2px solid #f0b429; outline-offset:2px; z-index:4; }
+    .trajectory-track-marker.highlighted { outline:2px solid #f0b429; outline-offset:2px; z-index:5; }
     .trajectory-track-marker.dimmed { opacity:.28; }
     .trajectory-session-list { margin-top:0; overflow:hidden; border:1px solid #c9def5; border-radius:6px; background:#fff; padding-top:12px; }
     .trajectory-session-event { position:relative; display:grid; grid-template-columns:82px minmax(0,1fr); align-items:center; gap:7px; width:100%; height:auto; min-height:27px; margin:0; padding:3px 8px 3px 10px; border:0; border-bottom:1px solid #e0e8f0; border-radius:0; background:#fff; color:#17324d; font:inherit; text-align:left; cursor:pointer; }
@@ -617,7 +614,7 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
     .trajectory-track-dialog .trajectory-track { grid-template-columns:62px minmax(0, 1fr); min-height:24px; }
     .trajectory-track-dialog .trajectory-track-label { padding-right:6px; font-size:11px; }
     .trajectory-track-dialog .trajectory-track-rail { min-height:24px; }
-    .trajectory-track-dialog .trajectory-track-marker { width:11px; height:10px; }
+    .trajectory-track-dialog .trajectory-track-marker { width:var(--track-width, 11px); height:10px; }
     @media (max-width: 720px) {
       .global-relationship-columns { grid-template-columns:132px 180px 235px; column-gap:12px; }
       .global-relationship-column:first-child { transform:translateX(12px); }
@@ -1172,19 +1169,59 @@ function trajectorySessionExcerpt(event) {
 function trajectorySessionTypeLabel(type) {
   return TRAJECTORY_SESSION_TYPE_LABELS[type] || displayEventType(type);
 }
-function expandedTrajectoryRailWidth(seq) {
-  return Math.max(900, seq.length * 12 + 8);
+function trajectoryEventTimeMs(event) {
+  const value = Date.parse(String(event?.timestamp || ''));
+  return Number.isFinite(value) ? value : null;
 }
-function trajectoryTrackMarkerPosition(index, seq, expanded, railWidth) {
-  if (expanded) {
-    const centreInset = 9.5;
-    return seq.length < 2
-      ? railWidth / 2
-      : centreInset + index / (seq.length - 1) * (railWidth - centreInset * 2);
+function trajectoryTrackLayout(seq) {
+  const timestamps = seq.map(trajectoryEventTimeMs);
+  const intervals = timestamps.map((timestamp, index) => {
+    const next = timestamps[index + 1];
+    return timestamp !== null && next !== null && next > timestamp ? next - timestamp : null;
+  });
+  // Compress raw elapsed seconds logarithmically into a readable 10-40 pixel range.
+  // The terminal event has no following interval, so it remains a visible endpoint.
+  const widths = intervals.map(interval => interval === null
+    ? 10
+    : Math.max(10, 40 * Math.min(1, Math.log10(1 + interval / 1000) / Math.log10(61))));
+  const gap = 2;
+  const starts = [];
+  let cursor = 4;
+  widths.forEach(width => {
+    starts.push(cursor);
+    cursor += width + gap;
+  });
+  return {starts, widths, railWidth:Math.max(900, cursor + 2)};
+}
+function trajectoryBranchTint(branchId) {
+  const hex = branchColor(branchId).replace('#', '');
+  const value = Number.parseInt(hex, 16);
+  const red = (value >> 16) & 255;
+  const green = (value >> 8) & 255;
+  const blue = value & 255;
+  return `rgba(${red}, ${green}, ${blue}, .10)`;
+}
+function trajectoryBranchSegments(seq, layout) {
+  if (!seq.length) return [];
+  const segments = [];
+  let startIndex = 0;
+  for (let index = 1; index <= seq.length; index++) {
+    const previousBranch = seq[index - 1].branch_id || 'main';
+    const nextBranch = seq[index]?.branch_id || 'main';
+    if (index < seq.length && nextBranch === previousBranch) continue;
+    const left = layout.starts[startIndex];
+    const right = index < seq.length
+      ? layout.starts[index]
+      : layout.starts[index - 1] + layout.widths[index - 1];
+    segments.push({branchId:previousBranch, left, width:right - left});
+    startIndex = index;
   }
-  return seq.length < 2 ? 0 : 99.4 * index / (seq.length - 1);
+  return segments;
 }
-function trajectoryChangeRange(seq, changeIds, expanded, railWidth) {
+function expandedTrajectoryRailWidth(seq) {
+  return trajectoryTrackLayout(seq).railWidth;
+}
+function trajectoryChangeRange(seq, changeIds, layout) {
   if (!changeIds.size || !seq.length) return null;
   const startIndex = seq.findIndex(event => changeIds.has(event.id));
   const nodeIndexInSequence = overviewNode ? seq.findIndex(event => event.id === overviewNode.id) : -1;
@@ -1192,15 +1229,15 @@ function trajectoryChangeRange(seq, changeIds, expanded, railWidth) {
     ? nodeIndexInSequence
     : Math.max(...seq.map((event, index) => changeIds.has(event.id) ? index : -1));
   if (startIndex < 0 || endIndex < startIndex) return null;
-  const start = trajectoryTrackMarkerPosition(startIndex, seq, expanded, railWidth);
-  const end = trajectoryTrackMarkerPosition(endIndex, seq, expanded, railWidth);
-  return expanded
-    ? { start: `calc(${start.toFixed(1)}px - 5.5px)`, end: `calc(${end.toFixed(1)}px + 5.5px)` }
-    : { start: `calc(${start.toFixed(3)}% - 6px)`, end: `calc(${end.toFixed(3)}% + 6px)` };
+  return {
+    start: `${layout.starts[startIndex].toFixed(1)}px`,
+    end: `${(layout.starts[endIndex] + layout.widths[endIndex]).toFixed(1)}px`
+  };
 }
-function renderTrajectoryTrackRows(seq, expanded = false, changeIds = new Set(), highlightEventIds = new Set(), highlightBranchIds = new Set()) {
-  const railWidth = expandedTrajectoryRailWidth(seq);
-  const changeRange = trajectoryChangeRange(seq, changeIds, expanded, railWidth);
+function renderTrajectoryTrackRows(seq, expanded = false, changeIds = new Set(), highlightEventIds = new Set(), highlightBranchIds = new Set(), showBranchRanges = false) {
+  const layout = trajectoryTrackLayout(seq);
+  const changeRange = trajectoryChangeRange(seq, changeIds, layout);
+  const branchSegments = trajectoryBranchSegments(seq, layout);
   const hasHighlight = highlightEventIds.size || highlightBranchIds.size;
   return Object.entries(TRAJECTORY_DETAIL_LANES).map(([laneId, lane]) => {
     const laneEvents = seq
@@ -1208,17 +1245,17 @@ function renderTrajectoryTrackRows(seq, expanded = false, changeIds = new Set(),
       .filter(({event}) => trajectoryDetailLane(event) === laneId);
     const markers = laneEvents.map(({event, index}) => {
       const type = eventPresentationType(event);
-      const left = trajectoryTrackMarkerPosition(index, seq, expanded, railWidth);
       const selected = event.id === (overviewCardEvent || seq[overviewStep])?.id;
       const highlighted = highlightEventIds.has(event.id) || highlightBranchIds.has(event.branch_id || 'main');
-      const edgeClass = expanded ? '' : (index === 0 ? ' edge-start' : (index === seq.length - 1 ? ' edge-end' : ''));
-      const leftValue = expanded ? `${left.toFixed(1)}px` : `${left.toFixed(3)}%`;
       const changeTitle = changeIds.has(event.id) ? ' · added in selected node' : '';
-      return `<button type="button" class="trajectory-track-marker${edgeClass}${selected ? ' current' : ''}${highlighted ? ' highlighted' : (hasHighlight ? ' dimmed' : '')}" data-track-event-id="${escapeHtml(event.id)}" style="left:${leftValue};--track-color:${escapeHtml(EVENT_DOT_COLORS[type] || 'var(--gray)')}" title="${escapeHtml(`${displayEventType(type)} · ${event.id}${changeTitle}\n${trajectorySessionExcerpt(event)}`)}" aria-label="Show ${escapeHtml(displayEventType(type))} details"${selected ? ' aria-current="step"' : ''}></button>`;
+      return `<button type="button" class="trajectory-track-marker${selected ? ' current' : ''}${highlighted ? ' highlighted' : (hasHighlight ? ' dimmed' : '')}" data-track-event-id="${escapeHtml(event.id)}" style="left:${layout.starts[index].toFixed(1)}px;--track-width:${layout.widths[index].toFixed(1)}px;--track-color:${escapeHtml(EVENT_DOT_COLORS[type] || 'var(--gray)')}" title="${escapeHtml(`${displayEventType(type)} · ${event.id}${changeTitle}\n${trajectorySessionExcerpt(event)}`)}" aria-label="Show ${escapeHtml(displayEventType(type))} details"${selected ? ' aria-current="step"' : ''}></button>`;
     }).join('');
+    const branchRanges = showBranchRanges ? branchSegments.map(segment => {
+      return `<span class="trajectory-track-branch-range" style="--branch-left:${segment.left.toFixed(1)}px;--branch-width:${segment.width.toFixed(1)}px;--branch-color:${branchColor(segment.branchId)};--branch-tint:${trajectoryBranchTint(segment.branchId)}" title="Branch: ${escapeHtml(segment.branchId)}"></span>`;
+    }).join('') : '';
     const rangeClass = changeRange ? ' change-range' : '';
     const rangeStyle = changeRange ? ` style="--change-start:${changeRange.start};--change-end:${changeRange.end}"` : '';
-    return `<div class="trajectory-track"><div class="trajectory-track-label">${lane.label}</div><div class="trajectory-track-rail${rangeClass}"${rangeStyle}>${markers}</div></div>`;
+    return `<div class="trajectory-track"><div class="trajectory-track-label">${lane.label}</div><div class="trajectory-track-rail${rangeClass}"${rangeStyle}>${branchRanges}${markers}</div></div>`;
   }).join('');
 }
 function closeTrajectoryTrackModal() {
@@ -1258,7 +1295,7 @@ function openTrajectoryTrackModal(seq, changeIds = new Set(), highlightEventIds 
   document.body.appendChild(modal);
   modal.querySelector('.trajectory-track-dialog-close').focus();
 }
-function drawTrajectoryDetailsSessionView(graph, edges, seq, {showAll = false, changeIds = new Set(), highlightEventIds = new Set(), highlightBranchIds = new Set(), meta = 'full trajectory'} = {}) {
+function drawTrajectoryDetailsSessionView(graph, edges, seq, {showAll = false, changeIds = new Set(), highlightEventIds = new Set(), highlightBranchIds = new Set(), showBranchRanges = false, meta = 'full trajectory'} = {}) {
   const panel = $('eventDetailPanel');
   graph.querySelectorAll('.node, .trajectory-details-surface').forEach(el => el.remove());
   edges.innerHTML = '';
@@ -1268,7 +1305,7 @@ function drawTrajectoryDetailsSessionView(graph, edges, seq, {showAll = false, c
   const selectedId = (overviewCardEvent || seq[overviewStep])?.id || '';
   const hasHighlight = highlightEventIds.size || highlightBranchIds.size;
   const railWidth = expandedTrajectoryRailWidth(seq);
-  const trackRows = renderTrajectoryTrackRows(seq, true, changeIds, highlightEventIds, highlightBranchIds);
+  const trackRows = renderTrajectoryTrackRows(seq, true, changeIds, highlightEventIds, highlightBranchIds, showBranchRanges);
   const seenBranches = new Set();
   const sessionRows = shown.map(event => {
     const type = eventPresentationType(event);
@@ -1710,6 +1747,7 @@ function drawDetailView() {
       showAll: Boolean(fullTrajectoryHighlight),
       highlightEventIds: highlight.eventIds,
       highlightBranchIds: highlight.branchIds,
+      showBranchRanges: true,
     });
     return;
   }
@@ -2262,11 +2300,7 @@ function drawGlobalRelationshipGraph(graphData) {
     requestAnimationFrame(() => drawGlobalRelationshipGraph(graphData));
     return;
   }
-  const edgeLabelText = edge => edge.kind === 'results'
-    ? `calls × ${edge.count || 1}`
-    : (edge.kind === 'skill_action'
-      ? `action × ${edge.count || 1}`
-      : `evidence × ${edge.count || 1}`);
+  const edgeLabelText = edge => String(edge.count || 1);
   const appendRelationshipEdge = (element, edge) => {
     element.dataset.globalEdge = 'true';
     element.dataset.source = edge.source;
@@ -2276,7 +2310,7 @@ function drawGlobalRelationshipGraph(graphData) {
   };
   const appendRelationshipLabel = (edge, x, y) => {
     const label = edgeLabelText(edge);
-    const labelWidth = Math.max(38, label.length * 6 + 10);
+    const labelWidth = Math.max(18, label.length * 6 + 8);
     const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
     group.setAttribute('class', 'global-edge-label');
     group.dataset.globalEdge = 'true';
@@ -2783,9 +2817,7 @@ function followCurrentTrajectoryTrack(smooth = false) {
   scroller.scrollTo({left:Math.max(0, Math.min(targetLeft, maxLeft)), behavior:smooth ? 'smooth' : 'auto'});
 }
 function overviewAdvance(step, showCard, {followTrack = false} = {}) {
-  const previousScrollLeft = followTrack
-    ? document.querySelector('#graph .trajectory-tracks-scroll')?.scrollLeft
-    : null;
+  const previousScrollLeft = document.querySelector('#graph .trajectory-tracks-scroll')?.scrollLeft;
   const seq = overviewCurrentSeq();
   overviewStep = Math.max(0, Math.min(step, seq.length - 1));
   if (showCard) overviewCardEvent = seq[overviewStep];
@@ -2794,12 +2826,12 @@ function overviewAdvance(step, showCard, {followTrack = false} = {}) {
     $('eventDetailPanel').classList.add('hidden');
   }
   drawDetailView();
-  if (followTrack) requestAnimationFrame(() => {
+  if (Number.isFinite(previousScrollLeft) || followTrack) requestAnimationFrame(() => {
     const scroller = document.querySelector('#graph .trajectory-tracks-scroll');
     if (scroller && Number.isFinite(previousScrollLeft)) {
       scroller.scrollLeft = Math.min(previousScrollLeft, Math.max(0, scroller.scrollWidth - scroller.clientWidth));
     }
-    followCurrentTrajectoryTrack(true);
+    if (followTrack) followCurrentTrajectoryTrack(true);
   });
   if (showCard) renderDetailCard();
 }
@@ -2823,12 +2855,16 @@ function detailTogglePlay() {
   if (overviewTimer) { stopOverviewTimer(); return; }
   const seq = overviewCurrentSeq();
   if (overviewSeqKind === 'all') {
-    if (overviewStep >= seq.length - 1) overviewAdvance(0, false, {followTrack:true});
+    if (overviewStep >= seq.length - 1) overviewAdvance(0, true, {followTrack:true});
+    else {
+      overviewCardEvent = seq[overviewStep];
+      renderDetailCard();
+    }
     $('detailPlay').textContent = 'Pause';
     overviewTimer = setInterval(() => {
       const events = overviewCurrentSeq();
       if (overviewStep >= events.length - 1) { stopOverviewTimer(); return; }
-      overviewAdvance(overviewStep + 1, false, {followTrack:true});
+      overviewAdvance(overviewStep + 1, true, {followTrack:true});
     }, 700);
     return;
   }
