@@ -158,9 +158,18 @@ class ContextDB:
                     or "unknown tool"
                 )
                 local_tool = tools.setdefault(tool_name, {"call_count": 0})
-                global_tool = all_tools.setdefault(tool_name, {"call_count": 0})
+                global_tool = all_tools.setdefault(tool_name, {
+                    "call_count": 0,
+                    "success_count": 0,
+                    "failure_count": 0,
+                })
                 local_tool["call_count"] += 1
                 global_tool["call_count"] += 1
+                status = str(payload.get("status") or event.get("status") or "").lower()
+                if status in {"failed", "error", "timeout"}:
+                    global_tool["failure_count"] += 1
+                elif status in {"ok", "success", "succeeded"}:
+                    global_tool["success_count"] += 1
                 trajectory_node = f"trajectory:{trajectory_id}"
                 tool_node = f"tool:{tool_name}"
                 edges[(trajectory_node, tool_node, "results")] = edges.get((trajectory_node, tool_node, "results"), 0) + 1
@@ -259,6 +268,8 @@ class ContextDB:
                 "type": "tool",
                 "label": name,
                 "detail": f"{entry['call_count']} results",
+                "success_count": entry["success_count"],
+                "failure_count": entry["failure_count"],
             } for name, entry in sorted(all_tools.items(), key=graph_tool_sort_key)]
             + [{"id": skill["node_id"], "type": "skill", "label": skill["name"], "detail": skill["source_trajectory_id"]} for skill in graph_skills]
         )

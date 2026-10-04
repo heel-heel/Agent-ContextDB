@@ -1,4 +1,10 @@
 {
-    "python-envs.defaultEnvManager": "ms-python.python:conda",
-    "python-envs.defaultPackageManager": "ms-python.python:conda"
+  "python-envs.defaultEnvManager": "ms-python.python:conda",
+  "python-envs.defaultPackageManager": "ms-python.python:conda",
+  "python.defaultInterpreterPath": "D:\\software\\Anaconda\\ProgramFile\\envs\\contextdb_env\\python.exe",
+  "terminal.integrated.env.windows": {
+    "CONDA_PREFIX": "D:\\software\\Anaconda\\ProgramFile\\envs\\contextdb_env",
+    "CONDA_DEFAULT_ENV": "contextdb_env",
+    "PATH": "D:\\software\\Anaconda\\ProgramFile\\envs\\contextdb_env;D:\\software\\Anaconda\\ProgramFile\\envs\\contextdb_env\\Scripts;D:\\software\\Anaconda\\ProgramFile\\envs\\contextdb_env\\Library\\bin;${env:PATH}"
+  }
 }

@@ -73,27 +73,70 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
     .pill.failed { background:#fdeaea; color:#9f2a2a; }
     .pill.rule { background:#eef4ff; color:#1f5592; }
     .pill.excluded { background:#fff4df; color:#7a4d07; }
-    .repair-table-wrap { overflow-x:hidden; }
-    .repair-table { width:100%; min-width:0; table-layout:fixed; }
-    .repair-table th:nth-child(1), .repair-table td:nth-child(1) { width:18%; }
-    .repair-table th:nth-child(2), .repair-table td:nth-child(2) { width:40%; }
-    .repair-table th:nth-child(3), .repair-table td:nth-child(3) { width:29%; line-height:1.45; }
-    .repair-table th:nth-child(4), .repair-table td:nth-child(4) { width:13%; white-space:nowrap; }
-    .repair-failure-title { font-size:16px !important; }
-    .repair-failure-title > .mono:not(.repair-failure-event-id) { color:#9f2a2a; font-size:16px; }
-    .repair-failure-event-id { color:#315d89; white-space:nowrap; }
-    .repair-likely-cause { font-size:13px; line-height:1.35 !important; }
-    .repair-strategy-card { border-color:#b9d5ec; border-left:4px solid #2364aa; background:#fbfdff; }
-    .repair-table td { overflow-wrap:anywhere; }
-    .repair-table .mono { white-space:pre-wrap; overflow-wrap:anywhere; }
-    .repair-candidates-wrap { border-color:#c5e5d0; border-top:4px solid #2f855a; box-shadow:0 2px 6px rgba(47,133,90,.08); }
-    .repair-candidates-wrap .repair-table th { background:#f1faf4; color:#256c45; border-bottom-color:#c5e5d0; }
-    .repair-candidates-wrap .repair-table td { border-bottom-color:#dcefe3; }
-    .repair-candidates-wrap .repair-table tbody tr:hover td { background:#f6fcf8; }
-    .repair-excluded-wrap { border-color:#efd8aa; border-top:4px solid #9a6b16; box-shadow:0 2px 6px rgba(154,107,22,.08); }
-    .repair-excluded-wrap .repair-excluded-table th { background:#fff9ed; color:#7a4d07; border-bottom-color:#efd8aa; }
-    .repair-excluded-wrap .repair-excluded-table td { border-bottom-color:#f4e7c9; }
-    .repair-excluded-wrap .repair-excluded-table tbody tr:hover td { background:#fffcf5; }
+    .repair-links-panel { overflow:hidden; border:1px solid #bfd4ea; border-top:4px solid #2364aa; border-radius:7px; background:#fff; box-shadow:0 2px 6px rgba(35,100,170,.08); }
+    .repair-links-head { display:flex; align-items:center; justify-content:space-between; gap:12px; min-height:64px; padding:10px 12px; border-bottom:1px solid #d7e4f0; background:#f7faff; }
+    .repair-links-title { display:flex; align-items:center; gap:8px; min-width:0; color:#17324d; font-size:15px; font-weight:800; }
+    .repair-links-title svg { width:28px; height:28px; flex:0 0 auto; fill:none; stroke:#2364aa; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; }
+    .repair-links-count { display:grid; width:24px; height:24px; place-items:center; border:1px solid #d7dfe7; border-radius:5px; background:#f1f4f7; color:#17202a; font-size:12px; font-weight:800; }
+    .repair-links-actions { display:flex; align-items:center; gap:7px; flex:0 0 auto; }
+    .repair-link-filter { position:relative; }
+    .repair-link-filter > summary { display:grid; width:28px; height:28px; padding:0; place-items:center; border:1px solid #b9c9d8; border-radius:5px; background:#fff; color:#17324d; cursor:pointer; list-style:none; }
+    .repair-link-filter > summary::-webkit-details-marker { display:none; }
+    .repair-link-filter > summary:hover { background:#f4f8fc; border-color:#85abd1; }
+    .repair-link-filter svg { width:15px; height:15px; fill:none; stroke:currentColor; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; }
+    .repair-link-filter-menu { position:absolute; z-index:3; top:34px; right:0; width:176px; padding:8px; border:1px solid #b9c9d8; border-radius:5px; background:#fff; box-shadow:0 4px 12px rgba(23,50,77,.14); }
+    .repair-link-filter-menu label { display:grid; gap:4px; color:#4d6074; font-size:11px; font-weight:700; }
+    .repair-link-filter-menu select { width:100%; height:28px; padding:0 6px; font-size:12px; }
+    .repair-links-head .small-btn { background:#fff; color:#17324d; border-color:#b9c9d8; }
+    .repair-links-head .small-btn:hover { background:#f4f8fc; border-color:#85abd1; }
+    .repair-links-list { display:flex; flex-direction:column; gap:8px; padding:10px; }
+    .repair-link { position:relative; overflow:hidden; border:1px solid #d8e2ec; border-radius:6px; background:#fff; }
+    .repair-link[open] { border-color:#bfd4ea; }
+    .repair-link-summary { position:relative; display:flex; align-items:center; gap:9px; min-height:60px; padding:10px 120px 10px 10px; cursor:pointer; list-style:none; }
+    .repair-link-summary::-webkit-details-marker { display:none; }
+    .repair-link-summary:hover { background:#f9fbfe; }
+    .repair-link-severity { display:grid; flex:0 0 auto; width:24px; height:24px; place-items:center; border-radius:50%; background:#c53030; color:#fff; font-size:16px; font-weight:800; line-height:1; }
+    .repair-link-summary-copy { display:grid; min-width:0; flex:1; gap:3px; }
+    .repair-link-summary-title { display:flex; align-items:center; gap:6px; min-width:0; color:#17202a; font-size:14px; font-weight:800; }
+    .repair-link-summary-title > b { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .repair-link-summary .pill { flex:0 0 auto; }
+    .repair-link-event-id { width:fit-content; max-width:100%; overflow:hidden; color:#58708a; text-overflow:ellipsis; white-space:nowrap; }
+    .repair-link-candidate-count { position:absolute; top:50%; right:40px; transform:translateY(-50%); }
+    .repair-link-chevron { position:absolute; top:50%; right:10px; width:18px; height:18px; color:#58708a; fill:none; stroke:currentColor; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; transform:translateY(-50%); transition:transform 140ms ease; }
+    .repair-link[open] .repair-link-chevron { transform:translateY(-50%) rotate(180deg); }
+    .repair-link-detail { padding:0 10px 11px; border-top:1px solid #dce7f1; }
+    .repair-link-path { display:grid; grid-template-columns:275px 96px 275px; align-items:stretch; gap:0; position:relative; left:50%; width:646px; margin:11px 0 0; transform:translateX(-50%); }
+    .repair-link-node { min-width:0; padding:9px; border:1px solid #d8e2ec; border-radius:5px; background:#fff; text-align:center; }
+    .repair-link-node.failure { border-color:#efcaca; background:#fff9f9; }
+    .repair-link-node.repair { border-color:#c5e5d0; background:#f7fcf8; }
+    .repair-link-node.evidence { border-color:#bfd4ea; background:#f7faff; }
+    .repair-link-node-label { display:flex; align-items:center; justify-content:center; gap:5px; color:#52677d; font-size:10px; font-weight:800; text-transform:uppercase; }
+    .repair-link-node.failure .repair-link-node-label { color:#9f2a2a; }
+    .repair-link-node.repair .repair-link-node-label { color:#256c45; }
+    .repair-link-node.evidence .repair-link-node-label { color:#52677d; }
+    .repair-link-node-label svg { width:14px; height:14px; fill:none; stroke:currentColor; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; }
+    .repair-link-node b { display:block; margin-top:5px; color:#17202a; font-size:12px; line-height:1.35; overflow-wrap:anywhere; }
+    .repair-link-node .pill { max-width:100%; overflow:hidden; text-overflow:ellipsis; }
+    .repair-link-node-events { display:flex; flex-direction:column; gap:5px; margin-top:6px; }
+    .repair-link-node-event { display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:4px; min-width:0; }
+    .repair-link-node-event .pill { margin-top:0; }
+    .repair-link-path-arrow { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:5px; color:#6d8399; }
+    .repair-link-path-ppt-arrow { display:block; width:44px; height:18px; background:currentColor; clip-path:polygon(0 30%,64% 30%,64% 0,100% 50%,64% 100%,64% 70%,0 70%); }
+    .repair-link-path-highlight { white-space:nowrap; }
+    .repair-link-why { margin:11px 0 0; padding-top:10px; border-top:1px solid #dce7f1; color:#334b63; font-size:13px; line-height:1.45; }
+    .repair-link-why b { color:#17202a; }
+    .repair-link-command { margin-top:10px; }
+    .repair-link-command h4 { margin:0 0 5px; color:#4d6074; font-size:14px; font-weight:800; }
+    .repair-link-excluded { margin-top:9px; border-top:1px solid #dce7f1; }
+    .repair-link-excluded > summary { display:flex; align-items:center; gap:6px; min-height:34px; color:#46627c; font-size:12px; font-weight:700; cursor:pointer; list-style:none; }
+    .repair-link-excluded > summary::-webkit-details-marker { display:none; }
+    .repair-link-excluded > summary::before { content:'›'; color:#17324d; font-size:19px; line-height:1; transition:transform 140ms ease; }
+    .repair-link-excluded > summary > span { position:relative; top:2px; }
+    .repair-link-excluded[open] > summary::before { transform:rotate(90deg); }
+    .repair-link-excluded-list { display:flex; flex-direction:column; gap:6px; padding:0 0 8px; }
+    .repair-link-excluded-item { padding:7px 8px; border-left:3px solid #d3a24e; background:#fffbf3; color:#5c4b2d; font-size:12px; line-height:1.4; }
+    .repair-link-excluded-item .pill { margin-right:5px; }
+    @media (max-width: 620px) { .repair-link-summary { padding-right:120px; } .repair-link-candidate-count { right:40px; max-width:76px; overflow:hidden; text-overflow:ellipsis; } .repair-link-path { grid-template-columns:1fr; position:static; left:auto; width:auto; margin:11px 0 0; transform:none; gap:6px; } .repair-link-path-arrow { height:52px; } .repair-link-path-ppt-arrow { transform:rotate(90deg); } }
     .success-patterns-wrap, .failure-patterns-wrap { overflow-x:hidden; background:#fff; }
     .failure-patterns-wrap { border:1px solid #efcaca; border-top:4px solid #b83232; box-shadow:0 2px 6px rgba(184,50,50,.08); }
     .failure-patterns-table thead th { padding:8px 10px; background:#fff5f5; color:#8f2727; border-bottom-color:#efcaca; font-size:12px; }
@@ -142,20 +185,64 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
     .skill-support-event + .skill-support-event { margin-top:7px; padding-top:7px; border-top:1px solid #d8e4ef; }
     .skill-support-judge { margin-top:3px; font-size:11px; line-height:1.35; }
     .skill-support-judge .muted { display:block; margin-top:2px; }
-    .semantic-judgments-wrap { overflow-x:visible; border:1px solid #c9def5; border-top:4px solid #2364aa; background:#fff; box-shadow:0 2px 6px rgba(35,100,170,.08); }
-    .semantic-judgments-table thead th { background:#f3f8fe; color:#315d89; border-bottom-color:#c9def5; }
-    .semantic-judgments-table tbody td { background:#fff; border-bottom-color:#dfeaf5; }
-    .semantic-judgments-table tbody tr:hover td { background:#f5faff; }
-    .semantic-judgments-table { width:100%; min-width:0; table-layout:fixed; }
-    .semantic-judgments-table th, .semantic-judgments-table td { padding:4px 8px; line-height:1.3; }
-    .semantic-judgments-table th:nth-child(1), .semantic-judgments-table td:nth-child(1) { width:23%; }
-    .semantic-judgments-table th:nth-child(2), .semantic-judgments-table td:nth-child(2) { width:25%; }
-    .semantic-judgments-table th:nth-child(3), .semantic-judgments-table td:nth-child(3) { width:19%; }
-    .semantic-judgments-table th:nth-child(4), .semantic-judgments-table td:nth-child(4) { width:20%; }
-    .semantic-judgments-table th:nth-child(5), .semantic-judgments-table td:nth-child(5) { width:13%; white-space:nowrap; }
-    .semantic-judgments-table .mono { white-space:pre-wrap; overflow-wrap:anywhere; }
-    .semantic-failure-command { color:#9f2a2a; }
-    .semantic-candidate-command { color:#256c45; }
+    .semantic-judge-panel { overflow:hidden; border:1px solid #c9def5; border-top:4px solid #2364aa; border-radius:7px; background:#fff; box-shadow:0 2px 6px rgba(35,100,170,.08); }
+    .semantic-judge-head { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px 14px; min-height:64px; padding:10px 12px; border-bottom:1px solid #d7e4f0; background:#f7faff; }
+    .semantic-judge-title { display:flex; align-items:center; gap:8px; color:#17324d; font-size:15px; font-weight:800; }
+    .semantic-judge-title svg { width:28px; height:28px; fill:none; stroke:#2364aa; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; }
+    .semantic-judge-count { display:grid; width:24px; height:24px; place-items:center; border:1px solid #d7dfe7; border-radius:5px; background:#f1f4f7; color:#17202a; font-size:12px; font-weight:800; }
+    .semantic-judge-overview { display:flex; flex:1 1 300px; align-items:center; justify-content:center; flex-wrap:wrap; gap:6px; }
+    .semantic-judge-stat { display:inline-flex; align-items:center; gap:6px; min-height:28px; padding:0 8px; border:1px solid #d8e2ec; border-radius:5px; background:#fff; color:#44586c; font-size:12px; font-weight:700; }
+    .semantic-judge-stat b { font-size:14px; }
+    .semantic-judge-stat.ok { border-color:#c5e5d0; background:#f4fcf7; color:#256c45; }
+    .semantic-judge-stat.partial { border-color:#f0d39d; background:#fffaf1; color:#8a5c12; }
+    .semantic-judge-stat.other { border-color:#f0caca; background:#fff8f8; color:#9f2a2a; }
+    .semantic-judge-actions { display:flex; align-items:center; gap:7px; }
+    .semantic-judge-filter { position:relative; }
+    .semantic-judge-filter > summary { display:grid; width:38px; height:38px; place-items:center; border:1px solid #b9cce1; border-radius:5px; color:#17324d; cursor:pointer; list-style:none; }
+    .semantic-judge-filter > summary::-webkit-details-marker { display:none; }
+    .semantic-judge-filter > summary svg { width:17px; height:17px; fill:none; stroke:currentColor; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; }
+    .semantic-judge-filter-menu { position:absolute; z-index:3; top:calc(100% + 5px); right:0; width:190px; padding:9px; border:1px solid #c9def5; border-radius:5px; background:#fff; box-shadow:0 8px 18px rgba(23,50,77,.16); }
+    .semantic-judge-filter-menu label { display:grid; gap:5px; color:#4d6074; font-size:11px; font-weight:700; }
+    .semantic-judge-filter-menu select { width:100%; min-height:30px; border:1px solid #c9d8e7; border-radius:4px; background:#fff; color:#17324d; font:inherit; }
+    .semantic-judge-list { display:flex; flex-direction:column; gap:9px; padding:10px; }
+    .semantic-judge-case { overflow:hidden; border:1px solid #c9def5; border-radius:6px; background:#fff; }
+    .semantic-judge-case-summary { position:relative; display:flex; align-items:center; gap:10px; min-height:58px; padding:9px 118px 9px 10px; cursor:pointer; list-style:none; }
+    .semantic-judge-case-summary::-webkit-details-marker { display:none; }
+    .semantic-judge-case-severity { display:grid; width:28px; height:28px; flex:0 0 auto; place-items:center; border-radius:50%; background:#c53030; color:#fff; font-size:18px; font-weight:800; }
+    .semantic-judge-case-copy { display:flex; flex:1 1 auto; flex-direction:column; gap:3px; min-width:0; }
+    .semantic-judge-case-title { display:flex; align-items:center; gap:7px; min-width:0; }
+    .semantic-judge-case-title b { overflow:hidden; color:#17202a; font-size:14px; text-overflow:ellipsis; white-space:nowrap; }
+    .semantic-judge-case-event { width:fit-content; max-width:100%; overflow:hidden; color:#58708a; text-overflow:ellipsis; white-space:nowrap; }
+    .semantic-judge-candidate-count { position:absolute; top:50%; right:40px; transform:translateY(-50%); }
+    .semantic-judge-chevron { position:absolute; top:50%; right:10px; width:18px; height:18px; color:#58708a; fill:none; stroke:currentColor; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; transform:translateY(-50%); transition:transform 140ms ease; }
+    .semantic-judge-case[open] .semantic-judge-chevron { transform:translateY(-50%) rotate(180deg); }
+    .semantic-judge-case-detail { padding:10px; border-top:1px solid #dce7f1; }
+    .semantic-judge-candidate + .semantic-judge-candidate { margin-top:10px; padding-top:10px; border-top:1px solid #dce7f1; }
+    .semantic-judge-flow { display:grid; grid-template-columns:minmax(0,1fr) 28px minmax(0,1fr) minmax(132px,.68fr); align-items:stretch; gap:0; }
+    .semantic-judge-node { min-width:0; padding:10px; border:1px solid #d8e2ec; border-radius:5px; background:#fff; }
+    .semantic-judge-node.failure { border-color:#efcaca; background:#fff9f9; }
+    .semantic-judge-node.candidate { border-color:#c5e5d0; background:#f7fcf8; }
+    .semantic-judge-node-label { display:flex; align-items:center; gap:5px; color:#52677d; font-size:11px; font-weight:800; }
+    .semantic-judge-node.failure .semantic-judge-node-label { color:#9f2a2a; }
+    .semantic-judge-node.candidate .semantic-judge-node-label { color:#256c45; }
+    .semantic-judge-node-label svg { width:15px; height:15px; fill:none; stroke:currentColor; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; }
+    .semantic-judge-node-events { display:flex; flex-wrap:wrap; gap:4px; margin-top:7px; }
+    .semantic-judge-command-preview { display:-webkit-box; overflow:hidden; margin-top:7px; color:#40556a; font-size:11px; line-height:1.35; -webkit-box-orient:vertical; -webkit-line-clamp:2; }
+    .semantic-judge-arrow { display:grid; place-items:center; color:#6d8399; }
+    .semantic-judge-arrow svg { width:20px; height:20px; fill:none; stroke:currentColor; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; }
+    .semantic-judge-verdict { position:relative; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:5px; min-width:0; margin-left:12px; padding:10px; border:1px solid #d8e2ec; border-radius:5px; background:#f8fafc; color:#44586c; text-align:center; }
+    .semantic-judge-verdict::before { position:absolute; top:12px; bottom:12px; left:-13px; width:1px; background:#d7e4f0; content:''; }
+    .semantic-judge-verdict.ok { border-color:#c5e5d0; background:#f4fcf7; color:#256c45; }
+    .semantic-judge-verdict.partial { border-color:#f0d39d; background:#fffaf1; color:#8a5c12; }
+    .semantic-judge-verdict.other { border-color:#efcaca; background:#fff8f8; color:#9f2a2a; }
+    .semantic-judge-verdict-mark { display:grid; width:25px; height:25px; place-items:center; border-radius:50%; background:currentColor; color:#fff; font-size:15px; font-weight:800; }
+    .semantic-judge-verdict strong { font-size:13px; line-height:1.3; }
+    .semantic-judge-confidence { font-size:11px; font-weight:700; }
+    .semantic-judge-reason { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-top:9px; padding-top:9px; border-top:1px solid #dce7f1; color:#334b63; font-size:12px; line-height:1.45; }
+    .semantic-judge-reason p { margin:0; }
+    .semantic-judge-reason b { color:#17202a; }
+    .semantic-judge-reason .small-btn { flex:0 0 auto; }
+    @media (max-width: 620px) { .semantic-judge-head { align-items:flex-start; } .semantic-judge-overview { justify-content:flex-start; order:3; flex-basis:100%; } .semantic-judge-flow { grid-template-columns:1fr; gap:7px; } .semantic-judge-arrow { height:18px; } .semantic-judge-arrow svg { transform:rotate(90deg); } .semantic-judge-verdict { min-height:80px; margin-left:0; } .semantic-judge-verdict::before { display:none; } }
     .repair-excluded-table { width:100%; min-width:0; table-layout:fixed; }
     .repair-excluded-table th:nth-child(1), .repair-excluded-table td:nth-child(1) { width:18%; }
     .repair-excluded-table th:nth-child(2), .repair-excluded-table td:nth-child(2) { width:57%; }
@@ -171,6 +258,83 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
     .failure-patterns-table th:nth-child(5), .failure-patterns-table td:nth-child(5) { width:10%; white-space:nowrap; }
     .failure-patterns-table td { overflow-wrap:anywhere; }
     .failure-patterns-table .mono { white-space:pre-wrap; overflow-wrap:anywhere; }
+    .failure-patterns-panel { overflow:hidden; border:1px solid #efcaca; border-top:4px solid #b83232; border-radius:7px; background:#fff; box-shadow:0 2px 6px rgba(184,50,50,.08); }
+    .failure-patterns-head { display:flex; align-items:center; justify-content:space-between; gap:12px; height:auto; min-height:64px; padding:10px 12px; border-bottom:1px solid #efcaca; background:#fff8f8; }
+    .failure-patterns-title { display:flex; align-items:center; gap:8px; min-width:0; color:#6f1d1d; font-size:15px; font-weight:800; }
+    .failure-patterns-title svg { width:40px; height:40px; flex:0 0 auto; fill:#c53030; stroke:#fff; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; }
+    .failure-patterns-count { display:grid; width:24px; height:24px; place-items:center; border:1px solid #d7dfe7; border-radius:5px; background:#f1f4f7; color:#17202a; font-size:12px; font-weight:800; }
+    .failure-patterns-actions { display:flex; align-items:center; gap:7px; flex:0 0 auto; }
+    .failure-pattern-filter { position:relative; }
+    .failure-pattern-filter > summary { display:grid; width:28px; height:28px; padding:0; place-items:center; border:1px solid #b9c9d8; border-radius:5px; background:#fff; color:#17324d; cursor:pointer; list-style:none; }
+    .failure-pattern-filter > summary::-webkit-details-marker { display:none; }
+    .failure-pattern-filter > summary:hover, .failure-patterns-head .small-btn:hover { background:#f4f8fc; border-color:#85abd1; }
+    .failure-pattern-filter svg { width:15px; height:15px; fill:none; stroke:currentColor; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; }
+    .failure-pattern-filter-menu { position:absolute; z-index:3; top:34px; right:0; width:176px; padding:8px; border:1px solid #b9c9d8; border-radius:5px; background:#fff; box-shadow:0 4px 12px rgba(23,50,77,.14); }
+    .failure-pattern-filter-menu label { display:grid; gap:4px; color:#4d6074; font-size:11px; font-weight:700; }
+    .failure-pattern-filter-menu select { width:100%; height:28px; padding:0 6px; font-size:12px; }
+    .failure-patterns-head .small-btn { background:#fff; color:#17324d; border-color:#b9c9d8; }
+    .failure-patterns-list { display:flex; flex-direction:column; gap:8px; padding:10px; }
+    .failure-pattern { position:relative; overflow:hidden; border:1px solid #d8e2ec; border-radius:6px; background:#fff; }
+    .failure-pattern[open] { border-color:#efcaca; }
+    .failure-pattern-summary { position:relative; display:flex; align-items:center; gap:9px; min-height:60px; padding:10px 138px 10px 10px; cursor:pointer; list-style:none; }
+    .failure-pattern-summary::-webkit-details-marker { display:none; }
+    .failure-pattern-summary:hover { background:#fffafa; }
+    .failure-pattern-severity { display:grid; flex:0 0 auto; width:24px; height:24px; place-items:center; border-radius:50%; background:#c53030; color:#fff; font-size:16px; font-weight:800; line-height:1; }
+    .failure-pattern-summary-copy { display:grid; min-width:0; flex:1; gap:3px; }
+    .failure-pattern-summary-title { display:flex; align-items:center; gap:6px; min-width:0; color:#17202a; font-size:14px; font-weight:800; }
+    .failure-pattern-summary-title > b { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .failure-pattern-summary .pill { flex:0 0 auto; }
+    .failure-pattern-event-id { width:fit-content; max-width:100%; overflow:hidden; color:#58708a; text-overflow:ellipsis; white-space:nowrap; }
+    .failure-pattern-chevron { position:absolute; top:50%; right:10px; width:18px; height:18px; color:#58708a; fill:none; stroke:currentColor; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; transform:translateY(-50%); transition:transform 140ms ease; }
+    .failure-pattern[open] .failure-pattern-chevron { transform:translateY(-50%) rotate(180deg); }
+    .failure-pattern-highlight { position:absolute; z-index:1; top:16px; right:40px; }
+    .failure-pattern-detail { padding:0 10px 11px; border-top:1px solid #f4dddd; }
+    .failure-pattern-detail-section { margin-top:10px; }
+    .failure-pattern-detail-section h4 { margin:0 0 4px; color:#4d6074; font-size:14px; font-weight:800; }
+    .failure-pattern-detail-section p { margin:0; color:#334b63; font-size:13px; line-height:1.45; }
+    .failure-pattern-command { position:relative; margin:0; padding:36px 9px 9px; overflow:auto; border-radius:5px; background:#17202a; color:#edf4fb; font:12px/1.45 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; white-space:pre-wrap; overflow-wrap:anywhere; }
+    .failure-pattern-command code { display:block; }
+    .failure-command-copy { position:absolute; top:6px; right:6px; display:inline-flex; align-items:center; gap:4px; height:24px; padding:0 6px; border-color:#526477; border-radius:4px; background:transparent; color:#edf4fb; font-size:11px; }
+    .failure-command-copy:hover { border-color:#a9c8e7; background:#26394d; }
+    .failure-command-copy svg { width:13px; height:13px; fill:none; stroke:currentColor; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; }
+    .failure-pattern-events { display:flex; flex-wrap:wrap; gap:5px; }
+    .failure-pattern-events .pill { max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .success-patterns-panel { overflow:hidden; border:1px solid #c5e5d0; border-top:4px solid #2f855a; border-radius:7px; background:#fff; box-shadow:0 2px 6px rgba(47,133,90,.08); }
+    .success-patterns-head { display:flex; align-items:center; justify-content:space-between; gap:12px; height:auto; min-height:64px; padding:10px 12px; border-bottom:1px solid #c5e5d0; background:#f6fcf8; }
+    .success-patterns-title { display:flex; align-items:center; gap:8px; min-width:0; color:#256c45; font-size:15px; font-weight:800; }
+    .success-patterns-title svg { width:40px; height:40px; flex:0 0 auto; fill:#2f855a; stroke:#fff; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; }
+    .success-patterns-count { display:grid; width:24px; height:24px; place-items:center; border:1px solid #d7dfe7; border-radius:5px; background:#f1f4f7; color:#17202a; font-size:12px; font-weight:800; }
+    .success-patterns-actions { display:flex; align-items:center; gap:7px; flex:0 0 auto; }
+    .success-pattern-filter { position:relative; }
+    .success-pattern-filter > summary { display:grid; width:28px; height:28px; padding:0; place-items:center; border:1px solid #b9c9d8; border-radius:5px; background:#fff; color:#17324d; cursor:pointer; list-style:none; }
+    .success-pattern-filter > summary::-webkit-details-marker { display:none; }
+    .success-pattern-filter > summary:hover, .success-patterns-head .small-btn:hover { background:#f4f8fc; border-color:#85abd1; }
+    .success-pattern-filter svg { width:15px; height:15px; fill:none; stroke:currentColor; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; }
+    .success-pattern-filter-menu { position:absolute; z-index:3; top:34px; right:0; width:176px; padding:8px; border:1px solid #b9c9d8; border-radius:5px; background:#fff; box-shadow:0 4px 12px rgba(23,50,77,.14); }
+    .success-pattern-filter-menu label { display:grid; gap:4px; color:#4d6074; font-size:11px; font-weight:700; }
+    .success-pattern-filter-menu select { width:100%; height:28px; padding:0 6px; font-size:12px; }
+    .success-patterns-head .small-btn { background:#fff; color:#17324d; border-color:#b9c9d8; }
+    .success-patterns-list { display:flex; flex-direction:column; gap:8px; padding:10px; }
+    .success-pattern { position:relative; overflow:hidden; border:1px solid #d8e2ec; border-radius:6px; background:#fff; }
+    .success-pattern[open] { border-color:#c5e5d0; }
+    .success-pattern-summary { position:relative; display:flex; align-items:center; gap:9px; min-height:60px; padding:10px 138px 10px 10px; cursor:pointer; list-style:none; }
+    .success-pattern-summary::-webkit-details-marker { display:none; }
+    .success-pattern-summary:hover { background:#f8fdf9; }
+    .success-pattern-severity { display:grid; flex:0 0 auto; width:24px; height:24px; place-items:center; border-radius:50%; background:#2f855a; color:#fff; font-size:16px; font-weight:800; line-height:1; }
+    .success-pattern-summary-copy { display:grid; min-width:0; flex:1; gap:3px; }
+    .success-pattern-summary-title { display:flex; align-items:center; gap:6px; min-width:0; color:#17202a; font-size:14px; font-weight:800; }
+    .success-pattern-summary-title > b { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .success-pattern-summary .pill { flex:0 0 auto; }
+    .success-pattern-event-id { width:fit-content; max-width:100%; overflow:hidden; color:#58708a; text-overflow:ellipsis; white-space:nowrap; }
+    .success-pattern-chevron { position:absolute; top:50%; right:10px; width:18px; height:18px; color:#58708a; fill:none; stroke:currentColor; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; transform:translateY(-50%); transition:transform 140ms ease; }
+    .success-pattern[open] .success-pattern-chevron { transform:translateY(-50%) rotate(180deg); }
+    .success-pattern-highlight { position:absolute; z-index:1; top:16px; right:40px; }
+    .success-pattern-detail { padding:0 10px 11px; border-top:1px solid #dcefe3; }
+    .success-pattern-detail-section { margin-top:10px; }
+    .success-pattern-detail-section h4 { margin:0 0 4px; color:#4d6074; font-size:14px; font-weight:800; }
+    .success-pattern-events { display:flex; flex-wrap:wrap; gap:5px; }
+    .success-pattern-events .pill { max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    @media (max-width: 560px) { .failure-patterns-head, .success-patterns-head { align-items:flex-start; } .failure-pattern-summary, .success-pattern-summary { align-items:flex-start; } .failure-pattern-summary-title, .success-pattern-summary-title { flex-wrap:wrap; } }
     .small-btn { height:28px; padding:0 8px; font-size:12px; border-radius:5px; }
     .node.dimmed { opacity:.28; }
     .node.highlighted { outline:3px solid #f0b429; box-shadow:0 0 0 5px rgba(240,180,41,.18); z-index:5; }
@@ -184,7 +348,11 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
     .context-head h3 { margin:0; font-size:16px; }
     .context-identifiers { display:flex; flex-wrap:wrap; gap:5px; }
     .context-stat-grid { display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:8px; }
+    .context-assembly-stat-grid { grid-template-columns:minmax(0,.95fr) minmax(0,.95fr) minmax(0,.95fr) minmax(0,1.15fr); }
     .context-stat { border-left:3px solid #2364aa; background:#f7faff; padding:9px 10px; min-width:0; text-align:center; }
+    .context-stat-content { display:inline-flex; align-items:center; justify-content:center; gap:8px; max-width:100%; }
+    .context-stat-icon { flex:0 0 auto; width:22px; height:22px; color:#2364aa; fill:none; stroke:currentColor; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; }
+    .context-stat-value { min-width:0; }
     .context-stat b { display:block; font-size:16px; overflow-wrap:anywhere; }
     .context-stat span { color:var(--muted); font-size:11px; }
     .context-evidence { height:auto; min-height:24px; padding:3px 7px; border-color:#b8cce1; background:#f6faff; color:#1f5592; font-size:11px; white-space:nowrap; }
@@ -193,20 +361,37 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
     .context-evidence-label { color:var(--muted); }
     .rendered-context { border:1px solid #cbd9e8; background:#f7faff; padding:11px; white-space:pre-wrap; overflow-wrap:anywhere; line-height:1.45; font-size:12px; }
     .context-assembly .summary-card .rendered-context { border-color:#e2d4f7; background:#faf7ff; }
-    .digest-summary-card { border:1px solid #e2d4f7; border-top:4px solid #7c3aed; background:#faf7ff; }
-    .digest-summary-heading { margin:0 0 7px; color:#6f35ce; font-size:13px; }
+    .digest-summary-card { margin-top:12px; border:1px solid #e2d4f7; border-top:4px solid #7c3aed; background:#fff; }
+    .digest-summary-heading { display:flex; align-items:center; justify-content:space-between; gap:12px; margin:0 0 7px; color:#17202a; font-size:15px; }
+    .digest-heading-title { display:inline-flex; align-items:center; gap:7px; min-width:0; font-size:15px; }
+    .digest-heading-icon { width:24px; height:24px; color:#6f35ce; fill:none; stroke:currentColor; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; }
+    .digest-source-events { display:inline-flex; align-items:center; gap:5px; height:28px; padding:0 7px; border:1px solid #c9ddec; border-radius:4px; background:#f6faff; color:#1f5592; font-size:12px; font-weight:700; white-space:nowrap; }
+    .digest-source-events:hover { background:#eaf3ff; }
+    .digest-source-events svg { width:15px; height:15px; fill:none; stroke:currentColor; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; }
     .context-assembly .digest-summary-card .rendered-context { border:0; background:transparent; padding:0; }
     .summary-status { margin:0; }
     .summary-profile-control { display:flex; align-items:center; gap:7px; color:#4b6074; white-space:nowrap; }
-    .digest-insights { display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:14px; margin:14px 0; }
-    .digest-insight { min-width:0; padding:4px 9px 4px 12px; border-left:3px solid #237b7d; background:#f3fbf8; }
-    .digest-insight.open-items { border-left-color:#b77218; background:#fffaf1; }
-    .digest-insight h3 { margin:0 0 7px; color:#204f52; font-size:13px; }
-    .digest-insight.open-items h3 { color:#7a4d11; }
+    .summary-control-icon { width:16px; height:16px; flex:0 0 auto; fill:none; stroke:currentColor; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; }
+    .summary-control-icon.octicon-git-branch { fill:currentColor; stroke:none; }
+    .summary-select-with-icon { position:relative; display:inline-flex; align-items:center; color:#46637f; }
+    .summary-select-with-icon .summary-control-icon { position:absolute; z-index:1; left:8px; width:14px; height:14px; pointer-events:none; }
+    .digest-insights { position:relative; display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:44px; margin:16px 0 0; padding-top:16px; border-top:1px solid #dce3ea; }
+    .digest-insights::before { position:absolute; top:16px; bottom:0; left:50%; width:1px; background:#dce3ea; content:''; }
+    .digest-insight { position:relative; min-width:0; padding:0; border:0; background:transparent; }
+    .digest-insight h3 { display:flex; align-items:center; gap:7px; margin:0; padding:0 28px 5px 0; color:#17202a; font-size:15px; }
+    .digest-insight h3::before { display:grid; place-items:center; width:20px; height:20px; border-radius:50%; background:#1f9d8b; color:#fff; content:'✓'; font-size:13px; font-weight:800; line-height:1; }
+    .digest-insight.open-items h3 { color:#17202a; }
+    .digest-insight.open-items h3::before { box-sizing:border-box; border:2px solid #d98b17; background:transparent; content:''; }
+    .digest-insight-toggle { position:absolute; top:-2px; right:0; display:grid; width:22px; height:22px; padding:0; place-items:center; border:0; border-radius:3px; background:transparent; color:#58708a; cursor:pointer; }
+    .digest-insight-toggle:hover { background:#edf3f9; color:#1f5592; }
+    .digest-insight-toggle:focus-visible { outline:2px solid #2e74c9; outline-offset:1px; }
+    .digest-insight-toggle svg { width:15px; height:15px; fill:none; stroke:currentColor; stroke-linecap:round; stroke-linejoin:round; stroke-width:2.25; transition:transform .15s ease; }
+    .digest-insight.is-collapsed .digest-insight-toggle svg { transform:rotate(-90deg); }
     .digest-insight-list { margin:0; padding:0; list-style:none; }
-    .digest-insight-list li { position:relative; padding:6px 0 6px 13px; border-top:1px solid #e1e9ed; color:#314256; font-size:12px; line-height:1.45; overflow-wrap:anywhere; }
-    .digest-insight-list li::before { content:'•'; position:absolute; left:1px; color:#237b7d; font-weight:700; }
-    .digest-insight.open-items li::before { color:#b77218; }
+    .digest-insight-list li { position:relative; min-height:37px; padding:8px 0 8px 27px; border-bottom:0; color:#314256; font-size:12px; line-height:1.45; overflow-wrap:anywhere; }
+    .digest-insight-list li::before { position:absolute; top:8px; left:2px; color:#0f766e; content:'✓'; font-size:17px; font-weight:800; line-height:1; }
+    .digest-insight.open-items li { border-bottom:0; }
+    .digest-insight.open-items li::before { top:9px; left:1px; box-sizing:border-box; width:16px; height:16px; border:2px solid #d98b17; border-radius:50%; content:''; }
     .budget-control { display:flex; flex-wrap:wrap; align-items:center; gap:10px; padding:10px; background:#f7faff; border:1px solid #d4e1ee; }
     .budget-control label { font-size:12px; font-weight:700; }
     .budget-control input { flex:1 1 260px; padding:0; height:16px; border:0; }
@@ -246,19 +431,20 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
     .semantic-operator-detail dt { color:#6b4a91; font-weight:700; }
     .semantic-operator-detail dd { min-width:0; margin:0; overflow-wrap:anywhere; }
     .budget-branch-control { display:flex; align-items:center; gap:7px; padding-right:10px; border-right:1px solid #d4e1ee; color:#4b6074; white-space:nowrap; }
-    .budget-branch-control select, .summary-profile-control select { min-width:140px; height:28px; box-sizing:border-box; border:1px solid var(--line); border-radius:5px; color:#17324d; background:#fff; padding:0 6px; }
+    .budget-branch-control select, .summary-profile-control select { min-width:140px; height:28px; box-sizing:border-box; border:1px solid var(--line); border-radius:5px; color:#17324d; background:#fff; padding:0 6px 0 29px; }
     .budget-table { min-width:780px; table-layout:fixed; }
-    .budget-table .budget-candidate-column { width:105px; }
-    .budget-table .budget-loaded-column { width:100px; }
+    .budget-table .budget-candidate-column { width:90px; }
+    .budget-table .budget-loaded-column { width:90px; }
     .budget-table .budget-state-column { width:130px; }
-    .budget-table .budget-sources-column { width:100px; }
+    .budget-table .budget-sources-column { width:136px; }
     .budget-table td:last-child { overflow-wrap:anywhere; }
-    .context-plan-row { cursor:pointer; }
-    .context-plan-row:hover td { background:#f8f4ff; }
+    .context-plan-row { cursor:default; }
     .context-plan-row.selected td { background:#f0e8ff; }
-    .context-plan-table-wrap { position:relative; border-color:#e2d4f7; border-top:4px solid #7c3aed; box-shadow:0 2px 6px rgba(124,58,237,.08); }
+    .context-plan-table-wrap { position:relative; margin-top:12px; border-color:#e2d4f7; border-top:4px solid #7c3aed; box-shadow:0 2px 6px rgba(124,58,237,.08); }
     .context-plan-table-wrap .budget-table th { background:#faf7ff; color:#493367; border-bottom-color:#e2d4f7; }
     .context-plan-table-wrap .budget-table td { border-bottom-color:#ede4fb; }
+    .context-plan-table-wrap .budget-table tbody td { vertical-align:middle; }
+    .context-plan-table-wrap .budget-table td:nth-child(5) { text-align:center; }
     .context-plan-detail { position:absolute; inset:0; z-index:3; overflow:auto; border:0; border-radius:inherit; background:#faf7ff; padding:12px; box-shadow:none; }
     .context-plan-table-wrap.is-detail-open { overflow:visible; }
     .context-plan-table-wrap.is-detail-open .budget-table { display:none; }
@@ -267,13 +453,23 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
     .context-plan-detail-meta { display:flex; flex-wrap:wrap; align-items:center; gap:6px 9px; margin-bottom:8px; color:#4b6074; font-size:12px; }
     .context-plan-detail-text { margin:8px 0; padding:10px; border:1px solid #e2d4f7; background:#fff; white-space:pre-wrap; overflow-wrap:anywhere; line-height:1.45; font-size:12px; }
     .context-plan-detail-close { position:absolute; top:8px; right:8px; width:28px; height:28px; padding:0; border:1px solid #e2d4f7; border-radius:5px; background:#fff; color:#6f35ce; font-size:19px; line-height:1; }
-    .budget-state.included { color:#256c45; font-weight:700; }
-    .budget-state.truncated { color:#8a5b12; font-weight:700; }
-    .budget-state.omitted, .budget-state.not_available { color:#68798b; font-weight:700; }
+    .context-fragment-title { display:flex; align-items:center; gap:8px; }
+    .context-fragment-icon { width:21px; height:21px; flex:0 0 auto; color:#6f35ce; fill:none; stroke:currentColor; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; }
+    .context-fragment-branch-icon { fill:currentColor; stroke:none; }
+    .context-fragment-title b { display:block; }
+    .budget-state { display:inline-flex; align-items:center; gap:5px; min-height:21px; padding:1px 7px; border-radius:999px; background:#eef4f7; color:#58708a; font-size:11px; font-weight:700; line-height:1.2; }
+    .budget-state::before { width:6px; height:6px; border-radius:50%; background:currentColor; content:''; }
+    .budget-state.included { background:#e7f7f1; color:#167f6f; }
+    .budget-state.truncated { background:#fff4df; color:#9a650c; }
+    .budget-state.omitted, .budget-state.not_available { background:#eef1f4; color:#68798b; }
+    .context-source-count { display:inline-flex; align-items:center; justify-content:center; gap:4px; width:112px; height:28px; box-sizing:border-box; padding:0 8px; border:1px solid #9fc5eb; border-radius:5px; background:#fff; color:#1f5592; font-size:12px; font-weight:700; line-height:1; white-space:nowrap; }
+    .context-source-count:hover:not(:disabled) { border-color:#5e9bd1; background:#f3f8fd; }
+    .context-source-count:disabled { border-color:#d7e1eb; color:#8190a0; cursor:default; }
+    .context-source-count svg { width:13px; height:13px; fill:none; stroke:currentColor; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; }
     .view-branch-toolbar { display:flex; justify-content:flex-end; margin:0 0 8px; }
     .view-branch-toolbar label { display:flex; align-items:center; gap:7px; color:#4b6074; font-size:12px; font-weight:700; }
     .view-branch-toolbar select { min-width:140px; }
-    @media (max-width: 900px) { .context-stat-grid { grid-template-columns:repeat(2, minmax(0,1fr)); } }
+    @media (max-width: 900px) { .context-stat-grid { grid-template-columns:repeat(2, minmax(0,1fr)); } .context-assembly-stat-grid { grid-template-columns:minmax(0,.95fr) minmax(0,1.15fr); } }
     .event-legend { display:flex; flex-wrap:wrap; gap:6px; padding:8px 14px; border-top:1px solid var(--line); background:#fbfcfd; }
     .legend-dot { width:9px; height:9px; border-radius:50%; display:inline-block; margin-right:5px; vertical-align:middle; }
     .dot-user_message { background:var(--blue); }
@@ -339,31 +535,82 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
     #skillLibrary thead, #skillLibrary tbody tr { background:#fff; }
     #skillLibrary .table-wrap tbody tr:hover { background:#f5faff; }
     .global-section > h3 { margin:0 0 7px; color:#17202a; font-size:17px; font-weight:700; line-height:1.3; }
+    .global-section > p { margin:0 0 7px; }
+    .global-section .table-wrap { border-color:#d4e3f1; border-radius:6px; background:#fff; }
+    .global-section .table-wrap tbody tr:hover { background:#f5faff; }
+    .global-overview-content { padding:14px; }
+    .global-overview-workbench { display:flex; flex-direction:column; gap:18px; }
+    .global-overview-workspace { border:1px solid #c9def5; border-top:4px solid #2364aa; border-radius:7px; background:#fff; padding:0; overflow:hidden; }
+    .global-overview-workspace .global-graph-heading { display:flex; align-items:center; min-height:42px; margin:0; padding:0 14px; border-bottom:1px solid #dbe5ee; font-size:16px; }
+    .global-overview-workspace .global-relationship-graph { min-height:330px; border:0; border-radius:0; background:transparent; padding:6px 0 34px; }
+    .global-overview-workspace .global-relationship-columns { padding:8px 22px; }
+    .global-overview-library-grid { display:grid; grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr); gap:16px; align-items:stretch; }
+    .global-overview-library-panel { display:flex; min-width:0; flex-direction:column; overflow:hidden; border:1px solid #d7e1eb; border-radius:7px; background:#fff; padding:0; }
+    .global-library-heading { display:flex; align-items:center; justify-content:space-between; gap:14px; min-height:44px; padding:5px 12px; border-bottom:1px solid #dbe5ee; }
+    .global-library-heading h3 { margin:0; color:#17202a; font-size:16px; }
+    .global-overview-library-panel .table-wrap { border:0; border-radius:0; }
+    .global-overview-library-panel .table-wrap thead th { background:#f6f8fb; }
+    .global-overview-library-panel .table-wrap tbody tr:hover { background:#f7fafc; }
+    .global-overview-library-panel#trajectoryCatalog { background:#fff; border-color:#e3d5da; }
+    .global-overview-library-panel#trajectoryCatalog .global-library-heading h3 { color:#7d3c52; }
+    .global-overview-library-panel#skillLibrary { background:#fff; border-color:#d0e4d7; }
+    .global-overview-library-panel#skillLibrary .global-library-heading h3 { color:#276c47; }
+    .global-overview-library-panel#toolCatalog { grid-column:1 / -1; background:#fff; border-color:#eadbb7; }
+    .global-overview-library-panel#toolCatalog .global-library-heading h3 { color:#7a5b1f; }
+    .global-overview-library-panel .global-skill-detail { margin:0; border:0; border-radius:0; background:#fbfdff; padding:14px; }
+    #trajectoryCatalog tbody tr:last-child td { border-bottom:1px solid #e3d5da; }
+    #skillLibrary tbody tr:last-child td { border-bottom:1px solid #d0e4d7; }
     .global-section > h3.global-graph-heading { display:flex; align-items:center; gap:5px; }
     .graph-collapse-toggle { display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; padding:0; border:0; border-radius:3px; background:transparent; color:#466986; font-size:15px; line-height:1; }
     .graph-collapse-toggle:hover { background:#e7f0f8; color:#17324d; }
     .graph-collapse-toggle:focus-visible { outline:2px solid #2364aa; outline-offset:2px; }
-    .global-section > p { margin:0 0 7px; }
-    .global-section .table-wrap { border-color:#d4e3f1; border-radius:6px; background:#fff; }
-    .global-section .table-wrap tbody tr:hover { background:#f5faff; }
     .trajectory-catalog-table { width:100%; min-width:0; table-layout:fixed; }
     .trajectory-catalog-table th, .trajectory-catalog-table td { padding:7px 5px; text-align:center; vertical-align:middle; overflow-wrap:anywhere; }
-    .global-skill-library-table { width:100%; table-layout:fixed; }
+    .global-skill-library-table, .global-tool-catalog-table { width:100%; min-width:0; table-layout:fixed; }
     .global-skill-library-table th, .global-skill-library-table td { text-align:center; vertical-align:middle; overflow-wrap:anywhere; }
-    .global-skill-library-table th:nth-child(1), .global-skill-library-table td:nth-child(1) { width:42%; }
-    .global-skill-library-table th:nth-child(2), .global-skill-library-table td:nth-child(2) { width:43%; }
+    .global-tool-catalog-table th, .global-tool-catalog-table td { text-align:center; vertical-align:middle; overflow-wrap:anywhere; }
+    .global-skill-library-table th:nth-child(1), .global-skill-library-table td:nth-child(1) { width:40%; text-align:left; }
+    .global-skill-library-table th:nth-child(2), .global-skill-library-table td:nth-child(2) { width:36%; text-align:left; }
     .global-skill-library-table th:nth-child(3), .global-skill-library-table td:nth-child(3) { width:15%; }
-    .trajectory-catalog-table th:nth-child(1), .trajectory-catalog-table td:nth-child(1) { width:14%; }
-    .trajectory-catalog-table th:nth-child(2), .trajectory-catalog-table td:nth-child(2) { width:10%; }
-    .trajectory-catalog-table th:nth-child(3), .trajectory-catalog-table td:nth-child(3) { width:16%; }
-    .trajectory-catalog-table th:nth-child(4), .trajectory-catalog-table td:nth-child(4) { width:6%; }
-    .trajectory-catalog-table th:nth-child(5), .trajectory-catalog-table td:nth-child(5) { width:7%; }
+    .global-skill-library-table th:nth-child(4), .global-skill-library-table td:nth-child(4) { width:9%; }
+    .global-skill-library-table th:nth-child(1), .global-skill-library-table th:nth-child(2) { text-align:center; }
+    .trajectory-catalog-table th:nth-child(1), .trajectory-catalog-table td:nth-child(1) { width:15%; }
+    .trajectory-catalog-table th:nth-child(2), .trajectory-catalog-table td:nth-child(2) { width:13%; }
+    .trajectory-catalog-table th:nth-child(3), .trajectory-catalog-table td:nth-child(3) { width:7%; }
+    .trajectory-catalog-table th:nth-child(4), .trajectory-catalog-table td:nth-child(4) { width:8%; }
+    .trajectory-catalog-table th:nth-child(5), .trajectory-catalog-table td:nth-child(5) { width:11%; }
     .trajectory-catalog-table th:nth-child(6), .trajectory-catalog-table td:nth-child(6) { width:8%; }
-    .trajectory-catalog-table th:nth-child(7), .trajectory-catalog-table td:nth-child(7) { width:22%; }
-    .trajectory-catalog-table th:nth-child(8), .trajectory-catalog-table td:nth-child(8) { width:17%; }
-    .global-trajectory-id { display:block; font-family:inherit; font-size:12px; font-weight:700; overflow-wrap:anywhere; }
-    .global-open-btn { display:block; margin:9px auto 0; }
-    .trajectory-catalog-table td:nth-child(7) .pill, .trajectory-catalog-table td:nth-child(8) .pill { max-width:100%; white-space:normal; overflow-wrap:anywhere; }
+    .trajectory-catalog-table th:nth-child(7), .trajectory-catalog-table td:nth-child(7) { width:8%; }
+    .trajectory-catalog-table th:nth-child(8), .trajectory-catalog-table td:nth-child(8) { width:30%; }
+    .global-trajectory-id { display:block; color:#9b4662; font-family:inherit; font-size:12px; font-weight:700; overflow-wrap:anywhere; }
+    .global-trajectory-detail-trigger { display:block; width:100%; padding:0; border:0; color:inherit; background:transparent; font:inherit; cursor:pointer; }
+    .global-trajectory-detail-trigger:hover .global-trajectory-id { text-decoration:underline; }
+    .global-trajectory-detail-trigger:focus-visible { outline:2px solid #2364aa; outline-offset:3px; }
+    .global-skill-name, .global-skill-id { color:#276c47; }
+    .global-skill-id { margin:0; font-size:11px; }
+    .global-skill-detail-trigger { display:block; width:100%; padding:0; border:0; color:inherit; background:transparent; font:inherit; text-align:center; cursor:pointer; }
+    .global-skill-detail-trigger:hover .global-skill-name { text-decoration:underline; }
+    .global-skill-detail-trigger:focus-visible { outline:2px solid #2364aa; outline-offset:3px; }
+    .global-tool-name { color:#7a5b1f; }
+    .global-tool-category { color:#7a5b1f; font-size:11px; font-weight:700; }
+    .global-tool-purpose { color:var(--ink); }
+    .global-tool-boolean.yes { color:#276c47; font-weight:700; }
+    .global-tool-boolean.no { color:#6b7d90; }
+    .global-tool-catalog-table th:nth-child(1), .global-tool-catalog-table td:nth-child(1) { width:18%; }
+    .global-tool-catalog-table th:nth-child(2), .global-tool-catalog-table td:nth-child(2) { width:13%; }
+    .global-tool-catalog-table th:nth-child(3), .global-tool-catalog-table td:nth-child(3) { width:24%; text-align:left; }
+    .global-tool-catalog-table th:nth-child(3), .global-tool-catalog-table td:nth-child(3) { text-align:center; }
+    .global-tool-catalog-table th:nth-child(4), .global-tool-catalog-table td:nth-child(4) { width:8%; }
+    .global-tool-catalog-table th:nth-child(5), .global-tool-catalog-table td:nth-child(5) { width:10%; }
+    .global-tool-catalog-table th:nth-child(6), .global-tool-catalog-table td:nth-child(6) { width:11%; }
+    .global-tool-catalog-table th:nth-child(7), .global-tool-catalog-table td:nth-child(7) { width:8%; }
+    .global-tool-catalog-table th:nth-child(8), .global-tool-catalog-table td:nth-child(8) { width:8%; }
+    .global-library-count { display:inline; margin-left:3px; color:inherit; font-size:inherit; font-weight:inherit; }
+    .global-library-search { display:flex; flex:0 1 228px; align-items:center; gap:7px; min-width:180px; height:32px; padding:0 9px; border:1px solid #d7e1eb; border-radius:5px; color:#8090a0; background:#fff; }
+    .global-library-search:focus-within { border-color:#7ca9d5; box-shadow:0 0 0 2px rgba(35,100,170,.10); }
+    .global-library-search svg { flex:0 0 auto; width:15px; height:15px; fill:none; stroke:currentColor; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; }
+    .global-library-search input { min-width:0; width:100%; height:100%; border:0; outline:0; color:var(--ink); background:transparent; font-size:14px; line-height:1.2; }
+    .global-library-search input::placeholder { color:#8a98a8; }
     .global-related-skill { border:0; cursor:pointer; font:inherit; text-align:left; }
     .global-related-skill:hover { background:#d7ecdf; text-decoration:underline; }
     .global-related-skill:focus-visible { outline:2px solid #2364aa; outline-offset:2px; }
@@ -382,13 +629,16 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
     .global-relationship-edges [data-global-edge] { opacity:0 !important; transition:opacity 140ms ease; }
     .global-relationship-edges [data-global-edge].is-visible { opacity:.8 !important; }
     .global-relationship-edges [data-global-edge] { pointer-events:none; }
+    .global-relationship-edges .global-edge-origin { fill:var(--relationship-edge); stroke:#fff; stroke-width:2; }
+    .global-relationship-edges .global-edge-origin.is-visible { opacity:1 !important; }
     .global-relationship-edges .global-edge-label { cursor:pointer; pointer-events:none; }
     .global-relationship-edges .global-edge-label.is-visible { pointer-events:auto; }
     .global-edge-label rect { fill:#fff; stroke:#c9ddec; stroke-width:1; opacity:.94; }
     .global-edge-label text { fill:#355e87; font-family:inherit; font-size:10px; text-anchor:middle; dominant-baseline:middle; }
     .global-relationship-columns { position:relative; z-index:1; display:grid; grid-template-columns:180px 180px 235px; justify-content:space-between; column-gap:24px; min-width:0; width:100%; box-sizing:border-box; padding:16px; pointer-events:none; }
     .global-relationship-column { display:flex; min-width:0; min-height:0; flex-direction:column; }
-    .global-relationship-column h3 { margin:0 0 9px; color:#355e87; font-size:13px; text-align:center; }
+    .global-relationship-column h3 { display:flex; align-items:baseline; justify-content:center; gap:5px; margin:0 0 7px; color:#355e87; font-size:13px; text-align:center; }
+    .global-column-count { color:inherit; font-size:inherit; font-weight:inherit; }
     .global-relationship-stack { display:flex; flex:1; min-height:0; flex-direction:column; justify-content:center; gap:9px; }
     .global-relationship-column { position:relative; z-index:2; }
     .global-relationship-column.has-expanded-tool-cluster { z-index:4; }
@@ -405,7 +655,7 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
     .global-source-logo img { display:block; width:100%; height:100%; object-fit:contain; }
     .global-source-logo.codex img { transform:scale(1.5); }
     .global-source-logo.swe-agent img { transform:scale(1.2); }
-    .global-graph-node.tool { border-left-color:#9a6b16; background:#fffaf0; }
+    .global-graph-node.tool { position:relative; border-left-color:#9a6b16; background:#fffaf0; }
     .global-graph-node.tool-cluster { position:relative; width:180px; height:50px; min-height:50px; justify-self:center; padding:8px 11px; }
     .global-tool-cluster-summary { margin-top:4px; color:#7a5b1f; font-size:11px; }
     .global-tool-cluster-members { position:absolute; z-index:5; top:calc(100% + 8px); left:50%; display:none; width:210px; max-height:220px; overflow:auto; transform:translateX(-50%); border:1px solid #c9ddec; border-radius:6px; background:#fff; box-shadow:0 10px 22px rgba(23,50,77,.18); padding:7px; text-align:left; }
@@ -416,10 +666,15 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
     .global-graph-node .global-tool-cluster-member:hover { background:#f4f8fd; text-decoration:none; }
     .global-tool-cluster-member:first-of-type { border-top:0; }
     .global-tool-cluster-member span:last-child { flex:0 0 auto; color:#7a5b1f; font-family:inherit; white-space:nowrap; }
-    .global-graph-node.skill { width:235px; height:50px; min-height:50px; border-left-color:#2f855a; background:#f2fbf5; }
+    .global-graph-node.skill { position:relative; width:235px; height:50px; min-height:50px; border-left-color:#2f855a; background:#f2fbf5; }
     .global-graph-node b { display:block; font-size:12px; }
     .global-graph-node.trajectory b { transform:translateX(16px); }
+    .global-graph-node.tool b, .global-graph-node.skill b { padding-left:33px; }
     .global-graph-node.skill b { white-space:normal; }
+    .global-graph-node-icon { position:absolute; left:9px; top:50%; display:grid; place-items:center; width:26px; height:26px; transform:translateY(-50%); }
+    .global-graph-node-icon svg { width:100%; height:100%; fill:none; stroke:currentColor; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; }
+    .global-graph-node-icon.tool { color:#9a6b16; }
+    .global-graph-node-icon.skill { color:#2f855a; }
     .global-graph-node span { display:block; margin-top:3px; color:var(--muted); font-size:11px; }
     .global-graph-node button { width:100%; height:auto; min-height:20px; margin-top:5px; padding:2px 5px; border:0; background:transparent; color:#1f5592; text-align:left; font-size:11px; }
     .global-graph-node button:hover { text-decoration:underline; }
@@ -480,9 +735,12 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
     .right-mode-tabs button.active { background:transparent; color:#17324d; }
     .right-mode-tabs button.active::after { content:""; position:absolute; left:0; right:0; bottom:-1px; height:3px; background:#2364aa; }
     .right-pane.hidden { display:none; }
-    .view-groups { display:flex; flex-direction:column; gap:10px; padding:12px 14px 2px; }
+    .view-groups { display:flex; flex-direction:column; gap:0; padding:12px 14px 2px; }
     .view-group-row { display:flex; min-width:0; gap:14px; }
     .view-group { display:grid; grid-template-columns:235px minmax(0, 1fr); align-items:center; flex:1 1 auto; min-width:0; min-height:58px; border:1px dashed #b8c5d1; border-radius:6px; padding:9px 12px; background:#fcfdfe; }
+    .view-group-row + .view-group-row .view-group { border-top:0; border-radius:0; }
+    .view-group-row:first-child .view-group { border-radius:6px 6px 0 0; }
+    .view-group-row:last-child .view-group { border-radius:0 0 6px 6px; }
     .view-group-title { margin:0; color:#63758a; font-size:11px; font-weight:800; letter-spacing:.03em; line-height:1.25; text-transform:uppercase; white-space:nowrap; }
     .view-group-buttons { display:flex; flex-wrap:nowrap; align-items:center; gap:6px; }
     .view-group-buttons button { flex:0 0 auto; margin:0; white-space:nowrap; }
@@ -499,6 +757,7 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
 .nl-actions-left .muted, .nl-actions select { font-size:14px; }
 .nl-actions-left .muted { font-weight:700; }
 .nl-actions select { height:30px; border:1px solid var(--line); border-radius:5px; color:#17324d; background:#fff; padding:0 6px; }
+.nl-actions-left .summary-select-with-icon select { padding:0 26px 0 29px; }
     .nl-actions #runNaturalLanguage { font-size:12px; }
     .sql-editor-panel { margin:0 -13px -13px; padding:12px 13px 13px; border:1px solid #dfcef4; border-top:0; border-radius:0 0 7px 7px; background:#faf7ff; }
     .sql-editor-hint { margin:0 0 6px; color:#17202a; }
@@ -556,6 +815,10 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
 .version-event-identity { display:flex; align-items:center; gap:7px; flex-wrap:wrap; }
 .version-event p { margin:3px 0 0; color:#4b5e70; overflow-wrap:anywhere; }
 @media (max-width:900px) { .view-groups { overflow-x:auto; } .view-group-row { min-width:max-content; } .version-action-row { grid-template-columns:1fr; } .context-stat-grid.version-summary { grid-template-columns:repeat(2,minmax(0,1fr)); } .version-event { grid-template-columns:1fr; gap:7px; } .version-event .small-btn { justify-self:start; } .global-metrics { grid-template-columns:1fr; } }
+@media (max-width:1100px) { .global-overview-library-grid { grid-template-columns:1fr; } .global-overview-library-panel#toolCatalog { grid-column:auto; } }
+@media (max-width:720px) {
+  .global-overview-workspace .global-relationship-columns { padding:12px; }
+}
 
     @media (max-width: 1200px) { main { grid-template-columns:1fr; } }
     @media (max-width: 900px) { main, .playback-layout { grid-template-columns:1fr; } input { min-width: 160px; width:100%; } header { height:auto; display:flex; gap:10px; align-items:flex-start; flex-direction:column; padding:12px; } h1 { width:100%; text-align:center; } .controls { width:100%; flex-wrap:wrap; justify-self:auto; } .playback-progress { flex-basis:100%; } }
@@ -717,7 +980,7 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
           <div class="nl-contextql">
             <div class="nl-contextql-label-row"><label for="nlQuestion">Query in natural language</label><span id="sqlMeta" class="sr-only" aria-live="polite"></span></div>
             <textarea id="nlQuestion" spellcheck="true" placeholder="Example: Show failures and their likely causes on this trajectory."></textarea>
-            <div class="nl-actions"><div class="nl-actions-left"><span class="muted">LLM profile</span><select id="nlProfile" aria-label="LLM profile"><option value="">Loading models...</option></select></div><button id="runNaturalLanguage" class="small-btn">Translate to SQL</button></div>
+            <div class="nl-actions"><div class="nl-actions-left"><span class="muted">LLM profile</span><span class="summary-select-with-icon"><svg class="summary-control-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="5" width="14" height="14" rx="2"></rect><path d="M9 1v4M15 1v4M9 19v4M15 19v4M1 9h4M1 15h4M19 9h4M19 15h4M9 9h6v6H9z"></path></svg><select id="nlProfile" aria-label="LLM profile"><option value="">Loading models...</option></select></span></div><button id="runNaturalLanguage" class="small-btn">Translate to SQL</button></div>
           </div>
           <div class="sql-editor-panel">
             <div class="sql-editor-hint">This SQL query can be prefilled by Database Views and remains editable</div>
@@ -769,6 +1032,51 @@ let globalExpandedToolClusterId = '';
 let globalFocusedToolId = '';
 let globalSkillDetailIndex = null;
 let fullTrajectoryHighlight = null;
+function filterFailurePatterns(toolName) {
+  const patterns = [...document.querySelectorAll('.failure-pattern')];
+  let visibleCount = 0;
+  patterns.forEach(pattern => {
+    const visible = !toolName || pattern.dataset.failedTool === toolName;
+    pattern.hidden = !visible;
+    if (visible) visibleCount += 1;
+  });
+  const count = document.querySelector('.failure-patterns-count');
+  if (count) count.textContent = String(visibleCount);
+}
+function filterSuccessPatterns(toolName) {
+  const patterns = [...document.querySelectorAll('.success-pattern')];
+  let visibleCount = 0;
+  patterns.forEach(pattern => {
+    const visible = !toolName || pattern.dataset.successTool === toolName;
+    pattern.hidden = !visible;
+    if (visible) visibleCount += 1;
+  });
+  const count = document.querySelector('.success-patterns-count');
+  if (count) count.textContent = String(visibleCount);
+}
+function filterRepairLinks(toolName) {
+  const links = [...document.querySelectorAll('.repair-link')];
+  let visibleCount = 0;
+  links.forEach(link => {
+    const visible = !toolName || link.dataset.failedTool === toolName;
+    link.hidden = !visible;
+    if (visible) visibleCount += Number(link.dataset.repairCount || 0);
+  });
+  const count = document.querySelector('.repair-links-count');
+  if (count) count.textContent = String(visibleCount);
+}
+function filterSemanticJudgments(verdict) {
+  const cases = [...document.querySelectorAll('.semantic-judge-case')];
+  let visibleJudgments = 0;
+  cases.forEach(item => {
+    const labels = (item.dataset.verdicts || '').split('|').filter(Boolean);
+    const matches = verdict ? labels.filter(label => label === verdict).length : Number(item.dataset.judgmentCount || labels.length);
+    item.hidden = matches === 0;
+    visibleJudgments += matches;
+  });
+  const count = document.querySelector('.semantic-judge-count');
+  if (count) count.textContent = String(visibleJudgments);
+}
 const BRANCH_SCOPED_VIEWS = new Set(['current_prompt', 'summary', 'rl_dataset']);
 const viewBranches = {current_prompt: 'main', summary: 'main', rl_dataset: 'main'};
 const GRAPH_PAYLOAD_VALUE_LIMIT = 96;
@@ -803,13 +1111,16 @@ function viewBranchSelector(view) {
   const selected = selectedViewBranch(view);
   return `<div class="view-branch-toolbar"><label>Branch <select data-view-branch="${view}" aria-label="${escapeHtml(viewLabel(view))} branch">${branchOptions(selected)}</select></label></div>`;
 }
+function branchSelectWithIcon(view, selected) {
+  return `<span class="summary-select-with-icon"><svg class="summary-control-icon octicon-git-branch" viewBox="0 0 16 16" aria-hidden="true"><path fill-rule="evenodd" d="M11.75 2.5a.75.75 0 1 0 0 1.5.75.75 0 0 0 0-1.5Zm-2.25.75a2.25 2.25 0 1 1 3 2.122V6A2.5 2.5 0 0 1 10 8.5H6a1 1 0 0 0-1 1v1.128a2.251 2.251 0 1 1-1.5 0V5.372a2.25 2.25 0 1 1 1.5 0v1.836A2.492 2.492 0 0 1 6 7h4a1 1 0 0 0 1-1v-.628A2.25 2.25 0 0 1 9.5 3.25ZM4.25 12a.75.75 0 1 0 0 1.5.75.75 0 0 0 0-1.5ZM3.5 3.25a.75.75 0 1 1 1.5 0 .75.75 0 0 1-1.5 0Z"></path></svg><select data-view-branch="${view}" aria-label="${escapeHtml(viewLabel(view))} branch">${branchOptions(selected)}</select></span>`;
+}
 function viewBranchInlineSelector(view) {
   const selected = selectedViewBranch(view);
-  return `<label class="budget-branch-control">Branch <select data-view-branch="${view}" aria-label="${escapeHtml(viewLabel(view))} branch">${branchOptions(selected)}</select></label>`;
+  return `<label class="budget-branch-control">Branch ${branchSelectWithIcon(view, selected)}</label>`;
 }
 function viewBranchStatusSelector(view) {
   const selected = selectedViewBranch(view);
-  return `<label class="budget-branch-control">Branch <select data-view-branch="${view}" aria-label="${escapeHtml(viewLabel(view))} branch">${branchOptions(selected)}</select></label>`;
+  return `<label class="budget-branch-control">Branch ${branchSelectWithIcon(view, selected)}</label>`;
 }
 function selectedSummaryProfile() {
   const available = llmProfiles.map(profile => profile.profile_id);
@@ -822,7 +1133,7 @@ function llmProfileOptions(selected) {
   return llmProfiles.map(profile => `<option value="${escapeHtml(profile.profile_id)}"${profile.profile_id === value ? ' selected' : ''}>${escapeHtml(profile.label || profile.model)}</option>`).join('');
 }
 function viewSummaryProfileSelector() {
-  return `<label class="summary-profile-control">LLM profile <select id="summaryProfile" aria-label="Context Digest LLM profile"${llmProfiles.length ? '' : ' disabled'}>${llmProfileOptions(summaryProfileId)}</select></label>`;
+  return `<label class="summary-profile-control">LLM profile <span class="summary-select-with-icon"><svg class="summary-control-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="5" width="14" height="14" rx="2"></rect><path d="M9 1v4M15 1v4M9 19v4M15 19v4M1 9h4M1 15h4M19 9h4M19 15h4M9 9h6v6H9z"></path></svg><select id="summaryProfile" aria-label="Context Digest LLM profile"${llmProfiles.length ? '' : ' disabled'}>${llmProfileOptions(summaryProfileId)}</select></span></label>`;
 }
 function populateSummaryProfileSelector() {
   const select = $('summaryProfile');
@@ -1861,6 +2172,16 @@ function globalTrajectorySourceLogo(source) {
   return `<span class="global-source-logo ${logo.className}" title="${escapeHtml(logo.label)}"><img src="/assets/${logo.asset}" alt="${escapeHtml(logo.label)} logo"></span>`;
 }
 
+function globalGraphNodeIcon(node) {
+  if (node.type === 'tool' || node.type === 'tool_cluster') {
+    return `<span class="global-graph-node-icon tool" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M14.7 6.3a4.5 4.5 0 0 0-5.9 5.9L3.5 17.5a2.1 2.1 0 0 0 3 3l5.3-5.3a4.5 4.5 0 0 0 5.9-5.9l-3.1 3.1-2.6-2.6z"></path></svg></span>`;
+  }
+  if (node.type === 'skill') {
+    return `<span class="global-graph-node-icon skill" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m12 3-1.2 4.8L6 9l4.8 1.2L12 15l1.2-4.8L18 9l-4.8-1.2zM19 15l-.7 2.3L16 18l2.3.7L19 21l.7-2.3L22 18l-2.3-.7zM5 15l-.5 1.5L3 17l1.5.5L5 19l.5-1.5L7 17l-1.5-.5z"></path></svg></span>`;
+  }
+  return '';
+}
+
 function globalToolClusterInfo(tool) {
   const value = `${tool.label || ''} ${tool.detail || ''}`.toLowerCase();
   if (/contextdb|\bmcp\b/.test(value)) return {key:'contextdb', label:'ContextDB MCP'};
@@ -1938,10 +2259,11 @@ function globalGraphNode(node) {
     ? `<span>${escapeHtml(node.detail || '')}</span>`
     : (isToolCluster ? `<span class="global-tool-cluster-summary">${escapeHtml(`${node.members.length} tools · ${node.callCount} calls`)}</span>` : '');
   const sourceLogo = node.type === 'trajectory' ? globalTrajectorySourceLogo(node.detail) : '';
+  const nodeIcon = globalGraphNodeIcon(node);
   const members = isToolCluster ? `<div class="global-tool-cluster-members" role="dialog" aria-label="${escapeHtml(label)} tools"><strong>${escapeHtml(label)} tools</strong>${node.members.map(member => `<button type="button" class="global-tool-cluster-member" data-global-tool-member="${escapeHtml(member.id)}"><span>${escapeHtml(member.label)}</span><span>${escapeHtml(member.callCount)} calls</span></button>`).join('')}</div>` : '';
   const classes = isToolCluster ? 'tool tool-cluster' : node.type;
   const expansionState = isToolCluster ? ' aria-expanded="false"' : '';
-  return `<div class="global-graph-node ${escapeHtml(classes)}" data-global-node="${escapeHtml(node.id)}" role="button" tabindex="0" aria-pressed="false"${expansionState}>${sourceLogo}<b>${escapeHtml(label || '')}</b>${detail}${members}</div>`;
+  return `<div class="global-graph-node ${escapeHtml(classes)}" data-global-node="${escapeHtml(node.id)}" role="button" tabindex="0" aria-pressed="false"${expansionState}>${sourceLogo}${nodeIcon}<b>${escapeHtml(label || '')}</b>${detail}${members}</div>`;
 }
 
 function globalGraphNodeById(nodeId) {
@@ -2247,11 +2569,11 @@ function globalRelationshipGraphMarkup() {
   const trajectories = nodes.filter(node => node.type === 'trajectory');
   const tools = nodes.filter(node => node.type === 'tool_cluster' || node.type === 'tool');
   const skills = nodes.filter(node => node.type === 'skill');
-  const toolHeading = 'Tools';
+  const totalTools = Number.isFinite(Number(globalOverviewData?.tool_count)) ? Number(globalOverviewData.tool_count) : tools.length;
   return `<div class="global-relationship-graph"><svg id="globalRelationshipEdges" class="global-relationship-edges"></svg><div class="global-relationship-columns">
-    <div class="global-relationship-column"><h3>Trajectories</h3><div class="global-relationship-stack">${trajectories.map(globalGraphNode).join('') || '<span class="muted">None</span>'}</div></div>
-    <div class="global-relationship-column"><h3>${toolHeading}</h3><div class="global-relationship-stack">${tools.map(globalGraphNode).join('') || '<span class="muted">None</span>'}</div></div>
-    <div class="global-relationship-column"><h3>Skills</h3><div class="global-relationship-stack">${skills.map(globalGraphNode).join('') || '<span class="muted">None</span>'}</div></div>
+    <div class="global-relationship-column"><h3>Trajectories <span class="global-column-count">(${escapeHtml(trajectories.length)})</span></h3><div class="global-relationship-stack">${trajectories.map(globalGraphNode).join('') || '<span class="muted">None</span>'}</div></div>
+    <div class="global-relationship-column"><h3>Tools <span class="global-column-count">(${escapeHtml(totalTools)})</span></h3><div class="global-relationship-stack">${tools.map(globalGraphNode).join('') || '<span class="muted">None</span>'}</div></div>
+    <div class="global-relationship-column"><h3>Skills <span class="global-column-count">(${escapeHtml(skills.length)})</span></h3><div class="global-relationship-stack">${skills.map(globalGraphNode).join('') || '<span class="muted">None</span>'}</div></div>
   </div></div>`;
 }
 
@@ -2290,6 +2612,7 @@ function drawGlobalRelationshipGraph(graphData) {
   if (!graph || !edges) return;
   const trajectoryNodes = [...graph.querySelectorAll('.global-graph-node.trajectory')];
   const toolNodes = [...graph.querySelectorAll('.global-graph-node.tool')];
+  const activeNodeId = globalGraphActiveNodeId;
   const activeNode = globalGraphNodeById(globalGraphActiveNodeId);
   const emphasizeTrajectorySide = activeNode?.type === 'tool' || activeNode?.type === 'tool_cluster';
   const showSimpleSkillResults = activeNode?.type === 'skill';
@@ -2332,12 +2655,30 @@ function drawGlobalRelationshipGraph(graphData) {
     return;
   }
   const edgeLabelText = edge => String(edge.count || 1);
-  const appendRelationshipEdge = (element, edge) => {
+  const edgeOriginKeys = new Set();
+  const appendEdgeOrigin = (edge, sourcePoint) => {
+    const key = `${edge.source}:${Math.round(sourcePoint.x)}:${Math.round(sourcePoint.y)}`;
+    if (edgeOriginKeys.has(key)) return;
+    edgeOriginKeys.add(key);
+    const marker = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    marker.setAttribute('class', 'global-edge-origin');
+    marker.setAttribute('cx', `${sourcePoint.x}`);
+    marker.setAttribute('cy', `${sourcePoint.y}`);
+    marker.setAttribute('r', '4');
+    marker.style.fill = globalRelationshipEdgeColor(globalGraphNodeById(edge.source));
+    marker.dataset.globalEdge = 'true';
+    marker.dataset.source = edge.source;
+    marker.dataset.target = edge.target;
+    marker.dataset.kind = edge.kind || '';
+    edges.appendChild(marker);
+  };
+  const appendRelationshipEdge = (element, edge, sourcePoint, targetPoint) => {
     element.dataset.globalEdge = 'true';
     element.dataset.source = edge.source;
     element.dataset.target = edge.target;
     element.dataset.kind = edge.kind || '';
     edges.appendChild(element);
+    appendEdgeOrigin(edge, sourcePoint);
   };
   const appendRelationshipLabel = (edge, x, y) => {
     const label = edgeLabelText(edge);
@@ -2437,7 +2778,7 @@ function drawGlobalRelationshipGraph(graphData) {
         curve.style.fill = 'none';
         curve.style.stroke = 'var(--relationship-edge)';
         curve.style.strokeWidth = `${skillRelationWidth}px`;
-        appendRelationshipEdge(curve, edge);
+        appendRelationshipEdge(curve, edge, {x:startX, y:sourceCenterY}, {x:endX, y:targetCenterY});
         const labelT = .48;
         const labelX = cubicPoint(startX, startControlX, endControlX, endX, labelT);
         const labelY = cubicPoint(sourceCenterY, sourceCenterY, targetCenterY, targetCenterY, labelT);
@@ -2455,7 +2796,7 @@ function drawGlobalRelationshipGraph(graphData) {
       curve.style.fill = color;
       curve.style.stroke = color;
       curve.setAttribute('stroke-width', '1');
-      appendRelationshipEdge(curve, edge);
+      appendRelationshipEdge(curve, edge, {x:startX, y:sourceCenterY}, {x:endX, y:targetCenterY});
       const labelT = .48;
       const labelX = cubicPoint(startX, startControlX, endControlX, endX, labelT);
       const labelLineY = cubicPoint(sourceCenterY - startHalfWidth, sourceCenterY - startHalfWidth, upperClusterY, band.top, labelT);
@@ -2478,7 +2819,7 @@ function drawGlobalRelationshipGraph(graphData) {
       curve.setAttribute('class', String(edge.kind).replaceAll('_', '-'));
       curve.style.strokeWidth = `${skillRelationWidth}px`;
       curve.style.stroke = 'var(--relationship-edge)';
-      appendRelationshipEdge(curve, edge);
+      appendRelationshipEdge(curve, edge, {x:startX, y:sourceCenterY}, {x:endX, y:targetCenterY});
       appendRelationshipLabel(edge, startX + (endX - startX) * .5, sourceCenterY + (targetCenterY - sourceCenterY) * .5 - 10);
       continue;
     }
@@ -2495,7 +2836,7 @@ function drawGlobalRelationshipGraph(graphData) {
       route.setAttribute('class', 'skill-usage');
       route.style.stroke = 'var(--relationship-edge)';
       route.style.strokeWidth = '2px';
-      appendRelationshipEdge(route, edge);
+      appendRelationshipEdge(route, edge, {x:sourceRight, y:sourceCenterY}, {x:targetLeft, y:targetCenterY});
       appendRelationshipLabel(edge, (sourceExitX + targetEntryX) / 2 + (lane - highestSkillUsageLane / 2) * 78, bottomRouteY - (showSpacedEvidence ? 9 : 11));
       continue;
     }
@@ -2506,7 +2847,7 @@ function drawGlobalRelationshipGraph(graphData) {
     line.setAttribute('y2', targetCenterY);
     line.setAttribute('class', String(edge.kind || '').replaceAll('_', '-'));
     line.setAttribute('stroke-width', '2');
-    appendRelationshipEdge(line, edge);
+    appendRelationshipEdge(line, edge, {x:forward ? sourceRight : sourceLeft, y:sourceCenterY}, {x:forward ? targetLeft : targetRight, y:targetCenterY});
     appendRelationshipLabel(edge, ((forward ? sourceRight : sourceLeft) + (forward ? targetLeft : targetRight)) / 2, (sourceCenterY + targetCenterY) / 2 - 10);
   }
   updateGlobalRelationshipSelection();
@@ -2577,10 +2918,36 @@ function showGlobalSkillDetailForSkill(sourceTrajectoryId, skillId) {
 function toggleGlobalSection(sectionId, trigger) {
   const section = $(sectionId);
   if (!section) return;
-  const show = section.hidden;
-  section.hidden = !show;
-  trigger?.setAttribute('aria-expanded', String(show));
-  if (show) section.scrollIntoView({behavior:'smooth', block:'nearest'});
+  section.hidden = false;
+  trigger?.setAttribute('aria-expanded', 'true');
+  const sectionLabel = trigger?.dataset.sectionLabel;
+  if (sectionLabel) {
+    trigger.setAttribute('aria-label', `Show ${sectionLabel}`);
+    trigger.title = `Show ${sectionLabel}`;
+  }
+  section.scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+function globalLibrarySearchControl(inputId, placeholder) {
+  return `<label class="global-library-search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6"></circle><path d="m16 16 4 4"></path></svg><input id="${escapeHtml(inputId)}" type="search" placeholder="${escapeHtml(placeholder)}" autocomplete="off"></label>`;
+}
+
+function bindGlobalLibrarySearches() {
+  const searches = [
+    ['globalTrajectorySearch', '#trajectoryCatalog tbody tr'],
+    ['globalSkillSearch', '#skillLibrary tbody tr'],
+    ['globalToolSearch', '#toolCatalog tbody tr'],
+  ];
+  searches.forEach(([inputId, rowSelector]) => {
+    const input = $(inputId);
+    if (!input) return;
+    input.addEventListener('input', () => {
+      const query = input.value.trim().toLowerCase();
+      document.querySelectorAll(rowSelector).forEach(row => {
+        row.hidden = Boolean(query) && !row.textContent.toLowerCase().includes(query);
+      });
+    });
+  });
 }
 
 function toggleGlobalRelationshipGraph(trigger) {
@@ -2628,27 +2995,93 @@ function renderGlobalOverview(data) {
     return value;
   };
   const trajectoryRows = trajectories.map(row => {
-    const tools = (row.tools || []).map(tool => {
-      return `<span class="pill">${escapeHtml(tool.tool_name)} ${escapeHtml(tool.call_count)}</span>`;
-    }).join('') || '<span class="muted">No tool results</span>';
-    const relatedSkills = (row.associated_skills || []).map(skill => {
-      const count = skill.application_count || skill.support_count || 0;
-      return `<button type="button" class="pill ok global-related-skill" title="${escapeHtml(skill.skill_id || '')}" onclick='showGlobalSkillDetailForSkill(${JSON.stringify(skill.source_trajectory_id)}, ${JSON.stringify(skill.skill_id)})'>${escapeHtml(skill.name || skill.skill_id)} (${escapeHtml(count)})</button>`;
-    }).join('') || '<span class="muted">No learned or applied skills</span>';
-    return `<tr><td><b class="global-trajectory-id">${escapeHtml(row.trajectory_id)}</b><button class="small-btn global-open-btn" onclick='openTrajectoryFromGlobal(${JSON.stringify(row.trajectory_id)})'>Open</button></td><td>${escapeHtml(displaySource(row))}</td><td>${escapeHtml(displayVersionTimestamp(row.created_at))}<div class="muted">updated ${escapeHtml(displayVersionTimestamp(row.updated_at))}</div></td><td>${escapeHtml(row.event_count)}</td><td>${escapeHtml(row.branch_count || 0)}</td><td>${escapeHtml(row.snapshot_count || 0)}</td><td>${tools}</td><td>${relatedSkills}</td></tr>`;
+    const toolCount = (row.tools || []).length;
+    const skillCount = (row.associated_skills || []).length;
+    return `<tr><td><button type="button" class="global-trajectory-detail-trigger" onclick='openTrajectoryFromGlobal(${JSON.stringify(row.trajectory_id)})'><b class="global-trajectory-id">${escapeHtml(row.trajectory_id)}</b></button></td><td>${escapeHtml(displaySource(row))}</td><td>${escapeHtml(row.event_count)}</td><td>${escapeHtml(row.branch_count || 0)}</td><td>${escapeHtml(row.snapshot_count || 0)}</td><td>${escapeHtml(toolCount)}</td><td>${escapeHtml(skillCount)}</td><td>${escapeHtml(displayVersionTimestamp(row.created_at))}<div class="muted">updated ${escapeHtml(displayVersionTimestamp(row.updated_at))}</div></td></tr>`;
   }).join('') || '<tr><td colspan="8" class="muted">No trajectories have been recorded.</td></tr>';
-  const skillRows = skills.map((skill, index) => `<tr><td><b>${escapeHtml(skill.name)}</b><div class="mono muted">${escapeHtml(skill.skill_id)}</div></td><td><button class="small-btn secondary" onclick='openTrajectoryFromGlobal(${JSON.stringify(skill.source_trajectory_id)})'>${escapeHtml(skill.source_trajectory_id)}</button></td><td><button class="small-btn" onclick="showGlobalSkillDetail(${index})">Details</button></td></tr>`).join('') || '<tr><td colspan="3" class="muted">No learned skills are currently materialized.</td></tr>';
+  const graphNodes = data.graph?.nodes || [];
+  const graphEdges = data.graph?.edges || [];
+  const skillRows = skills.map((skill, index) => {
+    const skillNodeId = skill.node_id;
+    const relatedEdges = graphEdges.filter(edge => edge.source === skillNodeId || edge.target === skillNodeId);
+    const relatedTrajectories = new Set(skill.source_trajectory_id ? [skill.source_trajectory_id] : []);
+    relatedEdges.filter(edge => edge.kind === 'skill_usage').forEach(edge => {
+      const nodeId = edge.source === skillNodeId ? edge.target : edge.source;
+      if (String(nodeId).startsWith('trajectory:')) relatedTrajectories.add(String(nodeId).replace(/^trajectory:/, ''));
+    });
+    const relatedTools = new Set();
+    relatedEdges.forEach(edge => {
+      const nodeId = edge.source === skillNodeId ? edge.target : edge.source;
+      if (String(nodeId).startsWith('tool:')) relatedTools.add(nodeId);
+    });
+    return `<tr><td><button type="button" class="global-skill-detail-trigger" onclick="showGlobalSkillDetail(${index})"><b class="global-skill-name">${escapeHtml(skill.name)}</b></button></td><td><span class="mono global-skill-id">${escapeHtml(skill.skill_id)}</span></td><td>${escapeHtml(relatedTrajectories.size)}</td><td>${escapeHtml(relatedTools.size)}</td></tr>`;
+  }).join('') || '<tr><td colspan="4" class="muted">No learned skills are currently materialized.</td></tr>';
+  const toolPurpose = label => ({
+    contextdb_create_repair_branch: 'Create a repair branch from the selected snapshot',
+    contextdb_get_recommendation: 'Retrieve the latest repair recommendation',
+    contextdb_get_version_status: 'Read version and branch status',
+    contextdb_record_skill_application: 'Record the outcome of an applied skill',
+    contextdb_record_skill_decision: 'Record whether a skill was accepted or declined',
+    contextdb_record_version_decision: 'Record a decision about a repair branch',
+    contextdb_rollback_context: 'Restore a prior ContextDB snapshot',
+    webfetch: 'Fetch content from a web address',
+    exec: 'Run a workspace command',
+    'get-content': 'Read file content from the workspace',
+    git: 'Inspect or update repository state',
+    glob: 'Find files by a path pattern',
+    node: 'Run JavaScript tooling',
+    powershell: 'Run a PowerShell command',
+    python: 'Run a Python command',
+    read: 'Read a workspace file',
+    web__run: 'Search or retrieve web information',
+    shell: 'Run a shell command',
+    'swe-agent-editor': 'Open or edit source code',
+    'swe-agent-file-edit': 'Apply a targeted source edit',
+    'swe-agent-submit': 'Submit an SWE-agent result',
+  }[label] || 'Recorded tool operation');
+  const graphToolOrder = new Map(
+    globalRelationshipDisplayGraph.nodes
+      .filter(node => node.type === 'tool_cluster')
+      .flatMap(cluster => cluster.members || [])
+      .map((tool, index) => [tool.id, index])
+  );
+  const toolRows = graphNodes
+    .filter(node => node.type === 'tool')
+    .sort((left, right) => (
+      (graphToolOrder.get(left.id) ?? Number.MAX_SAFE_INTEGER)
+      - (graphToolOrder.get(right.id) ?? Number.MAX_SAFE_INTEGER)
+    ))
+    .map(tool => {
+    const resultEdges = graphEdges.filter(edge => edge.kind === 'results' && edge.target === tool.id);
+    const relatedTrajectories = new Set(resultEdges.map(edge => edge.source));
+    const relatedSkills = new Set(graphEdges.filter(edge => (
+      (edge.kind === 'skill_action' && edge.source === tool.id)
+      || (edge.kind === 'skill_trigger' && edge.target === tool.id)
+    )).map(edge => edge.source === tool.id ? edge.target : edge.source));
+    const callCount = resultEdges.reduce((total, edge) => total + Number(edge.count || 0), 0);
+    const category = globalToolClusterInfo(tool).label;
+    const generatedSkill = graphEdges.some(edge => (
+      edge.kind === 'skill_trigger' && edge.target === tool.id
+    ));
+    return `<tr><td><b class="global-tool-name">${escapeHtml(tool.label)}</b></td><td><span class="global-tool-category">${escapeHtml(category)}</span></td><td class="global-tool-purpose">${escapeHtml(toolPurpose(tool.label))}</td><td>${escapeHtml(callCount)}</td><td>${escapeHtml(relatedTrajectories.size)}</td><td><span class="global-tool-boolean ${generatedSkill ? 'yes' : 'no'}">${generatedSkill ? 'True' : 'False'}</span></td><td>${escapeHtml(tool.success_count || 0)}</td><td>${escapeHtml(tool.failure_count || 0)}</td></tr>`;
+  }).join('') || '<tr><td colspan="8" class="muted">No tools have been recorded.</td></tr>';
   $('globalOut').innerHTML = `
+    <div class="global-overview-workbench">
     <div class="global-metrics">
-      <div class="global-metric trajectory-metric"><div class="global-metric-content"><svg class="global-metric-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="5" r="2"></circle><circle cx="18" cy="12" r="2"></circle><circle cx="6" cy="19" r="2"></circle><path d="M8 6.3 16 10.7M16 13.3 8 17.7"></path></svg><div class="global-metric-value"><b>${escapeHtml(data.trajectory_count)}</b><span>trajectories</span></div><button type="button" class="global-metric-database-button" aria-label="Show Trajectory Catalog" title="Show Trajectory Catalog" aria-expanded="false" onclick="toggleGlobalSection('trajectoryCatalog', this)"><svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="5" rx="7" ry="3"></ellipse><path d="M5 5v7c0 1.7 3.1 3 7 3s7-1.3 7-3V5M5 12v7c0 1.7 3.1 3 7 3s7-1.3 7-3v-7"></path></svg></button></div></div>
-      <div class="global-metric tool-metric"><div class="global-metric-content"><svg class="global-metric-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M14.7 6.3a4.5 4.5 0 0 0-5.9 5.9L3.5 17.5a2.1 2.1 0 0 0 3 3l5.3-5.3a4.5 4.5 0 0 0 5.9-5.9l-3.1 3.1-2.6-2.6z"></path></svg><div class="global-metric-value"><b>${escapeHtml(data.tool_count)}</b><span>tools</span></div></div></div>
-      <div class="global-metric skill-metric"><div class="global-metric-content"><svg class="global-metric-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3-1.2 4.8L6 9l4.8 1.2L12 15l1.2-4.8L18 9l-4.8-1.2zM19 15l-.7 2.3L16 18l2.3.7L19 21l.7-2.3L22 18l-2.3-.7zM5 15l-.5 1.5L3 17l1.5.5L5 19l.5-1.5L7 17l-1.5-.5z"></path></svg><div class="global-metric-value"><b>${escapeHtml(data.skill_count)}</b><span>skills</span></div><button type="button" class="global-metric-database-button" aria-label="Show Skill Library" title="Show Skill Library" aria-expanded="false" onclick="toggleGlobalSection('skillLibrary', this)"><svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="5" rx="7" ry="3"></ellipse><path d="M5 5v7c0 1.7 3.1 3 7 3s7-1.3 7-3V5M5 12v7c0 1.7 3.1 3 7 3s7-1.3 7-3v-7"></path></svg></button></div></div>
+      <div class="global-metric trajectory-metric"><div class="global-metric-content"><svg class="global-metric-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="5" r="2"></circle><circle cx="18" cy="12" r="2"></circle><circle cx="6" cy="19" r="2"></circle><path d="M8 6.3 16 10.7M16 13.3 8 17.7"></path></svg><div class="global-metric-value"><b>${escapeHtml(data.trajectory_count)}</b><span>trajectories</span></div><button type="button" class="global-metric-database-button" data-section-label="Trajectory Catalog" aria-label="Show Trajectory Catalog" title="Show Trajectory Catalog" aria-expanded="false" onclick="toggleGlobalSection('trajectoryCatalog', this)"><svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="5" rx="7" ry="3"></ellipse><path d="M5 5v7c0 1.7 3.1 3 7 3s7-1.3 7-3V5M5 12v7c0 1.7 3.1 3 7 3s7-1.3 7-3v-7"></path></svg></button></div></div>
+      <div class="global-metric tool-metric"><div class="global-metric-content"><svg class="global-metric-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M14.7 6.3a4.5 4.5 0 0 0-5.9 5.9L3.5 17.5a2.1 2.1 0 0 0 3 3l5.3-5.3a4.5 4.5 0 0 0 5.9-5.9l-3.1 3.1-2.6-2.6z"></path></svg><div class="global-metric-value"><b>${escapeHtml(data.tool_count)}</b><span>tools</span></div><button type="button" class="global-metric-database-button" data-section-label="Tool Catalog" aria-label="Show Tool Catalog" title="Show Tool Catalog" aria-expanded="false" onclick="toggleGlobalSection('toolCatalog', this)"><svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="5" rx="7" ry="3"></ellipse><path d="M5 5v7c0 1.7 3.1 3 7 3s7-1.3 7-3V5M5 12v7c0 1.7 3.1 3 7 3s7-1.3 7-3v-7"></path></svg></button></div></div>
+      <div class="global-metric skill-metric"><div class="global-metric-content"><svg class="global-metric-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3-1.2 4.8L6 9l4.8 1.2L12 15l1.2-4.8L18 9l-4.8-1.2zM19 15l-.7 2.3L16 18l2.3.7L19 21l.7-2.3L22 18l-2.3-.7zM5 15l-.5 1.5L3 17l1.5.5L5 19l.5-1.5L7 17l-1.5-.5z"></path></svg><div class="global-metric-value"><b>${escapeHtml(data.skill_count)}</b><span>skills</span></div><button type="button" class="global-metric-database-button" data-section-label="Skill Library" aria-label="Show Skill Library" title="Show Skill Library" aria-expanded="false" onclick="toggleGlobalSection('skillLibrary', this)"><svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="5" rx="7" ry="3"></ellipse><path d="M5 5v7c0 1.7 3.1 3 7 3s7-1.3 7-3V5M5 12v7c0 1.7 3.1 3 7 3s7-1.3 7-3v-7"></path></svg></button></div></div>
     </div>
-    <div id="trajectoryCatalog" class="summary-card global-section" hidden><h3>Trajectory Catalog</h3><div class="table-wrap"><table class="trajectory-catalog-table"><thead><tr><th>Trajectory</th><th>Source</th><th>Created / updated</th><th>Events</th><th>Branches</th><th>Snapshots</th><th>Tools</th><th>Skills</th></tr></thead><tbody>${trajectoryRows}</tbody></table></div></div>
-    <div id="skillLibrary" class="summary-card global-section" hidden><h3>Skill Library</h3><div class="table-wrap"><table class="global-skill-library-table"><thead><tr><th>Skill</th><th>Source trajectory</th><th aria-label="Details"></th></tr></thead><tbody>${skillRows}</tbody></table></div><div id="globalSkillDetail" class="global-skill-detail" hidden></div></div>
-    <div class="summary-card global-section"><h3 class="global-graph-heading">Trajectory-Tool-Skill Graph<button type="button" class="graph-collapse-toggle" aria-label="Expand relationship graph" title="Expand relationship graph" aria-expanded="false">▸</button></h3>
-      <div id="globalRelationshipGraphContent" hidden></div>
+    <section class="global-section global-overview-workspace"><h3 class="global-graph-heading">Trajectory-Tool-Skill Graph<button type="button" class="graph-collapse-toggle" aria-label="Collapse relationship graph" title="Collapse relationship graph" aria-expanded="true">▾</button></h3>
+      <div id="globalRelationshipGraphContent"></div>
+    </section>
+    <div class="global-overview-library-grid">
+      <section id="trajectoryCatalog" class="global-section global-overview-library-panel"><div class="global-library-heading"><h3>Trajectory Catalog <span class="global-library-count">(${escapeHtml(trajectories.length)})</span></h3>${globalLibrarySearchControl('globalTrajectorySearch', 'Search trajectories...')}</div><div class="table-wrap"><table class="trajectory-catalog-table"><thead><tr><th>ID</th><th>Source</th><th>Events</th><th>Branches</th><th>Snapshots</th><th>#Tools</th><th>#Skills</th><th>Created / updated</th></tr></thead><tbody>${trajectoryRows}</tbody></table></div></section>
+      <section id="skillLibrary" class="global-section global-overview-library-panel"><div class="global-library-heading"><h3>Skill Library <span class="global-library-count">(${escapeHtml(skills.length)})</span></h3>${globalLibrarySearchControl('globalSkillSearch', 'Search skills...')}</div><div class="table-wrap"><table class="global-skill-library-table"><thead><tr><th>Name</th><th>ID</th><th>#Trajectories</th><th>#Tools</th></tr></thead><tbody>${skillRows}</tbody></table></div><div id="globalSkillDetail" class="global-skill-detail" hidden></div></section>
+      <section id="toolCatalog" class="global-section global-overview-library-panel" hidden><div class="global-library-heading"><h3>Tool Catalog <span class="global-library-count">(${escapeHtml(data.tool_count)})</span></h3>${globalLibrarySearchControl('globalToolSearch', 'Search tools...')}</div><div class="table-wrap"><table class="global-tool-catalog-table"><thead><tr><th>Tool</th><th>Category</th><th>Description</th><th>#Calls</th><th>#Trajectories</th><th>Generated skill</th><th>#Successes</th><th>#Failures</th></tr></thead><tbody>${toolRows}</tbody></table></div></section>
+    </div>
     </div>`;
+  bindGlobalLibrarySearches();
   refreshGlobalRelationshipGraph();
   document.querySelector('.graph-collapse-toggle')?.addEventListener('click', event => {
     event.preventDefault();
@@ -2922,6 +3355,44 @@ function renderMetrics(content) {
 function escapeHtml(value) {
   return String(value ?? '').replace(/[&<>"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
 }
+function failurePatternCommandLines(command) {
+  return escapeHtml(command);
+}
+function copyFailurePatternCommand(button) {
+  const command = decodeURIComponent(button.dataset.command || '');
+  const label = button.querySelector('span');
+  const copied = () => {
+    if (!label) return;
+    label.textContent = 'Copied';
+    button.disabled = true;
+    setTimeout(() => { label.textContent = 'Copy'; button.disabled = false; }, 1200);
+  };
+  const fallback = () => {
+    const input = document.createElement('textarea');
+    input.value = command;
+    input.style.position = 'fixed';
+    input.style.opacity = '0';
+    document.body.appendChild(input);
+    input.select();
+    document.execCommand('copy');
+    input.remove();
+    copied();
+  };
+  if (navigator.clipboard?.writeText) navigator.clipboard.writeText(command).then(copied).catch(fallback);
+  else fallback();
+}
+function toggleDigestInsight(button) {
+  const section = button.closest('.digest-insight');
+  const list = section?.querySelector('.digest-insight-list');
+  if (!section || !list) return;
+  const collapsed = !section.classList.contains('is-collapsed');
+  section.classList.toggle('is-collapsed', collapsed);
+  list.hidden = collapsed;
+  button.setAttribute('aria-expanded', String(!collapsed));
+  const heading = section.querySelector('h3')?.textContent || 'section';
+  button.setAttribute('aria-label', `${collapsed ? 'Expand' : 'Collapse'} ${heading}`);
+  button.title = `${collapsed ? 'Expand' : 'Collapse'} ${heading}`;
+}
 function setOutput(html) { $('out').innerHTML = html; }
 function viewLabel(view) {
   const labels = {
@@ -3095,28 +3566,58 @@ function renderFailurePatterns(data) {
   const rows = Array.isArray(data.content) ? data.content : [];
   renderMetrics(null);
   if (!rows.length) return setOutput('<div class="view-empty">No failures in this trajectory.</div>');
-  const table = `<div class="table-wrap failure-patterns-wrap"><table class="failure-patterns-table"><thead><tr><th>Failure</th><th>Command</th><th>Cause</th><th>Tool Call</th><th></th></tr></thead><tbody>${rows.map(r => `
-    <tr>
-      <td><span class="pill failed">${escapeHtml(r.branch_id)}</span><div class="mono">${escapeHtml(r.failure_event_id)}</div></td>
-      <td><div class="mono">${escapeHtml(r.failed_command)}</div><div class="muted">${escapeHtml(r.failed_tool)}</div></td>
-      <td>${escapeHtml(r.likely_cause)}</td>
-      <td>${(r.source_event_ids || []).filter(id => id !== r.failure_event_id).map(id => `<span class="pill">${escapeHtml(id)}</span>`).join('') || '<span class="muted">No tool call</span>'}</td>
-      <td><button class="small-btn" onclick='highlightFullTrajectory(${JSON.stringify(r.highlight_event_ids || [])}, [])'>Highlight</button></td>
-    </tr>`).join('')}</tbody></table></div>`;
-  setOutput(table);
+  const allHighlightIds = [...new Set(rows.flatMap(row => row.highlight_event_ids || []).filter(Boolean))];
+  const toolNames = [...new Set(rows.map(row => row.failed_tool).filter(Boolean))];
+  const filterOptions = ['<option value="">All failures</option>', ...toolNames.map(tool => `<option value="${escapeHtml(tool)}">${escapeHtml(tool)}</option>`)].join('');
+  const failures = rows.map(row => {
+    const command = row.failed_command || 'No failed command was recorded.';
+    const encodedCommand = escapeHtml(encodeURIComponent(command));
+    const relatedEventIds = (row.source_event_ids || []).filter(id => id && id !== row.failure_event_id);
+    const toolName = row.failed_tool || 'Failure event';
+    const relatedEvents = relatedEventIds.map(id => `<span class="pill mono">${escapeHtml(id)}</span>`).join('') || '<span class="muted">No related tool calls were recorded.</span>';
+    return `<details class="failure-pattern" data-failed-tool="${escapeHtml(row.failed_tool || '')}">
+      <summary class="failure-pattern-summary">
+        <span class="failure-pattern-severity" aria-hidden="true">!</span>
+        <span class="failure-pattern-summary-copy"><span class="failure-pattern-summary-title"><b>${escapeHtml(toolName)}</b><span class="pill failed">${escapeHtml(row.branch_id || 'main')}</span></span><span class="pill mono failure-pattern-event-id">${escapeHtml(row.failure_event_id || 'Failure event ID unavailable')}</span></span>
+        <svg class="failure-pattern-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg>
+      </summary>
+      <button class="small-btn failure-pattern-highlight" onclick='highlightFullTrajectory(${JSON.stringify(row.highlight_event_ids || [])}, [])'>Highlight</button>
+      <div class="failure-pattern-detail">
+        <div class="failure-pattern-detail-section"><h4>Likely cause</h4><p>${escapeHtml(row.likely_cause || 'No likely cause was recorded.')}</p></div>
+        <div class="failure-pattern-detail-section"><h4>Failed command</h4><pre class="failure-pattern-command"><button type="button" class="failure-command-copy" data-command="${encodedCommand}" onclick="copyFailurePatternCommand(this)"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M15 9V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h4"></path></svg><span>Copy</span></button><code>${failurePatternCommandLines(command)}</code></pre></div>
+        <div class="failure-pattern-detail-section"><h4>Tool call</h4><div class="failure-pattern-events">${relatedEvents}</div></div>
+      </div>
+    </details>`;
+  }).join('');
+  setOutput(`<section class="failure-patterns-panel"><header class="failure-patterns-head"><div class="failure-patterns-title"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2.8 20h18.4L12 3Z"></path><path d="M12 9v5M12 17h.01"></path></svg>Failure Patterns <span class="failure-patterns-count">${escapeHtml(rows.length)}</span></div><div class="failure-patterns-actions"><details class="failure-pattern-filter"><summary aria-label="Filter failures" title="Filter failures"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16l-6 7v5l-4 2v-7L4 5Z"></path></svg></summary><div class="failure-pattern-filter-menu"><label>Tool<select onchange="filterFailurePatterns(this.value)">${filterOptions}</select></label></div></details><button class="small-btn" onclick='highlightFullTrajectory(${JSON.stringify(allHighlightIds)}, [])'>Highlight all</button></div></header><div class="failure-patterns-list">${failures}</div></section>`);
 }
 function renderSuccessPatterns(data) {
   const rows = Array.isArray(data.content) ? data.content : [];
   renderMetrics(null);
   if (!rows.length) return setOutput('<div class="view-empty">No successes found in this trajectory.</div>');
-  const table = `<div class="table-wrap success-patterns-wrap"><table class="success-patterns-table"><thead><tr><th>Success</th><th>Command</th><th>Tool Call</th><th></th></tr></thead><tbody>${rows.map(r => `
-    <tr>
-      <td><span class="pill ok">${escapeHtml(r.branch_id)}</span><div class="mono">${escapeHtml(r.success_event_id)}</div></td>
-      <td><div class="mono">${escapeHtml(r.successful_command)}</div><div class="muted">${escapeHtml(r.successful_tool)}</div></td>
-      <td>${(r.source_event_ids || []).filter(id => id !== r.success_event_id).map(id => `<span class="pill">${escapeHtml(id)}</span>`).join('') || '<span class="muted">No tool call</span>'}</td>
-      <td><button class="small-btn" onclick='highlightFullTrajectory(${JSON.stringify(r.highlight_event_ids || [])}, [])'>Highlight</button></td>
-    </tr>`).join('')}</tbody></table></div>`;
-  setOutput(table);
+  const allHighlightIds = [...new Set(rows.flatMap(row => row.highlight_event_ids || []).filter(Boolean))];
+  const toolNames = [...new Set(rows.map(row => row.successful_tool).filter(Boolean))];
+  const filterOptions = ['<option value="">All successes</option>', ...toolNames.map(tool => `<option value="${escapeHtml(tool)}">${escapeHtml(tool)}</option>`)].join('');
+  const successes = rows.map(row => {
+    const command = row.successful_command || 'No successful command was recorded.';
+    const encodedCommand = escapeHtml(encodeURIComponent(command));
+    const toolName = row.successful_tool || 'Success event';
+    const relatedEventIds = (row.source_event_ids || []).filter(id => id && id !== row.success_event_id);
+    const relatedEvents = relatedEventIds.map(id => `<span class="pill mono">${escapeHtml(id)}</span>`).join('') || '<span class="muted">No related tool call was recorded.</span>';
+    return `<details class="success-pattern" data-success-tool="${escapeHtml(row.successful_tool || '')}">
+      <summary class="success-pattern-summary">
+        <span class="success-pattern-severity" aria-hidden="true">✓</span>
+        <span class="success-pattern-summary-copy"><span class="success-pattern-summary-title"><b>${escapeHtml(toolName)}</b><span class="pill ok">${escapeHtml(row.branch_id || 'main')}</span></span><span class="pill mono success-pattern-event-id">${escapeHtml(row.success_event_id || 'Success event ID unavailable')}</span></span>
+        <svg class="success-pattern-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg>
+      </summary>
+      <button class="small-btn success-pattern-highlight" onclick='highlightFullTrajectory(${JSON.stringify(row.highlight_event_ids || [])}, [])'>Highlight</button>
+      <div class="success-pattern-detail">
+        <div class="success-pattern-detail-section"><h4>Successful command</h4><pre class="failure-pattern-command"><button type="button" class="failure-command-copy" data-command="${encodedCommand}" onclick="copyFailurePatternCommand(this)"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M15 9V5a2 2 0 0 0-2-2H5a2 2 0 0 0 2 2h4"></path></svg><span>Copy</span></button><code>${failurePatternCommandLines(command)}</code></pre></div>
+        <div class="success-pattern-detail-section"><h4>Tool call</h4><div class="success-pattern-events">${relatedEvents}</div></div>
+      </div>
+    </details>`;
+  }).join('');
+  setOutput(`<section class="success-patterns-panel"><header class="success-patterns-head"><div class="success-patterns-title"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="m8 12 2.5 2.5L16 9"></path></svg>Success Patterns <span class="success-patterns-count">${escapeHtml(rows.length)}</span></div><div class="success-patterns-actions"><details class="success-pattern-filter"><summary aria-label="Filter successes" title="Filter successes"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16l-6 7v5l-4 2v-7L4 5Z"></path></svg></summary><div class="success-pattern-filter-menu"><label>Tool<select onchange="filterSuccessPatterns(this.value)">${filterOptions}</select></label></div></details><button class="small-btn" onclick='highlightFullTrajectory(${JSON.stringify(allHighlightIds)}, [])'>Highlight all</button></div></header><div class="success-patterns-list">${successes}</div></section>`);
 }
 function excludedReasonText(reason) {
   const labels = {
@@ -3130,46 +3631,95 @@ function renderRepairStrategies(data) {
   const groups = Array.isArray(data.content) ? data.content : [];
   renderMetrics(null);
   if (!groups.length) return setOutput('<div class="view-empty">No failure rows found for repair mining.</div>');
-  const cards = groups.map((g, idx) => {
+  const repairLinkCount = groups.reduce((total, group) => total + (group.repair_candidates || group.repairs || []).length, 0);
+  const allHighlightIds = [...new Set(groups.flatMap(g => {
+    const failure = g.failure || {};
+    const candidates = g.repair_candidates || g.repairs || [];
+    return [failure.failure_event_id, failure.tool_call_event_id, ...candidates.flatMap(c => c.highlight_event_ids || [])];
+  }).filter(Boolean))];
+  const failedTools = [...new Set(groups.map(g => g.failure?.tool).filter(Boolean))];
+  const filterOptions = ['<option value="">All failures</option>', ...failedTools.map(tool => `<option value="${escapeHtml(tool)}">${escapeHtml(tool)}</option>`)].join('');
+  const links = groups.map((g, idx) => {
     const f = g.failure || {};
     const toolCallEventId = f.tool_call_event_id || '';
     const candidates = g.repair_candidates || g.repairs || [];
     const excluded = g.excluded_successes || [];
-    const candidateRows = candidates.length ? candidates.map(c => `
-      <tr>
-        <td><span class="pill ok">${escapeHtml(c.branch_id)}</span><div class="mono">${escapeHtml(c.success_event_id)}</div></td>
-        <td><div class="mono">${escapeHtml(c.command)}</div><div class="muted">${escapeHtml(c.tool)}</div></td>
-        <td>${escapeHtml(c.why_linked)}</td>
-        <td><button class="small-btn" onclick='highlightFullTrajectory(${JSON.stringify(c.highlight_event_ids || [])}, [])'>Highlight</button></td>
-      </tr>`).join('') : '<tr><td colspan="4" class="muted">No repair candidate.</td></tr>';
-    const excludedRows = excluded.length ? `<div class="table-wrap repair-table-wrap repair-excluded-wrap"><table class="repair-excluded-table"><thead><tr><th>Excluded Event</th><th>Command</th><th>Why Excluded</th></tr></thead><tbody>${excluded.map(x => `
-      <tr><td><span class="pill excluded">${escapeHtml(x.branch_id)}</span><div class="mono">${escapeHtml(x.success_event_id)}</div></td><td class="mono">${escapeHtml(x.command)}</td><td>${escapeHtml(excludedReasonText(x.reason))}</td></tr>`).join('')}</tbody></table></div>` : '<p class="muted">No excluded later successes for this failure.</p>';
-    return `<div class="summary-card repair-strategy-card">
-      <h3 class="repair-failure-title">Failure ${idx + 1}: <span class="mono">${escapeHtml(f.command)}</span>${toolCallEventId ? ` <span class="pill mono repair-failure-event-id">${escapeHtml(toolCallEventId)}</span>` : ''}</h3>
-      <p><span class="pill failed">${escapeHtml(f.branch_id)}</span><span class="pill mono">${escapeHtml(f.failure_event_id || '')}</span><span class="pill">${escapeHtml(g.candidate_count)} candidates</span></p>
-      <p class="repair-likely-cause"><b>Likely cause:</b> ${escapeHtml(f.likely_cause)}</p>
-      <div class="table-wrap repair-table-wrap repair-candidates-wrap"><table class="repair-table"><thead><tr><th>Repair Event</th><th>Command</th><th>Why Linked</th><th></th></tr></thead><tbody>${candidateRows}</tbody></table></div>
-      ${excludedRows}
-    </div>`;
+    const primary = candidates[0];
+    const failureTitle = f.likely_cause || (f.tool ? `Failed ${f.tool} command` : `Failure ${idx + 1}`);
+    const failureEventId = f.failure_event_id || toolCallEventId || 'Failure event unavailable';
+    const primaryCommand = primary?.command || 'No direct repair command was recorded.';
+    const encodedCommand = escapeHtml(encodeURIComponent(primaryCommand));
+    const pathHighlightEventIds = primary ? [...new Set([
+      f.tool_call_event_id,
+      f.failure_event_id,
+      ...candidates.map(candidate => candidate.success_event_id),
+    ].filter(Boolean))] : [];
+    const repairEventIdentities = candidates.map(candidate => `<div class="repair-link-node-event"><span class="pill ok">${escapeHtml(candidate.branch_id || f.branch_id || 'main')}</span><span class="pill mono">${escapeHtml(candidate.success_event_id || '')}</span></div>`).join('');
+    const excludedRows = excluded.map(item => `<div class="repair-link-excluded-item"><span class="pill excluded">${escapeHtml(item.branch_id || '')}</span><span class="pill mono">${escapeHtml(item.success_event_id || '')}</span>${escapeHtml(excludedReasonText(item.reason))}</div>`).join('');
+    const path = primary ? `<div class="repair-link-path">
+      <div class="repair-link-node failure"><div class="repair-link-node-label"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2.7 20h18.6L12 3Z"></path><path d="M12 9v5M12 17h.01"></path></svg>Failure event</div><div class="repair-link-node-events"><div class="repair-link-node-event"><span class="pill failed">${escapeHtml(f.branch_id || 'main')}</span><span class="pill mono">${escapeHtml(failureEventId)}</span></div></div></div>
+      <div class="repair-link-path-arrow"><button type="button" class="small-btn repair-link-path-highlight" onclick='highlightFullTrajectory(${JSON.stringify(pathHighlightEventIds)}, [])'>Highlight</button><span class="repair-link-path-ppt-arrow" aria-hidden="true"></span></div>
+      <div class="repair-link-node repair"><div class="repair-link-node-label"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="m8 12 2.5 2.5L16 9"></path></svg>Success event</div><div class="repair-link-node-events">${repairEventIdentities}</div></div>
+    </div>
+    <p class="repair-link-why"><b>Why linked</b> ${escapeHtml(primary.why_linked || 'This successful event is structurally linked to the failure.')}</p>
+    <div class="repair-link-command"><h4>Command</h4><pre class="failure-pattern-command"><button type="button" class="failure-command-copy" data-command="${encodedCommand}" onclick="copyFailurePatternCommand(this)"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M15 9V5a2 2 0 0 0-2-2H5a2 2 0 0 0 2 2h4"></path></svg><span>Copy</span></button><code>${failurePatternCommandLines(primaryCommand)}</code></pre></div>` : `<p class="repair-link-why"><b>Repair status</b> No direct repair candidate was identified for this failure.</p>`;
+    return `<details class="repair-link" data-failed-tool="${escapeHtml(f.tool || '')}" data-repair-count="${candidates.length}">
+      <summary class="repair-link-summary"><span class="repair-link-severity" aria-hidden="true">!</span><span class="repair-link-summary-copy"><span class="repair-link-summary-title"><b>${escapeHtml(failureTitle)}</b><span class="pill failed">${escapeHtml(f.branch_id || 'main')}</span></span><span class="pill mono repair-link-event-id">${escapeHtml(failureEventId)}</span></span><span class="pill ok repair-link-candidate-count">${escapeHtml(candidates.length)} ${candidates.length === 1 ? 'repair' : 'repairs'}</span><svg class="repair-link-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></summary>
+      <div class="repair-link-detail">${path}${excluded.length ? `<details class="repair-link-excluded"><summary><span>${excluded.length} excluded ${excluded.length === 1 ? 'candidate' : 'candidates'}</span></summary><div class="repair-link-excluded-list">${excludedRows}</div></details>` : ''}</div>
+    </details>`;
   }).join('');
-  setOutput(cards);
+  setOutput(`<section class="repair-links-panel"><header class="repair-links-head"><div class="repair-links-title"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.1.1l2-2a5 5 0 0 0-7.1-7.1l-1.1 1.1"></path><path d="M14 11a5 5 0 0 0-7.1-.1l-2 2A5 5 0 0 0 12 20l1.1-1.1"></path></svg>Repair Links <span class="repair-links-count">${escapeHtml(repairLinkCount)}</span></div><div class="repair-links-actions"><details class="repair-link-filter"><summary aria-label="Filter repair links" title="Filter repair links"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16l-6 7v5l-4 2v-7L4 5Z"></path></svg></summary><div class="repair-link-filter-menu"><label>Failed tool<select onchange="filterRepairLinks(this.value)">${filterOptions}</select></label></div></details><button class="small-btn" onclick='highlightFullTrajectory(${JSON.stringify(allHighlightIds)}, [])'>Highlight all</button></div></header><div class="repair-links-list">${links}</div></section>`);
 }
 function renderSemanticJudgments(data) {
   const rows = Array.isArray(data.content) ? data.content : [];
   renderMetrics(null);
   if (!rows.length) return setOutput('<div class="view-empty">No semantic judgments. Query repair strategies first or check the trajectory.</div>');
-  const table = `<div class="table-wrap semantic-judgments-wrap"><table class="semantic-judgments-table"><thead><tr><th>Failure</th><th>Candidate</th><th>LLM Label</th><th>Reason</th><th></th></tr></thead><tbody>${rows.map(r => {
-    const j = r.judgment || {}; const f = r.failure || {}; const c = r.repair_candidate || {};
-    const cls = j.label === 'likely_repair' || j.label === 'partial_repair' ? 'ok' : (j.label === 'not_evaluated' ? '' : 'excluded');
-    return `<tr>
-      <td><div class="mono semantic-failure-command">${escapeHtml(f.command)}</div><span class="pill failed">${escapeHtml(f.branch_id || '')}</span><span class="pill mono">${escapeHtml(r.failure_event_id)}</span></td>
-      <td><div class="mono${cls === 'ok' ? ' semantic-candidate-command' : ''}">${escapeHtml(c.command)}</div><span class="pill ok">${escapeHtml(c.branch_id || '')}</span><span class="pill mono">${escapeHtml(r.success_event_id)}</span></td>
-      <td><span class="pill ${cls}">${escapeHtml(j.label)}</span><div class="muted">Confidence: ${escapeHtml(j.confidence ?? '')}</div><div class="muted">Recommended for skill: ${j.recommended_for_skill ? 'true' : 'false'}</div></td>
-      <td class="semantic-judgment-reason">${escapeHtml(j.reason)}${j.error ? `<div class="muted">${escapeHtml(j.error)}</div>` : ''}</td>
-      <td><button class="small-btn" onclick='highlightFullTrajectory(${JSON.stringify(r.highlight_event_ids || [])}, [])'>Highlight</button></td>
-    </tr>`;
-  }).join('')}</tbody></table></div>`;
-  setOutput(table);
+  const verdictInfo = label => {
+    if (label === 'likely_repair') return {key:'ok', label:'Likely repair', mark:'✓'};
+    if (label === 'partial_repair') return {key:'partial', label:'Partial repair', mark:'~'};
+    return {key:'other', label:'Other judgment', mark:'!'};
+  };
+  const groups = new Map();
+  const totals = {ok:0, partial:0, other:0};
+  const allHighlightIds = [...new Set(rows.flatMap(row => row.highlight_event_ids || []).filter(Boolean))];
+  rows.forEach((row, index) => {
+    const failure = row.failure || {};
+    const failureId = row.failure_event_id || failure.failure_event_id || `judgment-${index}`;
+    if (!groups.has(failureId)) groups.set(failureId, {failure, failureId, rows:[]});
+    groups.get(failureId).rows.push(row);
+    totals[verdictInfo(String((row.judgment || {}).label || 'not_evaluated')).key] += 1;
+  });
+  const cases = [...groups.values()].map((group, groupIndex) => {
+    const failure = group.failure || {};
+    const failureTitle = failure.likely_cause || failure.error_signature || failure.command || 'Failure event';
+    const failureCommand = String(failure.command || 'No failed command was recorded.').replace(/\s+/g, ' ').trim();
+    const failureBranch = failure.branch_id || 'main';
+    const rowsHtml = group.rows.map(row => {
+      const judgment = row.judgment || {};
+      const candidate = row.repair_candidate || {};
+      const verdict = verdictInfo(String(judgment.label || 'not_evaluated'));
+      const candidateCommand = String(candidate.command || 'No candidate command was recorded.').replace(/\s+/g, ' ').trim();
+      const confidence = judgment.confidence === undefined || judgment.confidence === null || judgment.confidence === ''
+        ? 'Not scored' : Number(judgment.confidence).toFixed(2);
+      const reason = judgment.error || judgment.reason || 'No semantic rationale was recorded.';
+      const recommended = judgment.recommended_for_skill ? '<span class="pill rule">Recommended for skill</span>' : '';
+      return `<div class="semantic-judge-candidate">
+        <div class="semantic-judge-flow">
+          <div class="semantic-judge-node failure"><div class="semantic-judge-node-label"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2.7 20h18.6L12 3Z"></path><path d="M12 9v5M12 17h.01"></path></svg>Failure event</div><div class="semantic-judge-node-events"><span class="pill failed">${escapeHtml(failureBranch)}</span><span class="pill mono">${escapeHtml(group.failureId)}</span></div><div class="semantic-judge-command-preview">${escapeHtml(failureCommand)}</div></div>
+          <div class="semantic-judge-arrow" aria-hidden="true"><svg class="lucide lucide-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></div>
+          <div class="semantic-judge-node candidate"><div class="semantic-judge-node-label"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="m8 12 2.5 2.5L16 9"></path></svg>Candidate event</div><div class="semantic-judge-node-events"><span class="pill ok">${escapeHtml(candidate.branch_id || failureBranch)}</span><span class="pill mono">${escapeHtml(row.success_event_id || candidate.success_event_id || '')}</span></div><div class="semantic-judge-command-preview">${escapeHtml(candidateCommand)}</div></div>
+          <div class="semantic-judge-verdict ${verdict.key}"><span class="semantic-judge-verdict-mark">${verdict.mark}</span><strong>${escapeHtml(verdict.label)}</strong><span class="semantic-judge-confidence">Confidence ${escapeHtml(confidence)}</span>${recommended}</div>
+        </div>
+        <div class="semantic-judge-reason"><p><b>Reason</b> ${escapeHtml(reason)}</p><button class="small-btn" onclick='highlightFullTrajectory(${JSON.stringify(row.highlight_event_ids || [])}, [])'>Highlight</button></div>
+      </div>`;
+    }).join('');
+    const verdicts = group.rows.map(row => verdictInfo(String((row.judgment || {}).label || 'not_evaluated')).key).join('|');
+    return `<details class="semantic-judge-case" data-verdicts="${escapeHtml(verdicts)}" data-judgment-count="${group.rows.length}"${groupIndex === 0 ? ' open' : ''}>
+      <summary class="semantic-judge-case-summary"><span class="semantic-judge-case-severity" aria-hidden="true">!</span><span class="semantic-judge-case-copy"><span class="semantic-judge-case-title"><b>${escapeHtml(failureTitle)}</b><span class="pill failed">${escapeHtml(failureBranch)}</span></span><span class="pill mono semantic-judge-case-event">${escapeHtml(group.failureId)}</span></span><span class="pill ok semantic-judge-candidate-count">${group.rows.length} ${group.rows.length === 1 ? 'candidate' : 'candidates'}</span><svg class="semantic-judge-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></summary>
+      <div class="semantic-judge-case-detail">${rowsHtml}</div>
+    </details>`;
+  }).join('');
+  setOutput(`<section class="semantic-judge-panel"><header class="semantic-judge-head"><div class="semantic-judge-title"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="m8 12 2.5 2.5L16 9"></path></svg>Semantic Judge <span class="semantic-judge-count">${rows.length}</span></div><div class="semantic-judge-overview"><span class="semantic-judge-stat ok">Likely repair <b>${totals.ok}</b></span><span class="semantic-judge-stat partial">Partial repair <b>${totals.partial}</b></span><span class="semantic-judge-stat other">Other <b>${totals.other}</b></span></div><div class="semantic-judge-actions"><details class="semantic-judge-filter"><summary aria-label="Filter semantic judgments" title="Filter semantic judgments"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16l-6 7v5l-4 2v-7L4 5Z"></path></svg></summary><div class="semantic-judge-filter-menu"><label>Verdict<select onchange="filterSemanticJudgments(this.value)"><option value="">All verdicts</option><option value="ok">Likely repair</option><option value="partial">Partial repair</option><option value="other">Other</option></select></label></div></details><button class="small-btn" onclick='highlightFullTrajectory(${JSON.stringify(allHighlightIds)}, [])'>Highlight all</button></div></header><div class="semantic-judge-list">${cases}</div></section>`);
 }
 function renderLearnedSkills(data) {
   const skills = Array.isArray(data.content) ? data.content : [];
@@ -3423,13 +3973,18 @@ function contextEvidenceButton(ids, label = 'Source event IDs') {
   const prefix = label ? `<span class="context-evidence-label">${escapeHtml(label)}:</span>` : '';
   return `<span class="context-evidence-list">${prefix}${idsHtml}</span>`;
 }
-function contextHighlightButton(ids) {
+function contextSegmentDetailButton(ids, index) {
   const clean = [...new Set((ids || []).filter(Boolean))];
-  if (!clean.length) return '<span class="muted">No source events</span>';
-  return `<button class="small-btn" onclick='event.stopPropagation();highlightFullTrajectory(${JSON.stringify(clean)}, [])'>Highlight</button>`;
+  const count = clean.length;
+  const label = `${count} ${count === 1 ? 'source' : 'sources'}`;
+  const chevron = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg>';
+  return `<button type="button" class="context-source-count" title="Show context fragment details" aria-label="Show context fragment details for ${label}" onclick="showContextSegmentDetail(${index})">${label}${chevron}</button>`;
 }
-function contextStat(label, value) {
-  return `<div class="context-stat"><b>${escapeHtml(value)}</b><span>${escapeHtml(label)}</span></div>`;
+function contextStat(label, value, icon = '') {
+  const content = icon
+    ? `<div class="context-stat-content"><svg class="context-stat-icon" viewBox="0 0 24 24" aria-hidden="true">${icon}</svg><div class="context-stat-value"><b>${escapeHtml(value)}</b><span>${escapeHtml(label)}</span></div></div>`
+    : `<b>${escapeHtml(value)}</b><span>${escapeHtml(label)}</span>`;
+  return `<div class="context-stat">${content}</div>`;
 }
 function displayContextOmissionReason(reason) {
   return reason === 'Lower-priority segment omitted after the budget was exhausted.'
@@ -3440,12 +3995,29 @@ function displayContextSegmentTitle(segment) {
   if (segment?.segment_id === 'recent_causal_trace' || segment?.title === 'Recent Causal Trace') return 'Recent Trace';
   return segment?.title || segment?.segment_id || 'Context Fragment';
 }
+function displayContextPlanState(state) {
+  return {included:'Included', truncated:'Truncated', omitted:'Omitted'}[state] || state.replace(/_/g, ' ');
+}
+function contextSegmentIcon(segment) {
+  const icons = {
+    current_task: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><path d="M14 2v6h6M8 13h8M8 17h6"></path>',
+    recent_causal_trace: '<path d="M8 6h12M8 12h12M8 18h12"></path><path d="M4 6h.01M4 12h.01M4 18h.01"></path>',
+    branch_version_state: '<path fill-rule="evenodd" d="M11.75 2.5a.75.75 0 1 0 0 1.5.75.75 0 0 0 0-1.5Zm-2.25.75a2.25 2.25 0 1 1 3 2.122V6A2.5 2.5 0 0 1 10 8.5H6a1 1 0 0 0-1 1v1.128a2.251 2.251 0 1 1-1.5 0V5.372a2.25 2.25 0 1 1 1.5 0v1.836A2.492 2.492 0 0 1 6 7h4a1 1 0 0 0 1-1v-.628A2.25 2.25 0 0 1 9.5 3.25ZM4.25 12a.75.75 0 1 0 0 1.5.75.75 0 0 0 0-1.5ZM3.5 3.25a.75.75 0 1 1 1.5 0 .75.75 0 0 1-1.5 0Z"></path>',
+    retrieved_memory: '<path d="M6 3h12v18l-6-4-6 4z"></path>',
+    matched_skills: '<path d="m12 3-1.2 4.8L6 9l4.8 1.2L12 15l1.2-4.8L18 9l-4.8-1.2z"></path><path d="m19 15-.7 2.3L16 18l2.3.7L19 21l.7-2.3L22 18l-2.3-.7z"></path>',
+    earlier_trajectory_digest: '<rect x="5" y="3" width="14" height="18" rx="2"></rect><path d="M9 8h6M9 12h6M9 16h4"></path>'
+  };
+  const icon = icons[segment?.segment_id] || '<rect x="4" y="3" width="16" height="18" rx="2"></rect><path d="M8 8h8M8 12h8M8 16h5"></path>';
+  const className = segment?.segment_id === 'branch_version_state' ? 'context-fragment-icon context-fragment-branch-icon' : 'context-fragment-icon';
+  const viewBox = segment?.segment_id === 'branch_version_state' ? '0 0 16 16' : '0 0 24 24';
+  return `<svg class="${className}" viewBox="${viewBox}" aria-hidden="true">${icon}</svg>`;
+}
 function renderContextStats(content) {
-  return `<div class="context-stat-grid">
-    ${contextStat('Full', `${content.estimated_full_history_tokens ?? 0} tokens`)}
-    ${contextStat('Budget', `${content.token_budget || 0} tokens`)}
-    ${contextStat('Selected', `${content.selected_tokens ?? content.estimated_loaded_tokens ?? 0} tokens`)}
-    ${contextStat('Saved', `${content.estimated_saved_tokens || 0} tokens / ${content.estimated_saved_percent || 0}%`)}
+  return `<div class="context-stat-grid context-assembly-stat-grid">
+    ${contextStat('Full', `${content.estimated_full_history_tokens ?? 0} tokens`, '<path d="M7 4h10M7 9h10M7 14h6"></path><path d="M5 3v12a3 3 0 0 0 3 3h8"></path>')}
+    ${contextStat('Budget', `${content.token_budget || 0} tokens`, '<rect x="3" y="6" width="18" height="13" rx="2"></rect><path d="M3 10h18M16 15h2"></path>')}
+    ${contextStat('Selected', `${content.selected_tokens ?? content.estimated_loaded_tokens ?? 0} tokens`, '<rect x="4" y="3" width="16" height="18" rx="2"></rect><path d="m8 12 2.5 2.5L16 9"></path>')}
+    ${contextStat('Saved', `${content.estimated_saved_tokens || 0} tokens / ${content.estimated_saved_percent || 0}%`, '<path d="M5 5v14h14"></path><path d="m8 13 3-3 3 2 4-5"></path>')}
   </div>`;
 }
 function renderContextHeader(content, title) {
@@ -3495,8 +4067,9 @@ function renderContextAssembly(data) {
   const rows = segments.map((segment, index) => ({segment, index}))
     .filter(({segment}) => Number(segment.token_cost || 0) > 0)
     .map(({segment, index}) => {
-    const state = segment.selection_status || 'omitted';
-    return `<tr class="context-plan-row" data-context-segment-index="${index}" onclick="showContextSegmentDetail(${index})"><td><b>${escapeHtml(displayContextSegmentTitle(segment))}</b><div class="muted">${escapeHtml(segment.selection_reason || '')}</div></td><td>${escapeHtml(segment.token_cost ?? 0)}</td><td>${escapeHtml(segment.loaded_token_cost ?? 0)}</td><td><span class="budget-state ${escapeHtml(state)}">${escapeHtml(state.replace('_', ' '))}</span><div class="muted">${escapeHtml(displayContextOmissionReason(segment.omission_reason))}</div></td><td>${contextHighlightButton(segment.source_event_ids)}</td></tr>`;
+    const rawState = segment.selection_status || 'omitted';
+    const state = rawState === 'not_available' ? 'omitted' : rawState;
+    return `<tr class="context-plan-row" data-context-segment-index="${index}"><td><div class="context-fragment-title">${contextSegmentIcon(segment)}<div><b>${escapeHtml(displayContextSegmentTitle(segment))}</b><div class="muted">${escapeHtml(segment.selection_reason || '')}</div></div></div></td><td>${escapeHtml(segment.token_cost ?? 0)}</td><td>${escapeHtml(segment.loaded_token_cost ?? 0)}</td><td><span class="budget-state ${escapeHtml(state)}">${escapeHtml(displayContextPlanState(state))}</span><div class="muted">${escapeHtml(displayContextOmissionReason(segment.omission_reason))}</div></td><td>${contextSegmentDetailButton(segment.source_event_ids, index)}</td></tr>`;
   }).join('') || '<tr><td colspan="5" class="muted">No context fragments are available on this branch.</td></tr>';
   setOutput(`<div class="context-assembly">${renderContextStats(content)}
     <section class="budget-control">${viewBranchInlineSelector('current_prompt')}<label for="contextBudgetRange">Budget (${escapeHtml(bounds.min)}-${escapeHtml(bounds.max)})</label><input id="contextBudgetRange" type="range" min="${escapeHtml(bounds.min)}" max="${escapeHtml(bounds.max)}" step="${escapeHtml(bounds.step)}" value="${escapeHtml(displayedBudget)}"><output id="contextBudgetValue" class="budget-value">${escapeHtml(displayedBudget)} tokens</output></section>
@@ -3545,11 +4118,18 @@ function renderCompressionSummary(data) {
   const content = data.content || {};
   renderMetrics(null);
   const scope = content.scope || {}, llm = content.llm || {};
-  const facts = (content.key_facts || []).map(fact => `<li>${escapeHtml(fact)}</li>`).join('');
-  const open = (content.open_items || []).map(item => `<li>${escapeHtml(item)}</li>`).join('');
+  const sourceEventIds = (content.source_event_ids || []).filter(Boolean);
+  const sourceEventCount = scope.source_event_count || sourceEventIds.length;
+  const sourceEventsAction = sourceEventIds.length
+    ? `<button type="button" class="digest-source-events" title="Highlight source events in the trajectory" onclick='highlightFullTrajectory(${JSON.stringify(sourceEventIds)}, [])'><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><path d="M14 2v6h6M8 13h8M8 17h6"></path></svg>Source events (${escapeHtml(sourceEventCount)})</button>`
+    : `<span class="digest-source-events"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2-2V8z"></path><path d="M14 2v6h6M8 13h8M8 17h6"></path></svg>Source events (${escapeHtml(sourceEventCount)})</span>`;
+  const keyFacts = content.key_facts || [];
+  const openItems = content.open_items || [];
+  const facts = keyFacts.map(fact => `<li>${escapeHtml(fact)}</li>`).join('');
+  const open = openItems.map(item => `<li>${escapeHtml(item)}</li>`).join('');
   const insights = facts || open ? `<div class="digest-insights">
-    ${facts ? `<section class="digest-insight"><h3>Key Facts</h3><ul class="digest-insight-list">${facts}</ul></section>` : ''}
-    ${open ? `<section class="digest-insight open-items"><h3>Open Items</h3><ul class="digest-insight-list">${open}</ul></section>` : ''}
+    ${facts ? `<section class="digest-insight is-collapsed"><h3>Key Facts (${keyFacts.length})</h3><button class="digest-insight-toggle" type="button" aria-expanded="false" aria-label="Expand Key Facts" title="Expand Key Facts" onclick="toggleDigestInsight(this)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button><ul class="digest-insight-list" hidden>${facts}</ul></section>` : ''}
+    ${open ? `<section class="digest-insight open-items is-collapsed"><h3>Open Items (${openItems.length})</h3><button class="digest-insight-toggle" type="button" aria-expanded="false" aria-label="Expand Open Items" title="Expand Open Items" onclick="toggleDigestInsight(this)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button><ul class="digest-insight-list" hidden>${open}</ul></section>` : ''}
   </div>` : '';
   const summaryBody = content.summary
     ? `<div class="rendered-context">${escapeHtml(content.summary)}</div>`
@@ -3558,14 +4138,14 @@ function renderCompressionSummary(data) {
       : `<div class="view-empty"><b>Semantic summary unavailable.</b><br>${escapeHtml(llm.error || llm.reason || 'Configure a working LLM profile and reload this view.')}</div>`;
   setOutput(`<div class="context-assembly">
     <div class="context-stat-grid">
-      ${contextStat('Source events', `${scope.source_event_count || 0}`)}
-      ${contextStat('Raw size', `${content.raw_tokens || 0} tokens`)}
-      ${contextStat('Compressed size', `${content.compressed_tokens || 0} tokens`)}
-      ${contextStat('Compression ratio', `${content.compression_ratio || 0}%`)}
+      ${contextStat('Source events', `${scope.source_event_count || 0}`, '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><path d="M14 2v6h6M8 13h8M8 17h6"></path>')}
+      ${contextStat('Raw size', `${content.raw_tokens || 0} tokens`, '<rect x="4" y="4" width="16" height="4" rx="1"></rect><rect x="4" y="10" width="16" height="4" rx="1"></rect><rect x="4" y="16" width="16" height="4" rx="1"></rect>')}
+      ${contextStat('Compressed size', `${content.compressed_tokens || 0} tokens`, '<rect x="4" y="7" width="16" height="12" rx="2"></rect><path d="M4 11h16M12 3v9M9 9l3 3 3-3"></path>')}
+      ${contextStat('Compression ratio', `${content.compression_ratio || 0}%`, '<path d="M5 20V10M12 20V4M19 20v-7"></path><path d="M3 20h18"></path>')}
     </div>
     <section class="budget-control summary-status">${viewBranchStatusSelector('summary')}${viewSummaryProfileSelector()}<button id="generateSummary" class="small-btn"${llmProfiles.length ? '' : ' disabled'}>Generate Digest</button></section>
     <section class="summary-card digest-summary-card">
-      <h3 class="digest-summary-heading">Digest</h3>${summaryBody}
+      <h3 class="digest-summary-heading"><span class="digest-heading-title"><svg class="digest-heading-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3-1.4 4.4L6 9l4.6 1.6L12 15l1.4-4.4L18 9l-4.6-1.6z"></path><path d="m19 15-.7 2.3L16 18l2.3.7L19 21l.7-2.3L22 18l-2.3-.7z"></path></svg>Digest</span>${sourceEventsAction}</h3>${summaryBody}
       ${insights}
     </section>
   </div>`);

@@ -173,3 +173,24 @@ def test_global_overview_lists_native_tools_before_contextdb_tools():
         finally:
             db.vector_index.conn.close()
             db.store.conn.close()
+
+
+def test_global_overview_includes_tool_success_and_failure_metadata():
+    with TemporaryDirectory() as root:
+        db = ContextDB(root)
+        try:
+            trajectory = db.create_trajectory("Tool metadata")
+            db.append_event(trajectory["trajectory_id"], "tool_result", {
+                "tool_name": "git", "status": "failed",
+            })
+            db.append_event(trajectory["trajectory_id"], "tool_result", {
+                "tool_name": "git", "status": "ok",
+            })
+
+            overview = db.global_overview()
+            tool = next(node for node in overview["graph"]["nodes"] if node["id"] == "tool:git")
+            assert tool["success_count"] == 1
+            assert tool["failure_count"] == 1
+        finally:
+            db.vector_index.conn.close()
+            db.store.conn.close()
