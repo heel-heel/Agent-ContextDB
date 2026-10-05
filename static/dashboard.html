@@ -195,15 +195,17 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
     .semantic-judge-stat b { font-size:14px; }
     .semantic-judge-stat.ok { border-color:#c5e5d0; background:#f4fcf7; color:#256c45; }
     .semantic-judge-stat.partial { border-color:#f0d39d; background:#fffaf1; color:#8a5c12; }
-    .semantic-judge-stat.other { border-color:#f0caca; background:#fff8f8; color:#9f2a2a; }
-    .semantic-judge-actions { display:flex; align-items:center; gap:7px; }
+    .semantic-judge-stat.other { border-color:#f0d39d; background:#fffaf1; color:#8a5c12; }
+    .semantic-judge-actions { display:flex; align-items:center; gap:7px; flex:0 0 auto; }
     .semantic-judge-filter { position:relative; }
-    .semantic-judge-filter > summary { display:grid; width:38px; height:38px; place-items:center; border:1px solid #b9cce1; border-radius:5px; color:#17324d; cursor:pointer; list-style:none; }
+    .semantic-judge-filter > summary { display:grid; width:28px; height:28px; padding:0; place-items:center; border:1px solid #b9c9d8; border-radius:5px; background:#fff; color:#17324d; cursor:pointer; list-style:none; }
     .semantic-judge-filter > summary::-webkit-details-marker { display:none; }
-    .semantic-judge-filter > summary svg { width:17px; height:17px; fill:none; stroke:currentColor; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; }
-    .semantic-judge-filter-menu { position:absolute; z-index:3; top:calc(100% + 5px); right:0; width:190px; padding:9px; border:1px solid #c9def5; border-radius:5px; background:#fff; box-shadow:0 8px 18px rgba(23,50,77,.16); }
-    .semantic-judge-filter-menu label { display:grid; gap:5px; color:#4d6074; font-size:11px; font-weight:700; }
-    .semantic-judge-filter-menu select { width:100%; min-height:30px; border:1px solid #c9d8e7; border-radius:4px; background:#fff; color:#17324d; font:inherit; }
+    .semantic-judge-filter > summary:hover, .semantic-judge-head .small-btn:hover { background:#f4f8fc; border-color:#85abd1; }
+    .semantic-judge-filter > summary svg { width:15px; height:15px; fill:none; stroke:currentColor; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; }
+    .semantic-judge-filter-menu { position:absolute; z-index:3; top:34px; right:0; width:176px; padding:8px; border:1px solid #b9c9d8; border-radius:5px; background:#fff; box-shadow:0 4px 12px rgba(23,50,77,.14); }
+    .semantic-judge-filter-menu label { display:grid; gap:4px; color:#4d6074; font-size:11px; font-weight:700; }
+    .semantic-judge-filter-menu select { width:100%; height:28px; padding:0 6px; font-size:12px; }
+    .semantic-judge-head .small-btn { background:#fff; color:#17324d; border-color:#b9c9d8; }
     .semantic-judge-list { display:flex; flex-direction:column; gap:9px; padding:10px; }
     .semantic-judge-case { overflow:hidden; border:1px solid #c9def5; border-radius:6px; background:#fff; }
     .semantic-judge-case-summary { position:relative; display:flex; align-items:center; gap:10px; min-height:58px; padding:9px 118px 9px 10px; cursor:pointer; list-style:none; }
@@ -218,31 +220,36 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
     .semantic-judge-case[open] .semantic-judge-chevron { transform:translateY(-50%) rotate(180deg); }
     .semantic-judge-case-detail { padding:10px; border-top:1px solid #dce7f1; }
     .semantic-judge-candidate + .semantic-judge-candidate { margin-top:10px; padding-top:10px; border-top:1px solid #dce7f1; }
-    .semantic-judge-flow { display:grid; grid-template-columns:minmax(0,1fr) 28px minmax(0,1fr) minmax(132px,.68fr); align-items:stretch; gap:0; }
+    .semantic-judge-flow { display:grid; grid-template-columns:minmax(0,1fr) 28px minmax(0,1fr) 25px minmax(132px,.68fr); align-items:stretch; gap:0; }
     .semantic-judge-node { min-width:0; padding:10px; border:1px solid #d8e2ec; border-radius:5px; background:#fff; }
     .semantic-judge-node.failure { border-color:#efcaca; background:#fff9f9; }
     .semantic-judge-node.candidate { border-color:#c5e5d0; background:#f7fcf8; }
-    .semantic-judge-node-label { display:flex; align-items:center; gap:5px; color:#52677d; font-size:11px; font-weight:800; }
+    .semantic-judge-node-label { display:flex; align-items:center; justify-content:center; gap:5px; color:#52677d; font-size:11px; font-weight:800; text-transform:uppercase; }
     .semantic-judge-node.failure .semantic-judge-node-label { color:#9f2a2a; }
     .semantic-judge-node.candidate .semantic-judge-node-label { color:#256c45; }
     .semantic-judge-node-label svg { width:15px; height:15px; fill:none; stroke:currentColor; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; }
-    .semantic-judge-node-events { display:flex; flex-wrap:wrap; gap:4px; margin-top:7px; }
-    .semantic-judge-command-preview { display:-webkit-box; overflow:hidden; margin-top:7px; color:#40556a; font-size:11px; line-height:1.35; -webkit-box-orient:vertical; -webkit-line-clamp:2; }
+    .semantic-judge-node-events { display:flex; flex-wrap:wrap; justify-content:center; gap:4px; margin-top:7px; }
+    .semantic-judge-command-preview { display:-webkit-box; width:100%; height:30px; min-height:0; overflow:hidden; margin-top:7px; padding:0; border:0; background:transparent; color:#40556a; font:11px/1.35 ui-sans-serif, system-ui, sans-serif; text-align:left; white-space:normal; cursor:pointer; -webkit-box-orient:vertical; -webkit-line-clamp:2; }
+    .semantic-judge-command-preview:hover { color:#17324d; text-decoration:underline; text-decoration-color:#85abd1; text-underline-offset:2px; }
+    .semantic-judge-command-preview:focus-visible { outline:2px solid #2364aa; outline-offset:2px; border-radius:3px; }
+    .semantic-judge-command-dialog { width:min(720px, calc(100vw - 24px)); }
+    .semantic-judge-command-dialog .trajectory-track-dialog-body { padding:12px; }
     .semantic-judge-arrow { display:grid; place-items:center; color:#6d8399; }
     .semantic-judge-arrow svg { width:20px; height:20px; fill:none; stroke:currentColor; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; }
-    .semantic-judge-verdict { position:relative; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:5px; min-width:0; margin-left:12px; padding:10px; border:1px solid #d8e2ec; border-radius:5px; background:#f8fafc; color:#44586c; text-align:center; }
-    .semantic-judge-verdict::before { position:absolute; top:12px; bottom:12px; left:-13px; width:1px; background:#d7e4f0; content:''; }
-    .semantic-judge-verdict.ok { border-color:#c5e5d0; background:#f4fcf7; color:#256c45; }
-    .semantic-judge-verdict.partial { border-color:#f0d39d; background:#fffaf1; color:#8a5c12; }
-    .semantic-judge-verdict.other { border-color:#efcaca; background:#fff8f8; color:#9f2a2a; }
-    .semantic-judge-verdict-mark { display:grid; width:25px; height:25px; place-items:center; border-radius:50%; background:currentColor; color:#fff; font-size:15px; font-weight:800; }
+    .semantic-judge-divider { align-self:stretch; width:1px; margin:12px auto; background:#b9c9d8; }
+    .semantic-judge-verdict { --verdict-accent:#44586c; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:5px; min-width:0; padding:10px; border:1px solid #d8e2ec; border-radius:5px; background:#f8fafc; color:#44586c; text-align:center; }
+    .semantic-judge-verdict.ok { --verdict-accent:#08783f; border-color:#c5e5d0; background:#f4fcf7; color:#256c45; }
+    .semantic-judge-verdict.partial { --verdict-accent:#a86f15; border-color:#f0d39d; background:#fffaf1; color:#8a5c12; }
+    .semantic-judge-verdict.other { --verdict-accent:#a86f15; border-color:#f0d39d; background:#fffaf1; color:#8a5c12; }
+    .semantic-judge-verdict-mark { display:grid; width:36px; height:36px; place-items:center; border-radius:50%; background:var(--verdict-accent); color:#fff; }
+    .semantic-judge-verdict-mark svg { width:22px; height:22px; fill:none; stroke:currentColor; stroke-linecap:round; stroke-linejoin:round; stroke-width:2.5; }
     .semantic-judge-verdict strong { font-size:13px; line-height:1.3; }
     .semantic-judge-confidence { font-size:11px; font-weight:700; }
-    .semantic-judge-reason { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-top:9px; padding-top:9px; border-top:1px solid #dce7f1; color:#334b63; font-size:12px; line-height:1.45; }
+    .semantic-judge-reason { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:9px; padding-top:9px; border-top:1px solid #dce7f1; color:#334b63; font-size:12px; line-height:1.45; }
     .semantic-judge-reason p { margin:0; }
     .semantic-judge-reason b { color:#17202a; }
     .semantic-judge-reason .small-btn { flex:0 0 auto; }
-    @media (max-width: 620px) { .semantic-judge-head { align-items:flex-start; } .semantic-judge-overview { justify-content:flex-start; order:3; flex-basis:100%; } .semantic-judge-flow { grid-template-columns:1fr; gap:7px; } .semantic-judge-arrow { height:18px; } .semantic-judge-arrow svg { transform:rotate(90deg); } .semantic-judge-verdict { min-height:80px; margin-left:0; } .semantic-judge-verdict::before { display:none; } }
+    @media (max-width: 620px) { .semantic-judge-head { align-items:flex-start; } .semantic-judge-overview { justify-content:flex-start; order:3; flex-basis:100%; } .semantic-judge-flow { grid-template-columns:1fr; gap:7px; } .semantic-judge-arrow { height:18px; } .semantic-judge-arrow svg { transform:rotate(90deg); } .semantic-judge-divider { display:none; } .semantic-judge-verdict { min-height:80px; } }
     .repair-excluded-table { width:100%; min-width:0; table-layout:fixed; }
     .repair-excluded-table th:nth-child(1), .repair-excluded-table td:nth-child(1) { width:18%; }
     .repair-excluded-table th:nth-child(2), .repair-excluded-table td:nth-child(2) { width:57%; }
@@ -744,29 +751,58 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
     .view-group-title { margin:0; color:#63758a; font-size:11px; font-weight:800; letter-spacing:.03em; line-height:1.25; text-transform:uppercase; white-space:nowrap; }
     .view-group-buttons { display:flex; flex-wrap:nowrap; align-items:center; gap:6px; }
     .view-group-buttons button { flex:0 0 auto; margin:0; white-space:nowrap; }
-    #contextQlPanel .contextql { margin-top:10px; border-color:#c9def5; border-top:3px solid #2364aa; background:#f8fbff; }
-    
-.contextql { margin:12px 14px 0; border:1px solid var(--line); border-radius:8px; background:#fbfcfd; padding:12px; }
-.sql-actions { display:flex; justify-content:flex-end; align-items:center; gap:8px; }
-.nl-contextql { margin-bottom:0; padding-bottom:12px; border-bottom:1px dashed var(--line); }
-.nl-contextql-label-row { display:flex; align-items:center; justify-content:space-between; gap:8px; margin:0 0 7px; }
-.nl-contextql label { display:block; margin:0; color:#17202a; }
-.nl-contextql textarea { display:block; width:100%; min-height:108px; resize:vertical; border:1px solid var(--line); border-radius:6px; padding:9px; font:13px/1.4 ui-sans-serif, system-ui, sans-serif; color:var(--ink); background:#fff; }
-    .nl-actions { display:flex; align-items:center; justify-content:flex-end; gap:8px; margin-top:8px; }
-    .nl-actions-left { display:flex; align-items:center; gap:8px; padding:4px 7px; border:1px solid #c9def5; border-radius:6px; background:#f4f8fd; }
-.nl-actions-left .muted, .nl-actions select { font-size:14px; }
-.nl-actions-left .muted { font-weight:700; }
-.nl-actions select { height:30px; border:1px solid var(--line); border-radius:5px; color:#17324d; background:#fff; padding:0 6px; }
-.nl-actions-left .summary-select-with-icon select { padding:0 26px 0 29px; }
-    .nl-actions #runNaturalLanguage { font-size:12px; }
-    .sql-editor-panel { margin:0 -13px -13px; padding:12px 13px 13px; border:1px solid #dfcef4; border-top:0; border-radius:0 0 7px 7px; background:#faf7ff; }
-    .sql-editor-hint { margin:0 0 6px; color:#17202a; }
-#sqlInput { display:block; width:100%; min-height:112px; resize:vertical; border:1px solid var(--line); border-radius:6px; padding:9px; font:12px/1.45 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; color:var(--ink); background:#fff; }
-.sql-actions { margin-top:8px; } .sql-actions .muted { font-size:11px; }
-.sql-result-meta { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px; }
-.sql-translation-detail { font-size:13px; line-height:1.45; }
-#sqlOut .query-result-card { border-color:#cce5df; border-top:3px solid #197a68; background:#f5fcfa; }
-#sqlOut .query-result-card h3 { margin:0 0 8px; color:#17202a; font-size:16px; font-weight:700; line-height:1.3; }
+    #contextQlPanel .contextql { margin-top:10px; border-color:#c9def5; border-top:3px solid #2364aa; background:#fff; }
+    .contextql { margin:12px 14px 14px; border:1px solid var(--line); border-radius:8px; background:#fff; overflow:hidden; }
+    .query-explorer-title { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:12px 13px 10px; border-bottom:1px solid #dce5ee; background:#fbfdff; }
+    .query-explorer-title h3 { margin:0; color:#17324d; font-size:16px; line-height:1.2; }
+    .query-explorer-status { display:inline-flex; align-items:center; gap:6px; color:#247b50; font-size:11px; font-weight:700; white-space:nowrap; }
+    .query-explorer-status::before { content:""; width:7px; height:7px; border-radius:50%; background:#29a36a; }
+    .nl-contextql { padding:12px 13px; background:#fff; }
+    .nl-contextql-label-row { display:flex; align-items:center; justify-content:space-between; gap:8px; margin:0 0 7px; }
+    .nl-contextql label { display:block; margin:0; color:#17324d; font-size:12px; font-weight:700; }
+    .nl-contextql textarea { display:block; width:100%; min-height:82px; resize:vertical; border:1px solid #b9c9d8; border-radius:5px; padding:9px; font:13px/1.4 ui-sans-serif, system-ui, sans-serif; color:var(--ink); background:#fff; }
+    .nl-contextql textarea:focus, #sqlInput:focus { outline:2px solid rgba(35,100,170,.24); outline-offset:1px; border-color:#2364aa; }
+    .nl-actions { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-top:9px; }
+    .nl-actions-left { display:flex; min-width:0; align-items:center; gap:7px; }
+    .nl-actions-left .muted, .nl-actions select { font-size:12px; }
+    .nl-actions-left .muted { color:#4d6074; font-weight:700; white-space:nowrap; }
+    .nl-actions select { min-width:150px; height:30px; border:1px solid #b9c9d8; border-radius:5px; color:#17324d; background:#fff; padding:0 6px; }
+    .nl-actions-left .summary-select-with-icon select { padding:0 26px 0 29px; }
+    .nl-actions #runNaturalLanguage { min-width:126px; font-size:12px; }
+    .sql-editor-panel { padding:12px 13px 13px; border-top:1px solid #dce5ee; background:#f7faff; }
+    .sql-editor-hint { display:flex; align-items:center; justify-content:space-between; gap:8px; margin:0 0 7px; color:#17324d; font-size:12px; font-weight:700; }
+    .sql-editor-hint span { color:#708398; font-size:11px; font-weight:500; }
+    .sql-editor-shell { position:relative; min-height:128px; overflow:hidden; border:1px solid #273747; border-radius:5px; background:#17202a; }
+    .sql-editor-shell:focus-within { outline:2px solid rgba(35,100,170,.24); outline-offset:1px; border-color:#2364aa; }
+    .sql-highlight { position:absolute; inset:0; overflow:hidden; margin:0; padding:11px; border:0; border-radius:0; background:transparent; color:#e8eef5; font:12px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; pointer-events:none; white-space:pre-wrap; overflow-wrap:anywhere; word-break:break-word; }
+    .sql-highlight .sql-keyword { color:#9ec8ff; font-weight:700; }
+    .sql-highlight .sql-string { color:#f3c675; }
+    .sql-highlight .sql-number { color:#bba8ff; }
+    .sql-highlight .sql-comment { color:#8ea0b2; font-style:italic; }
+    #sqlInput { position:relative; z-index:1; display:block; width:100%; min-height:128px; resize:vertical; border:0; border-radius:0; padding:11px; font:12px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; color:transparent; background:transparent; caret-color:#fff; }
+    #sqlInput:focus { outline:0; }
+    #sqlInput::selection { color:transparent; background:rgba(82,145,224,.46); }
+    .sql-actions { display:flex; justify-content:flex-end; align-items:center; gap:8px; margin-top:9px; }
+    .sql-feedback { margin:0 14px 14px; }
+    .sql-feedback .loading-card, .sql-feedback .view-empty { margin:0; }
+    .sql-result-stage { margin:0 14px 14px; padding:12px 13px 13px; border:1px solid #c9def5; border-top:3px solid #197a68; border-radius:8px; background:#fff; }
+    .sql-result-stage-head { display:flex; align-items:center; justify-content:space-between; gap:12px; margin:0 0 11px; }
+    .sql-result-stage-head h4 { margin:0; color:#17324d; font-size:16px; font-weight:800; line-height:1.2; }
+    .sql-result-stage-head span { color:#708398; font-size:12px; }
+    .sql-result-summary { display:flex; min-width:0; align-items:center; justify-content:flex-end; gap:10px; color:#708398; font-size:12px; white-space:nowrap; }
+    .sql-result-summary strong { color:#17324d; font-weight:800; }
+    .sql-result-count { padding-right:10px; border-right:1px solid #cbd8e4; }
+    .sql-result-duration { display:inline-flex; align-items:center; gap:5px; }
+    .sql-result-duration::before { content:""; width:8px; height:8px; border-radius:50%; background:#29a36a; box-shadow:0 0 0 3px #e1f4e9; }
+    .sql-result-meta { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px; }
+    .sql-translation-detail { font-size:13px; line-height:1.45; }
+    #sqlOut { min-width:0; margin:0 -13px -13px; }
+    #sqlOut .view-empty { padding:12px; border-color:#d5e0ea; background:#fbfdff; font-size:12px; }
+    #sqlOut .query-result-card { border:0; background:#fff; }
+    #sqlOut .query-result-card { padding:0; overflow:hidden; border-radius:0; }
+    #sqlOut .query-result-card .table-wrap { border:0; border-radius:0; }
+    @media (max-width:520px) { .sql-result-stage-head { align-items:flex-start; flex-direction:column; } .sql-result-summary { justify-content:flex-start; flex-wrap:wrap; white-space:normal; } }
+    @media (max-width:620px) { .nl-actions { align-items:stretch; flex-direction:column; } .nl-actions-left { justify-content:space-between; } .nl-actions #runNaturalLanguage { width:100%; } }
 .sql-table tbody tr { cursor:pointer; } .sql-table tbody tr:hover { background:#f7faff; }
 .version-control { padding:14px; display:flex; flex-direction:column; gap:14px; }
 .version-control h3 { margin:0 0 7px; font-size:13px; }
@@ -977,21 +1013,23 @@ pre { margin:0; white-space:pre-wrap; overflow:auto; font-size:12px; line-height
       </div>
       <div id="contextQlPanel" class="right-pane hidden">
         <div class="contextql">
+          <div class="query-explorer-title"><h3>Query Explorer</h3><span class="query-explorer-status">SQL workspace</span></div>
           <div class="nl-contextql">
             <div class="nl-contextql-label-row"><label for="nlQuestion">Query in natural language</label><span id="sqlMeta" class="sr-only" aria-live="polite"></span></div>
             <textarea id="nlQuestion" spellcheck="true" placeholder="Example: Show failures and their likely causes on this trajectory."></textarea>
             <div class="nl-actions"><div class="nl-actions-left"><span class="muted">LLM profile</span><span class="summary-select-with-icon"><svg class="summary-control-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="5" width="14" height="14" rx="2"></rect><path d="M9 1v4M15 1v4M9 19v4M15 19v4M1 9h4M1 15h4M19 9h4M19 15h4M9 9h6v6H9z"></path></svg><select id="nlProfile" aria-label="LLM profile"><option value="">Loading models...</option></select></span></div><button id="runNaturalLanguage" class="small-btn">Translate to SQL</button></div>
           </div>
           <div class="sql-editor-panel">
-            <div class="sql-editor-hint">This SQL query can be prefilled by Database Views and remains editable</div>
-            <textarea id="sqlInput" spellcheck="false">SELECT event_id, branch_id, event_type, actor, status, preview
+            <div class="sql-editor-hint">SQL editor <span>Editable query</span></div>
+            <div class="sql-editor-shell"><pre id="sqlHighlight" class="sql-highlight" aria-hidden="true"></pre><textarea id="sqlInput" spellcheck="false">SELECT event_id, branch_id, event_type, actor, status, preview
 FROM events
 WHERE trajectory_id = :trajectory_id
-ORDER BY timestamp;</textarea>
+ORDER BY timestamp;</textarea></div>
             <div class="sql-actions"><button id="runSql" class="small-btn">Run SQL</button></div>
           </div>
         </div>
-        <div class="content"><div id="sqlOut" class="view-output"><div class="view-empty">Write a query here, or choose a Database View to prefill the SQL query.</div></div></div>
+        <div id="sqlLoading" class="sql-feedback hidden" aria-live="polite"></div>
+        <div id="sqlResultStage" class="sql-result-stage hidden"><div class="sql-result-stage-head"><h4 id="sqlResultLabel">Results</h4><div id="sqlResultMeta" class="sql-result-summary" aria-live="polite"></div></div><div id="sqlOut" class="view-output"></div></div>
       </div>
       <div id="versionControlPanel" class="right-pane hidden">
         <div class="version-control">
@@ -3381,6 +3419,25 @@ function copyFailurePatternCommand(button) {
   if (navigator.clipboard?.writeText) navigator.clipboard.writeText(command).then(copied).catch(fallback);
   else fallback();
 }
+function openSemanticJudgeCommand(encodedCommand) {
+  document.getElementById('semanticJudgeCommandModal')?.remove();
+  const command = decodeURIComponent(encodedCommand || '');
+  const modal = document.createElement('div');
+  modal.id = 'semanticJudgeCommandModal';
+  modal.className = 'trajectory-track-modal';
+  modal.innerHTML = `<div class="trajectory-track-dialog semantic-judge-command-dialog" role="dialog" aria-modal="true" aria-label="Command details"><div class="trajectory-track-dialog-head"><span class="trajectory-track-dialog-title">Command</span><button type="button" class="trajectory-track-dialog-close" aria-label="Close command details" title="Close">&times;</button></div><div class="trajectory-track-dialog-body"><pre class="failure-pattern-command"><button type="button" class="failure-command-copy" data-command="${escapeHtml(encodedCommand || '')}" onclick="copyFailurePatternCommand(this)"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M15 9V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h4"></path></svg><span>Copy</span></button><code>${failurePatternCommandLines(command)}</code></pre></div></div>`;
+  let onKeyDown;
+  const close = () => {
+    document.removeEventListener('keydown', onKeyDown);
+    modal.remove();
+  };
+  modal.addEventListener('click', event => { if (event.target === modal) close(); });
+  modal.querySelector('.trajectory-track-dialog-close').addEventListener('click', close);
+  onKeyDown = event => { if (event.key === 'Escape') close(); };
+  document.addEventListener('keydown', onKeyDown);
+  document.body.appendChild(modal);
+  modal.querySelector('.trajectory-track-dialog-close').focus();
+}
 function toggleDigestInsight(button) {
   const section = button.closest('.digest-insight');
   const list = section?.querySelector('.digest-insight-list');
@@ -3521,13 +3578,43 @@ skill_library: 'SELECT json_extract(skill.value, \'$.skill_id\') AS skill_id, js
 rl_dataset: 'SELECT event_id, branch_id, event_type, actor, timestamp, payload_json, refs_json\nFROM events\nWHERE trajectory_id = :trajectory_id\nORDER BY timestamp;',
 diff: 'SELECT branch_id, base_event_id, head_event_id, snapshot_id\nFROM branches\nWHERE trajectory_id = :trajectory_id\nORDER BY branch_id;'
 };
+const SQL_HIGHLIGHT_TOKENS = /(--[^\n]*|\/\*[\s\S]*?\*\/)|('(?:''|[^'])*')|\b(SELECT|FROM|WHERE|JOIN|LEFT|RIGHT|INNER|OUTER|ON|AS|AND|OR|NOT|IN|IS|NULL|ORDER|BY|GROUP|HAVING|LIMIT|OFFSET|ASC|DESC|INSERT|INTO|VALUES|UPDATE|SET|DELETE|CREATE|TABLE|VIEW|WITH|UNION|ALL|CASE|WHEN|THEN|ELSE|END|DISTINCT|COUNT|SUM|AVG|MIN|MAX)\b|\b(\d+(?:\.\d+)?)\b/gi;
+function highlightSql(source) {
+  const text = String(source || '');
+  let cursor = 0;
+  let html = '';
+  for (const token of text.matchAll(SQL_HIGHLIGHT_TOKENS)) {
+    const [match, comment, string, keyword, number] = token;
+    const offset = token.index || 0;
+    html += escapeHtml(text.slice(cursor, offset));
+    const className = comment ? 'sql-comment' : string ? 'sql-string' : keyword ? 'sql-keyword' : 'sql-number';
+    html += '<span class="' + className + '">' + escapeHtml(match) + '</span>';
+    cursor = offset + match.length;
+  }
+  return html + escapeHtml(text.slice(cursor));
+}
+function refreshSqlHighlight() {
+  const input = $('sqlInput'), highlight = $('sqlHighlight');
+  if (!input || !highlight) return;
+  highlight.innerHTML = highlightSql(input.value) + '\n';
+  highlight.scrollTop = input.scrollTop;
+  highlight.scrollLeft = input.scrollLeft;
+}
+function setSqlQuery(sql) {
+  $('sqlInput').value = sql || '';
+  refreshSqlHighlight();
+}
 function contextQlEventIds(row) {
   const keys=['event_id','failure_event_id','success_event_id','parent_event_id','child_event_id','base_event_id','head_event_id','snapshot_event_id'], ids=[];
   keys.forEach(k=>{if(typeof row[k]==='string'&&row[k].startsWith('evt_')) ids.push(row[k]);});
   ['highlight_event_ids','source_event_ids'].forEach(k=>{try{const x=typeof row[k]==='string'?JSON.parse(row[k]):row[k];if(Array.isArray(x))x.forEach(v=>{if(typeof v==='string'&&v.startsWith('evt_'))ids.push(v);});}catch(_){}});
   return [...new Set(ids)];
 }
-function renderSqlResult(data) {
+function formatQueryDuration(milliseconds) {
+  if (!Number.isFinite(milliseconds) || milliseconds < 1000) return Math.max(0, Math.round(milliseconds || 0)) + ' ms';
+  return (milliseconds / 1000).toFixed(milliseconds < 10000 ? 1 : 0) + ' s';
+}
+function renderSqlResult(data, elapsedMilliseconds) {
   renderMetrics(null); const columns=data.columns||[], rows=data.rows||[];
   const table=document.createElement('table'); table.className='sql-table';
   const thead=document.createElement('thead'), hr=document.createElement('tr'); columns.forEach(c=>{const th=document.createElement('th');th.textContent=c;hr.appendChild(th);});thead.appendChild(hr);table.appendChild(thead);
@@ -3535,11 +3622,11 @@ function renderSqlResult(data) {
   if(!rows.length){const tr=document.createElement('tr'),td=document.createElement('td');td.colSpan=Math.max(columns.length,1);td.className='muted';td.textContent='No rows returned.';tr.appendChild(td);tbody.appendChild(tr);}
   rows.forEach(row=>{const tr=document.createElement('tr');columns.forEach(c=>{const td=document.createElement('td');const value=c==='event_type'?displayEventType(row[c]):row[c];td.textContent=value===null||value===undefined?'null':String(value);if(String(row[c]||'').startsWith('evt_')||String(row[c]||'').startsWith('skill_'))td.className='mono';tr.appendChild(td);});tr.onclick=()=>highlightFullTrajectory(contextQlEventIds(row),[]);tbody.appendChild(tr);});
   table.appendChild(tbody); const wrap=document.createElement('div');wrap.className='table-wrap';wrap.appendChild(table);
-  const card=document.createElement('div');card.className='summary-card query-result-card'; const title=document.createElement('h3');title.textContent='Query Result';card.appendChild(title);
-  const resultCount=Number(data.row_count||0);const meta=document.createElement('div');meta.className='sql-result-meta';meta.innerHTML='<span class="pill ok">'+escapeHtml(resultCount)+' '+(resultCount===1?'result':'results')+'</span>';card.appendChild(meta);card.appendChild(wrap);
-  $('sqlOut').innerHTML='';$('sqlOut').appendChild(card);if((data.highlight_event_ids||[]).length)highlightFullTrajectory(data.highlight_event_ids,[]);
+  const card=document.createElement('div');card.className='summary-card query-result-card';
+  const resultCount=Number(data.row_count||0); $('sqlResultLabel').textContent='Results'; $('sqlResultMeta').innerHTML='<strong class="sql-result-count">'+escapeHtml(resultCount)+' '+(resultCount===1?'row':'rows')+'</strong><span class="sql-result-duration">Query completed in '+escapeHtml(formatQueryDuration(elapsedMilliseconds))+'</span>';card.appendChild(wrap);
+  $('sqlLoading').classList.add('hidden'); $('sqlResultStage').classList.remove('hidden'); $('sqlOut').innerHTML='';$('sqlOut').appendChild(card);if((data.highlight_event_ids||[]).length)highlightFullTrajectory(data.highlight_event_ids,[]);
 }
-async function runSqlQuery(){const tid=getTid();if(!tid)return;const sql=$('sqlInput').value.trim();if(!sql)return;setBusyControls(true);$('sqlMeta').textContent='executing...';$('sqlOut').innerHTML='<div class="loading-card"><div class="spinner" aria-hidden="true"></div><div class="loading-text"><b>Running SQL query</b><div class="progress"><div></div></div></div></div>';try{const data=await api('/api/v1/sql',{trajectory_id:tid,sql:sql});renderSqlResult(data);$('sqlMeta').textContent=String(data.row_count)+' rows';}catch(err){$('sqlMeta').textContent='query error';$('sqlOut').innerHTML='<div class="view-empty"><b>Query failed</b><br>'+escapeHtml(err.message)+'</div>';}finally{setBusyControls(false);}}
+async function runSqlQuery(){const tid=getTid();if(!tid)return;const sql=$('sqlInput').value.trim();if(!sql)return;setBusyControls(true);$('sqlMeta').textContent='executing...';$('sqlResultStage').classList.add('hidden');$('sqlLoading').classList.remove('hidden');$('sqlLoading').innerHTML='<div class="loading-card"><div class="spinner" aria-hidden="true"></div><div class="loading-text"><b>Running SQL query</b><div class="progress"><div></div></div></div></div>';const startedAt=performance.now();try{const data=await api('/api/v1/sql',{trajectory_id:tid,sql:sql});renderSqlResult(data,performance.now()-startedAt);$('sqlMeta').textContent=String(data.row_count)+' rows';}catch(err){$('sqlMeta').textContent='query error';$('sqlLoading').innerHTML='<div class="view-empty"><b>Query failed</b><br>'+escapeHtml(err.message)+'</div>';}finally{setBusyControls(false);}}
 async function loadLlmProfiles(){
   const select=$('nlProfile');
   try{
@@ -3560,7 +3647,7 @@ async function loadLlmProfiles(){
   }
 }
 function modelExecutionMessage(execution, fallback){const requested=execution.requested_model||fallback||'selected model',actual=execution.response_model;if(execution.verified)return 'Confirmed by API response: '+actual+' (request id '+(execution.response_id||'unavailable')+').';if(actual)return 'API responded with '+actual+' although '+requested+' was requested.';return 'Translation completed, but the API did not return model metadata; the model cannot be independently confirmed.';}
-async function runNaturalLanguageQuery(){const tid=getTid(),question=$('nlQuestion').value.trim(),profileId=$('nlProfile').value;if(!tid||!question||!profileId)return;setBusyControls(true);$('sqlMeta').textContent='translating...';const profileLabel=$('nlProfile').selectedOptions[0]?.textContent||profileId;$('sqlOut').innerHTML='<div class="loading-card"><div class="spinner" aria-hidden="true"></div><div class="loading-text"><b>Translating query with '+escapeHtml(profileLabel)+'</b><div class="progress"><div></div></div></div></div>';try{const data=await api('/api/v1/nl_sql',{trajectory_id:tid,question:question,profile_id:profileId});const translation=data.translation||{},execution=translation.execution||{},operator=translation.semantic_operator||{};$('sqlInput').value=translation.sql||'';$('sqlMeta').textContent=execution.verified?'verified '+execution.response_model:'SQL translated';$('sqlOut').innerHTML='<div class="view-empty"><b>SQL ready for review.</b><br><span class="sql-translation-detail">'+escapeHtml(modelExecutionMessage(execution,translation.model))+'</span><br><span class="muted sql-translation-detail">'+escapeHtml(translation.reason||'Click Run SQL to execute the generated statement.')+'</span>'+((operator.operator)?'<br><span class="muted sql-translation-detail">Semantic operator: '+escapeHtml(operator.operator)+' ('+escapeHtml(operator.lotus_alias||'')+')</span>':'')+'</div>';}catch(err){$('sqlMeta').textContent='translation error';$('sqlOut').innerHTML='<div class="view-empty"><b>Natural-language translation failed</b><br>'+escapeHtml(err.message)+'</div>';}finally{setBusyControls(false);}}
+async function runNaturalLanguageQuery(){const tid=getTid(),question=$('nlQuestion').value.trim(),profileId=$('nlProfile').value;if(!tid||!question||!profileId)return;setBusyControls(true);$('sqlMeta').textContent='translating...';$('sqlResultStage').classList.add('hidden');$('sqlLoading').classList.remove('hidden');const profileLabel=$('nlProfile').selectedOptions[0]?.textContent||profileId;$('sqlLoading').innerHTML='<div class="loading-card"><div class="spinner" aria-hidden="true"></div><div class="loading-text"><b>Translating query with '+escapeHtml(profileLabel)+'</b><div class="progress"><div></div></div></div></div>';try{const data=await api('/api/v1/nl_sql',{trajectory_id:tid,question:question,profile_id:profileId});const translation=data.translation||{},execution=translation.execution||{},operator=translation.semantic_operator||{};setSqlQuery(translation.sql);$('sqlMeta').textContent=execution.verified?'verified '+execution.response_model:'SQL translated';$('sqlLoading').innerHTML='<div class="view-empty"><b>SQL ready for review.</b><br><span class="sql-translation-detail">'+escapeHtml(modelExecutionMessage(execution,translation.model))+'</span><br><span class="muted sql-translation-detail">'+escapeHtml(translation.reason||'Click Run SQL to execute the generated statement.')+'</span>'+((operator.operator)?'<br><span class="muted sql-translation-detail">Semantic operator: '+escapeHtml(operator.operator)+' ('+escapeHtml(operator.lotus_alias||'')+')</span>':'')+'</div>';}catch(err){$('sqlMeta').textContent='translation error';$('sqlLoading').innerHTML='<div class="view-empty"><b>Natural-language translation failed</b><br>'+escapeHtml(err.message)+'</div>';}finally{setBusyControls(false);}}
 
 function renderFailurePatterns(data) {
   const rows = Array.isArray(data.content) ? data.content : [];
@@ -3675,9 +3762,9 @@ function renderSemanticJudgments(data) {
   renderMetrics(null);
   if (!rows.length) return setOutput('<div class="view-empty">No semantic judgments. Query repair strategies first or check the trajectory.</div>');
   const verdictInfo = label => {
-    if (label === 'likely_repair') return {key:'ok', label:'Likely repair', mark:'✓'};
-    if (label === 'partial_repair') return {key:'partial', label:'Partial repair', mark:'~'};
-    return {key:'other', label:'Other judgment', mark:'!'};
+    if (label === 'likely_repair') return {key:'ok', label:'Likely repair', icon:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 12 4 4 8-8"></path></svg>'};
+    if (label === 'partial_repair') return {key:'partial', label:'Partial repair', icon:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 12h10"></path></svg>'};
+    return {key:'other', label:'Unrelated success', icon:'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="7"></circle><path d="m8 16 8-8"></path></svg>'};
   };
   const groups = new Map();
   const totals = {ok:0, partial:0, other:0};
@@ -3689,37 +3776,40 @@ function renderSemanticJudgments(data) {
     groups.get(failureId).rows.push(row);
     totals[verdictInfo(String((row.judgment || {}).label || 'not_evaluated')).key] += 1;
   });
-  const cases = [...groups.values()].map((group, groupIndex) => {
+  const cases = [...groups.values()].map(group => {
     const failure = group.failure || {};
     const failureTitle = failure.likely_cause || failure.error_signature || failure.command || 'Failure event';
     const failureCommand = String(failure.command || 'No failed command was recorded.').replace(/\s+/g, ' ').trim();
+    const encodedFailureCommand = escapeHtml(encodeURIComponent(failureCommand));
     const failureBranch = failure.branch_id || 'main';
     const rowsHtml = group.rows.map(row => {
       const judgment = row.judgment || {};
       const candidate = row.repair_candidate || {};
       const verdict = verdictInfo(String(judgment.label || 'not_evaluated'));
       const candidateCommand = String(candidate.command || 'No candidate command was recorded.').replace(/\s+/g, ' ').trim();
+      const encodedCandidateCommand = escapeHtml(encodeURIComponent(candidateCommand));
       const confidence = judgment.confidence === undefined || judgment.confidence === null || judgment.confidence === ''
         ? 'Not scored' : Number(judgment.confidence).toFixed(2);
       const reason = judgment.error || judgment.reason || 'No semantic rationale was recorded.';
       const recommended = judgment.recommended_for_skill ? '<span class="pill rule">Recommended for skill</span>' : '';
       return `<div class="semantic-judge-candidate">
         <div class="semantic-judge-flow">
-          <div class="semantic-judge-node failure"><div class="semantic-judge-node-label"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2.7 20h18.6L12 3Z"></path><path d="M12 9v5M12 17h.01"></path></svg>Failure event</div><div class="semantic-judge-node-events"><span class="pill failed">${escapeHtml(failureBranch)}</span><span class="pill mono">${escapeHtml(group.failureId)}</span></div><div class="semantic-judge-command-preview">${escapeHtml(failureCommand)}</div></div>
+          <div class="semantic-judge-node failure"><div class="semantic-judge-node-label"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2.7 20h18.6L12 3Z"></path><path d="M12 9v5M12 17h.01"></path></svg>FAILURE EVENT</div><div class="semantic-judge-node-events"><span class="pill failed">${escapeHtml(failureBranch)}</span><span class="pill mono">${escapeHtml(group.failureId)}</span></div><button type="button" class="semantic-judge-command-preview" data-command="${encodedFailureCommand}" onclick="openSemanticJudgeCommand(this.dataset.command)" title="View full command">${escapeHtml(failureCommand)}</button></div>
           <div class="semantic-judge-arrow" aria-hidden="true"><svg class="lucide lucide-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></div>
-          <div class="semantic-judge-node candidate"><div class="semantic-judge-node-label"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="m8 12 2.5 2.5L16 9"></path></svg>Candidate event</div><div class="semantic-judge-node-events"><span class="pill ok">${escapeHtml(candidate.branch_id || failureBranch)}</span><span class="pill mono">${escapeHtml(row.success_event_id || candidate.success_event_id || '')}</span></div><div class="semantic-judge-command-preview">${escapeHtml(candidateCommand)}</div></div>
-          <div class="semantic-judge-verdict ${verdict.key}"><span class="semantic-judge-verdict-mark">${verdict.mark}</span><strong>${escapeHtml(verdict.label)}</strong><span class="semantic-judge-confidence">Confidence ${escapeHtml(confidence)}</span>${recommended}</div>
+          <div class="semantic-judge-node candidate"><div class="semantic-judge-node-label"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="m8 12 2.5 2.5L16 9"></path></svg>SUCCESS EVENT</div><div class="semantic-judge-node-events"><span class="pill ok">${escapeHtml(candidate.branch_id || failureBranch)}</span><span class="pill mono">${escapeHtml(row.success_event_id || candidate.success_event_id || '')}</span></div><button type="button" class="semantic-judge-command-preview" data-command="${encodedCandidateCommand}" onclick="openSemanticJudgeCommand(this.dataset.command)" title="View full command">${escapeHtml(candidateCommand)}</button></div>
+          <div class="semantic-judge-divider" aria-hidden="true"></div>
+          <div class="semantic-judge-verdict ${verdict.key}"><span class="semantic-judge-verdict-mark">${verdict.icon}</span><strong>${escapeHtml(verdict.label)}</strong><span class="semantic-judge-confidence">Confidence ${escapeHtml(confidence)}</span>${recommended}</div>
         </div>
         <div class="semantic-judge-reason"><p><b>Reason</b> ${escapeHtml(reason)}</p><button class="small-btn" onclick='highlightFullTrajectory(${JSON.stringify(row.highlight_event_ids || [])}, [])'>Highlight</button></div>
       </div>`;
     }).join('');
     const verdicts = group.rows.map(row => verdictInfo(String((row.judgment || {}).label || 'not_evaluated')).key).join('|');
-    return `<details class="semantic-judge-case" data-verdicts="${escapeHtml(verdicts)}" data-judgment-count="${group.rows.length}"${groupIndex === 0 ? ' open' : ''}>
+    return `<details class="semantic-judge-case" data-verdicts="${escapeHtml(verdicts)}" data-judgment-count="${group.rows.length}">
       <summary class="semantic-judge-case-summary"><span class="semantic-judge-case-severity" aria-hidden="true">!</span><span class="semantic-judge-case-copy"><span class="semantic-judge-case-title"><b>${escapeHtml(failureTitle)}</b><span class="pill failed">${escapeHtml(failureBranch)}</span></span><span class="pill mono semantic-judge-case-event">${escapeHtml(group.failureId)}</span></span><span class="pill ok semantic-judge-candidate-count">${group.rows.length} ${group.rows.length === 1 ? 'candidate' : 'candidates'}</span><svg class="semantic-judge-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></summary>
       <div class="semantic-judge-case-detail">${rowsHtml}</div>
     </details>`;
   }).join('');
-  setOutput(`<section class="semantic-judge-panel"><header class="semantic-judge-head"><div class="semantic-judge-title"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="m8 12 2.5 2.5L16 9"></path></svg>Semantic Judge <span class="semantic-judge-count">${rows.length}</span></div><div class="semantic-judge-overview"><span class="semantic-judge-stat ok">Likely repair <b>${totals.ok}</b></span><span class="semantic-judge-stat partial">Partial repair <b>${totals.partial}</b></span><span class="semantic-judge-stat other">Other <b>${totals.other}</b></span></div><div class="semantic-judge-actions"><details class="semantic-judge-filter"><summary aria-label="Filter semantic judgments" title="Filter semantic judgments"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16l-6 7v5l-4 2v-7L4 5Z"></path></svg></summary><div class="semantic-judge-filter-menu"><label>Verdict<select onchange="filterSemanticJudgments(this.value)"><option value="">All verdicts</option><option value="ok">Likely repair</option><option value="partial">Partial repair</option><option value="other">Other</option></select></label></div></details><button class="small-btn" onclick='highlightFullTrajectory(${JSON.stringify(allHighlightIds)}, [])'>Highlight all</button></div></header><div class="semantic-judge-list">${cases}</div></section>`);
+  setOutput(`<section class="semantic-judge-panel"><header class="semantic-judge-head"><div class="semantic-judge-title"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="m8 12 2.5 2.5L16 9"></path></svg>Semantic Judge <span class="semantic-judge-count">${rows.length}</span></div><div class="semantic-judge-overview"><span class="semantic-judge-stat ok">Likely repair <b>${totals.ok}</b></span><span class="semantic-judge-stat partial">Partial repair <b>${totals.partial}</b></span><span class="semantic-judge-stat other">Unrelated success <b>${totals.other}</b></span></div><div class="semantic-judge-actions"><details class="semantic-judge-filter"><summary aria-label="Filter semantic judgments" title="Filter semantic judgments"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16l-6 7v5l-4 2v-7L4 5Z"></path></svg></summary><div class="semantic-judge-filter-menu"><label>Verdict<select onchange="filterSemanticJudgments(this.value)"><option value="">All verdicts</option><option value="ok">Likely repair</option><option value="partial">Partial repair</option><option value="other">Unrelated success</option></select></label></div></details><button class="small-btn" onclick='highlightFullTrajectory(${JSON.stringify(allHighlightIds)}, [])'>Highlight all</button></div></header><div class="semantic-judge-list">${cases}</div></section>`);
 }
 function renderLearnedSkills(data) {
   const skills = Array.isArray(data.content) ? data.content : [];
@@ -4434,12 +4524,12 @@ document.querySelectorAll('.tabs button').forEach(btn => btn.onclick = () => {
   currentView = btn.dataset.view;
   const sql = QUERY_CATALOG[currentView];
   if (sql) {
-    $('sqlInput').value = sql;
+    setSqlQuery(sql);
     $('sqlMeta').textContent = 'SQL updated';
   }
   showViewExecution();
 });
-$('runSql').onclick=()=>{if(!globalBusy)runSqlQuery();};$('runNaturalLanguage').onclick=()=>{if(!globalBusy)runNaturalLanguageQuery();};$('sqlInput').addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter'&&!globalBusy){e.preventDefault();runSqlQuery();}});$('nlQuestion').addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter'&&!globalBusy){e.preventDefault();runNaturalLanguageQuery();}});
+$('runSql').onclick=()=>{if(!globalBusy)runSqlQuery();};$('runNaturalLanguage').onclick=()=>{if(!globalBusy)runNaturalLanguageQuery();};$('sqlInput').addEventListener('input',refreshSqlHighlight);$('sqlInput').addEventListener('scroll',refreshSqlHighlight);$('sqlInput').addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter'&&!globalBusy){e.preventDefault();runSqlQuery();}});$('nlQuestion').addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter'&&!globalBusy){e.preventDefault();runNaturalLanguageQuery();}});refreshSqlHighlight();
 function setRightPanel(mode) {
   const query = mode === 'query', version = mode === 'version';
   $('databaseViewsPanel').classList.toggle('hidden', query || version);
